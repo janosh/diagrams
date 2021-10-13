@@ -11,7 +11,7 @@
 
     const response = await fetch(`/${slug}.json`)
 
-    // return nothin if texFile was not found to fall through to __error.svelte
+    // return nothing if texFile was not found to fall through to __error.svelte
     if (response.ok) return { props: { texFile: await response.json() } }
   }
 </script>

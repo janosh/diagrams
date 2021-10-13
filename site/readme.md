@@ -48,7 +48,7 @@ netlify init && netlify deploy --prod
 
 ## Formatting
 
-When using VS Code, install the [official Svelte extension](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode) and add the following to your `settings.json` to enable autoformating Svelte files on save:
+When using VS Code, install the [official Svelte extension](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode) and add the following to your `settings.json` to enable autoformatting Svelte files on save:
 
 ```json
 "[svelte]": {

@@ -1,12 +1,15 @@
 {
   "author": "Janosh Riebesell <janosh.riebesell@gmail.com>",
   "description": "SvelteKit site displaying standalone TikZ images along with their LaTeX source code",
-  "homepage": "https://tikz.netlify.app/",
+  "homepage": "https://tikz.netlify.app",
   "license": "MIT",
   "name": "tikz",
   "repository": "https://github.com/janosh/tikz",
   "type": "module",
   "version": "1.0.0",
+  "bugs": {
+    "url": "https://github.com/janosh/tikz/issues"
+  },
   "scripts": {
     "build": "svelte-kit build",
     "dev": "svelte-kit dev",

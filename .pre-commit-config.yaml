@@ -1,6 +1,3 @@
-# Install these hooks with `pre-commit install`.
-# Setup CI at https://pre-commit.ci.
-
 ci:
   autoupdate_schedule: quarterly
 
@@ -26,3 +23,11 @@ repos:
           - prettier
           - prettier-plugin-svelte
           - svelte
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.1.0
+    hooks:
+      - id: codespell
+        exclude_types: [svg]
+        exclude: yarn.lock
+        args: [--ignore-words-list, "noe,ket"]

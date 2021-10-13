@@ -13,7 +13,7 @@
   ]
 
 
-  \begin{scope}[local bounding box=struc]
+  \begin{scope}[local bounding box=struct]
     \node[ball color=black!75, circle, white, scale=1.3] (C1) at (0, 0) {C};
     \node[ball color=black!75, circle, white, scale=1.3] (C2) at (0, -1.5) {C};
     \node[ball color=blue!75, circle, scale=1.3] (N1) at (-0.5, 1.5) {N};
@@ -35,7 +35,7 @@
   \node[scale=7, above=1.8cm of property] (alpha) {$\alpha$};
 
 
-  \begin{scope}[shift={($(struc.east)+(2.5,0)$)}, scale=0.6, local bounding box=desc]
+  \begin{scope}[shift={($(struct.east)+(2.5,0)$)}, scale=0.6, local bounding box=desc]
     \foreach \y [count=\n] in {
         {74,25,39,20,3,3,3,3,3},
         {25,53,31,17,7,7,2,3,2},
@@ -77,7 +77,7 @@
     \path (h\source) edge (o);
   \end{scope}
 
-  \draw[arrow] (struc.east) -- ++(2.5,0);
+  \draw[arrow] (struct.east) -- ++(2.5,0);
   \draw[arrow] (desc.east) -- ++(2.5,0);
   \draw[arrow] (mod.east) -- ++(2.5,0);
 
