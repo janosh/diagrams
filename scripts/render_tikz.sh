@@ -15,9 +15,9 @@ latexmk -silent -pdf -jobname="$basepath" "$1"
 # Delete LaTeX auxiliary files.
 find -E "$dir" -type f -regex ".*\.(aux|log|fls|fdb_latexmk)$" -delete
 
-# Compress PDF. iLovePDF performs much better than Ghostscript but the API only offers 200 free compressions per month.
+# Compress PDF. iLovePDF performs much better than Ghostscript but the API only offers 250 free compressions per month.
 # scripts/gs_pdf_compress.sh "$dir"
-python scripts/ilove_pdf_compress.py "$basepath.pdf"
+pdf-compressor --inplace "$basepath.pdf"
 
 # Convert PDF to SVG and compress.
 # Requires pdf2svg and svgo to be installed (`brew install pdf2svg svgo`).

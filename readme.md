@@ -127,16 +127,21 @@ Random collection of **105** [`standalone`](https://ctan.org/pkg/standalone) [Ti
 
 ## Scripts
 
-Files in [`/scripts`](scripts) render and compress the standalone `.tex` files in [`/assets`](assets) to various output formats: low + high-res PNG, PDF and SVG. To run them, you need the following dependencies:
+Files in [`/scripts`](scripts) render and compress the standalone `.tex` files in [`/assets`](assets) to various formats:
 
-- [`pylovepdf`](https://github.com/AndyCyberSec/pylovepdf)
-- [`python-dotenv`](https://github.com/theskumar/python-dotenv)
-- [`gs` (GhostScript)](https://ghostscript.com)
+- low + high-res PNG
+- PDF
+- SVG
+
+To run them, you need the following dependencies:
+
+- [`pdf-compressor`](https://github.com/janosh/pdf-compressor) (`pip install pdf-compressor`)
+- [`gs` (GhostScript)](https://ghostscript.com) (optional, worse compression but needs no API key so less setup than `pdf-compressor`)
 - [`pdf2svg`](https://github.com/dawbarton/pdf2svg)
 - [`convert`](https://linux.die.net/man/1/convert) (part of [ImageMagick](https://imagemagick.org/script))
 
-To run [`ilove_pdf_compress.py`](scripts/ilove_pdf_compress.py) directly or use it as part of the [`render_tikz.sh`](scripts/render_tikz.sh) pipeline, you also need a free public API key from <https://developer.ilovepdf.com>. Add it to a `.env` in the project's root directory:
+To run `pdf-compressor` directly or use it as part of the [`render_tikz.sh`](scripts/render_tikz.sh) pipeline, you need a free public API key from <https://developer.ilovepdf.com>. Add it to `pdf-compressor`:
 
 ```sh
-touch .env && echo "ILOVEPDF_PUBLIC_KEY=<your key>" >> .env
+pdf-compressor --set-api-key project_public_7c854a9db0...
 ```
