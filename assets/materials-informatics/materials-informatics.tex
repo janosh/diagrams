@@ -12,7 +12,6 @@
   arrow/.style={>={LaTeX[width=5mm,length=5mm]}, ->, line width=1ex, gray, shorten <=1em, shorten >=1em},
   ]
 
-
   \begin{scope}[local bounding box=struct]
     \node[ball color=black!75, circle, white, scale=1.3] (C1) at (0, 0) {C};
     \node[ball color=black!75, circle, white, scale=1.3] (C2) at (0, -1.5) {C};
@@ -33,7 +32,6 @@
   \node[label, right=6cm of descriptor] (model) {Model};
   \node[label, right=4.5cm of model] (property) {Property};
   \node[scale=7, above=1.8cm of property] (alpha) {$\alpha$};
-
 
   \begin{scope}[shift={($(struct.east)+(2.5,0)$)}, scale=0.6, local bounding box=desc]
     \foreach \y [count=\n] in {
