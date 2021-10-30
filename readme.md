@@ -137,8 +137,10 @@ To run them, you need the following dependencies:
 
 - [`pdf-compressor`](https://github.com/janosh/pdf-compressor) (`pip install pdf-compressor`)
 - [`gs` (GhostScript)](https://ghostscript.com) (optional, worse compression but needs no API key so less setup than `pdf-compressor`)
-- [`pdf2svg`](https://github.com/dawbarton/pdf2svg)
+- [`pdf2svg`](https://github.com/dawbarton/pdf2svg) (`brew install pdf2svg`)
 - [`convert`](https://linux.die.net/man/1/convert) (part of [ImageMagick](https://imagemagick.org/script))
+- [`pngquant`](https://github.com/kornelski/pngquant) (`brew install pngquant`)
+- [`zopflipng`](https://github.com/google/zopfli) (`brew install zopfli`)
 
 To run `pdf-compressor` directly or use it as part of the [`render_tikz.sh`](scripts/render_tikz.sh) pipeline, you need a free public API key from <https://developer.ilovepdf.com>. Add it to `pdf-compressor`:
 

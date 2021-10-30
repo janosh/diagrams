@@ -1,6 +1,6 @@
 {
   "author": "Janosh Riebesell <janosh.riebesell@gmail.com>",
-  "description": "SvelteKit site displaying standalone TikZ images along with their LaTeX source code",
+  "description": "SvelteKit gallery site of standalone TikZ images along with their LaTeX source code",
   "homepage": "https://tikz.netlify.app",
   "license": "MIT",
   "name": "tikz",
