@@ -48,7 +48,7 @@
   \end{scope}
 
   % mu, sigma, sample nodes
-  \foreach \idx  in {1,...,3} {
+  \foreach \idx in {1,...,3} {
       \coordinate[neuron, right=2 of encoder-3-2, yshift=\idx cm,, fill=yellow, fill opacity=0.2] (mu-\idx);
       \coordinate[neuron, right=2 of encoder-3-2, yshift=-\idx cm, fill=blue, fill opacity=0.1] (sigma-\idx);
       \coordinate[neuron, right=4 of encoder-3-2, yshift=\idx cm-2cm, fill=green, fill opacity=0.1] (sample-\idx);

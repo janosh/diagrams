@@ -10,8 +10,8 @@
 \begin{tikzpicture}[
     brc/.style args = {#1/#2}{decorate,decoration={brace,amplitude=5pt,raise=#1,#2},thick},
     pics/realline/.style n args = {3}{
-        code = {\draw [thick]   (0,0) node [left=2mm] {\refstepcounter{ordering}\theordering.\label{ord:\theordering}} -- (8,0) node [right=2mm] {$\mathbb{R}$};
-            \fill[black]    (0,0) circle (1mm) node[below=1mm] {$-\infty$}
+        code = {\draw [thick] (0,0) node [left=2mm] {\refstepcounter{ordering}\theordering.\label{ord:\theordering}} -- (8,0) node [right=2mm] {$\mathbb{R}$};
+            \fill[black] (0,0) circle (1mm) node[below=1mm] {$-\infty$}
             (3,0) circle (1mm) node[above=9] {$#1$} node[below=1mm] {0}
             (5,0) circle (1mm) node[above=9] {$#2$} node[below=1mm] {1}
             (8,0) circle (1mm) node[above=9] {$#3$} node[below=1mm] {$\infty$};

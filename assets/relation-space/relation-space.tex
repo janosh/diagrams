@@ -9,7 +9,7 @@
     axis label/.style={midway,below,sloped}
 }
 
-\def\datapoint(#1,#2,#3)(#4){
+\def\datapoint(#1,#2,#3)(#4) {
     \filldraw (#1,#2,#3) -- (#1,#2,0) circle (0.2ex) (#1,#2,#3) -- (0,#2,#3) circle (0.2ex) (#1,#2,#3) -- (#1,0,#3) circle (0.2ex);
     \shade[ball color=blue!40] (#1,#2,#3) circle (1ex) node[sign,right=1ex] {#4};}
 

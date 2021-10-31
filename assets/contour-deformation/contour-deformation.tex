@@ -10,13 +10,13 @@
   \node [style={circle,minimum width=1.2cm},name path=C] at (A.north east) (B) {};
   \filldraw (A) circle (2pt) node [above right] {0} (B) circle (2pt) node [right]{$w$};
   \node [above] at (A.north) (annotation) {$z$-contour};
-  \draw [thick] (annotation.west) edge[out=180,in=120,->]  ++(-0.4,-0.6);
+  \draw [thick] (annotation.west) edge[out=180,in=120,->] ++(-0.4,-0.6);
 
   \node [style={circle,minimum width=4cm,fill=gray!20},draw=black,name path=C,decoration={markings,mark=at position 0.175 with {\arrow[ultra thick]{>}}},postaction={decorate}] at (6cm,0) (C) {};
   \node [style={circle,minimum width=1.2cm},name path=D] at (C.north east) (D) {};
   \filldraw (C) circle (2pt) node [above right] {0} (D) circle (2pt) node [right]{$w$};
   \node [above] at (C.north) (annotation) {$z$-contour};
-  \draw [thick] (annotation.west) edge[out=180,in=120,->]  ++(-0.4,-0.6);
+  \draw [thick] (annotation.west) edge[out=180,in=120,->] ++(-0.4,-0.6);
 
   \node [style={circle,minimum width=4cm,fill=gray!20},name path=E] at (12cm,0) (E) {};
   \node [style={circle,minimum width=1.2cm,fill=gray!20},name path=F,decoration={markings,mark=at position 0.15 with {\arrow[ultra thick]{>}}},postaction={decorate}] at (E.north east) (F) {};
@@ -24,8 +24,8 @@
 
   % intersection points between circles E and F
   \path [name intersections={of = E and F}];
-  \coordinate (EF1)  at (intersection-1);
-  \coordinate (EF2)  at (intersection-2);
+  \coordinate (EF1) at (intersection-1);
+  \coordinate (EF2) at (intersection-2);
 
   % calculate angles from center of E/F to intersection points
   \pgfmathanglebetweenpoints{\pgfpointanchor{E}{center}}{\pgfpointanchor{EF1}{center}}
@@ -51,8 +51,8 @@
 
   % intersection points between circles G and H
   \path [name intersections={of = G and H}];
-  \coordinate (GH1)  at (intersection-1);
-  \coordinate (GH2)  at (intersection-2);
+  \coordinate (GH1) at (intersection-1);
+  \coordinate (GH2) at (intersection-2);
 
   % draw outline
   \draw[thick,decoration={markings, mark=at position 0.075 with {\arrow[ultra thick]{>}}},postaction={decorate}]

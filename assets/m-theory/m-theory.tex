@@ -10,11 +10,11 @@
   \node (tiib) [align=center] at (5,-2) {Type II B};
   \node (ti) [align=center] at (0,-5) {Type I};
 
-  \draw[bend left,<->]  (so32) to node [below right,align=center] {compac-\\tification} (e8e8);
-  \draw[bend left,<->]  (e8e8) to node [below left] {M-theory} (tiia);
-  \draw[bend left,<->]  (tiia) to node [below left] {T-duality} (tiib);
-  \draw[bend left,<->]  (tiib) to node [above left,align=center] {orientifold\\action $\Omega$} (ti);
-  \draw[bend left,<->]  (ti) to node [above right] {S-duality} (so32);
+  \draw[bend left,<->] (so32) to node [below right,align=center] {compac-\\tification} (e8e8);
+  \draw[bend left,<->] (e8e8) to node [below left] {M-theory} (tiia);
+  \draw[bend left,<->] (tiia) to node [below left] {T-duality} (tiib);
+  \draw[bend left,<->] (tiib) to node [above left,align=center] {orientifold\\action $\Omega$} (ti);
+  \draw[bend left,<->] (ti) to node [above right] {S-duality} (so32);
 
   \begin{scope}
     \clip[bend right]
@@ -31,7 +31,7 @@
       }
   \end{scope}
 
-  \draw[bend right,very thick,gray,fill,fill opacity=0.3]  (so32.east) to (e8e8.south) to (tiia.south) to (tiib.west) to (ti.north) to (so32.east);
+  \draw[bend right,very thick,gray,fill,fill opacity=0.3] (so32.east) to (e8e8.south) to (tiia.south) to (tiib.west) to (ti.north) to (so32.east);
 
   \node (mth) [align=center] at (0,0) {parameter space of\\[2ex]{\Large \textbf{M-Theory}}};
 

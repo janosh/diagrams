@@ -27,9 +27,9 @@
   [~~~$\dots$~,scale=2,no edge,fill=none,yshift=-3em]
   [,red!70,alias=c1[[,alias=c2][]][,red!70,edge label={node[above=1ex,red arrow]{}}[,red!70,edge label={node[above=1ex,red arrow]{}}[,alias=c3][,red!70,edge label={node[above=1ex,red arrow]{}}]][,alias=c4]]]]
   ]
-  \node[tree box, fit=(a1)(a2)(a3)](t1){};
-  \node[tree box, fit=(b1)(b2)(b3)](t2){};
-  \node[tree box, fit=(c1)(c2)(c3)(c4)](tn){};
+  \node[tree box, fit=(a1)(a2)(a3)] (t1) {};
+  \node[tree box, fit=(b1)(b2)(b3)] (t2) {};
+  \node[tree box, fit=(c1)(c2)(c3)(c4)] (tn) {};
   \node[below right=0.5em, inner sep=0pt] at (t1.north west) {Tree 1};
   \node[below right=0.5em, inner sep=0pt] at (t2.north west) {Tree 2};
   \node[below right=0.5em, inner sep=0pt] at (tn.north west) {Tree $n$};
