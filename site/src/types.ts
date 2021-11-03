@@ -1,4 +1,4 @@
-export declare type TexFile = {
+export type TexFile = {
   id: string
   title: string
   slug: string

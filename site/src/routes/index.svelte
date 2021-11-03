@@ -2,12 +2,11 @@
   import Law from '@svicons/octicons/law.svelte'
   import MarkGithub from '@svicons/octicons/mark-github.svelte'
   import Masonry from 'svelte-bricks'
-
-  import GitHubCorner from '../components/GitHubCorner.svelte'
   import Card from '../components/Card.svelte'
-  import texFiles from '../texFiles'
-  import slugs from '../slugs'
+  import GitHubCorner from '../components/GitHubCorner.svelte'
   import IntersectionObserver from '../components/IntersectionObserver.svelte'
+  import slugs from '../slugs'
+  import texFiles from '../texFiles'
 
   let [minColWidth, maxColWidth] = [330, 500]
   let gap = 20

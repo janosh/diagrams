@@ -1,12 +1,12 @@
 <script lang="ts" context="module">
-  import LawIcon from '@svicons/octicons/law.svelte'
+  import type { Load } from '@sveltejs/kit'
   import CodeIcon from '@svicons/octicons/code.svelte'
   import DownloadIcon from '@svicons/octicons/download.svelte'
+  import LawIcon from '@svicons/octicons/law.svelte'
+  import Prism from '../components/Prism.svelte'
+  import { TexFile } from '../types'
 
-  type LoadPromise = Promise<LoadOutput | undefined>
-
-  // type union LoadOutput | undefined only temporary https://git.io/JCta2
-  export async function load({ page, fetch }: LoadInput): LoadPromise {
+  export const load: Load = async ({ page, fetch }) => {
     const { slug } = page.params
 
     const response = await fetch(`/${slug}.json`)
@@ -17,10 +17,6 @@
 </script>
 
 <script lang="ts">
-  import Prism from '../components/Prism.svelte'
-  import type { LoadInput, LoadOutput } from '@sveltejs/kit'
-  import { TexFile } from '../types'
-
   export let texFile: TexFile
 
   $: ({ title, desc, code, width, height, slug, downloads } = texFile)

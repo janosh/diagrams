@@ -1,10 +1,7 @@
+import { RequestHandler } from '@sveltejs/kit'
 import texFiles from '../texFiles'
 
-import { EndpointOutput } from '@sveltejs/kit'
-
-type GetInput = { params: { slug: string } }
-
-export function get({ params }: GetInput): EndpointOutput | undefined {
+export const get: RequestHandler = ({ params }) => {
   const { slug } = params
 
   const texFile = texFiles.find((itm) => itm.slug === slug)
