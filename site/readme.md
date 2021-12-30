@@ -4,7 +4,7 @@
 
 # Random TikZ Collection
 
-Gallery site of `standalone` TikZ images, source code included. Built with [SvelteKit](https://kit.svelte.dev).
+Source code for gallery site of `standalone` TikZ images. Built with [SvelteKit](https://kit.svelte.dev).
 
 ## Running this site locally
 
@@ -22,7 +22,7 @@ Gallery site of `standalone` TikZ images, source code included. Built with [Svel
    yarn dev
    ```
 
-Navigate to `http://localhost:3000`. You should see a development server with this site running. Edit a component file in `src`, save it and the page will hot-reload to display your changes.
+Navigate to `http://localhost:3000`. You should see a development server with this site running. Edit a component file in `src/`, save it and the page will hot-reload to display your changes.
 
 ## Building and running in production mode
 
