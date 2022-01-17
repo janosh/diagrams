@@ -2,8 +2,8 @@
   import Law from '@svicons/octicons/law.svelte'
   import MarkGithub from '@svicons/octicons/mark-github.svelte'
   import Masonry from 'svelte-bricks'
+  import GitHubCorner from 'svelte-github-corner'
   import Card from '../components/Card.svelte'
-  import GitHubCorner from '../components/GitHubCorner.svelte'
   import IntersectionObserver from '../components/IntersectionObserver.svelte'
   import slugs from '../slugs'
   import texFiles from '../texFiles'
@@ -54,7 +54,7 @@
 
 <style>
   h1 {
-    font-size: calc(1em + 3vw);
+    font-size: clamp(2rem, 2rem + 2vw, 3.5rem);
   }
   p {
     font-size: 2.2ex;

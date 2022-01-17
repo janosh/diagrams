@@ -1,6 +1,6 @@
 <script lang="ts">
   // https://github.com/sveltejs/svelte/blob/master/site/src/components/IntersectionObserver.svelte
-  import { onMount, createEventDispatcher } from 'svelte'
+  import { createEventDispatcher, onMount } from 'svelte'
 
   export let intersecting = false
   export let once = false
@@ -28,7 +28,7 @@
     )
 
     observer.observe(div)
-    return () => observer.unobserve(div)
+    return () => observer.disconnect()
   })
 </script>
 

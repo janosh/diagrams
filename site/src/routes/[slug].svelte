@@ -6,13 +6,12 @@
   import Prism from '../components/Prism.svelte'
   import { TexFile } from '../types'
 
-  export const load: Load = async ({ page, fetch }) => {
-    const { slug } = page.params
-
-    const response = await fetch(`/${slug}.json`)
+  export const load: Load = async ({ params, fetch }) => {
+    const response = await fetch(`/${params.slug}.json`)
 
     // return nothing if texFile was not found to fall through to __error.svelte
     if (response.ok) return { props: { texFile: await response.json() } }
+    else return { fallthrough: true }
   }
 </script>
 
