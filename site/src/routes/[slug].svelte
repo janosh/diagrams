@@ -1,21 +1,9 @@
-<script lang="ts" context="module">
-  import type { Load } from '@sveltejs/kit'
+<script lang="ts">
   import CodeIcon from '@svicons/octicons/code.svelte'
   import DownloadIcon from '@svicons/octicons/download.svelte'
   import LawIcon from '@svicons/octicons/law.svelte'
   import Prism from '../components/Prism.svelte'
   import { TexFile } from '../types'
-
-  export const load: Load = async ({ params, fetch }) => {
-    const response = await fetch(`/${params.slug}.json`)
-
-    // return nothing if texFile was not found to fall through to __error.svelte
-    if (response.ok) return { props: { texFile: await response.json() } }
-    else return { fallthrough: true }
-  }
-</script>
-
-<script lang="ts">
   export let texFile: TexFile
 
   $: ({ title, desc, code, width, height, slug, downloads } = texFile)

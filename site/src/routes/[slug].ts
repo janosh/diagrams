@@ -6,8 +6,6 @@ export const get: RequestHandler = ({ params }) => {
 
   const texFile = texFiles.find((itm) => itm.slug === slug)
 
-  if (texFile) return { body: texFile }
-
-  // Not returning is equivalent to an explicit 404 response.
-  // https://kit.svelte.dev/docs#routing-endpoints
+  if (texFile) return { body: { texFile } }
+  else return { fallthrough: true }
 }
