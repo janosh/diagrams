@@ -1,10 +1,8 @@
-<p align="center">
+<h1 align="center">
   <a href="https://tikz.netlify.app">
     <img src="site/static/favicon.svg" alt="TikZ" height=150>
   </a>
-</p>
-
-<h1 align="center">TikZ Standalone</h1>
+</h1>
 
 <h3 align="center">
 
@@ -143,7 +141,7 @@ To run them, you need the following dependencies:
 - [`pngquant`](https://github.com/kornelski/pngquant) (`brew install pngquant`)
 - [`zopflipng`](https://github.com/google/zopfli) (`brew install zopfli`)
 
-To run `pdf-compressor` directly or use it as part of the [`render_tikz.sh`](scripts/render_tikz.sh) pipeline, you need a free public API key from <https://developer.ilovepdf.com>. Add it to `pdf-compressor`:
+To run `pdf-compressor` directly or use it as part of the [`render-tikz.sh`](scripts/render-tikz.sh) pipeline, you need a free public API key from <https://developer.ilovepdf.com>. Add it to `pdf-compressor`:
 
 ```sh
 pdf-compressor --set-api-key project_public_7c854a9db0...

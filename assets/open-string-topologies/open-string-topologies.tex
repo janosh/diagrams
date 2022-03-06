@@ -63,14 +63,15 @@
 
   % drawing cylinder
   \path let \p1=(b-between outgoing 1 and 2), \p2=(c-between incoming 1 and 2) in
-  node[name=cyl1,shape=ellipse, minimum height=.3cm, minimum width={\x2-\x1},draw, outer sep=0]
-  at ($(b-outgoing boundary 1)-(0,2.5)$) {}
-  node[name=rec,shape=rectangle, minimum height=1cm, minimum width={\x2-\x1}, fill=white, anchor=south]
+  node[name=cyl1, minimum width={\x2-\x1}] at ($(b-outgoing boundary 1)-(0,2.5)$) {}
+  node[name=rec,shape=rectangle, minimum height=1cm, minimum width={\x2-\x1}, anchor=south]
   at (cyl1) {}
-  node[name=cyl2,shape=ellipse, minimum height=.3cm, minimum width={\x2-\x1}, fill=white,draw, outer sep=0]
+  node[name=cyl2,shape=ellipse, minimum height=.3cm, minimum width={\x2-\x1}, draw, outer sep=0]
   at (rec.north) {}
   ;
-  \draw (cyl1.west) -- (cyl2.west) (cyl1.east) -- (cyl2.east);
+  \draw (cyl1.west) -- (cyl2.west) % left side
+        (cyl1.east) -- (cyl2.east) % right side
+        (cyl1.west) arc(-180:0:0.508cm and 0.15cm); % bottom ellipse
 
   % annotating cylinder
   \draw[<->] ($(cyl2.north east)+(0,0.1)$) to[bend right=15] ($(cyl2.north west)+(0,0.1)$);

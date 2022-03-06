@@ -1,0 +1,61 @@
+name: Update PDF, PNG and SVG assets for changed TeX files
+
+on:
+  pull_request:
+    branches: [main]
+    paths: [assets/**/*.tex]
+
+jobs:
+  update-assets:
+    name: Update assets
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'janosh' # don't run on forks
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v3
+        with:
+          # get full history to include BASE_REF commit where PR branched off
+          fetch-depth: 0
+
+      - name: Get changed TeX files
+        id: diff
+        run: |
+          if [ $GITHUB_BASE_REF ]; then # Pull Request
+            BASE_REF="origin/$GITHUB_BASE_REF"
+            git fetch origin $GITHUB_BASE_REF --depth=1
+          else # Push
+            BASE_REF=${{ github.event.before }}
+            git fetch origin $BASE_REF --depth=1
+          fi
+          echo "TeX files changed between BASE_REF=$BASE_REF and SHA=$GITHUB_SHA:"
+          DIFF=$( git diff --name-only $BASE_REF $GITHUB_SHA | grep .tex$ | xargs )
+          echo "$DIFF"
+          echo "::set-output name=tex-files::$DIFF"
+
+      - name: Install compression deps
+        run: |
+          sudo apt-get install -y pdf2svg imagemagick pngquant zopfli
+          sudo snap install svgo
+          pip install pdf-compressor
+          pdf-compressor --set-api-key ${{ secrets.ILOVEPDF_PUBLIC_KEY }}
+
+      - name: Install TeX Live
+        # texlive-latex-extra is needed for package standalone
+        run: sudo apt-get install texlive latexmk texlive-latex-base texlive-latex-extra texlive-science
+
+      - name: Run scripts/render-tikz.sh
+        id: render-tikz
+        run: |
+          for texfile in ${{ steps.diff.outputs.tex-files }}; do
+            ./scripts/render-tikz.sh "$texfile"
+          done
+
+      - name: Push changes if any
+        if: steps.render-tikz.outcome == 'success'
+        run: |
+          git config user.name 'Janosh Riebesell'
+          git config user.email janosh.riebesell@gmail.com
+          git checkout ${{ github.head_ref }}
+          git add assets/**/*.{pdf,svg,png}
+          git commit -m 'update assets for ${{ steps.diff.outputs.tex-files }}'
+          git push
