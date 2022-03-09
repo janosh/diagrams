@@ -21,7 +21,6 @@ if [ "$CI" = true ]; then
   fi
 fi
 
-
 echo "Delete LaTeX auxiliary files"
 find "$dir" -type f -regex ".*\.(aux|log|fls|fdb_latexmk)$" -delete
 
@@ -45,7 +44,7 @@ fi
 
 # https://stackoverflow.com/q/52998331
 if [ "$CI" = true ]; then
-  sed -i '/disable ghostscript format types/,+6d' /etc/ImageMagick-6/policy.xml
+  sudo sed -i '/disable ghostscript format types/,+6d' /etc/ImageMagick-6/policy.xml
 fi
 echo "Converting PDF to low + high res PNG, then compressing both"
 # Requires convert, pngquant and zopflipng to be installed:

@@ -64,9 +64,9 @@
   % drawing cylinder
   \path let \p1=(b-between outgoing 1 and 2), \p2=(c-between incoming 1 and 2) in
   node[name=cyl1, minimum width={\x2-\x1}] at ($(b-outgoing boundary 1)-(0,2.5)$) {}
-  node[name=rec,shape=rectangle, minimum height=1cm, minimum width={\x2-\x1}, anchor=south]
+  node[name=rec, shape=rectangle, minimum height=1cm, minimum width={\x2-\x1}, anchor=south]
   at (cyl1) {}
-  node[name=cyl2,shape=ellipse, minimum height=.3cm, minimum width={\x2-\x1}, draw, outer sep=0]
+  node[name=cyl2, shape=ellipse, minimum height=.3cm, minimum width={\x2-\x1}, draw, outer sep=0]
   at (rec.north) {}
   ;
   \draw (cyl1.west) -- (cyl2.west) % left side

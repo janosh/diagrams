@@ -28,9 +28,9 @@ jobs:
             git fetch origin $BASE_REF --depth=1
           fi
           echo "TeX files changed between BASE_REF=$BASE_REF and SHA=$GITHUB_SHA:"
-          DIFF=$( git diff --name-only $BASE_REF $GITHUB_SHA | grep .tex$ | xargs )
-          echo "$DIFF"
-          echo "::set-output name=tex-files::$DIFF"
+          tex_files=$(git diff --name-only $BASE_REF $GITHUB_SHA | grep .tex$ | xargs)
+          echo "$tex_files"
+          echo "::set-output name=tex-files::$tex_files"
 
       - name: Install compression deps
         run: |
@@ -41,13 +41,14 @@ jobs:
 
       - name: Install TeX Live
         # texlive-latex-extra is needed for package standalone
-        run: sudo apt-get install texlive latexmk texlive-latex-base texlive-latex-extra texlive-science
+        run: sudo apt-get install texlive latexmk texlive-latex-base texlive-latex-extra
 
-      - name: Run scripts/render-tikz.sh
+      - name: Run render-tikz.sh on changed TeX files
         id: render-tikz
         run: |
-          for texfile in ${{ steps.diff.outputs.tex-files }}; do
-            ./scripts/render-tikz.sh "$texfile"
+          for tex_file in ${{ steps.diff.outputs.tex-files }}; do
+            echo "Processing $tex_file..."
+            ./scripts/render-tikz.sh "$tex_file"
           done
 
       - name: Push changes if any
