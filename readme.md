@@ -122,7 +122,7 @@ Random collection of **105** [`standalone`](https://ctan.org/pkg/standalone) [Ti
 |                         [`wyckoff-positions`](assets/wyckoff-positions)                         |                                            [`aviary.tex`](assets/aviary)                                             |
 |              ![wyckoff-positions](assets/wyckoff-positions/wyckoff-positions.png)               |                                         ![aviary](assets/aviary/aviary.png)                                          |
 |                         [`graph-isomorphism`](assets/graph-isomorphism)                         |                                    [`periodic-table.tex`](assets/periodic-table)                                     |
-|              ![graph-isomorphism](assets/graph-isomorphism/graph-isomorphism.png)               |                             ![periodic-table](assets/periodic-table/periodic-table.png)                              |
+|              ![graph-isomorphism](assets/graph-isomorphism/graph-isomorphism.png)               |            <img src="assets/periodic-table/periodic-table.png" alt="periodic-table" style="width: 500px">            |
 
 ## Scripts
 
