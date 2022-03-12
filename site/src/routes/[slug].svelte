@@ -2,6 +2,7 @@
   import CodeIcon from '@svicons/octicons/code.svelte'
   import DownloadIcon from '@svicons/octicons/download.svelte'
   import LawIcon from '@svicons/octicons/law.svelte'
+  import LinkExternal from '@svicons/octicons/link-external.svelte'
   import Prism from '../components/Prism.svelte'
   import { TexFile } from '../types'
   export let texFile: TexFile
@@ -23,6 +24,14 @@
   <p>{@html desc}</p>
 {/if}
 <img src="/assets/{slug}/{slug}-hd.png" alt={title} {width} {height} />
+
+<h2><LinkExternal height="1em" style="vertical-align: middle;" />&nbsp; Edit</h2>
+<a
+  href="https://overleaf.com/docs?snip_uri=https://tikz.netlify.app/assets/{slug}/{slug}.tex"
+  target="_blank"
+>
+  <img src="overleaf.svg" alt="Overleaf Logo" height="30" />&nbsp;Open in Overleaf
+</a>
 
 <h2><DownloadIcon height="1em" style="vertical-align: middle;" />&nbsp; Download</h2>
 
@@ -61,7 +70,7 @@
   small {
     text-align: center;
   }
-  img {
+  img[width] {
     width: 100%;
     max-width: 50em;
     background: #ffffff85;
@@ -71,6 +80,7 @@
     margin: auto;
     border-radius: 1ex;
     height: auto;
+    display: block;
   }
   a {
     background: rgba(255, 255, 255, 0.2);
@@ -83,8 +93,9 @@
     background: rgba(255, 255, 255, 0.4);
   }
   a[target='_blank'] {
-    line-height: 2em;
     font-size: 3ex;
+    display: inline-flex;
+    place-items: center;
   }
   a.back {
     font-size: 3ex;
