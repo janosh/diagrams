@@ -8,13 +8,15 @@
 
 [![Made with LaTeX](https://img.shields.io/badge/Made%20with-LaTeX-1f425f.svg)](https://latex-project.org)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/a0303431-0e3a-44f8-af97-1071ec922f53/deploy-status)](https://app.netlify.com/sites/tikz/deploys)
-![GitHub Repo Size](https://img.shields.io/github/repo-size/janosh/tikz?label=Repo+Size)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/janosh/tikz/main.svg)](https://results.pre-commit.ci/latest/github/janosh/tikz/main)
 [![Link Check](https://github.com/janosh/tikz/actions/workflows/lint.yml/badge.svg)](https://github.com/janosh/tikz/actions/workflows/lint.yml)
+[![Pull Requests Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/janosh/tikz/pulls)
 
 </h3>
 
-Random collection of **105** [`standalone`](https://ctan.org/pkg/standalone) [TikZ](https://ctan.org/pkg/pgf) images accumulated over the years. Mostly about physics and machine learning.
+Random collection of **106** [`standalone`](https://ctan.org/pkg/standalone) [TikZ](https://ctan.org/pkg/pgf) images accumulated over the years. Mostly about physics and machine learning.
+
+Have a TikZ image you'd like to share? [Submit a PR](https://github.com/janosh/tikz/pulls) and add it to this list.
 
 ## Images
 
