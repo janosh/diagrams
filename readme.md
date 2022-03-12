@@ -121,8 +121,8 @@ Random collection of **105** [`standalone`](https://ctan.org/pkg/standalone) [Ti
 |          ![harm-osc-energy-freq](assets/harm-osc-energy-freq/harm-osc-energy-freq.png)          |              ![harm-osc-energy-inv-temp](assets/harm-osc-energy-inv-temp/harm-osc-energy-inv-temp.png)               |
 |                         [`wyckoff-positions`](assets/wyckoff-positions)                         |                                            [`aviary.tex`](assets/aviary)                                             |
 |              ![wyckoff-positions](assets/wyckoff-positions/wyckoff-positions.png)               |                                         ![aviary](assets/aviary/aviary.png)                                          |
-|                         [`graph-isomorphism`](assets/graph-isomorphism)                         |                                                                                                                      |
-|              ![graph-isomorphism](assets/graph-isomorphism/graph-isomorphism.png)               |                                                                                                                      |
+|                         [`graph-isomorphism`](assets/graph-isomorphism)                         |                                    [`periodic-table.tex`](assets/periodic-table)                                     |
+|              ![graph-isomorphism](assets/graph-isomorphism/graph-isomorphism.png)               |                             ![periodic-table](assets/periodic-table/periodic-table.png)                              |
 
 ## Scripts
 

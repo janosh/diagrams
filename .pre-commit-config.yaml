@@ -33,7 +33,7 @@ repos:
         stages: [commit, commit-msg]
         exclude_types: [svg]
         exclude: yarn.lock
-        args: [--ignore-words-list, "noe,ket"]
+        args: [--ignore-words-list, "noe,ket,ba,te,nd"]
 
   - repo: https://github.com/igorshubovych/markdownlint-cli
     rev: v0.31.1
