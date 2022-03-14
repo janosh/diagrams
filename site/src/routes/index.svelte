@@ -33,16 +33,15 @@
   {texFiles.length} standalone TikZ images, mostly about physics and machine learning.
 </p>
 <p>
-  Built with <a href="https://svelte.dev">Svelte</a> by
-  <a href="https://janosh.dev">Janosh Riebesell</a>.
+  Built by <a href="https://janosh.dev">Janosh Riebesell</a>.
 </p>
 <p>
-  <MarkGithub height="16pt" style="vertical-align: -2pt;" />&nbsp; TikZ and Svelte code on
+  <MarkGithub height="16pt" style="vertical-align: -2pt;" />&nbsp; TikZ code on
   <a href="https://github.com/janosh/tikz">GitHub</a>. &ensp;
 
   <Law height="16pt" style="vertical-align: -4pt;" />&nbsp;
-  <a href="https://github.com/janosh/tikz/blob/main/license">MIT licensed</a>. Feel free
-  to reuse.
+  <a href="https://github.com/janosh/tikz/blob/main/license">MIT licensed</a>. Free to
+  reuse.
 </p>
 
 <input name="Search" bind:value={query} placeholder="Search..." />
@@ -62,7 +61,6 @@
   input {
     margin-bottom: 2em;
     font-size: 2ex;
-    border: none;
     outline: none;
     padding: 4pt 1ex;
     border-radius: 1ex;

@@ -19,13 +19,13 @@
     "check": "svelte-check"
   },
   "devDependencies": {
-    "@sveltejs/adapter-static": "^1.0.0-next.28",
-    "@sveltejs/kit": "^1.0.0-next.291",
+    "@sveltejs/adapter-static": "^1.0.0-next.29",
+    "@sveltejs/kit": "^1.0.0-next.295",
     "@svicons/fa-regular": "^0.1.8",
     "@svicons/octicons": "^0.1.8",
-    "@typescript-eslint/eslint-plugin": "^5.13.0",
-    "@typescript-eslint/parser": "^5.13.0",
-    "eslint": "^8.10.0",
+    "@typescript-eslint/eslint-plugin": "^5.14.0",
+    "@typescript-eslint/parser": "^5.14.0",
+    "eslint": "^8.11.0",
     "eslint-plugin-svelte3": "^3.4.1",
     "image-size": "^1.0.1",
     "prettier": "^2.5.1",

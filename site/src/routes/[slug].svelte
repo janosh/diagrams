@@ -1,7 +1,6 @@
 <script lang="ts">
   import CodeIcon from '@svicons/octicons/code.svelte'
   import DownloadIcon from '@svicons/octicons/download.svelte'
-  import LawIcon from '@svicons/octicons/law.svelte'
   import LinkExternal from '@svicons/octicons/link-external.svelte'
   import Prism from '../components/Prism.svelte'
   import { TexFile } from '../types'
@@ -16,6 +15,9 @@
     [`.svg`, `SVG`],
     [`.tex`, `TeX`],
   ] as const
+
+  $: snip_uri = `https://raw.githubusercontent.com/janosh/tikz/main/assets/${slug}/${slug}.tex`
+  $: overleaf_href = `https://overleaf.com/docs?snip_uri=${snip_uri}`
 </script>
 
 <a href="/" class="back" sveltekit:prefetch>&laquo; back</a>
@@ -26,10 +28,7 @@
 <img src="/assets/{slug}/{slug}-hd.png" alt={title} {width} {height} />
 
 <h2><LinkExternal height="1em" style="vertical-align: middle;" />&nbsp; Edit</h2>
-<a
-  href="https://overleaf.com/docs?snip_uri=https://tikz.netlify.app/assets/{slug}/{slug}.tex"
-  target="_blank"
->
+<a href={overleaf_href} target="_blank">
   <img src="overleaf.svg" alt="Overleaf Logo" height="30" />&nbsp;Open in Overleaf
 </a>
 
@@ -47,36 +46,26 @@
 
 <Prism {code} title="{slug}.tex" {link} />
 
-<small>
-  <LawIcon height="14pt" style="vertical-align: middle;" /> MIT License - Janosh Riebesell
-  2021
-</small>
-
 <style>
-  h1,
-  h2 {
+  :where(h1, h2) {
     border-bottom: 2px solid orange;
     max-width: 10em;
     margin: 2em auto 1em;
     padding-bottom: 8pt;
   }
   p {
-    max-width: 42em;
+    max-width: 45em;
     margin: 1em auto;
     padding: 1em;
     line-height: 3ex;
     text-align: justify;
   }
-  small {
-    text-align: center;
-  }
   img[width] {
     width: 100%;
-    max-width: 50em;
     background: #ffffff85;
     padding: 1em;
     box-sizing: border-box;
-    max-width: 40em;
+    max-width: min(850px, 90vw);
     margin: auto;
     border-radius: 1ex;
     height: auto;
