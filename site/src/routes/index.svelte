@@ -43,6 +43,10 @@
   <a href="https://github.com/janosh/tikz/blob/main/license">MIT licensed</a>. Free to
   reuse.
 </p>
+<p>
+  Have a TikZ image you'd like to share?
+  <a href="https://github.com/janosh/tikz/pulls">Submit a PR</a> and add it to this list.
+</p>
 
 <input name="Search" bind:value={query} placeholder="Search..." />
 

@@ -4,6 +4,9 @@ on:
   pull_request:
     branches: [main]
     paths: [assets/**/*.tex]
+  push:
+    branches: [main]
+    paths: [assets/**/*.tex]
 
 jobs:
   update-assets:
