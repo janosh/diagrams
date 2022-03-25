@@ -1,32 +1,30 @@
 <script lang="ts">
+  import { prerendering } from '$app/env'
   import Law from '@svicons/octicons/law.svelte'
   import MarkGithub from '@svicons/octicons/mark-github.svelte'
-  import Masonry from 'svelte-bricks'
   import GitHubCorner from 'svelte-github-corner'
   import Card from '../components/Card.svelte'
-  import IntersectionObserver from '../components/IntersectionObserver.svelte'
-  import slugs from '../slugs'
   import texFiles from '../texFiles'
 
-  let [minColWidth, maxColWidth] = [330, 500]
-  let gap = 20
   let query: string
-  let nVisible = 24
-  const onIntersect = () => (nVisible += 12)
+  let innerWidth: number
 
-  $: filtered = texFiles.filter((itm) => !query || itm.slug.includes(query.toLowerCase()))
-  $: visible = filtered.slice(0, nVisible)
+  const clamp = (num: number, min: number, max: number) =>
+    Math.min(Math.max(num, min), max)
+
+  $: filtered = texFiles.filter(
+    (itm) => !query || JSON.stringify(itm).includes(query.toLowerCase())
+  )
+  $: cols = clamp(Math.floor(innerWidth / 300), 1, 6)
 </script>
 
-<!-- placed here so SvelteKit crawls all pages -->
-<!-- https://stackoverflow.com/a/63388587 -->
-<ul style="visibility: hidden; position: absolute; max-width: 50vw; overflow: hidden;">
-  {#each slugs as slug}
-    <a href={slug}>{slug}</a>
-  {/each}
-</ul>
+<svelte:window bind:innerWidth />
 
-<GitHubCorner href="https://github.com/janosh/tikz" />
+<GitHubCorner
+  href="https://github.com/janosh/tikz"
+  --ghc-bg="white"
+  --ghc-color="var(--body-bg)"
+/>
 
 <h1>Random Tikz Collection</h1>
 <p>
@@ -50,10 +48,13 @@
 
 <input name="Search" bind:value={query} placeholder="Search..." />
 
-<Masonry items={visible} {minColWidth} {maxColWidth} {gap} let:item>
-  <Card {item} />
-</Masonry>
-<IntersectionObserver on:intersect={onIntersect} top={400} />
+{#if cols || prerendering}
+  <div style:column-count={cols} style="column-gap: 1em;">
+    {#each filtered as item (item.slug)}
+      <Card {item} style="margin-bottom: 1em; break-inside: avoid;" />
+    {/each}
+  </div>
+{/if}
 
 <style>
   h1 {
@@ -74,9 +75,5 @@
   }
   input::placeholder {
     color: white;
-  }
-  :global(:root) {
-    --ghc-bg: white;
-    --ghc-color: var(--body-bg);
   }
 </style>

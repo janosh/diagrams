@@ -7,5 +7,5 @@ export const get: RequestHandler = ({ params }) => {
   const texFile = texFiles.find((itm) => itm.slug === slug)
 
   if (texFile) return { body: { texFile } }
-  else return { fallthrough: true }
+  else return { status: 404 }
 }

@@ -1,12 +1,14 @@
 <script lang="ts">
   import { TexFile } from '../types'
+  import { fade } from 'svelte/transition'
 
   export let item: TexFile
+  export let style = ''
 
   $: ({ slug, title, desc, width, height } = item)
 </script>
 
-<a href={slug} sveltekit:prefetch>
+<a href={slug} sveltekit:prefetch transition:fade={{ duration: 200 }} {style}>
   <h2 id={slug}>{title}</h2>
   <img src="assets/{slug}/{slug}.png" alt={title} {width} {height} />
   {#if desc}
