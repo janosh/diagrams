@@ -14,7 +14,7 @@
 
 </h3>
 
-Random collection of **107** [`standalone`](https://ctan.org/pkg/standalone) [TikZ](https://ctan.org/pkg/pgf) images accumulated over the years. Mostly about physics and machine learning.
+Random collection of **106** [`standalone`](https://ctan.org/pkg/standalone) [TikZ](https://ctan.org/pkg/pgf) images accumulated over the years. Mostly about physics and machine learning.
 
 Have a TikZ image you'd like to share? [Submit a PR](https://github.com/janosh/tikz/pulls) and add it to this list.
 
@@ -124,9 +124,9 @@ Have a TikZ image you'd like to share? [Submit a PR](https://github.com/janosh/t
 |                [`wyckoff-positions`](https://tikz.netlify.app/wyckoff-positions)                |                                   [`aviary.tex`](https://tikz.netlify.app/aviary)                                    |
 |              ![wyckoff-positions](assets/wyckoff-positions/wyckoff-positions.png)               |                                         ![aviary](assets/aviary/aviary.png)                                          |
 |                [`graph-isomorphism`](https://tikz.netlify.app/graph-isomorphism)                |                           [`periodic-table.tex`](https://tikz.netlify.app/periodic-table)                            |
-|              ![graph-isomorphism](assets/graph-isomorphism/graph-isomorphism.png)               |            <img src="assets/periodic-table/periodic-table.png" alt="periodic-table" style="width: 500px">            |
-|                           [`mosfet`](https://tikz.netlify.app/mosfet)                           |                                                                                                                      |
-|                               ![mosfet](assets/mosfet/mosfet.png)                               |                                                                                                                      |
+|              ![graph-isomorphism](assets/graph-isomorphism/graph-isomorphism.png)               |                             ![periodic-table](assets/periodic-table/periodic-table.png)                              |
+|                           [`mosfet`](https://tikz.netlify.app/mosfet)                           |                          [`plate-capacitor.tex`](https://tikz.netlify.app/plate-capacitor)                           |
+|                               ![mosfet](assets/mosfet/mosfet.png)                               |                            ![plate-capacitor](assets/plate-capacitor/plate-capacitor.png)                            |
 
 ## Scripts
 

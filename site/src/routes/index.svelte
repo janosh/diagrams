@@ -42,7 +42,7 @@
   reuse.
 </p>
 <p>
-  Have a TikZ image you'd like to share?
+  Have a TikZ image you'd like to share with attribution?
   <a href="https://github.com/janosh/tikz/pulls">Submit a PR</a> and add it to this list.
 </p>
 

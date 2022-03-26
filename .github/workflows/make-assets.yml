@@ -23,19 +23,15 @@ jobs:
       - name: Get changed TeX files
         id: diff
         run: |
-          if [ $GITHUB_BASE_REF ]; then # Pull Request
-            BASE_REF="origin/$GITHUB_BASE_REF"
-            git fetch origin $GITHUB_BASE_REF --depth=1
-          else # Push
-            BASE_REF=${{ github.event.before }}
-            git fetch origin $BASE_REF --depth=1
-          fi
+          BASE_REF=${{ github.event.before }}
+          git fetch origin $BASE_REF --depth=1
           echo "TeX files changed between BASE_REF=$BASE_REF and SHA=$GITHUB_SHA:"
           tex_files=$(git diff --name-only $BASE_REF $GITHUB_SHA | grep .tex$ | xargs)
           echo "$tex_files"
           echo "::set-output name=tex-files::$tex_files"
 
       - name: Install compression deps
+        if: steps.diff.outputs.tex-files != ''
         run: |
           sudo apt-get install -y pdf2svg imagemagick pngquant zopfli
           sudo snap install svgo
@@ -43,10 +39,12 @@ jobs:
           pdf-compressor --set-api-key ${{ secrets.ILOVEPDF_PUBLIC_KEY }}
 
       - name: Install TeX Live
+        if: steps.diff.outputs.tex-files != ''
         # texlive-latex-extra is needed for package standalone
         run: sudo apt-get install texlive latexmk texlive-latex-base texlive-latex-extra
 
       - name: Run render-tikz.sh on changed TeX files
+        if: steps.diff.outputs.tex-files != ''
         id: render-tikz
         run: |
           for tex_file in ${{ steps.diff.outputs.tex-files }}; do
@@ -61,5 +59,5 @@ jobs:
           git config user.email janosh.riebesell@gmail.com
           git checkout ${{ github.head_ref }}
           git add assets/**/*.{pdf,svg,png}
-          git commit -m 'update assets for ${{ steps.diff.outputs.tex-files }}'
+          git commit -m 'assets for ${{ steps.diff.outputs.tex-files }}'
           git push
