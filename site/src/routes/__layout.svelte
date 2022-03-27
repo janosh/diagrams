@@ -1,6 +1,14 @@
 <script lang="ts">
   import LawIcon from '@svicons/octicons/law.svelte'
+  import '../app.css'
+  import GitHubCorner from 'svelte-github-corner'
 </script>
+
+<GitHubCorner
+  href="https://github.com/janosh/tikz"
+  --ghc-bg="white"
+  --ghc-color="var(--body-bg)"
+/>
 
 <slot />
 

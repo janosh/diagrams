@@ -20,11 +20,13 @@
   $: overleaf_href = `https://overleaf.com/docs?snip_uri=${snip_uri}`
 </script>
 
-<a href="/" class="back" sveltekit:prefetch>&laquo; back</a>
+<a href="/" sveltekit:prefetch>&laquo; back</a>
 <h1>{title}</h1>
+
 {#if desc}
   <p>{@html desc}</p>
 {/if}
+
 <img src="/assets/{slug}/{slug}-hd.png" alt={title} {width} {height} />
 
 <h2><LinkExternal height="1em" style="vertical-align: middle;" />&nbsp; Edit</h2>
@@ -47,6 +49,9 @@
 <Prism {code} title="{slug}.tex" {link} />
 
 <style>
+  h1 {
+    font-size: 3em;
+  }
   :where(h1, h2) {
     border-bottom: 2px solid orange;
     max-width: 10em;
@@ -58,7 +63,6 @@
     margin: 1em auto;
     padding: 1em;
     line-height: 3ex;
-    text-align: justify;
   }
   img[width] {
     width: 100%;
@@ -72,22 +76,21 @@
     display: block;
   }
   a {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
     padding: 4pt 1ex;
     border-radius: 4pt;
     margin: 2pt;
     transition: color 0.3s, background-color 0.3s;
+    font-size: 16pt;
   }
   a:hover {
-    background: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.2);
   }
   a[target='_blank'] {
-    font-size: 3ex;
     display: inline-flex;
     place-items: center;
   }
-  a.back {
-    font-size: 3ex;
+  a[href='/'] {
     position: absolute;
     top: 2em;
     left: 2em;

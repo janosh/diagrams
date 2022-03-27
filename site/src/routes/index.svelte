@@ -2,7 +2,6 @@
   import { prerendering } from '$app/env'
   import Law from '@svicons/octicons/law.svelte'
   import MarkGithub from '@svicons/octicons/mark-github.svelte'
-  import GitHubCorner from 'svelte-github-corner'
   import Card from '../components/Card.svelte'
   import texFiles from '../texFiles'
 
@@ -19,12 +18,6 @@
 </script>
 
 <svelte:window bind:innerWidth />
-
-<GitHubCorner
-  href="https://github.com/janosh/tikz"
-  --ghc-bg="white"
-  --ghc-color="var(--body-bg)"
-/>
 
 <h1>Random Tikz Collection</h1>
 <p>
