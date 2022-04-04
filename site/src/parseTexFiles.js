@@ -1,4 +1,5 @@
 import fs from 'fs'
+import glob from 'glob'
 import sizeOf from 'image-size'
 
 const assetDir = `../assets`
@@ -29,22 +30,13 @@ const urlRegex =
 const linkify = (text) =>
   text.replace(urlRegex, (url) => `<a href="` + url + `">` + url + `</a>`)
 
-const fileHasExtension = (fileExtensions) => (filename) => {
-  // return if file ends in one of the specified extensions
-  return fileExtensions.some((ext) => filename.endsWith(ext))
-}
-
 const parsedFiles = slugs.map((slug) => {
-  const dirname = `${assetDir}/${slug}`
+  const downloads = glob.sync(`${assetDir}/${slug}/*.{png, pdf, svg, tex}`)
 
-  const downloads = fs
-    .readdirSync(dirname)
-    .filter(fileHasExtension([`.png`, `.pdf`, `.svg`, `.tex`]))
-
-  const texFile = fs.readFileSync(`${dirname}/${slug}.tex`, `utf-8`)
+  const texFile = fs.readFileSync(`${assetDir}/${slug}/${slug}.tex`, `utf-8`)
   const [desc, tikzCode] = texFile.split(`\\documentclass`)
 
-  const { width, height } = sizeOf(`${dirname}/${slug}.png`)
+  const { width, height } = sizeOf(`${assetDir}/${slug}/${slug}.png`)
 
   // construct TeX file attributes
   return {

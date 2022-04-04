@@ -1,10 +1,11 @@
-<script>
+<script lang="ts">
   import MarkGithub from '@svicons/octicons/mark-github.svelte'
-
   import CopyButton from './CopyButton.svelte'
   import { onMount, afterUpdate } from 'svelte'
 
-  export let code, link, title
+  export let code: string
+  export let link: string
+  export let title: string
 
   let [linkTitle, url] = (link ?? ``).split(`||`, 2)
 

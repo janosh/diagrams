@@ -1,7 +1,7 @@
 ci:
   autoupdate_schedule: quarterly
 
-default_stages: [commit]
+default_install_hook_types: [pre-commit, commit-msg]
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -20,6 +20,7 @@ repos:
     rev: v2.5.1
     hooks:
       - id: prettier
+        stages: [commit]
         args: [--write] # edit files in-place
         additional_dependencies:
           - prettier
@@ -43,3 +44,17 @@ repos:
         # MD033: no inline HTML
         # MD041: first line in a file should be a top-level heading
         args: [--disable, MD013, MD033, MD041, "--"]
+
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v8.6.0
+    hooks:
+      - id: eslint
+        types: [file]
+        files: \.(svelte|js|ts)$
+        additional_dependencies:
+          - eslint
+          - svelte
+          - typescript
+          - eslint-plugin-svelte3
+          - "@typescript-eslint/eslint-plugin"
+          - "@typescript-eslint/parser"

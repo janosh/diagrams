@@ -4,16 +4,19 @@
   import MarkGithub from '@svicons/octicons/mark-github.svelte'
   import Card from '../components/Card.svelte'
   import texFiles from '../texFiles'
-
-  let query: string
+  import { search } from '../stores'
   let innerWidth: number
 
   const clamp = (num: number, min: number, max: number) =>
     Math.min(Math.max(num, min), max)
 
-  $: filtered = texFiles.filter(
-    (itm) => !query || JSON.stringify(itm).includes(query.toLowerCase())
-  )
+  $: searchTerms = $search?.toLowerCase().split(` `)
+
+  $: filtered = texFiles.filter((itm) => {
+    if (!$search) return true
+    return searchTerms?.every((term) => JSON.stringify(itm).toLowerCase().includes(term))
+  })
+
   $: cols = clamp(Math.floor(innerWidth / 300), 1, 6)
 </script>
 
@@ -39,7 +42,7 @@
   <a href="https://github.com/janosh/tikz/pulls">Submit a PR</a> and add it to this list.
 </p>
 
-<input name="Search" bind:value={query} placeholder="Search..." />
+<input name="Search" bind:value={$search} placeholder="Search..." />
 
 {#if cols || prerendering}
   <div style:column-count={cols} style="column-gap: 1em;">
