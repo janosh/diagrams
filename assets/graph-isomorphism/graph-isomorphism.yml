@@ -1,0 +1,12 @@
+title: Graph Isomorphism
+tags:
+  - math
+  - symmetry
+  - graphs
+description: |
+  Graphs can look differently but be identical. The only thing that matters are
+  which nodes are connected to which other nodes. If there exists an
+  edge-preserving bijection between two graphs, in other words if there exists a
+  function that maps nodes from one graph onto those of another such that the
+  set of connections for each node remain identical, the two graph are said to
+  be isomorphic.

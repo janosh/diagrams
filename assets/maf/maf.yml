@@ -1,0 +1,10 @@
+title: MAF
+tags:
+  - machine learning
+  - generative modeling
+  - probability
+  - statistics
+description: |
+  Illustration of the slow (sequential) forward pass of a Masked Autoregressive
+  Flow (MAF) layer as introduced in [arxiv:1705.07057](https://arxiv.org/abs/1705.07057). Inspired
+  by https://blog.evjang.com/2018/01/nf2.html.

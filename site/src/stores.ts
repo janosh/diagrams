@@ -20,4 +20,36 @@ function url_param_store(name: string, initialValue: string | null) {
   }
 }
 
+function session_store<T>(name: string, initialValue: T) {
+  if (typeof sessionStorage !== `undefined` && sessionStorage[name]) {
+    initialValue = JSON.parse(sessionStorage[name])
+  }
+
+  const { subscribe, set } = writable(initialValue)
+
+  return {
+    subscribe,
+    set: (val: T) => {
+      if (val !== undefined && typeof sessionStorage !== `undefined`) {
+        sessionStorage[name] = JSON.stringify(val)
+      }
+      set(val)
+    },
+  }
+}
+
 export const search = url_param_store(`search`, ``)
+
+export const sortBy = session_store<{ label: string; value: string }[]>(
+  `sortBy`,
+  []
+)
+
+export const tag_filter_mode = session_store<`and` | `or`>(
+  `tag-filter-mode`,
+  `or`
+)
+
+export const filter_tags = session_store<
+  { label: string; value: string; count: number }[]
+>(`filter-tags`, [])

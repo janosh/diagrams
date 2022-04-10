@@ -1,0 +1,9 @@
+title: Bloch Sphere
+tags:
+  - physics
+  - quantum mechanics
+description: |
+  A Bloch sphere of radius |a| = 1 contains all possible states of a two-state
+  quantum system (qubit). Each Bloch vector fully determines a spin-1/2 density
+  matrix. Used in Exercise Sheet 10 of Statistical Physics by Manfred Salmhofer
+  (2016), available at <https://janosh.dev/physics/statistical-physics>.

@@ -1,0 +1,11 @@
+title: Wall
+tags:
+  - physics
+  - thermodynamics
+  - undergrad
+  - exercise
+description: |
+  Exercise illustration: Compute the pressure of an ideal gas in three
+  dimensions upon a wall at $x = 0$ that attracts molecules at large distance
+  and repels them at smaller distance. Let the force be given by the potential
+  $U(x) = -A \, e^{-\alpha x} + B \, e^{-2 \alpha x}$, with $A,B > 0$.

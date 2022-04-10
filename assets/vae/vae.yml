@@ -1,0 +1,10 @@
+title: VAE
+tags:
+  - machine learning
+  - generative modeling
+  - Bayesian
+  - neural networks
+  - probability
+description: >
+  Variational autoencoder architecture. The earliest type of generative machine learning model.
+  Inspired by <https://towardsdatascience.com/intuitively-understanding-variational-autoencoders-1bfe67eb5daf>.

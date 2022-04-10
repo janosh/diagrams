@@ -1,10 +1,10 @@
 export type TexFile = {
-  id: string
   title: string
   slug: string
   width: number
   height: number
   downloads: string[]
-  desc: string
+  tags: string[]
+  description: string | null
   code: string
 }

@@ -1,0 +1,8 @@
+title: Bose Einstein Distribution
+tags:
+  - physics
+  - statistical mechanics
+description: |
+  Illustrating the change in the real part of the Bose-Einstein distribution,
+  i.e. the average occupancy of the ground state of a bosonic system, from
+  doubling the temperature. Pulled from https://arxiv.org/a[arxiv:1712.09863](https://arxiv.org/abs/1712.09863)

@@ -1,0 +1,13 @@
+title: Wyckoff Positions
+tags:
+  - physics
+  - solid state physics
+  - symmetries
+  - group theory
+description: |
+  2D toy crystal with three occupied Wyckoff positions. The shaded areas
+  illustrate the region of the unit cell the relevant atoms are constrained to
+  lie in by specifying an anonymized Wyckoff position for that atom.
+  Reproduction of fig. 2 from "Wyckoff Set Regression for Materials Discovery"
+  by Rhys Goodall, adapted from
+  https://pyxtal.readthedocs.io/en/latest/Background.html#wyckoff-positions.

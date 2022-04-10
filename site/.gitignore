@@ -5,7 +5,7 @@ node_modules
 .svelte-kit
 build
 src/slugs.ts
-src/texFiles.ts
+src/tikz-figures.ts
 
 # deploy config
 .netlify
