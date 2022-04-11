@@ -4,13 +4,4 @@ tags:
   - solid state physics
   - thermodynamics
 description: |
-  Thermoelectric figure of merit $zT$ vs carrier concentration $n$ for
-  \ch{Bi2Te3} based on empirical data in ref.~\cite{rowe_alpha-sigma_1995}.
-  Tuning $n$ for optimal $zT$ involves a compromise between thermal conductivity
-  $\kappa$, Seebeck coefficient $S$ and electrical conductivity $\sigma$.
-  Increasing the electrical conductivity $\sigma$ not only produces an increase
-  in the electronic thermal conductivity $\kappa_\text{el}$ but also usually
-  decreases the Seebeck coefficient $S$. This makes optimal $\zT$ difficult to
-  achieve. Plot scales are $\kappa/\si{\watt\per\meter\per\kelvin} \in [0,10]$,
-  $S/\si{\micro\volt\per\kelvin} \in [0,500]$,
-  $\sigma/\si{\per\ohm\per\centi\meter} \in [0,5000]$.
+  Thermoelectric figure of merit $zT$ vs carrier concentration $n$ for Bi2Te3 based on empirical data in [$\alpha - \ln \sigma$ plot as a thermoelectric material performance indicator](https://link.springer.com/content/pdf/10.1007/BF00586157.pdf). Tuning $n$ for optimal $zT$ involves a compromise between thermal conductivity $\kappa$, Seebeck coefficient $S$ and electrical conductivity $\sigma$. Increasing the electrical conductivity $\sigma$ not only produces an increase in the electronic thermal conductivity $\kappa_\text{el}$ but also usually decreases the Seebeck coefficient $S$. This makes optimal $zT$ difficult to achieve. Plot scales are $\kappa [W / m K] \in [0,10]$, $S [mV] \in [0,500]$, $\sigma [1/(\Omega cm)] \in [0,5000]$.

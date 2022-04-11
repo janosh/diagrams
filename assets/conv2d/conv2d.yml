@@ -4,5 +4,4 @@ tags:
   - neural networks
   - computer vision
 description: |
-  Convolution operator. Adapted from
-  https://github.com/PetarV-/TikZ/tree/master/2D%20Convolution
+  Convolution operator. Adapted from [https://github.com/PetarV-/TikZ](https://github.com/PetarV-/TikZ/tree/master/2D%20Convolution).

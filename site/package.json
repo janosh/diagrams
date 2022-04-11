@@ -13,9 +13,9 @@
     "dev": "svelte-kit dev",
     "preview": "svelte-kit preview",
     "serve": "yarn build && yarn preview",
-    "prebuild": "rm -rf ./static/assets",
-    "predev": "node src/parseTexFiles.js && yarn symlinkAssets",
-    "symlinkAssets": "cd static && ln -fs ../../assets . && cd -",
+    "prebuild": "node src/parse-assets.js",
+    "predev": "node src/parse-assets.js && yarn symlink",
+    "symlink": "cd static && ln -fs ../../assets . && cd -",
     "check": "svelte-check"
   },
   "devDependencies": {

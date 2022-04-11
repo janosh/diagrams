@@ -9,21 +9,22 @@ import remarkParse from 'remark-parse'
 import remarkRehype from 'remark-rehype'
 import { unified } from 'unified'
 
-const assetDir = `../assets`
+const asset_dir = `../assets`
 
 const slugs = fs
-  .readdirSync(assetDir)
+  .readdirSync(asset_dir)
   .filter((filename) => !filename.startsWith(`.`)) // remove hidden system files
 
 const tikz_figures = slugs.map((slug) => {
-  const downloads = glob.sync(`${assetDir}/${slug}/*.{png, pdf, svg, tex}`)
+  const fig_dir = `${asset_dir}/${slug}/${slug}`
 
-  const code = fs.readFileSync(`${assetDir}/${slug}/${slug}.tex`, `utf-8`)
+  const downloads = glob.sync(`${fig_dir}.{png,pdf,svg,tex}`)
 
-  const { width, height } = sizeOf(`${assetDir}/${slug}/${slug}.png`)
+  const code = fs.readFileSync(`${fig_dir}.tex`, `utf8`)
 
+  const { width, height } = sizeOf(`${fig_dir}.png`)
   let { title, tags, description } = yaml.load(
-    fs.readFileSync(`${assetDir}/${slug}/${slug}.yml`)
+    fs.readFileSync(`${fig_dir}.yml`)
   )
 
   if (description) {

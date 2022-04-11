@@ -4,11 +4,4 @@ tags:
   - statistical mechanics
   - Matsubara
 description: |
-  Surface plot of the Bose-Einstein distribution over the complex plane. This
-  plot shows an important feature of the Matsubara formalism developed for QFT
-  at non-zero temperature. It's a method to calculate expectation values of
-  operators in a canonical ensemble evolved by an imaginary time. In momentum
-  space, this leads to the replacement of continuous frequencies by discrete
-  imaginary (Matsubara) frequencies. Away from the imaginary axis, the
-  distribution becomes approximately flat, particularly at sufficiently low
-  temperatures. Pulled from [arxiv:1712.09863](https://arxiv.org/abs/1712.09863).
+  Surface plot of the Bose-Einstein distribution over the complex plane. This plot shows an important feature of the Matsubara formalism developed for QFT at non-zero temperature. It's a method to calculate expectation values of operators in a canonical ensemble evolved by an imaginary time. In momentum space, this leads to the replacement of continuous frequencies by discrete imaginary (Matsubara) frequencies. Away from the imaginary axis, the distribution becomes approximately flat, particularly at sufficiently low temperatures. Pulled from [arxiv:1712.09863](https://arxiv.org/abs/1712.09863).

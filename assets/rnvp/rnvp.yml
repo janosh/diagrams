@@ -5,6 +5,4 @@ tags:
   - generative modeling
   - normalizing flows
 description: |
-  Illustration of the real-valued non-volume preserving (RNVP) affine coupling
-  layer as introduced in [arxiv:1605.08803](https://arxiv.org/abs/1605.08803). Inspired by
-  https://blog.evjang.com/2018/01/nf2.html.
+  Illustration of the real-valued non-volume preserving (RNVP) affine coupling layer as introduced in [arxiv:1605.08803](https://arxiv.org/abs/1605.08803). Inspired by <https://blog.evjang.com/2018/01/nf2.html>.

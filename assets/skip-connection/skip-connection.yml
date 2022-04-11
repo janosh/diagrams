@@ -3,5 +3,4 @@ tags:
   - machine learning
   - neural networks
 description: |
-  Illustration of skip connection in a residual block. Inspired by the ResNet
-  paper. [arxiv:1512.03385](https://arxiv.org/abs/1512.03385)
+  Illustration of skip connection in a residual block. Inspired by the ResNet paper. [arxiv:1512.03385](https://arxiv.org/abs/1512.03385)

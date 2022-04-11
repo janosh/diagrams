@@ -3,6 +3,4 @@ tags:
   - machine learning
   - graphs
 description: |
-  Illustrating the attention mechanism from [arxiv:1706.03762](https://arxiv.org/abs/1706.03762).
-  Adapted from Petar Veličković:
-  https://github.com/PetarV-/TikZ/tree/master/Self-attention.
+  Illustrating the attention mechanism from [arxiv:1706.03762](https://arxiv.org/abs/1706.03762). Adapted from [github.com/PetarV-/TikZ](https://github.com/PetarV-/TikZ/tree/master/Self-attention).

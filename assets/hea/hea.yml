@@ -4,8 +4,4 @@ tags:
   - entropy
   - catalysis
 description: |
-  Cartoon of the AlCoCrFeNi high entropy alloy (HEA) with body-centered cubic
-  (BCC) lattice. HEAs also come in face-centered cubic (FCC) and (less
-  frequently) hexagonal close packing (HCP). BCC HEAs typically have high yield
-  strength and low ductility, vice versa for FCC HEAs.
-  https://wikipedia.org/wiki/High_entropy_alloys
+  Cartoon of the AlCoCrFeNi high entropy alloy (HEA) with body-centered cubic (BCC) lattice. HEAs also come in face-centered cubic (FCC) and (less frequently) hexagonal close packing (HCP). BCC HEAs typically have high yield strength and low ductility, vice versa for FCC HEAs. [Wiki article](https://wikipedia.org/wiki/High_entropy_alloys).

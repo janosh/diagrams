@@ -82,6 +82,10 @@
   {/if}
 </div>
 
+{#if $search?.length || $filter_tags?.length}
+  <p>{filtered_figs.length} match{filtered_figs.length != 1 ? `es` : ``}</p>
+{/if}
+
 {#if cols || prerendering}
   <div style:column-count={cols} style="column-gap: 1em;">
     {#each filtered_figs as item (item.slug)}
@@ -124,7 +128,6 @@
     --sms-options-bg: #0f0422;
     --sms-border: 1px dashed gray;
     --sms-li-active-bg: rgba(255, 255, 255, 0.15);
-    --sms-placeholder-color: gray;
   }
   :global(div.multiselect) {
     width: 18em;

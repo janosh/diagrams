@@ -3,5 +3,5 @@ tags:
   - machine learning
   - generative modeling
   - probability
-description: >
+description: |
   A chain of bijections $f = f_1 \circ \dots \circ f_k$ constituting a normalizing flow which step by step transforms a simple distribution $p_0(\vec z_0)$ into a complex one $p_k(\vec z_k)$. The bijections are trained to fit $p_k(\vec z_k)$ to some target distribution $p_x(\vec x)$. Inspired by [Lilian Weng](https://lilianweng.github.io/lil-log/2018/10/13/flow-based-deep-generative-models).
