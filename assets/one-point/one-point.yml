@@ -3,4 +3,9 @@ tags:
   - physics
   - quantum field theory
   - renormalization
-description: null
+description:
+  This Feynman diagram corresponds to the integrand in this expression for
+
+  $$
+  \displaystyle \partial_t \Gamma_{k,a}^{(1)}(q) = -\frac{1}{2} \sum_{\substack{i,j\\k,l}}^N \int_{\substack{p_1,p_2\\p_3^\prime,p_4^\prime}} \frac{\partial_t R_{k,ij}(p_1,p_2)}{\Gamma_{k,jk}^{(2)}(p_2,p_3) + R_{k,jk}(p_2,p_3)} \, \frac{\Gamma_{k,akl}^{(3)}(q,p_3,p_4)}{\Gamma_{k,li}^{(2)}(p_4,p_1) + R_{k,li}(p_4,p_1)}.
+  $$

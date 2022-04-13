@@ -14,7 +14,9 @@
 
 </h3>
 
-Random collection of **106** [`standalone`](https://ctan.org/pkg/standalone) [TikZ](https://ctan.org/pkg/pgf) images accumulated over the years. Mostly about physics and machine learning.
+Random collection of **106** `standalone` TikZ images. Mostly about physics and machine learning.
+
+Check out [tikz.netlify.app](https://tikz.netlify.app) to search, sort, export to Overleaf and download figures in this collection.
 
 Have a TikZ image you'd like to share? [Submit a PR](https://github.com/janosh/tikz/pulls) and add it to this list.
 

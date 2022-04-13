@@ -1,0 +1,6 @@
+title: Feynman Diagram Propagator Loop
+tags:
+  - physics
+  - quantum field theory
+description: |
+  This Feynman diagram contains two propagators forming a loop carrying the external energy $q_0$. $m_{1,2}$ denote the masses of the propagators and $\gamma_{1,2}$ their decay width which, for an expansion in Minkowski space, are non-zero only around a real and positive on-shell frequency $p_0 > 0$.

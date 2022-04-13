@@ -1,0 +1,6 @@
+title: Matsubara Contour 2
+tags:
+  - physics
+  - quantum field theory
+  - Matsubara
+description: Deformation of contour $C$ in [Matsubara contour 1](https://tikz.netlify.app/matsubara-contour-1) into a circle followed by taking the radius to infinity. This will enclose the poles of $(-p_0^2 + x^2)^{-1}$ scattered throughout the complex plane. Their contribution is removed again by enclosing them in clockwise contours.

@@ -1,0 +1,7 @@
+title: Concave Functions
+tags:
+  - math
+  - physics
+  - statistical physics
+description: |
+  $x \ln(x)$ is convex and $x - 1$ is its tangent, so $x \ln(x) \geq x - 1 \enskip \forall x$.

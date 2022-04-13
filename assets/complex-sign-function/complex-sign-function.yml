@@ -1,0 +1,7 @@
+title: Complex Sign Function
+tags:
+  - physics
+  - quantum field theory
+  - Matsubara
+description: |
+  3d surface plot of the complex sign function $s(p_0) = \sign(\Re p_0 \, \Im p_0)$ over the complex plane. Used in the Matsubara summation of thermal quantum field theory to split contour integrals in the complex plane into two parts, the first being branch-cut free and the second evident branch cut structure.
