@@ -40,16 +40,12 @@ function session_store<T>(name: string, initialValue: T) {
 
 export const search = url_param_store(`search`, ``)
 
-export const sortBy = session_store<{ label: string; value: string }[]>(
-  `sortBy`,
-  []
-)
-
 export const tag_filter_mode = session_store<`and` | `or`>(
   `tag-filter-mode`,
   `or`
 )
 
-export const filter_tags = session_store<
-  { label: string; value: string; count: number }[]
->(`filter-tags`, [])
+export const filter_tags = session_store<{ label: string; count: number }[]>(
+  `filter-tags`,
+  []
+)

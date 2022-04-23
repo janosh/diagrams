@@ -2,11 +2,11 @@
   import { prerendering } from '$app/env'
   import Law from '@svicons/octicons/law.svelte'
   import MarkGithub from '@svicons/octicons/mark-github.svelte'
+  import MultiSelect from 'svelte-multiselect'
   import Card from '../components/Card.svelte'
   import RadioButtons from '../components/RadioButtons.svelte'
+  import { filter_tags, search, tag_filter_mode } from '../stores'
   import tikz_figs from '../tikz-figures'
-  import { filter_tags, tag_filter_mode, search } from '../stores'
-  import MultiSelect from 'svelte-multiselect'
 
   let innerWidth: number
 
@@ -123,14 +123,10 @@
 
     --sms-bg: black;
     --sms-min-width: 18em;
-    --sms-max-width: 22em;
+    --sms-max-width: 26em;
     --sms-selected-bg: rgba(255, 255, 255, 0.15);
     --sms-options-bg: #0f0422;
     --sms-border: 1px dashed gray;
     --sms-li-active-bg: rgba(255, 255, 255, 0.15);
-  }
-  :global(div.multiselect) {
-    width: 18em;
-    text-align: initial;
   }
 </style>

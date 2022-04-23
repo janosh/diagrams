@@ -1,7 +1,7 @@
 <script lang="ts">
   import { dev } from '$app/env'
-  import { TexFile } from '../types'
   import { fade } from 'svelte/transition'
+  import { TexFile } from '../types'
   import Tags from './Tags.svelte'
 
   export let item: TexFile
