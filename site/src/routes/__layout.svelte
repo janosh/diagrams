@@ -1,6 +1,6 @@
 <script lang="ts">
-  import LawIcon from '@svicons/octicons/law.svelte'
   import GitHubCorner from 'svelte-github-corner'
+  import LawIcon from '~icons/octicon/law'
   import '../app.css'
 </script>
 

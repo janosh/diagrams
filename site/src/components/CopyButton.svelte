@@ -1,5 +1,5 @@
 <script lang="ts">
-  import CopyIcon from '@svicons/fa-regular/copy.svelte'
+  import CopyIcon from '~icons/octicon/copy-16'
 
   export let content: string
 

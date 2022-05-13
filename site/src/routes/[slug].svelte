@@ -1,8 +1,8 @@
 <script lang="ts">
   import { dev } from '$app/env'
-  import CodeIcon from '@svicons/octicons/code.svelte'
-  import DownloadIcon from '@svicons/octicons/download.svelte'
-  import LinkExternal from '@svicons/octicons/link-external.svelte'
+  import CodeIcon from '~icons/octicon/code'
+  import DownloadIcon from '~icons/octicon/download-16'
+  import LinkExternal from '~icons/octicon/link-external'
   import Prism from '../components/Prism.svelte'
   import Tags from '../components/Tags.svelte'
   import { TexFile } from '../types'

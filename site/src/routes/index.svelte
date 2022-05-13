@@ -1,8 +1,8 @@
 <script lang="ts">
   import { prerendering } from '$app/env'
-  import Law from '@svicons/octicons/law.svelte'
-  import MarkGithub from '@svicons/octicons/mark-github.svelte'
   import MultiSelect from 'svelte-multiselect'
+  import Law from '~icons/octicon/law'
+  import MarkGithub from '~icons/octicon/mark-github'
   import Card from '../components/Card.svelte'
   import RadioButtons from '../components/RadioButtons.svelte'
   import { filter_tags, search, tag_filter_mode } from '../stores'

@@ -138,7 +138,7 @@ Files in [`/scripts`](scripts) render and compress the standalone `.tex` files i
 - PDF
 - SVG
 
-To run them, you need the following dependencies:
+To run the scripts requires the following dependencies:
 
 - [`pdf-compressor`](https://github.com/janosh/pdf-compressor) (`pip install pdf-compressor`)
 - [`gs` (GhostScript)](https://ghostscript.com) (optional, worse compression but needs no API key so less setup than `pdf-compressor`)
@@ -147,7 +147,7 @@ To run them, you need the following dependencies:
 - [`pngquant`](https://github.com/kornelski/pngquant) (`brew install pngquant`)
 - [`zopflipng`](https://github.com/google/zopfli) (`brew install zopfli`)
 
-To run `pdf-compressor` directly or to use it as part of the [`render-tikz.sh`](scripts/render-tikz.sh) pipeline, you need a free public API key from <https://developer.ilovepdf.com>. Add it to `pdf-compressor`:
+To run `pdf-compressor` directly or to use it as part of the [`render-tikz.sh`](scripts/render-tikz.sh) pipeline, you need a free public API key from <https://developer.ilovepdf.com>. Pass it to `pdf-compressor` with:
 
 ```sh
 pdf-compressor --set-api-key project_public_7c854a9db0...

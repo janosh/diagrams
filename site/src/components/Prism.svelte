@@ -1,6 +1,6 @@
 <script lang="ts">
-  import MarkGithub from '@svicons/octicons/mark-github.svelte'
   import { afterUpdate, onMount } from 'svelte'
+  import MarkGithub from '~icons/octicon/mark-github'
   import CopyButton from './CopyButton.svelte'
 
   export let code: string
