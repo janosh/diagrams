@@ -14,7 +14,7 @@
 
 </h3>
 
-Random collection of **106** `standalone` TikZ images. Mostly about physics and machine learning.
+Random collection of **107** `standalone` TikZ images. Mostly about physics and machine learning.
 
 Check out [tikz.netlify.app](https://tikz.netlify.app) to search, sort, export to Overleaf and download figures in this collection.
 
@@ -129,6 +129,8 @@ Have a TikZ image you'd like to share? [Submit a PR](https://github.com/janosh/t
 |                      ![graph-isomorphism](assets/graph-isomorphism/graph-isomorphism.png)                      |                             ![periodic-table](assets/periodic-table/periodic-table.png)                              |
 |                                  [`mosfet`](https://tikz.netlify.app/mosfet)                                   |                          [`plate-capacitor.tex`](https://tikz.netlify.app/plate-capacitor)                           |
 |                                      ![mosfet](assets/mosfet/mosfet.png)                                       |                            ![plate-capacitor](assets/plate-capacitor/plate-capacitor.png)                            |
+|                   [`single-head-attention`](https://tikz.netlify.app/single-head-attention)                    |                                                                                                                      |
+|                ![single-head-attention](assets/single-head-attention/single-head-attention.png)                |                                                                                                                      |
 
 ## Scripts
 
