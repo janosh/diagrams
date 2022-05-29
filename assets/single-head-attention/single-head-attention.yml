@@ -1,0 +1,11 @@
+title: Single-head attention
+creator: Francois Fleuret
+creator_url: https://fleuret.org/francois
+url: https://twitter.com/francoisfleuret/status/1529744066086424577
+tags:
+  - machine learning
+  - attention mechanism
+  - attention is all you need
+  - transformer
+description: |
+  Flow diagram of single-head attention illustrating the equation $\displaystyle \mathrm{Attention}(Q, K, V) = \mathrm{softmax}_\text{row} \left( \frac{Q K^\top}{\sqrt{d}} \right) V$ with border colors to indicate tensor dimensions.

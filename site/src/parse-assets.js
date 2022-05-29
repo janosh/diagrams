@@ -18,27 +18,27 @@ const slugs = fs
 const tikz_figures = slugs.map((slug) => {
   const fig_dir = `${asset_dir}/${slug}/${slug}`
 
-  const downloads = glob.sync(`${fig_dir}.{png,pdf,svg,tex}`)
+  const downloads = glob
+    .sync(`${fig_dir}*.{png,pdf,svg,tex}`)
+    .map((str) => str.split(`/`).at(-1))
 
   const code = fs.readFileSync(`${fig_dir}.tex`, `utf8`)
 
   const { width, height } = sizeOf(`${fig_dir}.png`)
-  let { title, tags, description } = yaml.load(
-    fs.readFileSync(`${fig_dir}.yml`)
-  )
+  const metadata = yaml.load(fs.readFileSync(`${fig_dir}.yml`))
 
-  if (description) {
-    description = unified()
+  if (metadata.description) {
+    metadata.description = unified()
       .use(remarkParse)
       .use(remarkMath)
       .use(remarkRehype)
       .use(rehypeKatex)
       .use(rehypeStringify)
-      .processSync(description).value
+      .processSync(metadata.description).value
   }
 
   // assemble TeX file attributes
-  return { title, slug, width, height, downloads, tags, description, code }
+  return { ...metadata, slug, width, height, downloads, code }
 })
 
 fs.writeFileSync(

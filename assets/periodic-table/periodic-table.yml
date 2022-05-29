@@ -1,6 +1,7 @@
 title: Periodic Table
+creator: Ivan Griffin
+url: https://texample.net/tikz/examples/periodic-table-of-chemical-elements
 tags:
   - physics
   - chemistry
-description: |
-  Adapted from <https://texample.net/tikz/examples/periodic-table-of-chemical-elements>. All Credit to Ivan Griffin.
+description: The periodic table of elements, a graphic formulation of the periodic dependence of elemental properties on their atomic numbers. The table is divided into four roughly rectangular areas called blocks. Rows are called periods, columns are groups. Elements from the same group show similar chemical characteristics. Trends run through the periodic table, with nonmetallic character (keeping their own electrons) increasing from left to right across a period, and from down to up across a group, and metallic character (surrendering electrons to other atoms) increasing in the opposite direction.
