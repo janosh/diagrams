@@ -1,7 +1,11 @@
 title: Conv2d
+creator: Petar Veličković
+creator_url: http://petar-v.com
+url: https://github.com/PetarV-/TikZ/tree/86aee049f5355d77c598b936399e42caf8941e60/2D%20Convolution
+date: 2020-10-08
 tags:
   - machine learning
   - neural networks
   - computer vision
 description: |
-  Convolution operator. Adapted from [https://github.com/PetarV-/TikZ](https://github.com/PetarV-/TikZ/tree/master/2D%20Convolution).
+  A two-dimensional convolution operator slides the kernel matrix across the target image and records elementwise products. Makes heavy use of the matrix environment in TikZ.

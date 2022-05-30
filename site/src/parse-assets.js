@@ -12,8 +12,9 @@ import { unified } from 'unified'
 const asset_dir = `../assets`
 
 const slugs = fs
-  .readdirSync(asset_dir)
-  .filter((filename) => !filename.startsWith(`.`)) // remove hidden system files
+  .readdirSync(asset_dir, { withFileTypes: true })
+  .filter((itm) => itm.isDirectory())
+  .map((dir) => dir.name) // remove hidden system files
 
 const tikz_figures = slugs.map((slug) => {
   const fig_dir = `${asset_dir}/${slug}/${slug}`

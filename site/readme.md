@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="static/favicon.svg" alt="TikZ" height=150>
+  <img src="../assets/favicon.svg" alt="TikZ" height=150>
 </p>
 
 # Random TikZ Collection

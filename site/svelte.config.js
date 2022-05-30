@@ -10,6 +10,10 @@ export default {
 
     prerender: { default: true },
 
+    files: {
+      assets: `../assets`,
+    },
+
     vite: {
       plugins: [Icons({ compiler: `svelte`, autoInstall: true })],
     },

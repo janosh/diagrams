@@ -1,6 +1,6 @@
 <h1 align="center">
   <a href="https://tikz.netlify.app">
-    <img src="site/static/favicon.svg" alt="TikZ" height=150>
+    <img src="assets/favicon.svg" alt="TikZ" height=150>
   </a>
 </h1>
 

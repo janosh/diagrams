@@ -45,7 +45,11 @@
 
 <svelte:window bind:innerWidth />
 
-<h1>Random Tikz Collection</h1>
+<h1>
+  Random
+  <img src="favicon.svg" alt="Logo" style="height: 2em; vertical-align: middle;" />
+  Collection
+</h1>
 <p>
   {tikz_figs.length} standalone TikZ images, mostly about physics and machine learning.
 </p>

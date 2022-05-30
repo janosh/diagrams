@@ -7,9 +7,10 @@
   export let item: TexFile
   export let style = ''
 
-  const gh_base_uri = `https://raw.githubusercontent.com/janosh/tikz/main/assets`
-  $: base_uri = `${dev ? `/assets` : gh_base_uri}/${slug}/${slug}`
-
+  // development server fetches files from local folder (specified by svelte.config.js kit.files.assets)
+  // production server fetches files from GitHub (so we don't need to upload assets to netlify)
+  const asset_uri = dev ? `` : `https://raw.githubusercontent.com/janosh/tikz/main/assets`
+  $: base_uri = `${asset_uri}/${slug}/${slug}`
   $: ({ slug, title, description, width, height, tags } = item)
 </script>
 

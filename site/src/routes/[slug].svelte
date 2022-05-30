@@ -19,11 +19,13 @@
     [`.tex`, `TeX`],
   ] as const
 
-  const gh_base_uri = `https://raw.githubusercontent.com/janosh/tikz/main/assets`
-  $: base_uri = `${dev ? `/assets` : gh_base_uri}/${slug}/${slug}`
+  // development server fetches files from local folder (specified by svelte.config.js kit.files.assets)
+  // production server fetches files from GitHub (so we don't need to upload assets to netlify)
+  const asset_uri = dev ? `` : `https://raw.githubusercontent.com/janosh/tikz/main/assets`
+  $: base_uri = `${asset_uri}/${slug}/${slug}`
   $: hd_png = `${base_uri}-hd.png`
-  $: snip_uri = `${base_uri}.tex`
-  $: overleaf_href = `https://overleaf.com/docs?snip_uri=${snip_uri}`
+  $: tex_file_uri = `${base_uri}.tex`
+  $: overleaf_href = `https://overleaf.com/docs?snip_uri=${tex_file_uri}`
 
   $: if (downloads.length < 2) throw `unexpectedly low number of assets for download`
 </script>
