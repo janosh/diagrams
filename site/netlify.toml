@@ -1,8 +1,6 @@
 [build]
 command = "yarn build"
 publish = "build"
-# redeploy if either base directory site/ or assets/ changed
-ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF . ../assets"
 
 [build.environment]
 NODE_VERSION = "18.0.0"
