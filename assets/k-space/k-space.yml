@@ -2,4 +2,16 @@ title: k-Space
 tags:
   - physics
   - solid state physics
-description: null
+description: |
+  The $k$-space region of wave vectors up to a given magnitude is a disk of area $\pi k^2$. The $k$-space area occupied by a single particle state is
+  $$
+  \frac{1}{2} \frac{2 \pi}{L_x} \frac{2 \pi}{L_y}
+  = \frac{2 \pi^2}{A},
+  $$
+  where the factor of $\frac{1}{2}$ is due to the spin degeneracy $g_s = 2 s + 1 = 2$. The number of states with wave vector magnitude smaller than $k$ is
+  $$
+  N(k)
+  = \frac{\pi k^2}{2 \pi^2/A}
+  = \frac{A k^2}{2 \pi}.
+  $$
+  $k$-space is used extensively in solid state physics e.g. to visualize the energy bands of a material as a function of electron momentum. In position space, the position-energy dispersion would just be a probability blur.

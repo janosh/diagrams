@@ -2,4 +2,5 @@ title: M-Theory
 tags:
   - physics
   - string theory
-description: null
+description: |
+  One of the pivotal insights of the 2nd superstring revolution point was [Edward Witten's formulation of M-Theory in 1995](https://arxiv.org/abs/hep-th/9503124). Before that, there had been 5 different types of string theories, each 10-dimensional: Type I, Type IIa and IIb, and two different heterotic theories. Witten showed that all of these theories are simply different limiting cases of a single overarching string theory (without showing what that underlying theory actually is). See Sean [Carroll's excellent post](https://preposterousuniverse.com/blog/2014/03/12) on M-Theory for details.
