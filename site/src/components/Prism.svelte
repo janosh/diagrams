@@ -9,17 +9,17 @@
 
   let [linkTitle, url] = (link ?? ``).split(`||`, 2)
 
-  const onLoad = () => window.Prism?.highlightAll()
-  onMount(onLoad) // for page reloads
-  afterUpdate(onLoad)
+  const highlight = () => window.Prism?.highlightAll()
+  onMount(highlight) // for page reloads
+  afterUpdate(highlight)
 
-  const cdn = `https://cdnjs.cloudflare.com/ajax/libs/prism/1.22.0`
+  const cdn = `https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0`
 </script>
 
 <svelte:head>
   <link rel="stylesheet" href="{cdn}/themes/prism-okaidia.min.css" />
-  <script src="{cdn}/prism.min.js"></script>
-  <script src="{cdn}/components/prism-latex.min.js" on:load={onLoad}></script>
+  <script async src="{cdn}/prism.min.js"></script>
+  <script async src="{cdn}/components/prism-latex.min.js" onload={highlight}></script>
 </svelte:head>
 
 <div>
@@ -60,6 +60,7 @@
     gap: 1em;
   }
   pre {
+    text-align: left;
     background: rgba(255, 255, 255, 0.2) !important;
   }
 </style>

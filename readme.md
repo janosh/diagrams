@@ -14,7 +14,7 @@
 
 </h3>
 
-Random collection of **107** `standalone` TikZ images. Mostly about physics and machine learning.
+Random collection of **107** `standalone` TikZ figures. Mostly about physics and machine learning.
 
 Check out [tikz.netlify.app](https://tikz.netlify.app) to search, sort, export to Overleaf and download figures in this collection.
 

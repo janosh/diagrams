@@ -41,7 +41,22 @@
     }
     return matches_search && matches_tags
   })
+
+  const meta_description = `Random collection of ${tikz_figs.length} TikZ figures`
 </script>
+
+<svelte:head>
+  <meta name="description" content={meta_description} />
+  <meta property="og:title" content="TikZ Diagrams on Physics and Machine Learning" />
+  <meta property="og:description" content={meta_description} />
+  <meta
+    property="og:image"
+    content="https://tikz.netlify.app/index-page-2021-08-04.png"
+  />
+  <meta property="og:image:alt" content="TikZ collection index page" />
+  <meta property="og:url" content="https://tikz.netlify.app" />
+  <meta name="twitter:card" content="summary" />
+</svelte:head>
 
 <svelte:window bind:innerWidth />
 
@@ -51,7 +66,7 @@
   Collection
 </h1>
 <p>
-  {tikz_figs.length} standalone TikZ images, mostly about physics and machine learning.
+  {tikz_figs.length} standalone TikZ figures, mostly about physics and machine learning.
 </p>
 <p>
   Built by <a href="https://janosh.dev">Janosh Riebesell</a>.

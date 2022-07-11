@@ -1,12 +1,12 @@
 import fs from 'fs'
 import glob from 'glob'
-import sizeOf from 'image-size'
+import image_dims from 'image-size'
 import yaml from 'js-yaml'
-import rehypeKatex from 'rehype-katex'
-import rehypeStringify from 'rehype-stringify'
-import remarkMath from 'remark-math'
-import remarkParse from 'remark-parse'
-import remarkRehype from 'remark-rehype'
+import rehype_katex from 'rehype-katex'
+import rehype_stringify from 'rehype-stringify'
+import remark_math from 'remark-math'
+import remark_parse from 'remark-parse'
+import remark_rehype from 'remark-rehype'
 import { unified } from 'unified'
 
 const asset_dir = `../assets`
@@ -17,24 +17,24 @@ const slugs = fs
   .map((dir) => dir.name) // remove hidden system files
 
 const tikz_figures = slugs.map((slug) => {
-  const fig_dir = `${asset_dir}/${slug}/${slug}`
+  const figure_dir = `${asset_dir}/${slug}/${slug}`
 
   const downloads = glob
-    .sync(`${fig_dir}*.{png,pdf,svg,tex}`)
+    .sync(`${figure_dir}*.{png,pdf,svg,tex}`)
     .map((str) => str.split(`/`).at(-1))
 
-  const code = fs.readFileSync(`${fig_dir}.tex`, `utf8`)
+  const code = fs.readFileSync(`${figure_dir}.tex`, `utf8`)
 
-  const { width, height } = sizeOf(`${fig_dir}.png`)
-  const metadata = yaml.load(fs.readFileSync(`${fig_dir}.yml`))
+  const { width, height } = image_dims(`${figure_dir}.png`)
+  const metadata = yaml.load(fs.readFileSync(`${figure_dir}.yml`))
 
   if (metadata.description) {
     metadata.description = unified()
-      .use(remarkParse)
-      .use(remarkMath)
-      .use(remarkRehype)
-      .use(rehypeKatex)
-      .use(rehypeStringify)
+      .use(remark_parse)
+      .use(remark_math)
+      .use(remark_rehype)
+      .use(rehype_katex)
+      .use(rehype_stringify)
       .processSync(metadata.description).value
   }
 

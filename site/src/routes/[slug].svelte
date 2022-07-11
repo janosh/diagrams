@@ -28,7 +28,22 @@
   $: overleaf_href = `https://overleaf.com/docs?snip_uri=${tex_file_uri}`
 
   $: if (downloads.length < 2) throw `unexpectedly low number of assets for download`
+  $: head_title = `${title} | TikZ Diagrams`
+  $: plain_description = description?.replace(/<[^>]*>/g, ``)
 </script>
+
+<svelte:head>
+  <title>{head_title}</title>
+  <meta property="og:title" content={head_title} />
+  {#if plain_description}
+    <meta name="description" content={plain_description} />
+    <meta property="og:description" content={plain_description} />
+  {/if}
+  <meta property="og:image" content={hd_png} />
+  <meta property="og:image:alt" content={title} />
+  <meta property="og:url" content="https://tikz.netlify.app/{slug}" />
+  <meta name="twitter:card" content="summary" />
+</svelte:head>
 
 <a href="/" class="large-link" sveltekit:prefetch>&laquo; back</a>
 <h1>{title}</h1>
@@ -52,7 +67,8 @@
 <Tags {tags} fontSize="12pt" margin="0 0 2em" />
 
 {#if description}
-  <p>{@html description}</p>
+  {@html description}
+  <br />
 {/if}
 
 <img src={hd_png} alt={title} {width} {height} />

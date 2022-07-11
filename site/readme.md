@@ -4,7 +4,7 @@
 
 # Random TikZ Collection
 
-Source code for gallery site of `standalone` TikZ images. Built with [SvelteKit](https://kit.svelte.dev).
+Source code for gallery site of `standalone` TikZ figures. Built with [SvelteKit](https://kit.svelte.dev).
 
 ## Running this site locally
 

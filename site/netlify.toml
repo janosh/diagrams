@@ -5,15 +5,3 @@ publish = "build"
 [build.environment]
 NODE_VERSION = "18.0.0"
 YARN_VERSION = "1.22.17"
-
-# proxy plausible script to avoid being falsely blocked
-# https://plausible.io/docs/proxy/guides/netlify
-[[redirects]]
-from = "/js/script.js"
-to = "https://plausible.io/js/plausible.js"
-status = 200
-
-[[redirects]]
-from = "/api/event"
-to = "https://plausible.io/api/event"
-status = 202
