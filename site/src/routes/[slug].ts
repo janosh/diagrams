@@ -1,7 +1,7 @@
 import { RequestHandler } from '@sveltejs/kit'
 import tikz_figures from '../tikz-figures'
 
-export const get: RequestHandler = ({ params }) => {
+export const GET: RequestHandler = ({ params }) => {
   const { slug } = params
 
   const tikz_figure = tikz_figures.find((fig) => fig.slug === slug)

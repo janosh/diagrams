@@ -18,14 +18,14 @@
     "check": "svelte-check"
   },
   "devDependencies": {
-    "@iconify-json/octicon": "^1.1.12",
-    "@sveltejs/adapter-static": "^1.0.0-next.35",
-    "@sveltejs/kit": "^1.0.0-next.367",
-    "@typescript-eslint/eslint-plugin": "^5.30.5",
-    "@typescript-eslint/parser": "^5.30.5",
-    "eslint": "^8.19.0",
+    "@iconify-json/octicon": "^1.1.14",
+    "@sveltejs/adapter-static": "^1.0.0-next.38",
+    "@sveltejs/kit": "^1.0.0-next.396",
+    "@typescript-eslint/eslint-plugin": "^5.31.0",
+    "@typescript-eslint/parser": "^5.31.0",
+    "eslint": "^8.20.0",
     "eslint-plugin-svelte3": "^4.0.0",
-    "image-size": "^1.0.1",
+    "image-size": "^1.0.2",
     "prettier": "^2.7.1",
     "prettier-plugin-svelte": "^2.7.0",
     "rehype-katex": "^6.0.2",
@@ -36,12 +36,12 @@
     "svelte": "^3.49.0",
     "svelte-check": "^2.8.0",
     "svelte-github-corner": "^0.1.0",
-    "svelte-multiselect": "^5.0.3",
+    "svelte-multiselect": "^5.0.4",
     "svelte-preprocess": "^4.10.7",
-    "svelte2tsx": "^0.5.11",
+    "svelte2tsx": "^0.5.12",
     "typescript": "^4.7.4",
     "unified": "^10.1.2",
     "unplugin-icons": "^0.14.7",
-    "vite": "^2.9.14"
+    "vite": "^3.0.3"
   }
 }
