@@ -1,0 +1,12 @@
+title: Euler Angles
+creator: Dorian Depriester
+creator_url: https://blog.dorian-depriester.fr
+url: https://blog.dorian-depriester.fr/latex/tikz/representation-des-angles-deuler-avec-tikz
+date: 2020-10-08
+tags:
+  - mathematics
+  - physics
+  - geometry
+  - coordinates
+description: |
+  Named after the mathematician Leonhard Euler, the 3 Euler angles describe arbitrary orientations in 3d w.r.t. to some coordinate system. They can also represent the orientation of a frame of reference in physics or of a general basis in 3d linear algebra.
