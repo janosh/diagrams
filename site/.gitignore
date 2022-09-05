@@ -4,8 +4,7 @@ node_modules
 # production build
 .svelte-kit
 build
-src/slugs.ts
-src/tikz-figures.ts
+src/lib/tikz-figures.ts
 
 # deploy config
 .netlify

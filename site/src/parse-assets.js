@@ -11,22 +11,22 @@ import { unified } from 'unified'
 
 const asset_dir = `../assets`
 
-const slugs = fs
+const figure_dirs = fs
   .readdirSync(asset_dir, { withFileTypes: true })
   .filter((itm) => itm.isDirectory())
   .map((dir) => dir.name) // remove hidden system files
 
-const tikz_figures = slugs.map((slug) => {
-  const figure_dir = `${asset_dir}/${slug}/${slug}`
+const tikz_figures = figure_dirs.map((slug) => {
+  const figure_dir_path = `${asset_dir}/${slug}/${slug}`
 
   const downloads = glob
-    .sync(`${figure_dir}*.{png,pdf,svg,tex}`)
+    .sync(`${figure_dir_path}*.{png,pdf,svg,tex}`)
     .map((str) => str.split(`/`).at(-1))
 
-  const code = fs.readFileSync(`${figure_dir}.tex`, `utf8`)
+  const code = fs.readFileSync(`${figure_dir_path}.tex`, `utf8`)
 
-  const { width, height } = image_dims(`${figure_dir}.png`)
-  const metadata = yaml.load(fs.readFileSync(`${figure_dir}.yml`))
+  const { width, height } = image_dims(`${figure_dir_path}.png`)
+  const metadata = yaml.load(fs.readFileSync(`${figure_dir_path}.yml`))
 
   if (metadata.description) {
     metadata.description = unified()
@@ -43,10 +43,6 @@ const tikz_figures = slugs.map((slug) => {
 })
 
 fs.writeFileSync(
-  `src/slugs.ts`,
-  `export default ` + JSON.stringify(slugs, null, 2)
-)
-fs.writeFileSync(
-  `src/tikz-figures.ts`,
+  `src/lib/tikz-figures.ts`,
   `export default ` + JSON.stringify(tikz_figures, null, 2)
 )

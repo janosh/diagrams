@@ -1,10 +1,10 @@
 <script lang="ts">
   import { dev } from '$app/environment'
+  import Prism from '$lib/Prism.svelte'
+  import Tags from '$lib/Tags.svelte'
   import CodeIcon from '~icons/octicon/code'
   import DownloadIcon from '~icons/octicon/download-16'
   import LinkExternal from '~icons/octicon/link-external'
-  import Prism from '../../components/Prism.svelte'
-  import Tags from '../../components/Tags.svelte'
   import type { PageData } from './$types'
 
   export let data: PageData
