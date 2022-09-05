@@ -13,14 +13,13 @@
     "dev": "vite dev",
     "preview": "vite preview",
     "serve": "yarn build && yarn preview",
-    "prebuild": "node src/parse-assets.js",
-    "predev": "node src/parse-assets.js",
     "check": "svelte-check"
   },
   "devDependencies": {
     "@iconify-json/octicon": "^1.1.17",
     "@sveltejs/adapter-static": "^1.0.0-next.42",
     "@sveltejs/kit": "^1.0.0-next.470",
+    "@types/js-yaml": "^4.0.5",
     "@typescript-eslint/eslint-plugin": "^5.36.2",
     "@typescript-eslint/parser": "^5.36.2",
     "eslint": "^8.23.0",

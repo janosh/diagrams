@@ -4,9 +4,12 @@ export type TexFile = {
   width: number
   height: number
   downloads: string[]
+  code: string
+} & YamlMetadata
+
+export type YamlMetadata = {
   tags: string[]
   description: string | null
-  code: string
   creator?: string
   creator_url?: string
   url?: string
