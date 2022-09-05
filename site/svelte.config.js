@@ -7,8 +7,6 @@ export default {
   kit: {
     adapter: adapter(),
 
-    prerender: { default: true },
-
     files: {
       assets: `../assets`,
     },

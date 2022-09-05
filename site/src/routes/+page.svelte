@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { prerendering } from '$app/env'
+  import { prerendering } from '$app/environment'
   import MultiSelect from 'svelte-multiselect'
   import Law from '~icons/octicon/law'
   import MarkGithub from '~icons/octicon/mark-github'

@@ -20,7 +20,10 @@
 }
 
 \providecommand{\polecontours}{
-  \draw[blue!60!black,decoration={markings,mark=between positions 0.03 and 1.03 step 0.125 with \arrow{<}},postaction={decorate}] (p1) circle (0.5) node [below=0.5] {$C_1$} (p2) circle (0.5) node [below=0.5] {$C_2$} (p3) circle (0.5) node [below=0.5] {$C_3$} (p4) circle (0.5) node [below=0.5] {$C_4$};
+  \draw[blue!60!black,decoration={markings,mark=between positions 0.03 and 1.03 step 0.125
+    with \arrow{<}},postaction={decorate}] (p1) circle (0.5) node [below=0.5] {$C_1$} (p2)
+    circle (0.5) node [below=0.5] {$C_2$} (p3) circle (0.5) node [below=0.5] {$C_3$} (p4)
+    circle (0.5) node [below=0.5] {$C_4$};
 }
 
 \begin{document}
@@ -38,7 +41,8 @@
   \draw[fill] (0,0) circle (1pt) node [above right] {0};
 
   % Contour line
-  \draw[blue!60!black,decoration={markings,mark=between positions 0.125 and 0.875 step 0.25 with \arrow{>}},postaction={decorate}] circle (\yr+1) node [below right=0.925*\xr and 0.925*\yr] {$C$};
+  \draw[blue!60!black,decoration={markings,mark=between positions 0.125 and 0.875 step 0.25 with \arrow{>}},
+    postaction={decorate}] circle (\yr+1) node [below right=0.925*\xr and 0.925*\yr] {$C$};
 
   % Poles
   \poles

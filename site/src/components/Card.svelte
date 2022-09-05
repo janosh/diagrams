@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { dev } from '$app/env'
+  import { dev } from '$app/environment'
   import { fade } from 'svelte/transition'
   import { TexFile } from '../types'
   import Tags from './Tags.svelte'
@@ -14,7 +14,7 @@
   $: ({ slug, title, description, width, height, tags } = item)
 </script>
 
-<a href={slug} sveltekit:prefetch transition:fade={{ duration: 200 }} {style}>
+<a href={slug} data-sveltekit-prefetch transition:fade={{ duration: 200 }} {style}>
   <h2 id={slug}>{title}</h2>
 
   <Tags {tags} />

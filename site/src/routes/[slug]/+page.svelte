@@ -1,15 +1,17 @@
 <script lang="ts">
-  import { dev } from '$app/env'
+  import { dev } from '$app/environment'
   import CodeIcon from '~icons/octicon/code'
   import DownloadIcon from '~icons/octicon/download-16'
   import LinkExternal from '~icons/octicon/link-external'
-  import Prism from '../components/Prism.svelte'
-  import Tags from '../components/Tags.svelte'
-  import { TexFile } from '../types'
-  export let tikz_figure: TexFile
+  import Prism from '../../components/Prism.svelte'
+  import Tags from '../../components/Tags.svelte'
+  import type { PageData } from './$types'
 
-  $: ({ title, description, code, width, height, slug, downloads, tags } = tikz_figure)
-  $: ({ creator, creator_url, url } = tikz_figure)
+  export let data: PageData
+
+  $: ({ title, description, code, width, height, slug, downloads, tags } =
+    data.tikz_figure)
+  $: ({ creator, creator_url, url } = data.tikz_figure)
   $: link = `GitHub||https://github.com/janosh/tikz/blob/main/assets/${slug}/${slug}.tex`
   const labels = [
     [`.png`, `PNG`],
@@ -45,7 +47,7 @@
   <meta name="twitter:card" content="summary" />
 </svelte:head>
 
-<a href="/" class="large-link" sveltekit:prefetch>&laquo; back</a>
+<a href="/" class="large-link" data-sveltekit-prefetch>&laquo; back</a>
 <h1>{title}</h1>
 
 {#if creator || url}
@@ -63,13 +65,15 @@
   </p>
 {/if}
 
-<h3>Tags</h3>
-<Tags {tags} fontSize="12pt" margin="0 0 2em" />
+<section>
+  <h3>Tags</h3>
+  <Tags {tags} fontSize="12pt" />
 
-{#if description}
-  {@html description}
-  <br />
-{/if}
+  {#if description}
+    {@html description}
+    <br />
+  {/if}
+</section>
 
 <img src={hd_png} alt={title} {width} {height} />
 
@@ -108,10 +112,9 @@
     margin: 2em auto 1em;
     padding-bottom: 8pt;
   }
-  p {
+  section {
     max-width: 45em;
     margin: 1em auto;
-    padding: 1em;
     line-height: 3ex;
   }
   img[width] {
