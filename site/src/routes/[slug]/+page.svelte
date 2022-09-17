@@ -5,6 +5,7 @@
   import CodeIcon from '~icons/octicon/code'
   import DownloadIcon from '~icons/octicon/download-16'
   import LinkExternal from '~icons/octicon/link-external'
+  import { homepage, repo_url } from '../+layout'
   import type { PageData } from './$types'
 
   export let data: PageData
@@ -12,7 +13,7 @@
   $: ({ title, description, code, width, height, slug, downloads, tags } =
     data.tikz_figure)
   $: ({ creator, creator_url, url } = data.tikz_figure)
-  $: link = `GitHub||https://github.com/janosh/tikz/blob/main/assets/${slug}/${slug}.tex`
+  $: link = `GitHub||${repo_url}/blob/main/assets/${slug}/${slug}.tex`
   const labels = [
     [`.png`, `PNG`],
     [`-hd.png`, `PNG (HD)`],
@@ -43,7 +44,7 @@
   {/if}
   <meta property="og:image" content={hd_png} />
   <meta property="og:image:alt" content={title} />
-  <meta property="og:url" content="https://tikz.netlify.app/{slug}" />
+  <meta property="og:url" content="{homepage}/{slug}" />
   <meta name="twitter:card" content="summary" />
 </svelte:head>
 

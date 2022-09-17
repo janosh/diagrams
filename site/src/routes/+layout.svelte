@@ -1,17 +1,11 @@
 <script lang="ts">
-  import { page } from '$app/stores'
   import GitHubCorner from 'svelte-github-corner'
   import LawIcon from '~icons/octicon/law'
   import '../app.css'
+  import { repo_url } from './+layout'
 </script>
 
-{JSON.stringify($page.stuff, null, 2)}
-
-<GitHubCorner
-  href="https://github.com/janosh/tikz"
-  --ghc-bg="white"
-  --ghc-color="var(--body-bg)"
-/>
+<GitHubCorner href={repo_url} --ghc-bg="white" --ghc-color="var(--body-bg)" />
 
 <slot />
 

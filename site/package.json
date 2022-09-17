@@ -17,12 +17,12 @@
   },
   "devDependencies": {
     "@iconify-json/octicon": "^1.1.17",
-    "@sveltejs/adapter-static": "^1.0.0-next.42",
-    "@sveltejs/kit": "^1.0.0-next.470",
+    "@sveltejs/adapter-static": "^1.0.0-next.43",
+    "@sveltejs/kit": "^1.0.0-next.484",
     "@types/js-yaml": "^4.0.5",
-    "@typescript-eslint/eslint-plugin": "^5.36.2",
-    "@typescript-eslint/parser": "^5.36.2",
-    "eslint": "^8.23.0",
+    "@typescript-eslint/eslint-plugin": "^5.37.0",
+    "@typescript-eslint/parser": "^5.37.0",
+    "eslint": "^8.23.1",
     "eslint-plugin-svelte3": "^4.0.0",
     "image-size": "^1.0.2",
     "prettier": "^2.7.1",
@@ -32,15 +32,15 @@
     "remark-math": "^5.1.1",
     "remark-parse": "^10.0.1",
     "remark-rehype": "^10.1.0",
-    "svelte": "^3.50.0",
+    "svelte": "^3.50.1",
     "svelte-check": "^2.9.0",
     "svelte-github-corner": "^0.1.0",
-    "svelte-multiselect": "^6.0.0",
+    "svelte-multiselect": "^6.0.1",
     "svelte-preprocess": "^4.10.7",
-    "svelte2tsx": "^0.5.16",
-    "typescript": "^4.8.2",
+    "svelte2tsx": "^0.5.18",
+    "typescript": "^4.8.3",
     "unified": "^10.1.2",
     "unplugin-icons": "^0.14.9",
-    "vite": "^3.1.0"
+    "vite": "^3.1.1"
   }
 }

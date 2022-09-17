@@ -9,12 +9,16 @@ import remark_parse from 'remark-parse'
 import remark_rehype from 'remark-rehype'
 import { unified } from 'unified'
 import Icons from 'unplugin-icons/vite'
+import { UserConfig } from 'vite'
 import { YamlMetadata } from './src/types'
 
-export default {
+const vite_config: UserConfig = {
   plugins: [sveltekit(), Icons({ compiler: `svelte`, autoInstall: true })],
 
   server: {
+    fs: {
+      allow: [`..`], // needed to import package.json
+    },
     port: 3000,
   },
 
@@ -58,3 +62,5 @@ fs.writeFileSync(
   `src/lib/tikz-figures.ts`,
   `export default ` + JSON.stringify(tikz_figures, null, 2)
 )
+
+export default vite_config

@@ -7,6 +7,7 @@
   import Law from '~icons/octicon/law'
   import MarkGithub from '~icons/octicon/mark-github'
   import { filter_tags, search, tag_filter_mode } from '../stores'
+  import { homepage, repo_url } from './+layout'
 
   let innerWidth: number
 
@@ -49,12 +50,9 @@
   <meta name="description" content={meta_description} />
   <meta property="og:title" content="TikZ Diagrams on Physics and Machine Learning" />
   <meta property="og:description" content={meta_description} />
-  <meta
-    property="og:image"
-    content="https://tikz.netlify.app/index-page-2021-08-04.png"
-  />
+  <meta property="og:image" content="{homepage}/index-page-2021-08-04.png" />
   <meta property="og:image:alt" content="TikZ collection index page" />
-  <meta property="og:url" content="https://tikz.netlify.app" />
+  <meta property="og:url" content={homepage} />
   <meta name="twitter:card" content="summary" />
 </svelte:head>
 
@@ -73,15 +71,14 @@
 </p>
 <p>
   <MarkGithub height="16pt" style="vertical-align: -2pt;" />&nbsp; TikZ code on
-  <a href="https://github.com/janosh/tikz">GitHub</a>. &ensp;
+  <a href={repo_url}>GitHub</a>. &ensp;
 
   <Law height="16pt" style="vertical-align: -4pt;" />&nbsp;
-  <a href="https://github.com/janosh/tikz/blob/main/license">MIT licensed</a>. Free to
-  reuse.
+  <a href="{repo_url}/blob/main/license">MIT licensed</a>. Free to reuse.
 </p>
 <p>
   Have a TikZ image you'd like to share with attribution?
-  <a href="https://github.com/janosh/tikz/pulls">Submit a PR</a> and add it to this list.
+  <a href="{repo_url}/pulls">Submit a PR</a> and add it to this list.
 </p>
 
 <div class="filters">
