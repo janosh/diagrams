@@ -1,5 +1,5 @@
 <script lang="ts">
-  import CopyIcon from '~icons/octicon/copy-16'
+  import Icon from '@iconify/svelte'
 
   export let content: string
 
@@ -18,6 +18,6 @@
 </script>
 
 <button on:click={copy}>
-  <CopyIcon height="14pt" style="vertical-align: -4px;" />
+  <Icon icon="octicon:copy-16" inline />
   <span bind:this={span}>Copy</span>
 </button>

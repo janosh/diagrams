@@ -8,12 +8,11 @@ import remark_math from 'remark-math'
 import remark_parse from 'remark-parse'
 import remark_rehype from 'remark-rehype'
 import { unified } from 'unified'
-import Icons from 'unplugin-icons/vite'
 import { UserConfig } from 'vite'
 import { YamlMetadata } from './src/types'
 
 const vite_config: UserConfig = {
-  plugins: [sveltekit(), Icons({ compiler: `svelte`, autoInstall: true })],
+  plugins: [sveltekit()],
 
   server: {
     fs: {

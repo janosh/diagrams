@@ -1,6 +1,6 @@
 <script lang="ts">
+  import Icon from '@iconify/svelte'
   import { afterUpdate, onMount } from 'svelte'
-  import MarkGithub from '~icons/octicon/mark-github'
   import CopyButton from './CopyButton.svelte'
 
   export let code: string
@@ -29,7 +29,7 @@
   <section>
     {#if link}<a href={url}>
         <button>
-          <MarkGithub height="14pt" style="vertical-align: -4px;" />
+          <Icon icon="octicon:mark-github" inline />
           {linkTitle}
         </button>
       </a>{/if}

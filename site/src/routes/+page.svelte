@@ -3,9 +3,8 @@
   import Card from '$lib/Card.svelte'
   import RadioButtons from '$lib/RadioButtons.svelte'
   import tikz_figs from '$lib/tikz-figures'
+  import Icon from '@iconify/svelte'
   import MultiSelect from 'svelte-multiselect'
-  import Law from '~icons/octicon/law'
-  import MarkGithub from '~icons/octicon/mark-github'
   import { filter_tags, search, tag_filter_mode } from '../stores'
   import { homepage, repo_url } from './+layout'
 
@@ -70,10 +69,10 @@
   Built by <a href="https://janosh.dev">Janosh Riebesell</a>.
 </p>
 <p>
-  <MarkGithub height="16pt" style="vertical-align: -2pt;" />&nbsp; TikZ code on
+  <Icon icon="octicon:mark-github" inline />&nbsp; TikZ code on
   <a href={repo_url}>GitHub</a>. &ensp;
 
-  <Law height="16pt" style="vertical-align: -4pt;" />&nbsp;
+  <Icon icon="octicon:law" inline />&nbsp;
   <a href="{repo_url}/blob/main/license">MIT licensed</a>. Free to reuse.
 </p>
 <p>

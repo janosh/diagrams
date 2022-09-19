@@ -2,9 +2,7 @@
   import { dev } from '$app/environment'
   import Prism from '$lib/Prism.svelte'
   import Tags from '$lib/Tags.svelte'
-  import CodeIcon from '~icons/octicon/code'
-  import DownloadIcon from '~icons/octicon/download-16'
-  import LinkExternal from '~icons/octicon/link-external'
+  import Icon from '@iconify/svelte'
   import { homepage, repo_url } from '../+layout'
   import type { PageData } from './$types'
 
@@ -79,14 +77,14 @@
 <img src={hd_png} alt={title} {width} {height} />
 
 <h2>
-  <LinkExternal height="1em" style="vertical-align: middle;" />&nbsp; Edit
+  <Icon icon="octicon:link-external" inline />&nbsp; Edit
 </h2>
 <a href={overleaf_href} target="_blank" class="large-link">
   <img src="overleaf.svg" alt="Overleaf Logo" height="30" />&nbsp;Open in Overleaf
 </a>
 
 <h2>
-  <DownloadIcon height="1em" style="vertical-align: middle;" />&nbsp; Download
+  <Icon icon="octicon:download-16" inline />&nbsp; Download
 </h2>
 
 {#each labels as [ext, label]}
@@ -98,7 +96,7 @@
 {/each}
 
 <h2>
-  <CodeIcon height="1em" style="vertical-align: middle;" />&nbsp; Code
+  <Icon icon="octicon:code" inline />&nbsp; Code
 </h2>
 
 <Prism {code} title="{slug}.tex" {link} />
