@@ -26,6 +26,8 @@ const vite_config: UserConfig = {
   },
 }
 
+export default vite_config
+
 const figure_dirs = fs
   .readdirSync(`../assets`, { withFileTypes: true })
   .filter((itm) => itm.isDirectory())
@@ -61,5 +63,3 @@ fs.writeFileSync(
   `src/lib/tikz-figures.ts`,
   `export default ` + JSON.stringify(tikz_figures, null, 2)
 )
-
-export default vite_config

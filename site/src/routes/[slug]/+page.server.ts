@@ -1,5 +1,6 @@
 import tikz_figures from '$lib/tikz-figures'
-import { error, PageServerLoad } from '@sveltejs/kit'
+import { error } from '@sveltejs/kit'
+import { PageServerLoad } from './$types'
 
 export const load: PageServerLoad = ({ params }) => {
   const { slug } = params
