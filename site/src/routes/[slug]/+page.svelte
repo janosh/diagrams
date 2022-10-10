@@ -1,6 +1,6 @@
 <script lang="ts">
   import { dev } from '$app/environment'
-  import Prism from '$lib/Prism.svelte'
+  import CodeBlock from '$lib/CodeBlock.svelte'
   import Tags from '$lib/Tags.svelte'
   import Icon from '@iconify/svelte'
   import { homepage, repo_url } from '../+layout'
@@ -8,9 +8,8 @@
 
   export let data: PageData
 
-  $: ({ title, description, code, width, height, slug, downloads, tags } =
-    data.tikz_figure)
-  $: ({ creator, creator_url, url } = data.tikz_figure)
+  $: ({ title, description, code, width, height } = data.tikz_figure)
+  $: ({ creator, creator_url, url, downloads, tags, slug } = data.tikz_figure)
   $: link = `GitHub||${repo_url}/blob/main/assets/${slug}/${slug}.tex`
   const labels = [
     [`.png`, `PNG`],
@@ -99,7 +98,7 @@
   <Icon icon="octicon:code" inline />&nbsp; Code
 </h2>
 
-<Prism {code} title="{slug}.tex" {link} />
+<CodeBlock {code} title="{slug}.tex" {link} />
 
 <style>
   h1 {

@@ -3,21 +3,27 @@
 
   export let content: string
 
-  let span: HTMLSpanElement
+  let state: 'default' | 'success' | 'error' = `default`
+
+  const labels = {
+    default: [`Copy`, `octicon:copy-16`],
+    success: [`Copied`, `octicon:check`],
+    error: [`Error`, `octicon:alert`],
+  }
 
   async function copy() {
     try {
       await navigator.clipboard.writeText(content)
-      span.innerText = `Copied!`
-      setTimeout(() => (span.innerText = `Copy`), 2000)
+      state = `success`
     } catch (err) {
       console.error(err)
-      span.innerText = `Error`
+      state = `error`
     }
+    setTimeout(() => (state = `default`), 2000)
   }
 </script>
 
 <button on:click={copy}>
-  <Icon icon="octicon:copy-16" inline />
-  <span bind:this={span}>Copy</span>
+  <Icon icon={labels[state][1]} inline />
+  <span>{labels[state][0]}</span>
 </button>

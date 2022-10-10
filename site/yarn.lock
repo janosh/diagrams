@@ -1046,6 +1046,11 @@ hastscript@^7.0.0:
     property-information "^6.0.0"
     space-separated-tokens "^2.0.0"
 
+highlight.js@^11.6.0:
+  version "11.6.0"
+  resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-11.6.0.tgz#a50e9da05763f1bb0c1322c8f4f755242cff3f5a"
+  integrity sha512-ig1eqDzJaB0pqEvlPVIpSSyMaO92bH1N2rJpLMN/nX396wTpDA4Eq0uK+7I/2XG17pFaaKE0kjV/XPeGt7Evjw==
+
 html-void-elements@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/html-void-elements/-/html-void-elements-2.0.1.tgz#29459b8b05c200b6c5ee98743c41b979d577549f"
@@ -1989,10 +1994,10 @@ svelte-hmr@^0.15.0:
   resolved "https://registry.yarnpkg.com/svelte-hmr/-/svelte-hmr-0.15.0.tgz#c8304b5dd33f006415329d91470761d19417a324"
   integrity sha512-Aw21SsyoohyVn4yiKXWPNCSW2DQNH/76kvUnE9kpt4h9hcg9tfyQc6xshx9hzgMfGF0kVx0EGD8oBMWSnATeOg==
 
-svelte-multiselect@^7.0.1:
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/svelte-multiselect/-/svelte-multiselect-7.0.1.tgz#ff520e38236c3d9737bc6761d23c197a6f1d4b6b"
-  integrity sha512-RRTAkFr8enX9u/7bjDXADvQlAfHf4p3/qY4fNgJ/sb1yxMhVvA2jOL0dq5dpZ4F7gVW+YBlmjiYUQUkTGffgnA==
+svelte-multiselect@^7.0.2:
+  version "7.0.2"
+  resolved "https://registry.yarnpkg.com/svelte-multiselect/-/svelte-multiselect-7.0.2.tgz#af3f244f8e6aac53c8882381da0b981ac5204c37"
+  integrity sha512-POwPN8MPyAV2R0M+cVaxF4jA8bhA8eH7laYt+gfrsSQORB2hanxAK8UFUC2mHAmS+478+LaIGd0W8BS7oO92wQ==
 
 svelte-preprocess@^4.0.0, svelte-preprocess@^4.10.7:
   version "4.10.7"

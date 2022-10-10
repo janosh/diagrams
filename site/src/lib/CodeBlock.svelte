@@ -1,26 +1,18 @@
 <script lang="ts">
   import Icon from '@iconify/svelte'
-  import { afterUpdate, onMount } from 'svelte'
+  import hljs from 'highlight.js/lib/core'
+  import latex from 'highlight.js/lib/languages/latex'
+  import 'highlight.js/styles/vs2015.css'
   import CopyButton from './CopyButton.svelte'
+
+  hljs.registerLanguage(`latex`, latex)
 
   export let code: string
   export let link: string
   export let title: string
 
   let [linkTitle, url] = (link ?? ``).split(`||`, 2)
-
-  const highlight = () => window.Prism?.highlightAll()
-  onMount(highlight) // for page reloads
-  afterUpdate(highlight)
-
-  const cdn = `https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0`
 </script>
-
-<svelte:head>
-  <link rel="stylesheet" href="{cdn}/themes/prism-okaidia.min.css" />
-  <script async src="{cdn}/prism.min.js"></script>
-  <script async src="{cdn}/components/prism-latex.min.js" onload={highlight}></script>
-</svelte:head>
 
 <div>
   {#if title}
@@ -35,7 +27,11 @@
       </a>{/if}
     <CopyButton content={code} />
   </section>
-  <pre><code class="language-latex">{code}</code></pre>
+  <pre><code
+      >{@html hljs.highlight(code, {
+        language: `latex`,
+      }).value}</code
+    ></pre>
 </div>
 
 <style>
@@ -60,7 +56,10 @@
     gap: 1em;
   }
   pre {
+    padding: 1em;
     text-align: left;
-    background: rgba(255, 255, 255, 0.2) !important;
+    background: rgba(255, 255, 255, 0.2);
+    overflow-x: scroll;
+    font-size: 1.2em;
   }
 </style>

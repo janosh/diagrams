@@ -60,6 +60,6 @@ const tikz_figures = figure_dirs.map((slug) => {
 })
 
 fs.writeFileSync(
-  `src/lib/tikz-figures.ts`,
-  `export default ` + JSON.stringify(tikz_figures, null, 2)
+  `src/lib/tikz-figures.json`,
+  JSON.stringify(tikz_figures, null, 2)
 )
