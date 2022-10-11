@@ -1,7 +1,7 @@
 <script lang="ts">
   import { dev } from '$app/environment'
   import { fade } from 'svelte/transition'
-  import { TexFile } from '../types'
+  import type { TexFile } from '../types'
   import Tags from './Tags.svelte'
 
   export let item: TexFile
@@ -14,7 +14,7 @@
   $: ({ slug, title, description, width, height, tags } = item)
 </script>
 
-<a href={slug} data-sveltekit-prefetch transition:fade={{ duration: 200 }} {style}>
+<a href={slug} transition:fade={{ duration: 200 }} {style}>
   <h2 id={slug}>{title}</h2>
 
   <Tags {tags} />
@@ -59,11 +59,11 @@
     margin: 0;
     visibility: hidden;
     opacity: 0;
-    transition: opacity 0.5s;
+    transition: opacity 0.4s, visibility 0.4s;
     overflow-wrap: break-word;
     width: 100%;
     box-sizing: border-box;
-    max-height: 70%;
+    max-height: 50%;
     overflow: scroll;
     font-size: 1.5ex;
   }

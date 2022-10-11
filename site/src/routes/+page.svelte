@@ -2,13 +2,14 @@
   import { prerendering } from '$app/environment'
   import Card from '$lib/Card.svelte'
   import RadioButtons from '$lib/RadioButtons.svelte'
-  import tikz_figs from '$lib/tikz-figures'
+  import tikz_figs from '$lib/tikz-figures.json'
   import Icon from '@iconify/svelte'
   import MultiSelect from 'svelte-multiselect'
   import { filter_tags, search, tag_filter_mode } from '../stores'
   import { homepage, repo_url } from './+layout'
 
   let innerWidth: number
+  $: cols = clamp(Math.floor(innerWidth / 300), 1, 6)
 
   const tags = Object.entries(
     tikz_figs
@@ -23,24 +24,26 @@
   const clamp = (num: number, min: number, max: number) =>
     Math.min(Math.max(num, min), max)
 
-  $: cols = clamp(Math.floor(innerWidth / 300), 1, 6)
+  $: filtered_figs = tikz_figs
+    .filter((file) => {
+      const searchTerms = $search?.toLowerCase().split(` `)
+      const matches_search = searchTerms?.every((term) =>
+        JSON.stringify(file).toLowerCase().includes(term)
+      )
 
-  $: filtered_figs = tikz_figs.filter((file) => {
-    const searchTerms = $search?.toLowerCase().split(` `)
-    const matches_search = searchTerms?.every((term) =>
-      JSON.stringify(file).toLowerCase().includes(term)
-    )
-
-    let matches_tags = true
-    if ($filter_tags.length > 0) {
-      if ($tag_filter_mode === `or`) {
-        matches_tags = $filter_tags.some((tag) => file.tags.includes(tag.label))
-      } else if ($tag_filter_mode === `and`) {
-        matches_tags = $filter_tags.every((tag) => file.tags.includes(tag.label))
+      let matches_tags = true
+      if ($filter_tags.length > 0) {
+        if ($tag_filter_mode === `or`) {
+          matches_tags = $filter_tags.some((tag) => file.tags.includes(tag.label))
+        } else if ($tag_filter_mode === `and`) {
+          matches_tags = $filter_tags.every((tag) => file.tags.includes(tag.label))
+        }
       }
-    }
-    return matches_search && matches_tags
-  })
+      return matches_search && matches_tags
+    })
+    .sort((a, b) => {
+      return a.title.localeCompare(b.title)
+    })
 
   const meta_description = `Random collection of ${tikz_figs.length} TikZ figures`
 </script>

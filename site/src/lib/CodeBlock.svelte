@@ -27,11 +27,7 @@
       </a>{/if}
     <CopyButton content={code} />
   </section>
-  <pre><code
-      >{@html hljs.highlight(code, {
-        language: `latex`,
-      }).value}</code
-    ></pre>
+  <pre><code>{@html hljs.highlight(code, { language: `latex` }).value}</code></pre>
 </div>
 
 <style>
@@ -46,7 +42,7 @@
     left: 1em;
     background: teal;
     padding: 2pt 8pt;
-    border-radius: 1ex 1ex 0 0;
+    border-radius: 3pt 3pt 0 0;
   }
   section {
     position: absolute;
@@ -61,5 +57,6 @@
     background: rgba(255, 255, 255, 0.2);
     overflow-x: scroll;
     font-size: 1.2em;
+    border-radius: 3pt;
   }
 </style>

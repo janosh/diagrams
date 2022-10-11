@@ -9,8 +9,6 @@
 
 <slot />
 
-<footer style="margin: 2em 0;">
-  <small>
-    <Icon icon="octicon:law" inline /> MIT License - Janosh Riebesell 2021
-  </small>
+<footer style="margin: 6em 0 3em;">
+  &copy; Janosh Riebesell 2021 &ensp;-&ensp; <Icon icon="octicon:law" inline /> MIT License
 </footer>

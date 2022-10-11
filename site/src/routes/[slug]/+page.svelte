@@ -1,6 +1,7 @@
 <script lang="ts">
   import { dev } from '$app/environment'
   import CodeBlock from '$lib/CodeBlock.svelte'
+  import PrevNextFig from '$lib/PrevNextFig.svelte'
   import Tags from '$lib/Tags.svelte'
   import Icon from '@iconify/svelte'
   import { homepage, repo_url } from '../+layout'
@@ -45,7 +46,7 @@
   <meta name="twitter:card" content="summary" />
 </svelte:head>
 
-<a href="/" class="large-link" data-sveltekit-prefetch>&laquo; back</a>
+<a href="/" class="large-link">&laquo; back</a>
 <h1>{title}</h1>
 
 {#if creator || url}
@@ -98,7 +99,11 @@
   <Icon icon="octicon:code" inline />&nbsp; Code
 </h2>
 
+<p>{code.split(`\n`).length} lines</p>
+
 <CodeBlock {code} title="{slug}.tex" {link} />
+
+<PrevNextFig prev={data.prev_fig} next={data.next_fig} />
 
 <style>
   h1 {
@@ -116,14 +121,14 @@
     line-height: 3ex;
   }
   img[width] {
-    width: 100%;
     background: #ffffff85;
     padding: 1em;
     box-sizing: border-box;
     max-width: min(850px, 90vw);
+    height: auto;
+    max-height: 90vh;
     margin: auto;
     border-radius: 1ex;
-    height: auto;
     display: block;
   }
   a.large-link {
