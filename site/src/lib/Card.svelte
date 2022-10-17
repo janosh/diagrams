@@ -1,10 +1,10 @@
 <script lang="ts">
   import { dev } from '$app/environment'
   import { fade } from 'svelte/transition'
-  import type { TexFile } from '../types'
+  import type { TikzFigure } from '../types'
   import Tags from './Tags.svelte'
 
-  export let item: TexFile
+  export let item: TikzFigure
   export let style = ''
 
   // development server fetches files from local folder (specified by svelte.config.js kit.files.assets)

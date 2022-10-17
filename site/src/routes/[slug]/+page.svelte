@@ -79,7 +79,7 @@
 <h2>
   <Icon icon="octicon:link-external" inline />&nbsp; Edit
 </h2>
-<a href={overleaf_href} target="_blank" class="large-link">
+<a href={overleaf_href} target="_blank" rel="noreferrer" class="large-link">
   <img src="overleaf.svg" alt="Overleaf Logo" height="30" />&nbsp;Open in Overleaf
 </a>
 
@@ -89,7 +89,7 @@
 
 {#each labels as [ext, label]}
   {#if downloads?.some((filename) => filename.includes(ext))}
-    <a href="{base_uri}{ext}" target="_blank" class="large-link">
+    <a href="{base_uri}{ext}" target="_blank" rel="noreferrer" class="large-link">
       {label}
     </a>
   {/if}

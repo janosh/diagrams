@@ -5,7 +5,7 @@
   import tikz_figs from '$lib/tikz-figures.json'
   import Icon from '@iconify/svelte'
   import MultiSelect from 'svelte-multiselect'
-  import { filter_tags, search, tag_filter_mode } from '../stores'
+  import { filtered_figs, filter_tags, search, tag_filter_mode } from '../stores'
   import { homepage, repo_url } from './+layout'
 
   let innerWidth: number
@@ -24,7 +24,7 @@
   const clamp = (num: number, min: number, max: number) =>
     Math.min(Math.max(num, min), max)
 
-  $: filtered_figs = tikz_figs
+  $: $filtered_figs = tikz_figs
     .filter((file) => {
       const searchTerms = $search?.toLowerCase().split(` `)
       const matches_search = searchTerms?.every((term) =>
@@ -105,12 +105,12 @@
 </div>
 
 {#if $search?.length || $filter_tags?.length}
-  <p>{filtered_figs.length} match{filtered_figs.length != 1 ? `es` : ``}</p>
+  <p>{$filtered_figs.length} match{$filtered_figs.length != 1 ? `es` : ``}</p>
 {/if}
 
 {#if cols || prerendering}
   <div style:column-count={cols} style="column-gap: 1em;">
-    {#each filtered_figs as item (item.slug)}
+    {#each $filtered_figs as item (item.slug)}
       <Card {item} style="margin-bottom: 1em; break-inside: avoid;" />
     {/each}
   </div>

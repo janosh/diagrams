@@ -1,9 +1,11 @@
-import tikz_figures from '$lib/tikz-figures.json'
 import { error } from '@sveltejs/kit'
-import type { PageServerLoad } from './$types'
+import { get } from 'svelte/store'
+import { filtered_figs } from '../../stores'
+import type { PageLoad } from './$types'
 
-export const load: PageServerLoad = ({ params }) => {
+export const load: PageLoad = ({ params }) => {
   const { slug } = params
+  const tikz_figures = get(filtered_figs)
 
   const fig_idx = tikz_figures.findIndex((fig) => fig.slug === slug)
   if (fig_idx === -1) {

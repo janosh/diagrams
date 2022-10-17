@@ -1,10 +1,10 @@
 <script lang="ts">
   import Icon from '@iconify/svelte'
-  import type { TexFile } from '../types'
+  import type { TikzFigure } from '../types'
   import Card from './Card.svelte'
 
-  export let prev: TexFile
-  export let next: TexFile
+  export let prev: TikzFigure
+  export let next: TikzFigure
   let style = `max-width: 250px; align-content: space-around; height: 100%;`
 </script>
 

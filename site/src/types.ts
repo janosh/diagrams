@@ -1,4 +1,4 @@
-export type TexFile = {
+export type TikzFigure = {
   title: string
   slug: string
   width: number

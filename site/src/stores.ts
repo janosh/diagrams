@@ -1,4 +1,5 @@
 import { writable } from 'svelte/store'
+import type { TikzFigure } from './types'
 
 function url_param_store(name: string, initialValue: string | null) {
   if (typeof location !== `undefined`) {
@@ -49,3 +50,5 @@ export const filter_tags = session_store<{ label: string; count: number }[]>(
   `filter-tags`,
   []
 )
+
+export const filtered_figs = writable<TikzFigure[]>([])
