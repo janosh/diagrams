@@ -13,13 +13,13 @@ Source code for gallery site of `standalone` TikZ figures. Built with [SvelteKit
    ```sh
    git clone https://github.com/janosh/tikz
    cd tikz/site
-   yarn
+   npm install
    ```
 
 2. Start the dev server:
 
    ```sh
-   yarn dev
+   npm dev
    ```
 
 Navigate to `http://localhost:3000`. You should see a development server with this site running. Edit a component file in `src/`, save it and the page will hot-reload to display your changes.
@@ -29,5 +29,5 @@ Navigate to `http://localhost:3000`. You should see a development server with th
 To build and serve an optimized version of the app, run
 
 ```sh
-yarn build && yarn preview
+npm build && npm preview
 ```

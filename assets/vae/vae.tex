@@ -8,9 +8,9 @@
   % #1 (str): namespace
   % #2 (list[list[str]]): list of labels to print in the node of each neuron
   \foreach \neurons [count=\lyrIdx] in #2 {
-    \StrCount{\neurons}{,}[\lyrLength] % use xstring package to save each layer size into \lyrLength macro
+    \StrCount{\neurons}{,}[\layerLen] % use xstring package to save each layer size into \layerLen macro
     \foreach \n [count=\nIdx] in \neurons
-      \node[neuron] (#1-\lyrIdx-\nIdx) at (2*\lyrIdx, \lyrLength/2-1.4*\nIdx) {\n};
+      \node[neuron] (#1-\lyrIdx-\nIdx) at (2*\lyrIdx, \layerLen/2-1.4*\nIdx) {\n};
   }
 }
 

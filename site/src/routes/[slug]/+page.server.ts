@@ -1,9 +1,9 @@
 import { error } from '@sveltejs/kit'
 import { get } from 'svelte/store'
 import { filtered_figs } from '../../stores'
-import type { PageLoad } from './$types'
+import type { PageServerLoad } from './$types'
 
-export const load: PageLoad = ({ params }) => {
+export const load: PageServerLoad = ({ params }) => {
   const { slug } = params
   const tikz_figures = get(filtered_figs)
 

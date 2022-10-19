@@ -3,6 +3,8 @@ ci:
 
 default_install_hook_types: [pre-commit, commit-msg]
 
+exclude: pnpm-lock.yaml
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.3.0
@@ -33,7 +35,6 @@ repos:
       - id: codespell
         stages: [commit, commit-msg]
         exclude_types: [svg]
-        exclude: yarn.lock
         args: [--ignore-words-list, "noe,ket,ba,te,nd"]
 
   - repo: https://github.com/igorshubovych/markdownlint-cli

@@ -12,7 +12,7 @@
     "build": "vite build",
     "dev": "vite dev",
     "preview": "vite preview",
-    "serve": "yarn build && yarn preview",
+    "serve": "pnpm build && pnpm preview",
     "check": "svelte-check"
   },
   "devDependencies": {
