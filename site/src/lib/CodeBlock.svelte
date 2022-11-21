@@ -18,7 +18,7 @@
   {#if title}
     <h3>{title}</h3>
   {/if}
-  <section>
+  <aside>
     {#if link}<a href={url}>
         <button>
           <Icon icon="octicon:mark-github" inline />
@@ -26,7 +26,7 @@
         </button>
       </a>{/if}
     <CopyButton content={code} />
-  </section>
+  </aside>
   <pre><code>{@html hljs.highlight(code, { language: `latex` }).value}</code></pre>
 </div>
 
@@ -44,7 +44,7 @@
     padding: 2pt 8pt;
     border-radius: 3pt 3pt 0 0;
   }
-  section {
+  aside {
     position: absolute;
     top: 1em;
     right: 1em;

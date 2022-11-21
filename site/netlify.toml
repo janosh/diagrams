@@ -1,6 +1,0 @@
-[build]
-command = "pnpm build"
-publish = "build"
-
-[build.environment]
-NODE_VERSION = "18.9.0"

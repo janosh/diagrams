@@ -4,14 +4,14 @@
   import PrevNextFig from '$lib/PrevNextFig.svelte'
   import Tags from '$lib/Tags.svelte'
   import Icon from '@iconify/svelte'
-  import { homepage, repo_url } from '../+layout'
+  import { homepage, repository } from '../../../package.json'
   import type { PageData } from './$types'
 
   export let data: PageData
 
   $: ({ title, description, code, width, height } = data.tikz_figure)
   $: ({ creator, creator_url, url, downloads, tags, slug } = data.tikz_figure)
-  $: link = `GitHub||${repo_url}/blob/main/assets/${slug}/${slug}.tex`
+  $: link = `GitHub||${repository}/blob/main/assets/${slug}/${slug}.tex`
   const labels = [
     [`.png`, `PNG`],
     [`-hd.png`, `PNG (HD)`],
@@ -21,7 +21,7 @@
   ] as const
 
   // development server fetches files from local folder (specified by svelte.config.js kit.files.assets)
-  // production server fetches files from GitHub (so we don't need to upload assets to netlify)
+  // production server fetches files from GitHub (so we don't need to re-upload with every build)
   const asset_uri = dev ? `` : `https://raw.githubusercontent.com/janosh/tikz/main/assets`
   $: base_uri = `${asset_uri}/${slug}/${slug}`
   $: hd_png = `${base_uri}-hd.png`
@@ -46,7 +46,7 @@
   <meta name="twitter:card" content="summary" />
 </svelte:head>
 
-<a href="/" class="large-link">&laquo; back</a>
+<a href="." class="large-link">&laquo; back</a>
 <h1>{title}</h1>
 
 {#if creator || url}
@@ -146,7 +146,7 @@
     display: inline-flex;
     place-items: center;
   }
-  a.large-link[href='/'] {
+  a.large-link[href='.'] {
     position: absolute;
     top: 2em;
     left: 2em;

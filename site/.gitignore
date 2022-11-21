@@ -5,6 +5,3 @@ node_modules
 .svelte-kit
 build
 src/lib/tikz-figures.json
-
-# deploy config
-.netlify

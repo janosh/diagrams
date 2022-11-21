@@ -6,7 +6,7 @@
   import Icon from '@iconify/svelte'
   import MultiSelect from 'svelte-multiselect'
   import { filtered_figs, filter_tags, search, tag_filter_mode } from '../stores'
-  import { homepage, repo_url } from './+layout'
+  import { homepage, repository } from '../../package.json'
 
   let innerWidth: number
   $: cols = clamp(Math.floor(innerWidth / 300), 1, 6)
@@ -69,18 +69,15 @@
   {tikz_figs.length} standalone TikZ figures, mostly about physics and machine learning.
 </p>
 <p>
-  Built by <a href="https://janosh.dev">Janosh Riebesell</a>.
-</p>
-<p>
   <Icon icon="octicon:mark-github" inline />&nbsp; TikZ code on
-  <a href={repo_url}>GitHub</a>. &ensp;
+  <a href={repository}>GitHub</a>. &ensp;
 
   <Icon icon="octicon:law" inline />&nbsp;
-  <a href="{repo_url}/blob/main/license">MIT licensed</a>. Free to reuse.
+  <a href="{repository}/blob/main/license">MIT licensed</a>. Free to reuse.
 </p>
 <p>
   Have a TikZ image you'd like to share with attribution?
-  <a href="{repo_url}/pulls">Submit a PR</a> and add it to this list.
+  <a href="{repository}/pulls">Submit a PR</a> and add it to this list.
 </p>
 
 <div class="filters">

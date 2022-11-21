@@ -11,6 +11,7 @@ specifiers:
   eslint-plugin-svelte3: ^4.0.0
   highlight.js: ^11.6.0
   image-size: ^1.0.2
+  js-yaml: ^4.1.0
   prettier: ^2.7.1
   prettier-plugin-svelte: ^2.8.0
   rehype-katex: ^6.0.2
@@ -39,6 +40,7 @@ devDependencies:
   eslint-plugin-svelte3: 4.0.0_2h6d4ngklmojchucosx7yvuw7m
   highlight.js: 11.6.0
   image-size: 1.0.2
+  js-yaml: 4.1.0
   prettier: 2.7.1
   prettier-plugin-svelte: 2.8.0_lrllcp5xtrkmmdzifit4hd52ze
   rehype-katex: 6.0.2

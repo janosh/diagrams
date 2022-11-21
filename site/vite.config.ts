@@ -8,8 +8,8 @@ import remark_math from 'remark-math'
 import remark_parse from 'remark-parse'
 import remark_rehype from 'remark-rehype'
 import { unified } from 'unified'
-import { UserConfig } from 'vite'
-import { YamlMetadata } from './src/types'
+import type { UserConfig } from 'vite'
+import type { YamlMetadata } from './src/types'
 
 const vite_config: UserConfig = {
   plugins: [sveltekit()],
