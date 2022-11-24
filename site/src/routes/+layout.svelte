@@ -1,15 +1,9 @@
 <script lang="ts">
-  import { base } from '$app/paths'
   import Icon from '@iconify/svelte'
   import GitHubCorner from 'svelte-github-corner'
+  import { repository } from '../../package.json'
   import '../app.css'
-  import { repository, name } from '../../package.json'
 </script>
-
-<svelte:head>
-  <link rel="icon" href="{base}/favicon.svg" />
-  <base href={import.meta.env.CI ? `/${name}/` : ``} />
-</svelte:head>
 
 <GitHubCorner href={repository} --ghc-bg="white" --ghc-color="var(--body-bg)" />
 
