@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { prerendering } from '$app/environment'
+  import { building } from '$app/environment'
   import Card from '$lib/Card.svelte'
   import RadioButtons from '$lib/RadioButtons.svelte'
   import tikz_figs from '$lib/tikz-figures.json'
   import Icon from '@iconify/svelte'
   import MultiSelect from 'svelte-multiselect'
-  import { filtered_figs, filter_tags, search, tag_filter_mode } from '../stores'
   import { homepage, repository } from '../../package.json'
+  import { filtered_figs, filter_tags, search, tag_filter_mode } from '../stores'
 
   let innerWidth: number
   $: cols = clamp(Math.floor(innerWidth / 300), 1, 6)
@@ -105,7 +105,7 @@
   <p>{$filtered_figs.length} match{$filtered_figs.length != 1 ? `es` : ``}</p>
 {/if}
 
-{#if cols || prerendering}
+{#if cols || building}
   <div style:column-count={cols} style="column-gap: 1em;">
     {#each $filtered_figs as item (item.slug)}
       <Card {item} style="margin-bottom: 1em; break-inside: avoid;" />

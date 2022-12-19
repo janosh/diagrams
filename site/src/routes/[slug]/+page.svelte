@@ -46,7 +46,7 @@
   <meta name="twitter:card" content="summary" />
 </svelte:head>
 
-<a href="." class="large-link">&laquo; back</a>
+<a href="." class="large-link">&laquo; home</a>
 <h1>{title}</h1>
 
 {#if creator || url}
