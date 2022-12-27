@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+title: Random TikZ Collection
+message: If you use this software, please cite it as below.
+authors:
+  - family-names: Riebesell
+    given-names: Janosh
+    orcid: https://orcid.org/0000-0001-5233-3462
+    affiliation: University of Cambridge
+    email: janosh@lbl.gov
+license: MIT
+license-url: https://github.com/janosh/tikz/blob/main/license"
+repository-code: https://github.com/janosh/tikz
+type: software
+url: https://github.com/janosh/tikz
+doi: 10.5281/zenodo.7486911
+version: 0.1.0
+date-released: 2022-12-27
