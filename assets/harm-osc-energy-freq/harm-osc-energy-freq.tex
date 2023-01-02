@@ -6,7 +6,7 @@
 \begin{document}
 \begin{tikzpicture}
   \begin{axis}[
-      xlabel = $\omega$,
+      xlabel = $\omega = \sqrt{k/m}$,
       ylabel = $\langle E\rangle/k_\text{B} T$,
       domain = 0.01:11,
       ymin = 0,
@@ -14,7 +14,8 @@
       axis lines = center,
       every tick/.style = thick]
 
-    \def\h{1}\def\b{1}
+    \def\h{1}
+    \def\b{1}
     \def\eev{1/2*\h*x*(1 + 4/(e^(\b*\h*x) - 1))}
     \addplot[color=blue]{\eev};
 
