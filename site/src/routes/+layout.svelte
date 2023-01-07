@@ -1,7 +1,7 @@
 <script lang="ts">
+  import { repository } from '$root/package.json'
   import Icon from '@iconify/svelte'
   import GitHubCorner from 'svelte-github-corner'
-  import { repository } from '../../package.json'
   import '../app.css'
 </script>
 

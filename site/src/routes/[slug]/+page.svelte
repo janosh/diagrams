@@ -3,8 +3,8 @@
   import CodeBlock from '$lib/CodeBlock.svelte'
   import PrevNextFig from '$lib/PrevNextFig.svelte'
   import Tags from '$lib/Tags.svelte'
+  import { homepage, repository } from '$root/package.json'
   import Icon from '@iconify/svelte'
-  import { homepage, repository } from '../../../package.json'
   import type { PageData } from './$types'
 
   export let data: PageData
@@ -66,7 +66,7 @@
 
 <section>
   <h3>Tags</h3>
-  <Tags {tags} fontSize="12pt" />
+  <Tags {tags} font_size="12pt" />
 
   {#if description}
     {@html description}

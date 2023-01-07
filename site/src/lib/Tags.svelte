@@ -1,12 +1,12 @@
 <script lang="ts">
   export let tags: string[]
-  export let fontSize = `9pt`
+  export let font_size = `9pt`
   export let margin = `auto`
 </script>
 
 <p class="tags" style:margin>
   {#each tags as tag}
-    <small style:font-size={fontSize}>{tag}</small>
+    <small style:font-size={font_size}>{tag}</small>
   {/each}
 </p>
 

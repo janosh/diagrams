@@ -1,12 +1,12 @@
 <script lang="ts">
   import { building } from '$app/environment'
   import Card from '$lib/Card.svelte'
-  import RadioButtons from '$lib/RadioButtons.svelte'
+  import { filtered_figs, filter_tags, search, tag_filter_mode } from '$lib/stores'
   import tikz_figs from '$lib/tikz-figures.json'
+  import { homepage, repository } from '$root/package.json'
   import Icon from '@iconify/svelte'
   import MultiSelect from 'svelte-multiselect'
-  import { homepage, repository } from '../../package.json'
-  import { filtered_figs, filter_tags, search, tag_filter_mode } from '../stores'
+  import { RadioButtons } from 'svelte-zoo'
 
   let innerWidth: number
   $: cols = clamp(Math.floor(innerWidth / 300), 1, 6)

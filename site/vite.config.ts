@@ -1,7 +1,9 @@
+import type { YamlMetadata } from '$lib/types'
 import { sveltekit } from '@sveltejs/kit/vite'
 import * as fs from 'fs'
 import image_dims from 'image-size'
 import * as yaml from 'js-yaml'
+import { resolve } from 'path'
 import rehype_katex from 'rehype-katex'
 import rehype_stringify from 'rehype-stringify'
 import remark_math from 'remark-math'
@@ -9,7 +11,6 @@ import remark_parse from 'remark-parse'
 import remark_rehype from 'remark-rehype'
 import { unified } from 'unified'
 import type { UserConfig } from 'vite'
-import type { YamlMetadata } from './src/types'
 
 const vite_config: UserConfig = {
   plugins: [sveltekit()],
@@ -23,6 +24,12 @@ const vite_config: UserConfig = {
 
   preview: {
     port: 3000,
+  },
+
+  resolve: {
+    alias: {
+      $root: resolve(`.`),
+    },
   },
 }
 

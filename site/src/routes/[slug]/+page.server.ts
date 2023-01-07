@@ -1,6 +1,6 @@
+import { filtered_figs } from '$lib/stores'
 import { error } from '@sveltejs/kit'
 import { get } from 'svelte/store'
-import { filtered_figs } from '../../stores'
 import type { PageServerLoad } from './$types'
 
 export const load: PageServerLoad = ({ params }) => {
