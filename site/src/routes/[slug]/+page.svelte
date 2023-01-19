@@ -1,16 +1,14 @@
 <script lang="ts">
   import { dev } from '$app/environment'
-  import CodeBlock from '$lib/CodeBlock.svelte'
-  import PrevNextFig from '$lib/PrevNextFig.svelte'
-  import Tags from '$lib/Tags.svelte'
+  import { CodeBlock, PrevNextFig, Tags } from '$lib'
   import { homepage, repository } from '$root/package.json'
   import Icon from '@iconify/svelte'
   import type { PageData } from './$types'
 
   export let data: PageData
 
-  $: ({ title, description, code, width, height } = data.tikz_figure)
-  $: ({ creator, creator_url, url, downloads, tags, slug } = data.tikz_figure)
+  $: ({ title, description, code, width, height } = data.current)
+  $: ({ creator, creator_url, url, downloads, tags, slug } = data.current)
   $: link = `GitHub||${repository}/blob/main/assets/${slug}/${slug}.tex`
   const labels = [
     [`.png`, `PNG`],
@@ -103,7 +101,7 @@
 
 <CodeBlock {code} title="{slug}.tex" {link} />
 
-<PrevNextFig prev={data.prev_fig} next={data.next_fig} />
+<PrevNextFig prev={data.prev} next={data.next} />
 
 <style>
   h1 {

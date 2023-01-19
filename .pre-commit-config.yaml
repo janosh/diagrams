@@ -3,8 +3,6 @@ ci:
 
 default_install_hook_types: [pre-commit, commit-msg]
 
-exclude: pnpm-lock.yaml
-
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0

@@ -1,11 +1,15 @@
 <script lang="ts">
   import { repository } from '$root/package.json'
   import Icon from '@iconify/svelte'
-  import GitHubCorner from 'svelte-github-corner'
+  import { GitHubCorner } from 'svelte-zoo'
   import '../app.css'
 </script>
 
-<GitHubCorner href={repository} --ghc-bg="white" --ghc-color="var(--body-bg)" />
+<GitHubCorner
+  href={repository}
+  --zoo-github-corner-bg="white"
+  --zoo-github-corner-color="var(--body-bg)"
+/>
 
 <slot />
 

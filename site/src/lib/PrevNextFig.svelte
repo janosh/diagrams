@@ -1,6 +1,6 @@
 <script lang="ts">
   import Icon from '@iconify/svelte'
-  import Card from './Card.svelte'
+  import { Card } from '.'
   import type { TikzFigure } from './types'
 
   export let prev: TikzFigure

@@ -5,19 +5,19 @@ import type { PageServerLoad } from './$types'
 
 export const load: PageServerLoad = ({ params }) => {
   const { slug } = params
-  const tikz_figures = get(filtered_figs)
+  const items = get(filtered_figs)
 
-  const fig_idx = tikz_figures.findIndex((fig) => fig.slug === slug)
-  if (fig_idx === -1) {
+  const idx = items.findIndex((itm) => itm.slug === slug)
+  if (idx === -1) {
     throw error(404, `Page '${slug}' not found`)
   }
   // wrap around start/end of array
-  const prev_idx = (fig_idx - 1 + tikz_figures.length) % tikz_figures.length
-  const next_idx = (fig_idx + 1) % tikz_figures.length
+  const prev_idx = (idx - 1 + items.length) % items.length
+  const next_idx = (idx + 1) % items.length
 
-  const prev_fig = tikz_figures[prev_idx]
-  const next_fig = tikz_figures[next_idx]
-  const tikz_figure = tikz_figures[fig_idx]
+  const prev = items[prev_idx]
+  const next = items[next_idx]
+  const current = items[idx]
 
-  return { prev_fig, tikz_figure, next_fig }
+  return { prev, current, next }
 }

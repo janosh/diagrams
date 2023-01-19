@@ -1,7 +1,7 @@
 <script lang="ts">
   import { dev } from '$app/environment'
   import { fade } from 'svelte/transition'
-  import Tags from './Tags.svelte'
+  import { Tags } from '.'
   import type { TikzFigure } from './types'
 
   export let item: TikzFigure

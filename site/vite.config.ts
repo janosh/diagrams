@@ -3,7 +3,6 @@ import { sveltekit } from '@sveltejs/kit/vite'
 import * as fs from 'fs'
 import image_dims from 'image-size'
 import * as yaml from 'js-yaml'
-import { resolve } from 'path'
 import rehype_katex from 'rehype-katex'
 import rehype_stringify from 'rehype-stringify'
 import remark_math from 'remark-math'
@@ -24,12 +23,6 @@ const vite_config: UserConfig = {
 
   preview: {
     port: 3000,
-  },
-
-  resolve: {
-    alias: {
-      $root: resolve(`.`),
-    },
   },
 }
 

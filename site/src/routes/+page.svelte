@@ -1,6 +1,6 @@
 <script lang="ts">
   import { building } from '$app/environment'
-  import Card from '$lib/Card.svelte'
+  import { Card } from '$lib'
   import { filtered_figs, filter_tags, search, tag_filter_mode } from '$lib/stores'
   import tikz_figs from '$lib/tikz-figures.json'
   import { homepage, repository } from '$root/package.json'
