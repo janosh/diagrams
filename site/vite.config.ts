@@ -1,4 +1,4 @@
-import type { YamlMetadata } from '$lib/types'
+import type { YamlMetadata } from '$lib'
 import { sveltekit } from '@sveltejs/kit/vite'
 import * as fs from 'fs'
 import image_dims from 'image-size'

@@ -1,12 +1,26 @@
 <script lang="ts">
+  import { goto } from '$app/navigation'
   import Icon from '@iconify/svelte'
+  import type { TikzFigure } from '.'
   import { Card } from '.'
-  import type { TikzFigure } from './types'
 
   export let prev: TikzFigure
   export let next: TikzFigure
   let style = `max-width: 250px; align-content: space-around; height: 100%;`
+
+  const goto_options = { replaceState: true, noScroll: true }
+
+  function handle_keyup(event: KeyboardEvent) {
+    const to = {
+      ArrowLeft: prev?.slug,
+      ArrowRight: next?.slug,
+      Escape: `/`,
+    }[event.key]
+    if (to) goto(to, goto_options)
+  }
 </script>
+
+<svelte:window on:keyup={handle_keyup} />
 
 <ul>
   <li>

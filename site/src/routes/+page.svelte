@@ -1,8 +1,9 @@
 <script lang="ts">
   import { building } from '$app/environment'
+  import { goto } from '$app/navigation'
   import { Card } from '$lib'
   import { filtered_figs, filter_tags, search, tag_filter_mode } from '$lib/stores'
-  import tikz_figs from '$lib/tikz-figures.json'
+  import figs from '$lib/tikz-figures.json'
   import { homepage, repository } from '$root/package.json'
   import Icon from '@iconify/svelte'
   import MultiSelect from 'svelte-multiselect'
@@ -12,7 +13,7 @@
   $: cols = clamp(Math.floor(innerWidth / 300), 1, 6)
 
   const tags = Object.entries(
-    tikz_figs
+    figs
       .flatMap((file) => file.tags)
       .reduce((acc, el) => {
         acc[el] = (acc[el] ?? 0) + 1
@@ -24,7 +25,7 @@
   const clamp = (num: number, min: number, max: number) =>
     Math.min(Math.max(num, min), max)
 
-  $: $filtered_figs = tikz_figs
+  $: $filtered_figs = figs
     .filter((file) => {
       const searchTerms = $search?.toLowerCase().split(` `)
       const matches_search = searchTerms?.every((term) =>
@@ -45,7 +46,26 @@
       return a.title.localeCompare(b.title)
     })
 
-  const meta_description = `Random collection of ${tikz_figs.length} TikZ figures`
+  const meta_description = `Random collection of ${figs.length} TikZ figures`
+
+  let active_idx = -1
+
+  function handle_keyup(event: KeyboardEvent) {
+    if (event.key === `Enter` && active_idx >= 0) {
+      const site = figs[active_idx]
+      goto(site.slug)
+    }
+    const to = {
+      // wrap around
+      ArrowLeft: (active_idx - 1 + figs.length) % figs.length,
+      ArrowRight: (active_idx + 1) % figs.length,
+      Escape: -1,
+    }[event.key]
+    if (to !== undefined && to >= 0) active_idx = to
+    // keep active_idx in viewport
+    const active = document.querySelector(`ul > li.active`)
+    if (active) active.scrollIntoViewIfNeeded()
+  }
 </script>
 
 <svelte:head>
@@ -58,7 +78,7 @@
   <meta name="twitter:card" content="summary" />
 </svelte:head>
 
-<svelte:window bind:innerWidth />
+<svelte:window bind:innerWidth on:keyup={handle_keyup} />
 
 <h1>
   Random
@@ -66,7 +86,7 @@
   Collection
 </h1>
 <p>
-  {tikz_figs.length} standalone TikZ figures, mostly about physics and machine learning.
+  {figs.length} standalone TikZ figures, mostly about physics and machine learning.
 </p>
 <p>
   <Icon icon="octicon:mark-github" inline />&nbsp; TikZ code on
@@ -106,11 +126,13 @@
 {/if}
 
 {#if cols || building}
-  <div style:column-count={cols} style="column-gap: 1em;">
-    {#each $filtered_figs as item (item.slug)}
-      <Card {item} style="margin-bottom: 1em; break-inside: avoid;" />
+  <ul style:column-count={cols} style="column-gap: 1em;">
+    {#each $filtered_figs as item, idx (item.slug)}
+      <li class:active={active_idx == idx}>
+        <Card {item} style="break-inside: avoid;" />
+      </li>
     {/each}
-  </div>
+  </ul>
 {/if}
 
 <style>
@@ -119,6 +141,18 @@
   }
   p {
     font-size: 2.2ex;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  ul > li {
+    margin-bottom: 1em;
+    border-radius: 1ex;
+    overflow: hidden;
+  }
+  ul > li.active {
+    border: 2px dashed;
   }
   input {
     outline: none;

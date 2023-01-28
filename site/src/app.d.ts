@@ -1,7 +1,7 @@
 /// <reference types="@sveltejs/kit" />
 
 declare module '*tikz-figures.json' {
-  const tex_files: import('./lib/types').TikzFigure[]
+  const tex_files: import('./lib').TikzFigure[]
   export default tex_files
 }
 

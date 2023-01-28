@@ -1,8 +1,8 @@
 <script lang="ts">
   import { dev } from '$app/environment'
   import { fade } from 'svelte/transition'
+  import type { TikzFigure } from '.'
   import { Tags } from '.'
-  import type { TikzFigure } from './types'
 
   export let item: TikzFigure
   export let style = ''
@@ -16,7 +16,6 @@
 
 <a href={slug} transition:fade={{ duration: 200 }} {style}>
   <h2 id={slug}>{title}</h2>
-
   <Tags {tags} />
   <img src="{base_uri}.png" alt={title} {width} {height} />
   {#if description}
@@ -28,7 +27,6 @@
   a {
     display: grid;
     place-content: center;
-    border-radius: 1ex;
     cursor: pointer;
     transform-style: preserve-3d;
     background: #595975;
