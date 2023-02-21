@@ -175,8 +175,7 @@
     margin: 2em;
 
     --sms-bg: black;
-    --sms-min-width: 18em;
-    --sms-max-width: 26em;
+    --sms-max-width: 20em;
     --sms-selected-bg: rgba(255, 255, 255, 0.15);
     --sms-options-bg: #0f0422;
     --sms-border: 1px dashed gray;
