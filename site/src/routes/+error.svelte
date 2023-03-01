@@ -41,7 +41,6 @@
     max-width: 45em;
     padding: 5em 3em 1em;
     margin: auto;
-    text-align: center;
   }
   p img {
     vertical-align: middle;

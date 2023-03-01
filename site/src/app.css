@@ -1,11 +1,15 @@
 :root {
   --body-bg: #090019;
+
+  --sms-options-bg: #1e1e2f;
 }
 body {
   background: var(--body-bg);
   padding: 2vw;
   font-family: -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
   color: white;
+}
+:where(h1, h2, h3, h4, p, footer) {
   text-align: center;
 }
 a {

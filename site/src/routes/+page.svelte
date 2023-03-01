@@ -107,11 +107,7 @@
     placeholder="Filter by tag..."
     bind:selected={$filter_tags}
   >
-    <span
-      slot="option"
-      let:option
-      style="display: flex; gap: 5pt; text-align: left; align-items: center;"
-    >
+    <span slot="option" let:option style="display: flex; gap: 5pt; align-items: center;">
       {option.label} <span style="flex: 1;" />
       {option.count}
     </span>

@@ -53,7 +53,6 @@
   }
   pre {
     padding: 1em;
-    text-align: left;
     background: rgba(255, 255, 255, 0.2);
     overflow-x: scroll;
     font-size: 1.2em;
