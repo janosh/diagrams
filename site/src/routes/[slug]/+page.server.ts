@@ -8,16 +8,8 @@ export const load: PageServerLoad = ({ params }) => {
   const items = get(filtered_figs)
 
   const idx = items.findIndex((itm) => itm.slug === slug)
-  if (idx === -1) {
-    throw error(404, `Page '${slug}' not found`)
-  }
-  // wrap around start/end of array
-  const prev_idx = (idx - 1 + items.length) % items.length
-  const next_idx = (idx + 1) % items.length
+  if (idx === -1) throw error(404, `Page '${slug}' not found`)
+  const fig = items[idx]
 
-  const prev = items[prev_idx]
-  const next = items[next_idx]
-  const current = items[idx]
-
-  return { prev, current, next }
+  return { fig, items, slug }
 }

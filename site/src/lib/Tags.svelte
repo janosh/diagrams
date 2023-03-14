@@ -5,7 +5,7 @@
 </script>
 
 <p class="tags" style:margin>
-  {#each tags as tag}
+  {#each tags ?? [] as tag}
     <small style:font-size={font_size}>{tag}</small>
   {/each}
 </p>

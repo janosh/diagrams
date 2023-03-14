@@ -11,7 +11,7 @@ import remark_rehype from 'remark-rehype'
 import { unified } from 'unified'
 import type { UserConfig } from 'vite'
 
-const vite_config: UserConfig = {
+export default {
   plugins: [sveltekit()],
 
   server: {
@@ -24,9 +24,7 @@ const vite_config: UserConfig = {
   preview: {
     port: 3000,
   },
-}
-
-export default vite_config
+} satisfies UserConfig
 
 const figure_dirs = fs
   .readdirSync(`../assets`, { withFileTypes: true })

@@ -1,14 +1,14 @@
 <script lang="ts">
   import { dev } from '$app/environment'
-  import { CodeBlock, PrevNextFig, Tags } from '$lib'
+  import { Card, CodeBlock, Tags } from '$lib'
   import { homepage, repository } from '$root/package.json'
   import Icon from '@iconify/svelte'
-  import type { PageData } from './$types'
+  import { PrevNext } from 'svelte-zoo'
 
-  export let data: PageData
+  export let data
 
-  $: ({ title, description, code, width, height } = data.current)
-  $: ({ creator, creator_url, url, downloads, tags, slug } = data.current)
+  $: ({ title, description, code, width, height } = data.fig)
+  $: ({ creator, creator_url, url, downloads, tags, slug } = data.fig)
   $: link = `GitHub||${repository}/blob/main/assets/${slug}/${slug}.tex`
   const labels = [
     [`.png`, `PNG`],
@@ -77,31 +77,45 @@
 <h2>
   <Icon icon="octicon:link-external" inline />&nbsp; Edit
 </h2>
-<a href={overleaf_href} target="_blank" rel="noreferrer" class="large-link">
-  <img src="overleaf.svg" alt="Overleaf Logo" height="30" />&nbsp;Open in Overleaf
-</a>
+<section>
+  <a href={overleaf_href} target="_blank" rel="noreferrer" class="large-link">
+    <img src="overleaf.svg" alt="Overleaf Logo" height="30" />&nbsp;Open in Overleaf
+  </a>
+</section>
 
 <h2>
   <Icon icon="octicon:download-16" inline />&nbsp; Download
 </h2>
-
-{#each labels as [ext, label]}
-  {#if downloads?.some((filename) => filename.includes(ext))}
-    <a href="{base_uri}{ext}" target="_blank" rel="noreferrer" class="large-link">
-      {label}
-    </a>
-  {/if}
-{/each}
+<section>
+  {#each labels as [ext, label]}
+    {#if downloads?.some((filename) => filename.includes(ext))}
+      <a href="{base_uri}{ext}" target="_blank" rel="noreferrer" class="large-link">
+        {label}
+      </a>
+    {/if}
+  {/each}
+</section>
 
 <h2>
   <Icon icon="octicon:code" inline />&nbsp; Code
 </h2>
-
 <p>{code.split(`\n`).length} lines</p>
 
 <CodeBlock {code} title="{slug}.tex" {link} />
-
-<PrevNextFig prev={data.prev} next={data.next} />
+<PrevNext
+  items={data.items.map((fig) => [fig.slug, fig])}
+  current={data.slug}
+  style="max-width: 55em; margin: auto;"
+>
+  <svelte:fragment let:item let:kind>
+    <h3>
+      <a href={item.slug}>
+        {@html kind == `next` ? `Next &rarr;` : `&larr; Previous`}
+      </a>
+    </h3>
+    <Card {item} style="max-width: 250px; align-content: space-around; height: 100%;" />
+  </svelte:fragment>
+</PrevNext>
 
 <style>
   h1 {
@@ -117,6 +131,7 @@
     max-width: 45em;
     margin: 1em auto;
     line-height: 3ex;
+    text-align: center;
   }
   img[width] {
     background: #ffffff85;

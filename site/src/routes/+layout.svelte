@@ -12,7 +12,7 @@
   })
 </script>
 
-<CmdPalette {actions} />
+<CmdPalette {actions} placeholder="Go to..." />
 
 <GitHubCorner
   href={repository}
