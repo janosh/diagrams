@@ -32,19 +32,20 @@
     background: #595975;
     transition: transform 0.5s;
     color: white;
+    border-radius: 3pt;
   }
   a:hover {
-    transform: scale(1.01);
+    transform: scale(1.005);
   }
   h2 {
-    margin: 1ex;
+    margin: 4pt 1ex 1ex;
     color: white;
   }
   img {
     box-sizing: border-box;
     width: calc(100% - 2ex);
     background: #ffffff85;
-    margin: 1ex;
+    margin: 2ex 1ex 1ex;
     padding: 1ex;
     border-radius: 4pt;
     height: auto;

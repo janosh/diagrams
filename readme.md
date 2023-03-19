@@ -148,7 +148,7 @@ To run the scripts requires the following dependencies:
 - [`pngquant`](https://github.com/kornelski/pngquant) (`brew install pngquant`)
 - [`zopflipng`](https://github.com/google/zopfli) (`brew install zopfli`)
 
-To run `pdf-compressor` directly or to use it as part of the [`render-tikz.sh`](scripts/render-tikz.sh) pipeline, you need a free public API key from <https://developer.ilovepdf.com>. Pass it to `pdf-compressor` with:
+To run `pdf-compressor` directly or to use it as part of the [`render-tikz.py`](scripts/render-tikz.py) pipeline, you need a free public API key from <https://developer.ilovepdf.com>. Pass it to `pdf-compressor` with:
 
 ```sh
 pdf-compressor --set-api-key project_public_7c854a9db0...

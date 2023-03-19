@@ -5,11 +5,11 @@ import type { PageServerLoad } from './$types'
 
 export const load: PageServerLoad = ({ params }) => {
   const { slug } = params
-  const items = get(filtered_figs)
+  const figs = get(filtered_figs)
 
-  const idx = items.findIndex((itm) => itm.slug === slug)
+  const idx = figs.findIndex((itm) => itm.slug === slug)
   if (idx === -1) throw error(404, `Page '${slug}' not found`)
-  const fig = items[idx]
+  const fig = figs[idx]
 
-  return { fig, items, slug }
+  return { fig, figs, slug }
 }

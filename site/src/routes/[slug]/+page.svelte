@@ -103,18 +103,18 @@
 
 <CodeBlock {code} title="{slug}.tex" {link} />
 <PrevNext
-  items={data.items.map((fig) => [fig.slug, fig])}
+  items={data.figs.map((fig) => [fig.slug, fig])}
   current={data.slug}
   style="max-width: 55em; margin: auto;"
+  let:item
+  let:kind
 >
-  <svelte:fragment let:item let:kind>
-    <h3>
-      <a href={item.slug}>
-        {@html kind == `next` ? `Next &rarr;` : `&larr; Previous`}
-      </a>
-    </h3>
-    <Card {item} style="max-width: 250px; align-content: space-around; height: 100%;" />
-  </svelte:fragment>
+  <h3>
+    <a href={item.slug}>
+      {@html kind == `next` ? `Next &rarr;` : `&larr; Previous`}
+    </a>
+  </h3>
+  <Card {item} style="max-width: 250px;" />
 </PrevNext>
 
 <style>

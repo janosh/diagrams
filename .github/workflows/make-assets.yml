@@ -40,13 +40,13 @@ jobs:
         # texlive-latex-extra is needed for package standalone
         run: sudo apt-get install texlive latexmk texlive-latex-base texlive-latex-extra
 
-      - name: Run render-tikz.sh on changed TeX files
+      - name: Run render-tikz.py on changed TeX files
         if: steps.diff.outputs.tex-files != ''
         id: render-tikz
         run: |
           for tex_file in ${{ steps.diff.outputs.tex-files }}; do
             echo "Processing $tex_file..."
-            ./scripts/render-tikz.sh "$tex_file"
+            ./scripts/render-tikz.py "$tex_file"
           done
 
       - name: Push changes if any
