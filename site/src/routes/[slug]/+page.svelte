@@ -109,12 +109,14 @@
   let:item
   let:kind
 >
-  <h3>
-    <a href={item.slug}>
-      {@html kind == `next` ? `Next &rarr;` : `&larr; Previous`}
-    </a>
-  </h3>
-  <Card {item} style="max-width: 250px;" />
+  <div>
+    <h3>
+      <a href={item.slug}>
+        {@html kind == `next` ? `Next &rarr;` : `&larr; Previous`}
+      </a>
+    </h3>
+    <Card {item} style="max-width: 250px;" />
+  </div>
 </PrevNext>
 
 <style>

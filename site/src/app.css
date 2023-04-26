@@ -2,6 +2,7 @@
   --body-bg: #090019;
 
   --sms-options-bg: #1e1e2f;
+  --sms-li-active-bg: cornflowerblue;
 }
 body {
   background: var(--body-bg);

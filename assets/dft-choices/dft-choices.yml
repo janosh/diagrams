@@ -1,7 +1,7 @@
-title: DFT Choices
+title: Kohn-Sham DFT User Choices
 tags:
   - physics
-  - solid state physics
-  - density functional theory
-description: |
-  Visualization of the many choices involved in a Kohn-Sham calculation. It can be non-relativistic based on the classical Schrödinger equation or fully relativistic based on the Dirac equation which includes spin-orbit coupling. The near-core electrons can be modeled explicitly in an all-electron calculation or, much more commonly, incorporated along with the nucleus into an effective pseudo-potential. The Hartree energy can be obtained by integrating the charge density or by solving the Poisson equation. The exchange-correlation potential can be treated with a huge library of density functionals, most commonly LDA and GGA. The wave functions can be computed on a numerical mesh and expanded in one of many possible basis sets, e.g. plane waves, APW, or PAW. Inspired by [arxiv:cond-mat/0211443](https://arxiv.org/abs/cond-mat/0211443).
+  - quantum-mechanics
+  - density-functional-theory
+  - Kohn-Sham
+description: Visualization of the many choices involved in a Kohn-Sham calculation. It can be non-relativistic based on the classical Schrödinger equation or fully relativistic based on the Dirac equation which includes spin-orbit coupling. The near-core electrons can be modeled explicitly in an all-electron calculation or, much more commonly, incorporated along with the nucleus into an effective pseudo-potential. The Hartree energy can be obtained by integrating the charge density or by solving the Poisson equation. The exchange-correlation potential can be treated with a huge library of density functionals, most commonly LDA and GGA. The wave functions can be computed on a numerical mesh and expanded in one of many possible basis sets, e.g. plane waves, APW, or PAW. Inspired by [arxiv:cond-mat/0211443](https://arxiv.org/abs/cond-mat/0211443).

@@ -28,8 +28,8 @@ export default {
 
 const figure_dirs = fs
   .readdirSync(`../assets`, { withFileTypes: true })
-  .filter((itm) => itm.isDirectory())
-  .map((dir) => dir.name) // remove hidden system files
+  .filter((itm: fs.Dirent) => itm.isDirectory())
+  .map((dir: fs.Dirent) => dir.name) // remove hidden system files
 
 const tikz_figures = figure_dirs.map((slug) => {
   const figure_basename = `../assets/${slug}/${slug}`
