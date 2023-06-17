@@ -3,6 +3,8 @@
 
   --sms-options-bg: #1e1e2f;
   --sms-li-active-bg: cornflowerblue;
+
+  --text-color: #eee;
 }
 body {
   background: var(--body-bg);
@@ -21,14 +23,13 @@ a:hover {
   color: orange;
 }
 button {
-  font-size: 2ex;
-  background: #3f51b5;
+  color: var(--text-color);
+  background: teal;
   border: none;
   outline: none;
   padding: 3pt 1ex;
   border-radius: 3pt;
   transition: transform 0.2s, background-color 0.2s;
-  color: white;
   cursor: pointer;
 }
 button:hover {

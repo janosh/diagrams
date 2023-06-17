@@ -16,7 +16,7 @@
 
 <GitHubCorner
   href={repository}
-  --zoo-github-corner-bg="white"
+  --zoo-github-corner-bg="var(--text-color)"
   --zoo-github-corner-color="var(--body-bg)"
 />
 

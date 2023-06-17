@@ -2,7 +2,7 @@
   import { building } from '$app/environment'
   import { goto } from '$app/navigation'
   import { Card } from '$lib'
-  import { filtered_figs, filter_tags, search, tag_filter_mode } from '$lib/stores'
+  import { filter_tags, filtered_figs, search, tag_filter_mode } from '$lib/stores'
   import figs from '$lib/tikz-figures.json'
   import { homepage, repository } from '$root/package.json'
   import Icon from '@iconify/svelte'
@@ -61,10 +61,12 @@
       ArrowRight: (active_idx + 1) % figs.length,
       Escape: -1,
     }[event.key]
-    if (to !== undefined && to >= 0) active_idx = to
+    // if not arrow or escape key, return early for browser default behavior
+    if (to === undefined) return
+    if (to >= 0) active_idx = to
     // keep active_idx in viewport
     const active = document.querySelector(`ul > li.active`)
-    if (active) active.scrollIntoViewIfNeeded()
+    if (active) active.scrollIntoView()
   }
 </script>
 
@@ -160,7 +162,7 @@
     font-size: 16px;
   }
   input::placeholder {
-    color: white;
+    color: var(--text-color);
   }
   div.filters {
     display: flex;

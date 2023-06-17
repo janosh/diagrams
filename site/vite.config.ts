@@ -26,7 +26,7 @@ export default {
   },
 } satisfies UserConfig
 
-const figure_dirs = fs
+const figure_dirs: string[] = fs
   .readdirSync(`../assets`, { withFileTypes: true })
   .filter((itm: fs.Dirent) => itm.isDirectory())
   .map((dir: fs.Dirent) => dir.name) // remove hidden system files

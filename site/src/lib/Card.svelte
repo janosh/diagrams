@@ -31,7 +31,7 @@
     transform-style: preserve-3d;
     background: #595975;
     transition: transform 0.5s;
-    color: white;
+    color: var(--text-color);
     border-radius: 3pt;
   }
   a:hover {
@@ -39,7 +39,6 @@
   }
   h2 {
     margin: 4pt 1ex 1ex;
-    color: white;
   }
   img {
     box-sizing: border-box;

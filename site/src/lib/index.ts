@@ -17,5 +17,5 @@ export type YamlMetadata = {
   creator?: string
   creator_url?: string
   url?: string
-  date?: Date
+  date?: string
 }
