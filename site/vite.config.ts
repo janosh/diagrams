@@ -40,7 +40,7 @@ const tikz_figures = figure_dirs.map((slug) => {
 
   const { width, height } = image_dims(`${figure_basename}.png`)
   const metadata = yaml.load(
-    fs.readFileSync(`${figure_basename}.yml`).toString()
+    fs.readFileSync(`${figure_basename}.yml`).toString(),
   ) as YamlMetadata
 
   if (metadata.description) {
@@ -59,5 +59,5 @@ const tikz_figures = figure_dirs.map((slug) => {
 
 fs.writeFileSync(
   `src/lib/tikz-figures.json`,
-  JSON.stringify(tikz_figures, null, 2)
+  JSON.stringify(tikz_figures, null, 2),
 )

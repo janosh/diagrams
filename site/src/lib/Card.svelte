@@ -5,7 +5,7 @@
   import { Tags } from '.'
 
   export let item: TikzFigure
-  export let style = ''
+  export let style = ``
 
   // development server fetches files from local folder (specified by svelte.config.js kit.files.assets)
   // production server fetches files from GitHub (so we don't need to re-upload with every build)
