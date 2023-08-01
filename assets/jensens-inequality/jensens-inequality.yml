@@ -1,4 +1,4 @@
 title: Jensens Inequality
 tags:
   - math
-description: null
+description: This graph illustrates Jensen's Inequality, a fundamental concept in mathematical optimization and probability theory. It compares a convex function (blue curve, representing the natural logarithm function) with a linear function (orange dashed line). The inequality states that for a convex function, the function of an expectation is always less than or equal to the expectation of the function, depicted here by the fact that the dashed line is always above the curve. Equality holds if and only if the random variable is a constant (i.e. there is no randomness).

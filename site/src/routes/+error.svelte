@@ -31,7 +31,7 @@
     Back to <a href=".">
       <img src="favicon.svg" alt={name} height="30" />
       landing page
-    </a>.
+    </a>
   </p>
 </div>
 

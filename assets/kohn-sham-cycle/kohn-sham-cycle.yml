@@ -3,4 +3,4 @@ tags:
   - physics
   - quantum mechanics
   - density functional theory
-description: null
+description: This diagram illustrates the Kohn-Sham cycle in Density Functional Theory (DFT), a computational quantum mechanical modeling method. The process starts with an initial guess for the electron density, which is used to calculate the effective potential. This potential is then used in the Kohn-Sham Hamiltonian, which is solved to obtain the wavefunctions. These wavefunctions are used to compute a new electron density. If convergence criteria are met, the final electron density is used to calculate the total energy functional. If not, the new electron density is used for the next iteration of the cycle.

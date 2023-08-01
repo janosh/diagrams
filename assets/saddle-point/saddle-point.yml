@@ -1,0 +1,5 @@
+title: Saddle Point
+tags:
+  - math
+  - convexity
+description: This graph depicts a saddle point in three-dimensional space, which is a point in the domain of a function that is a local minimum in one direction and a local maximum in another. The depicted function $F(T, V)$ is quadratic in $T$ and $V$, and the graph shows the convex and concave nature of the function along different axes.
