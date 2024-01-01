@@ -8,9 +8,9 @@
 
 [![Made with LaTeX](https://img.shields.io/badge/Made%20with-LaTeX-1f425f.svg?logo=latex)](https://latex-project.org)
 [![Site](https://github.com/janosh/tikz/actions/workflows/gh-pages.yml/badge.svg)](https://github.com/janosh/tikz/actions/workflows/gh-pages.yml)
-[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/janosh/tikz/main.svg)](https://results.pre-commit.ci/latest/github/janosh/tikz/main)
 [![Link Check](https://github.com/janosh/tikz/actions/workflows/link-check.yml/badge.svg)](https://github.com/janosh/tikz/actions/workflows/link-check.yml)
 [![Pull Requests Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?logo=github)](https://github.com/janosh/tikz/pulls)
+[![DOI](https://zenodo.org/badge/286220365.svg)](https://zenodo.org/badge/latestdoi/286220365)
 
 </h3>
 
@@ -152,4 +152,22 @@ To run `pdf-compressor` directly or to use it as part of the [`render-tikz.py`](
 
 ```sh
 pdf-compressor --set-api-key project_public_7c854a9db0...
+```
+
+## 📖 &thinsp; How to cite
+
+You can cite the [Zenodo record](https://zenodo.org/badge/latestdoi/286220365) using the following BibTeX entry:
+
+```bib
+@software{riebesell_tikz_2020,
+  title = {Collection of standalone TikZ images},
+  author = {Riebesell, Janosh},
+  date = {2020-08-09},
+  year = {2020},
+  doi = {10.5281/zenodo.7486911},
+  url = {https://github.com/janosh/tikz},
+  note = {10.5281/zenodo.7486911 - https://github.com/janosh/tikz},
+  version = {0.1.0},
+  urldate = {2023-01-01}, % optional, replace with your date of access
+}
 ```
