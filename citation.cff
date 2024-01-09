@@ -6,7 +6,12 @@ authors:
     given-names: Janosh
     orcid: https://orcid.org/0000-0001-5233-3462
     affiliation: University of Cambridge
-    email: janosh@lbl.gov
+    email: janosh.riebesell@gmail.com
+  - family-names: Bringuier
+    given-names: Stefan
+    orcid: https://orcid.org/0000-0001-6753-1437
+    affiliation: University of Arizona
+    email: stefanbringuier@gmail.com
 license: MIT
 license-url: https://github.com/janosh/tikz/blob/main/license"
 repository-code: https://github.com/janosh/tikz
