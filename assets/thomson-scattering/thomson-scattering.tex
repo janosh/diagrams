@@ -1,0 +1,90 @@
+\documentclass[tikz,border=5pt]{standalone}
+
+\usepackage{amsmath}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+\usetikzlibrary{fadings,shadings}
+
+\tikzfading[name=fade out,
+    inner color=transparent!0,
+    outer color=transparent!100]
+
+\pgfdeclareradialshading{atomshade}{
+    \pgfpoint{0cm}{0cm}}
+    {
+        color(0cm)=(pgftransparent!0);
+        color(0.2cm)=(pgftransparent!20);
+        color(0.5cm)=(pgftransparent!50);
+        color(0.7cm)=(pgftransparent!70);
+        color(1cm)=(pgftransparent!100)
+    }
+
+\tikzset{atom/.style={circle, shading=atomshade, minimum size=1.0cm}}
+
+\begin{document}
+\begin{tikzpicture}
+	% Settings for incoming wave
+	\def\incomingWaveStart{-1.833}
+	\def\incomingWaveEnd{-1.2165}
+	\def\incomingArrowStart{-1.2165}
+	\def\incomingArrowEnd{-1.0996}
+
+	% Settings for scattered waves
+	\def\scatteredWaveStart{0}
+	\def\scatteredWaveEnd{0.633}
+	\def\scatteredArrowStart{0.633}
+	\def\scatteredArrowEnd{0.75}
+	\def\oscillationAmplitude{0.1}
+	\def\frequencyFactor{2.0e3}
+
+	% General settings
+	\def\atomRadius{0.55} % Radius of atom
+	\def\waveLengthLabelPosX{-1.7}
+	\def\waveLengthLabelPosY{0.0}
+	\def\highlightAngle{135}
+	\def\opacityHigh{1}
+	\def\opacityLow{0.65}
+
+	% Atom
+	\node[atom=gray] (atom1) at (0,0) {};
+
+	% Oscillations
+	\foreach \radius in {0.85, 0.95, 1.05, 1.15} {
+			\draw[path fading=fade out, thick] (\radius cm - 0.20cm, 0.05cm) arc (15:75:\radius cm);
+			\draw[path fading=fade out, thick] (-\radius cm + 0.20cm, -0.05cm) arc (195:255:\radius cm);
+		}
+
+	% Incoming x-ray wave
+	\draw[black, variable=\x, samples=200, smooth, domain=\incomingWaveStart:\incomingWaveEnd]
+	plot( \x, {-\oscillationAmplitude + \oscillationAmplitude * cos(\frequencyFactor*\x)} );
+	% Arrow segment at the end
+	\draw[->, black, variable=\x, samples=20, smooth, domain=\incomingArrowStart:\incomingArrowEnd]
+	plot( \x, -\oscillationAmplitude);
+	\node [above] at (\waveLengthLabelPosX,\waveLengthLabelPosY) {$\lambda$};
+
+	% Emitted x-rays
+	\foreach \angle in {95, \highlightAngle, 165, 275, 315, 350} {
+			\pgfmathsetmacro{\startX}{\atomRadius * cos(\angle)}
+			\pgfmathsetmacro{\startY}{\atomRadius * sin(\angle)}
+			\pgfmathparse{\angle==\highlightAngle ? \opacityHigh : \opacityLow}
+			\let\op\pgfmathresult
+
+			% Wave packet
+			\draw[black, opacity=\op, variable=\x, samples=200, smooth, domain=\scatteredWaveStart:\scatteredWaveEnd]
+			plot({
+					\startX + \x * cos(\angle) - \oscillationAmplitude * sin(\frequencyFactor*\x)*sin(\angle)
+				}, {
+					\startY + \x * sin(\angle) + \oscillationAmplitude * sin(\frequencyFactor*\x) * cos(\angle)
+				});
+
+			% Arrow at the end
+			\draw[->, black, opacity=\op, variable=\x, samples=20, smooth, domain=\scatteredArrowStart:\scatteredArrowEnd]
+			plot({
+					\startX + \x * cos(\angle)
+				}, {
+					\startY + \x * sin(\angle)
+				});
+		}
+	\node [left, opacity=\opacityLow] at (+95:1.1) {$\lambda$};
+\end{tikzpicture}
+\end{document}

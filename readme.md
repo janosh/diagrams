@@ -14,11 +14,11 @@
 
 </h3>
 
-Random collection of **107** `standalone` TikZ figures. Mostly about physics and machine learning.
+Collection **110** `standalone` TikZ figures for illustrating concepts in physics, chemistry and machine learning.
 
-Check out [janosh.github.io](https://janosh.github.io/tikz) to search, sort, open in Overleaf and download figures from this collection.
+Check out [janosh.github.io](https://janosh.github.io/tikz) to search, sort, open in Overleaf and download figures (PDF/SVG/PNG) from this collection.
 
-Have a TikZ image you'd like to share? [Submit a PR](https://github.com/janosh/tikz/pulls) and add it to this list.
+Have a TikZ image you'd like to share? [Submit a PR](https://github.com/janosh/tikz/pulls) with a `.tex` and metadata `.yml` file in the `assets/` directory and add yourself to the [`citation.cff`](citation.cff) file.
 
 ## Images
 
@@ -130,6 +130,8 @@ Have a TikZ image you'd like to share? [Submit a PR](https://github.com/janosh/t
 |                                 ![graph-isomorphism](assets/graph-isomorphism/graph-isomorphism.png)                                 |                                     ![periodic-table](assets/periodic-table/periodic-table.png)                                      |
 |                                           [`mosfet`](https://janosh.github.io/tikz/mosfet)                                           |                                [`plate-capacitor.tex`](https://janosh.github.io/tikz/plate-capacitor)                                |
 |                                                 ![mosfet](assets/mosfet/mosfet.png)                                                  |                                    ![plate-capacitor](assets/plate-capacitor/plate-capacitor.png)                                    |
+|                                [`basis + lattice`](https://janosh.github.io/tikz/basis-plus-lattice)                                 |                               [`thomson-scattering`](https://janosh.github.io/tikz/thomson-scattering)                               |
+|                               ![basis-plus-lattice](assets/basis-plus-lattice/basis-plus-lattice.png)                                |                               ![thomson-scattering](assets/thomson-scattering/thomson-scattering.png)                                |
 
 ## Scripts
 

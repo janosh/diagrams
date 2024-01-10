@@ -9,7 +9,8 @@ jobs:
   update-assets:
     name: Update assets
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'janosh' # don't run on forks
+    # don't run on forks and only if PR was opened from branch on this repo
+    if: github.repository_owner == 'janosh' && github.event.pull_request.head.repo.fork == false
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
