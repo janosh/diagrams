@@ -1,4 +1,5 @@
 import os
+import runpy
 import subprocess
 import sys
 
@@ -58,3 +59,6 @@ os.system(f"pngquant 32 --skip-if-larger --ext .png --force {basepath}-hd.png")
 print("\n--- zopfli: compress ---")
 os.system(f"zopflipng -y {basepath}.png {basepath}.png")
 os.system(f"zopflipng -y {basepath}-hd.png {basepath}-hd.png")
+
+print("Update readme table listing all TikZ figures in assets/")
+runpy.run_path("scripts/update_readme.py")

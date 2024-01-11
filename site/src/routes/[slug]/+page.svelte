@@ -99,7 +99,6 @@
 <h2>
   <Icon icon="octicon:code" inline />&nbsp; Code
 </h2>
-<p>{code.split(`\n`).length} lines</p>
 
 <CodeBlock {code} title="{slug}.tex" {link} />
 <PrevNext
@@ -151,7 +150,9 @@
     padding: 4pt 1ex;
     border-radius: 4pt;
     margin: 2pt;
-    transition: color 0.3s, background-color 0.3s;
+    transition:
+      color 0.3s,
+      background-color 0.3s;
     font-size: 16pt;
   }
   a.large-link:hover {

@@ -16,7 +16,10 @@
 
 <div>
   {#if title}
-    <h3>{title}</h3>
+    <h3>
+      {title}
+      <small>({code.split(`\n`).length} lines)</small>
+    </h3>
   {/if}
   <aside>
     {#if link}<a href={url}>
@@ -43,6 +46,11 @@
     background: teal;
     padding: 2pt 8pt;
     border-radius: 3pt 3pt 0 0;
+  }
+  h3 small {
+    color: #fff;
+    font-weight: 200;
+    padding-left: 6pt;
   }
   aside {
     position: absolute;
