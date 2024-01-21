@@ -165,7 +165,7 @@ You can cite the [Zenodo record](https://zenodo.org/badge/latestdoi/286220365) u
 ```bib
 @software{riebesell_tikz_2020,
   title = {Collection of standalone TikZ images},
-  author = {Riebesell, Janosh},
+  author = {Riebesell, Janosh and Bringuier, Stefan},
   date = {2020-08-09},
   year = {2020},
   doi = {10.5281/zenodo.7486911},

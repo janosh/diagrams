@@ -15,10 +15,13 @@
   const tags = Object.entries(
     figs
       .flatMap((file) => file.tags)
-      .reduce((acc, el) => {
-        acc[el] = (acc[el] ?? 0) + 1
-        return acc
-      }, {} as Record<string, number>)
+      .reduce(
+        (acc, el) => {
+          acc[el] = (acc[el] ?? 0) + 1
+          return acc
+        },
+        {} as Record<string, number>,
+      ),
   ).filter(([, count]) => count > 2)
   tags.sort(([a], [b]) => a.localeCompare(b))
 
@@ -29,7 +32,7 @@
     .filter((file) => {
       const searchTerms = $search?.toLowerCase().split(` `)
       const matches_search = searchTerms?.every((term) =>
-        JSON.stringify(file).toLowerCase().includes(term)
+        JSON.stringify(file).toLowerCase().includes(term),
       )
 
       let matches_tags = true
@@ -88,18 +91,22 @@
   Collection
 </h1>
 <p>
-  {figs.length} standalone TikZ figures, mostly about physics and machine learning.
+  {figs.length} standalone TikZ figures, mostly about
+  {#each [`physics`, `chemistry`, `machine learning`] as tag, idx}
+    {#if idx > 0},{/if}
+    <button class="link" on:click={() => ($filter_tags = [{ label: tag, count: 0 }])}>
+      {tag}
+    </button>{/each}.
 </p>
 <p>
-  <Icon icon="octicon:mark-github" inline />&nbsp; TikZ code on
-  <a href={repository}>GitHub</a>. &ensp;
-
   <Icon icon="octicon:law" inline />&nbsp;
-  <a href="{repository}/blob/main/license">MIT licensed</a>. Free to reuse.
+  <a href="{repository}/blob/main/license">MIT licensed</a> (free to reuse)&ensp;
+  <a href={repository}><Icon icon="octicon:mark-github" inline />&nbsp;Repo</a>
 </p>
 <p>
   Have a TikZ image you'd like to share with attribution?
-  <a href="{repository}/pulls">Submit a PR</a> and add it to this list.
+  <a href="{repository}/pulls">Submit a PR</a> with a standalone <code>.tex</code> file
+  and metadata <code>.yml</code> file to add it to this list.
 </p>
 
 <div class="filters">
@@ -158,7 +165,7 @@
     border-radius: 3pt;
     color: inherit;
     background: black;
-    border: 1px dashed gray;
+    border: 0.5px solid gray;
     font-size: 16px;
   }
   input::placeholder {
@@ -176,7 +183,7 @@
     --sms-max-width: 20em;
     --sms-selected-bg: rgba(255, 255, 255, 0.15);
     --sms-options-bg: #0f0422;
-    --sms-border: 1px dashed gray;
+    --sms-border: 0.5px solid gray;
     --sms-li-active-bg: rgba(255, 255, 255, 0.15);
   }
 </style>

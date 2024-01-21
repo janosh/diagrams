@@ -45,7 +45,7 @@ repos:
         args: [--disable, MD013, MD033, MD041, "--"]
 
   - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v9.0.0-alpha.0
+    rev: v9.0.0-alpha.1
     hooks:
       - id: eslint
         types: [file]

@@ -1,5 +1,6 @@
 """Auto-update readme table listing all TikZ figures in assets/."""
 
+import json
 import os
 import re
 from glob import glob
@@ -8,6 +9,9 @@ from itertools import zip_longest
 MOD_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(MOD_DIR)
 TEX_DIR = f"{ROOT}/assets"
+
+with open(f"{ROOT}/site/package.json", "r") as file:
+    site_url = json.load(file)["homepage"]
 
 tex_paths = sorted(glob(f"{TEX_DIR}/**/*.tex"))
 
@@ -18,8 +22,8 @@ for path1, path2 in zip_longest(tex_paths[::2], tex_paths[1::2]):
     fig1, fig2 = map(os.path.basename, (dir1, dir2))
 
     # file name row
-    dir_link1 = f"[`{fig1}`](https://janosh.github.io/tikz/{fig1})"
-    dir_link2 = f"[`{fig2}`](https://janosh.github.io/tikz/{fig2})" if path2 else ""
+    dir_link1 = f"[`{fig1}`]({site_url}/{fig1})"
+    dir_link2 = f"[`{fig2}`]({site_url}/{fig2})" if path2 else ""
     md_table += f"| {dir_link1} | {dir_link2} |\n"
 
     # image row
@@ -38,6 +42,9 @@ readme = re.sub(
     readme,
     flags=re.DOTALL,
 )
+
+# update count in "Collection of **110** "
+readme = re.sub(r"(?<=Collection of \*\*)\d+(?=\*\* )", str(len(tex_paths)), readme)
 
 with open(f"{ROOT}/README.md", "w") as file:
     file.write(readme)
