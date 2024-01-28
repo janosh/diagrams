@@ -47,3 +47,8 @@ button.link {
   cursor: pointer;
   padding: 0;
 }
+
+::highlight(highlight-match) {
+  color: mediumaquamarine;
+  text-decoration: underline;
+}

@@ -7,7 +7,7 @@
   import { homepage, repository } from '$root/package.json'
   import Icon from '@iconify/svelte'
   import MultiSelect from 'svelte-multiselect'
-  import { RadioButtons } from 'svelte-zoo'
+  import { RadioButtons, highlight_matches } from 'svelte-zoo'
 
   let innerWidth: number
   $: cols = clamp(Math.floor(innerWidth / 300), 1, 6)
@@ -131,7 +131,11 @@
 {/if}
 
 {#if cols || building}
-  <ul style:column-count={cols} style="column-gap: 1em;">
+  <ul
+    style:column-count={cols}
+    style="column-gap: 1em;"
+    use:highlight_matches={{ query: $search, css_class: `highlight-match` }}
+  >
     {#each $filtered_figs as item, idx (item.slug)}
       <li class:active={active_idx == idx}>
         <Card {item} style="break-inside: avoid;" />

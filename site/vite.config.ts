@@ -1,5 +1,6 @@
 import type { YamlMetadata } from '$lib'
 import { sveltekit } from '@sveltejs/kit/vite'
+import { exec } from 'child_process'
 import * as fs from 'fs'
 import image_dims from 'image-size'
 import * as yaml from 'js-yaml'
@@ -60,4 +61,11 @@ const tikz_figures = figure_dirs.map((slug) => {
 fs.writeFileSync(
   `src/lib/tikz-figures.json`,
   JSON.stringify(tikz_figures, null, 2),
+)
+
+exec(
+  `python ../scripts/update-readme-table.py`,
+  (err: string, _stdout: string, _stderr: string) => {
+    if (err) console.error(err)
+  },
 )
