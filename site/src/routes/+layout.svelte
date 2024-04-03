@@ -16,8 +16,8 @@
 
 <GitHubCorner
   href={repository}
-  --zoo-github-corner-bg="var(--text-color)"
-  --zoo-github-corner-color="var(--body-bg)"
+  --zoo-gh-corner-bg="var(--text-color)"
+  --zoo-gh-corner-color="var(--body-bg)"
 />
 
 <slot />
@@ -26,4 +26,7 @@
   &copy; Janosh Riebesell 2021 &ensp;-&ensp;
   <Icon icon="octicon:law" inline />
   <a href="{repository}/blob/main/license">MIT License</a>
+  &ensp;-&ensp;
+  <Icon icon="octicon:quote" inline />
+  <a href="{repository}/#--how-to-cite">How to cite</a>
 </footer>

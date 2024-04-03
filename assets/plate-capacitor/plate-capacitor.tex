@@ -38,33 +38,33 @@
 
   % dielectric slab
   \draw[orange!60!black,fill=orange!80!brown!5]
-    (\dielwidth,-0.03*\height) rectangle (\width-\dielwidth,1.03*\height)
-    node[Ecolor, above=3cm, midway] {$\vec E$}
-    node[above, pluscolor] {$+Q_\text{surf}$}
-    node[above, minuscolor] at (1.3*\dielwidth,1.03*\height) {$-Q_\text{surf}$};
+  (\dielwidth,-0.03*\height) rectangle (\width-\dielwidth,1.03*\height)
+  node[Ecolor, above=3cm, midway] {$\vec E$}
+  node[above, pluscolor] {$+Q_\text{surf}$}
+  node[above, minuscolor] at (1.3*\dielwidth,1.03*\height) {$-Q_\text{surf}$};
 
   % electric field
   \foreach \i [evaluate={\y=(\i-0.75)*\height/(\nfieldlines-0.5);}] in {1,...,\nfieldlines}{
-    \draw[EFieldLine={0.54},very thick] (0,\y) --++ (\width,0);
-  }
+      \draw[EFieldLine={0.54},very thick] (0,\y) --++ (\width,0);
+    }
 
   % plates
   \draw[anode] (0,0) rectangle++ (-\platewidth,\height)
-    node[above, pluscolor] {$+Q_\text{C}$};
+  node[above, pluscolor] {$+Q_\text{C}$};
   \draw[cathode] (\width,0) rectangle++ (\platewidth,\height)
-    node[above, minuscolor] {$-Q_\text{C}$};
+  node[above, minuscolor] {$-Q_\text{C}$};
 
   \foreach \i [evaluate={\y=(\i-0.5)*\height/\ncharges;}] in {1,...,\ncharges}{
-    \node[pluscolor] at (-\platewidth/2,\y) {$+$};
-    \node[minuscolor] at (\width+\platewidth/2,\y) {$-$};
-  }
+      \node[pluscolor] at (-\platewidth/2,\y) {$+$};
+      \node[minuscolor] at (\width+\platewidth/2,\y) {$-$};
+    }
 
   % dipoles
   \foreach \i in {0.25, 0.5, 0.75}{
-    \foreach \j in {1, 3, 5, 7, 9}{
-      \dipole{\i*\width,0.\j*\height}
+      \foreach \j in {1, 3, 5, 7, 9}{
+          \dipole{\i*\width,0.\j*\height}
+        }
     }
-  }
 
 \end{tikzpicture}
 \end{document}
