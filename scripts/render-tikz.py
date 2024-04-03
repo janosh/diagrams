@@ -61,4 +61,4 @@ os.system(f"zopflipng -y {basepath}.png {basepath}.png")
 os.system(f"zopflipng -y {basepath}-hd.png {basepath}-hd.png")
 
 print("Update readme table listing all TikZ figures in assets/")
-runpy.run_path("scripts/update_readme.py")
+runpy.run_path("scripts/update-readme-table.py")
