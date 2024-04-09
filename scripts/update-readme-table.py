@@ -1,4 +1,4 @@
-"""Auto-update readme table listing all TikZ figures in assets/."""
+"""Auto-update readme table listing all figures in assets/."""
 
 import json
 import os
@@ -13,7 +13,7 @@ TEX_DIR = f"{ROOT}/assets"
 with open(f"{ROOT}/site/package.json", "r") as file:
     site_url = json.load(file)["homepage"]
 
-tex_paths = sorted(glob(f"{TEX_DIR}/**/*.tex"))
+tex_paths = sorted(glob(f"{TEX_DIR}/**/*.tex") + glob(f"{TEX_DIR}/**/*.typ"))
 
 md_table = f"| {'&emsp;' * 22} | {'&emsp;' * 22} |\n| :---: | :---: |\n"
 

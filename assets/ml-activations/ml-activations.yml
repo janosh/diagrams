@@ -1,0 +1,17 @@
+title: Common Activation Functions in Machine Learning
+tags:
+  - machine-learning
+  - neural-networks
+  - activation-functions
+  - deep-learning
+description: >
+  Plot of common machine learning activation functions.
+  Includes the Rectified Linear Unit (ReLU), Gaussian Error Linear Unit (GELU),
+  Leaky ReLU, Sigmoid, and Hyperbolic Tangent (tanh) activation functions.
+  Activation functions introduce non-linearity into neural networks, enabling them to learn
+  complex patterns and relationships in data. The choice of activation function can have a
+  significant impact on the performance and convergence of a neural network.
+  ReLU is widely used due to its simplicity and ability to alleviate the vanishing gradient problem.
+  GELU and Leaky ReLU are variants of ReLU that address some of its limitations.
+  Sigmoid and tanh are classical activation functions that squash the input to a fixed range,
+  but they are less commonly used in modern deep learning architectures due to the vanishing gradient problem.

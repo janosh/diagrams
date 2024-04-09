@@ -6,6 +6,10 @@
   import { CopyButton } from 'svelte-zoo'
 
   hljs.registerLanguage(`latex`, latex)
+  // TODO highlight.js does not support Typst
+  // https://github.com/highlightjs/highlight.js/blob/main/SUPPORTED_LANGUAGES.md
+  // and won't unless someone contributes a grammar
+  // https://highlightjs.readthedocs.io/en/latest/language-requests.html
 
   export let code: string
   export let link: string

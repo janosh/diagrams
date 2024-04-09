@@ -37,7 +37,11 @@ const tikz_figures = figure_dirs.map((slug) => {
 
   const downloads = fs.readdirSync(`../assets/${slug}`)
 
-  const code = fs.readFileSync(`${figure_basename}.tex`, `utf8`)
+  // check tex file exists
+  const src_path = fs.existsSync(`${figure_basename}.tex`)
+    ? `${figure_basename}.tex`
+    : `${figure_basename}.typ`
+  const code = fs.readFileSync(src_path, `utf-8`)
 
   const { width, height } = image_dims(`${figure_basename}.png`)
   const metadata = yaml.load(
