@@ -1,0 +1,15 @@
+title: Convex Hull of Stability
+tags:
+  - materials science
+  - thermodynamics
+  - phase diagram
+description: |
+  Reproduced from Bartel et al. http://dx.doi.org/10.1007/s10853-022-06915-4.
+  The convex hull of stability represents the lowest energy surface in composition space for a given chemical system. It is constructed by connecting the energies of the most thermodynamically stable compounds at each composition. For visual clarity, only ground-state phases at each composition are shown. Legend:
+
+  - Blue circles: Stable phases lying on the convex hull (blue line)
+  - Red squares: Unstable phases above the hull
+  - Orange dashed line: Chemical potential range where AX is stable
+  - ΔE_d: Decomposition enthalpy, the energy above the hull for unstable phases
+
+  Materials on the hull are stable against decomposition into other phases. The energy difference between a material and the hull (hull distance) quantifies its thermodynamic stability - larger distances meaning less stable and harder to synthesize, making the convex hull a powerful tool for guiding experimental synthesis efforts.

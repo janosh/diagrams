@@ -1,5 +1,6 @@
 #import "@preview/cetz:0.2.2": canvas, plot, draw
 
+#let vector(v) = $bold(#v)$
 #set page(width: auto, height: auto, margin: 3pt)
 
 #let relu(x) = if x < 0 { 0 } else { x }
@@ -32,3 +33,12 @@
   )
   draw.grid((0,0), size, stroke: 0.1pt)
 })
+
+// #box(width: 30em)[
+//   Popular ML activation functions.
+//   $"ReLU"(vector(x)) = vector(x)^+ = max(vector(x), 0)$ is the most widely used activation function in deep learning due to its simplicity and computational efficiency.
+//   $"GELU"(vector(x), mu=0, sigma=1) = vector(x) / 2 (1 + op("erf") (vector(x) \/ sqrt(2)))$ is a differentiable variant of ReLU.
+//   $"Leaky ReLU"(vector(x)) = max(0, vector(x)) + alpha dot min(0, vector(x))$ with $alpha < 0$ is a variant of ReLU that adds a small gradient for negative activations.
+//   $"Sigmoid"(vector(x)) = (1 + exp(-vector(x)))^(-1)$ smoothly squashes the input to the range (0, 1).
+//   $"Tanh"(vector(x)) = (exp(vector(x))+exp(vector(−x))) / (vector(exp(x))−exp(vector(−x)))$ is a scaled and shifted version of the sigmoid function.
+// ]
