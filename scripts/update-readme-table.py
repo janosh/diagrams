@@ -13,11 +13,24 @@ TEX_DIR = f"{ROOT}/assets"
 with open(f"{ROOT}/site/package.json", "r") as file:
     site_url = json.load(file)["homepage"]
 
-tex_paths = sorted(glob(f"{TEX_DIR}/**/*.tex") + glob(f"{TEX_DIR}/**/*.typ"))
+# Get all .tex and .typ paths
+tex_paths = glob(f"{TEX_DIR}/**/*.tex")
+typ_paths = glob(f"{TEX_DIR}/**/*.typ")
+
+# Create a dict mapping directory names to file paths
+# Prefer .typ files over .tex files when both exist
+path_dict = {}
+for path in sorted(tex_paths + typ_paths):
+    dir_name = os.path.basename(os.path.dirname(path))
+    if dir_name not in path_dict or path.endswith(".typ"):
+        path_dict[dir_name] = path
+
+# Convert back to sorted list
+unique_paths = sorted(path_dict.values())
 
 md_table = f"| {'&emsp;' * 22} | {'&emsp;' * 22} |\n| :---: | :---: |\n"
 
-for path1, path2 in zip_longest(tex_paths[::2], tex_paths[1::2]):
+for path1, path2 in zip_longest(unique_paths[::2], unique_paths[1::2]):
     dir1, dir2 = map(os.path.dirname, (path1, path2 or ""))
     fig1, fig2 = map(os.path.basename, (dir1, dir2))
 
@@ -31,7 +44,6 @@ for path1, path2 in zip_longest(tex_paths[::2], tex_paths[1::2]):
     img_link2 = f"![`{fig2}.png`](assets/{fig2}/{fig2}.png)" if path2 else ""
     md_table += f"| {img_link1} | {img_link2} |\n"
 
-
 with open(f"{ROOT}/README.md", "r") as file:
     readme = file.read()
 
@@ -44,7 +56,7 @@ readme = re.sub(
 )
 
 # update count in "Collection of **110** "
-readme = re.sub(r"(?<=Collection of \*\*)\d+(?=\*\* )", str(len(tex_paths)), readme)
+readme = re.sub(r"(?<=Collection of \*\*)\d+(?=\*\* )", str(len(unique_paths)), readme)
 
 with open(f"{ROOT}/README.md", "w") as file:
     file.write(readme)
