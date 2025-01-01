@@ -63,8 +63,7 @@
 {/if}
 
 <section>
-  <h3>Tags</h3>
-  <Tags {tags} font_size="12pt" />
+  <Tags {tags} font_size="11pt" />
 
   {#if description}
     {@html description}
@@ -120,7 +119,7 @@
 
 <style>
   h1 {
-    font-size: 3em;
+    font-size: 2em;
   }
   :where(h1, h2) {
     border-bottom: 2px solid orange;

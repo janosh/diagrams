@@ -6,7 +6,7 @@
 
 <p class="tags" style:margin>
   {#each tags ?? [] as tag}
-    <small style:font-size={font_size}>{tag}</small>
+    <small style:font-size={font_size} style:line-height={font_size}>{tag}</small>
   {/each}
 </p>
 
@@ -20,7 +20,7 @@
   }
   p.tags small {
     background-color: rgba(255, 255, 255, 0.2);
-    padding: 0 4pt;
+    padding: 2pt 4pt;
     border-radius: 3pt;
   }
 </style>

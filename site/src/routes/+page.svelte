@@ -117,7 +117,7 @@
     bind:selected={$filter_tags}
   >
     <span slot="option" let:option style="display: flex; gap: 5pt; align-items: center;">
-      {option.label} <span style="flex: 1;" />
+      {option.label} <span style="flex: 1;"></span>
       {option.count}
     </span>
   </MultiSelect>
