@@ -73,14 +73,17 @@
 
 <img src={hd_png} alt={title} {width} {height} />
 
-<h2>
-  <Icon icon="octicon:link-external" inline />&nbsp; Edit
-</h2>
-<section>
-  <a href={overleaf_href} target="_blank" rel="noreferrer" class="large-link">
-    <img src="overleaf.svg" alt="Overleaf Logo" height="30" />&nbsp;Open in Overleaf
-  </a>
-</section>
+<!-- https://github.com/typst/webapp-issues/issues/516 tracks Typst web app API for opening code files -->
+{#if tex_file_uri.endsWith(`.tex`)}
+  <h2>
+    <Icon icon="octicon:link-external" inline />&nbsp; Edit
+  </h2>
+  <section>
+    <a href={overleaf_href} target="_blank" rel="noreferrer" class="large-link">
+      <img src="overleaf.svg" alt="Overleaf Logo" height="30" />&nbsp;Open in Overleaf
+    </a>
+  </section>
+{/if}
 
 <h2>
   <Icon icon="octicon:download-16" inline />&nbsp; Download
