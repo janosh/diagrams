@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.3.1": canvas, draw
 #import draw: line, content, circle, bezier
 
-#set page(width: auto, height: auto, margin: 3pt)
+#set page(width: auto, height: auto, margin: 8pt)
 
 #let (V, p) = (9, 6)
 

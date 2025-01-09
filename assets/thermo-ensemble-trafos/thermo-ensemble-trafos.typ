@@ -3,7 +3,7 @@
 
 #let horizontal_dist = 4
 #let vertical_dist = 2
-#set page(width: auto, height: auto, margin: 3pt)
+#set page(width: auto, height: auto, margin: 8pt)
 #let mark_style = (end: "stealth", fill: black)
 
 #cetz.canvas(

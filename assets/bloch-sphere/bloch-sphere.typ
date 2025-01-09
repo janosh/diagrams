@@ -1,6 +1,6 @@
 #import "@preview/cetz:0.3.1"
 
-#set page(width: auto, height: auto, margin: 5pt)
+#set page(width: auto, height: auto, margin: 8pt)
 
 #cetz.canvas({
   // Helper coordinates

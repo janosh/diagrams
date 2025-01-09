@@ -2,7 +2,7 @@
 #import "@preview/cetz-plot:0.1.0": plot
 
 #let vector(v) = $bold(#v)$
-#set page(width: auto, height: auto, margin: 3pt)
+#set page(width: auto, height: auto, margin: 8pt)
 
 #let relu(x) = if x < 0 { 0 } else { x }
 #let gelu(x) = 0.5 * x * (1 + calc.tanh(calc.sqrt(2 / calc.pi) * (x + 0.044715 * calc.pow(x, 3))))

@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.3.1": canvas, draw
 #import draw: line, rect, content, bezier, group, anchor
 
-#set page(width: auto, height: auto, margin: 5pt)
+#set page(width: auto, height: auto, margin: 8pt)
 
 // Constants
 #let height = 5

@@ -5,7 +5,7 @@
 #let quarter_size = size / 4
 #let gap = 0.1 // gap between squares
 #let axes-extend = 0.3
-#set page(width: auto, height: auto, margin: 3pt)
+#set page(width: auto, height: auto, margin: 8pt)
 
 #canvas({
   // Draw axes
