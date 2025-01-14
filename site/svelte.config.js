@@ -14,6 +14,7 @@ export default {
 
     alias: {
       $root: `.`,
+      $assets: `../assets`,
     },
   },
 }

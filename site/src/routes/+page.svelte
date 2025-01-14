@@ -2,8 +2,13 @@
   import { building } from '$app/environment'
   import { goto } from '$app/navigation'
   import { Card } from '$lib'
-  import { filter_tags, filtered_figs, search, tag_filter_mode } from '$lib/stores'
-  import figs from '$lib/tikz-figures.json'
+  import {
+    diagrams,
+    filter_tags,
+    filtered_diagrams,
+    search,
+    tag_filter_mode,
+  } from '$lib/stores'
   import { homepage, repository } from '$root/package.json'
   import Icon from '@iconify/svelte'
   import MultiSelect from 'svelte-multiselect'
@@ -13,8 +18,8 @@
   $: cols = clamp(Math.floor(innerWidth / 300), 1, 6)
 
   const tags = Object.entries(
-    figs
-      .flatMap((file) => file.tags)
+    diagrams
+      ?.flatMap((file) => file.tags)
       .reduce(
         (acc, el) => {
           acc[el] = (acc[el] ?? 0) + 1
@@ -23,12 +28,12 @@
         {} as Record<string, number>,
       ),
   ).filter(([, count]) => count > 2)
-  tags.sort(([a], [b]) => a.localeCompare(b))
+  tags.sort(([t1], [t2]) => t1.localeCompare(t2))
 
   const clamp = (num: number, min: number, max: number) =>
     Math.min(Math.max(num, min), max)
 
-  $: $filtered_figs = figs
+  $: $filtered_diagrams = diagrams
     .filter((file) => {
       const searchTerms = $search?.toLowerCase().split(` `)
       const matches_search = searchTerms?.every((term) =>
@@ -45,23 +50,23 @@
       }
       return matches_search && matches_tags
     })
-    .sort((a, b) => {
-      return a.title.localeCompare(b.title)
+    .sort((d1, d2) => {
+      return d1.title.localeCompare(d2.title)
     })
 
-  const meta_description = `Random collection of ${figs.length} TikZ figures`
+  const meta_description = `Collection of ${diagrams.length} math/physics/chemistry/ML diagrams`
 
   let active_idx = -1
 
   function handle_keyup(event: KeyboardEvent) {
     if (event.key === `Enter` && active_idx >= 0) {
-      const site = figs[active_idx]
+      const site = diagrams[active_idx]
       goto(site.slug)
     }
     const to = {
       // wrap around
-      ArrowLeft: (active_idx - 1 + figs.length) % figs.length,
-      ArrowRight: (active_idx + 1) % figs.length,
+      ArrowLeft: (active_idx - 1 + diagrams.length) % diagrams.length,
+      ArrowRight: (active_idx + 1) % diagrams.length,
       Escape: -1,
     }[event.key]
     // if not arrow or escape key, return early for browser default behavior
@@ -86,12 +91,11 @@
 <svelte:window bind:innerWidth on:keyup={handle_keyup} />
 
 <h1>
-  Random
   <img src="favicon.svg" alt="Logo" style="height: 2em; vertical-align: middle;" />
   Collection
 </h1>
 <p>
-  {figs.length} standalone TikZ figures, mostly about
+  {diagrams.length} Cetz (Typst) and TikZ (LaTeX) diagrams, mostly about
   {#each [`physics`, `chemistry`, `machine learning`] as tag, idx}
     {#if idx > 0},{/if}
     <button class="link" on:click={() => ($filter_tags = [{ label: tag, count: 0 }])}>
@@ -127,7 +131,7 @@
 </div>
 
 {#if $search?.length || $filter_tags?.length}
-  <p>{$filtered_figs.length} match{$filtered_figs.length != 1 ? `es` : ``}</p>
+  <p>{$filtered_diagrams.length} match{$filtered_diagrams.length != 1 ? `es` : ``}</p>
 {/if}
 
 {#if cols || building}
@@ -136,7 +140,7 @@
     style="column-gap: 1em;"
     use:highlight_matches={{ query: $search, css_class: `highlight-match` }}
   >
-    {#each $filtered_figs as item, idx (item.slug)}
+    {#each $filtered_diagrams as item, idx (item.slug)}
       <li class:active={active_idx == idx}>
         <Card {item} style="break-inside: avoid;" />
       </li>

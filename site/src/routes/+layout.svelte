@@ -1,13 +1,13 @@
 <script lang="ts">
   import { goto } from '$app/navigation'
-  import figs from '$lib/tikz-figures.json'
+  import { diagrams } from '$lib/stores'
   import { repository } from '$root/package.json'
   import Icon from '@iconify/svelte'
   import { CmdPalette } from 'svelte-multiselect'
   import { GitHubCorner } from 'svelte-zoo'
   import '../app.css'
 
-  const actions = figs.map(({ title, slug }) => {
+  $: actions = diagrams.map(({ title, slug }) => {
     return { label: title, action: () => goto(slug) }
   })
 </script>

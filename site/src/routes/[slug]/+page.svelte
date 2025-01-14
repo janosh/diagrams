@@ -7,8 +7,8 @@
 
   export let data
 
-  $: ({ title, description, code, width, height } = data.fig)
-  $: ({ creator, creator_url, url, downloads, tags, slug } = data.fig)
+  $: ({ title, description, code, images } = data.diagram)
+  $: ({ creator, creator_url, url, downloads, tags, slug } = data.diagram)
   $: link = `GitHub||${repository}/blob/main/assets/${slug}/${slug}.tex`
   const labels = [
     [`.png`, `PNG`],
@@ -26,7 +26,7 @@
   $: tex_file_uri = `${base_uri}.tex`
   $: overleaf_href = `https://overleaf.com/docs?snip_uri=${tex_file_uri}`
 
-  $: if (downloads.length < 2) throw `unexpectedly low number of assets for download`
+  $: if (downloads?.length < 2) throw `unexpectedly low number of assets for download`
   $: head_title = `${title} | TikZ Diagrams`
   $: plain_description = description?.replace(/<[^>]*>/g, ``)
 </script>
@@ -71,7 +71,7 @@
   {/if}
 </section>
 
-<img src={hd_png} alt={title} {width} {height} />
+<enhanced:img src={images.hd} alt={title} class="diagram" />
 
 <!-- https://github.com/typst/webapp-issues/issues/516 tracks Typst web app API for opening code files -->
 {#if tex_file_uri.endsWith(`.tex`)}
@@ -104,7 +104,7 @@
 
 <CodeBlock {code} title="{slug}.tex" {link} />
 <PrevNext
-  items={data.figs.map((fig) => [fig.slug, fig])}
+  items={data.diagrams.map((diagram) => [diagram.slug, diagram])}
   current={data.slug}
   style="max-width: 55em; margin: auto;"
   let:item
@@ -116,7 +116,7 @@
         {@html kind == `next` ? `Next &rarr;` : `&larr; Previous`}
       </a>
     </h3>
-    <Card {item} style="max-width: 250px;" />
+    <Card {item} style="max-width: 250px;" format="short" />
   </div>
 </PrevNext>
 
@@ -136,7 +136,7 @@
     line-height: 3ex;
     text-align: center;
   }
-  img[width] {
+  .diagram {
     background: #ffffff85;
     padding: 1em;
     box-sizing: border-box;

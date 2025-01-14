@@ -4,4 +4,3 @@ node_modules
 # production build
 .svelte-kit
 build
-src/lib/tikz-figures.json

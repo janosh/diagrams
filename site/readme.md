@@ -2,9 +2,9 @@
   <img src="../assets/favicon.svg" alt="TikZ" height=150>
 </p>
 
-# Random TikZ Collection
+# Scientific Diagram Collection
 
-Source code for gallery site of `standalone` TikZ figures. Built with [SvelteKit](https://kit.svelte.dev).
+Source code for gallery of Cetz (Typst) and TikZ (LaTeX) diagrams. Built with [SvelteKit](https://kit.svelte.dev).
 
 ## Running this site locally
 
