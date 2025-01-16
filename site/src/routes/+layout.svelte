@@ -1,6 +1,6 @@
 <script lang="ts">
   import { goto } from '$app/navigation'
-  import { diagrams } from '$lib/stores'
+  import { diagrams } from '$lib'
   import { repository } from '$root/package.json'
   import Icon from '@iconify/svelte'
   import { CmdPalette } from 'svelte-multiselect'

@@ -1,10 +1,11 @@
 <script lang="ts">
   export let tags: string[]
-  export let font_size = `9pt`
-  export let margin = `auto`
+  export let font_size: string = `9pt`
+  export let margin: string = `auto`
+  export let style: string | null = null
 </script>
 
-<p class="tags" style:margin>
+<p class="tags" style:margin {style}>
   {#each tags ?? [] as tag}
     <small style:font-size={font_size} style:line-height={font_size}>{tag}</small>
   {/each}

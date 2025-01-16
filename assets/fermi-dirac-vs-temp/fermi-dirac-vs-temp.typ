@@ -10,7 +10,6 @@
 }
 
 #canvas({
-  // Set up the plot
   draw.set-style(
     axes: (
       y: (label: (anchor: "south-west")),

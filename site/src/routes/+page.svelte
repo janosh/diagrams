@@ -1,14 +1,8 @@
 <script lang="ts">
   import { building } from '$app/environment'
   import { goto } from '$app/navigation'
-  import { Card } from '$lib'
-  import {
-    diagrams,
-    filter_tags,
-    filtered_diagrams,
-    search,
-    tag_filter_mode,
-  } from '$lib/stores'
+  import { Card, diagrams } from '$lib'
+  import { filter_tags, filtered_diagrams, search, tag_filter_mode } from '$lib/stores'
   import { homepage, repository } from '$root/package.json'
   import Icon from '@iconify/svelte'
   import MultiSelect from 'svelte-multiselect'
@@ -17,9 +11,9 @@
   let innerWidth: number
   $: cols = clamp(Math.floor(innerWidth / 300), 1, 6)
 
-  const tags = Object.entries(
+  $: tags = Object.entries(
     diagrams
-      ?.flatMap((file) => file.tags)
+      ?.flatMap((diagram) => diagram.tags)
       .reduce(
         (acc, el) => {
           acc[el] = (acc[el] ?? 0) + 1
@@ -27,8 +21,9 @@
         },
         {} as Record<string, number>,
       ),
-  ).filter(([, count]) => count > 2)
-  tags.sort(([t1], [t2]) => t1.localeCompare(t2))
+  )
+    .filter(([, count]) => count > 2)
+    .sort(([t1], [t2]) => t1.localeCompare(t2))
 
   const clamp = (num: number, min: number, max: number) =>
     Math.min(Math.max(num, min), max)

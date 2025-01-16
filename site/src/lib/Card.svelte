@@ -12,7 +12,7 @@
 
 <a href={slug} transition:fade={{ duration: 200 }} {style}>
   <h2 id={slug}>{title}</h2>
-  <Tags {tags} />
+  <Tags {tags} margin="0 1em" style="color: var(--text-color)" />
   <enhanced:img src={item.images.sd} alt={title} class="diagram" />
   {#if description && format === `full`}
     <p class="description">{@html description}</p>
@@ -46,6 +46,7 @@
     height: auto;
   }
   p.description {
+    color: var(--text-color);
     padding: 1ex 1em;
     position: absolute;
     bottom: 0;

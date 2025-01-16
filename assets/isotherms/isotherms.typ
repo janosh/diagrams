@@ -16,7 +16,6 @@
 #let p2(v) = p1(v) + B2 / calc.pow(v, 3)
 
 #canvas({
-  // Set up the plot
   draw.set-style(
     axes: (
       y: (label: (anchor: "north-west", offset: -0.2)),

@@ -12,7 +12,6 @@
 }
 
 #canvas({
-  // Set up the plot
   draw.set-style(axes: (y: (label: (anchor: "south-east", angle: 90deg)), x: (label: (anchor: "north-east"))))
 
   plot.plot(

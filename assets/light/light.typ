@@ -5,7 +5,7 @@
 #set page(width: auto, height: auto, margin: .5cm)
 
 #canvas({
-  import draw: *
+  import draw: set-transform, scale, content, line, grid, group, rotate
 
   // Set up the transformation matrix
   set-transform(matrix.transform-rotate-dir((1, 1, -1.3), (0, 1, .4)))
