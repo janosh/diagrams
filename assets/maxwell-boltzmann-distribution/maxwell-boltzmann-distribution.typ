@@ -39,6 +39,7 @@
     legend: "inner-north-east",
     x-grid: true,
     y-grid: true,
+    legend-style: (stroke: .5pt),
     {
       // Add grid lines
       plot.add-hline(0, style: (stroke: 0.5pt))

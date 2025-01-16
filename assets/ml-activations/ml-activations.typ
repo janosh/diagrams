@@ -17,7 +17,8 @@
     y-tick-step: 2,
     x-tick-step: 2,
     legend: "inner-north-west",
-    legend-style: (item: (spacing: 0.18)),
+    legend-style: (item: (spacing: 0.18), padding: 0.1, stroke: .5pt),
+    axis-style: "left",
     {
       plot.add-hline(0, style: (stroke: 0.5pt))
       plot.add-vline(0, style: (stroke: 0.5pt))

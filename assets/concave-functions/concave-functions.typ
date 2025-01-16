@@ -16,6 +16,8 @@
     x-grid: true,
     y-grid: true,
     legend: "inner-north-west",
+    legend-style: (stroke: .5pt),
+    axis-style: "left",
     {
       plot.add-hline(0, style: (stroke: 0.5pt))
       plot.add-vline(0, style: (stroke: 0.5pt))
