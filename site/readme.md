@@ -11,8 +11,8 @@ Source code for gallery of Cetz (Typst) and TikZ (LaTeX) diagrams. Built with [S
 1. Clone this repo and install dependencies:
 
    ```sh
-   git clone https://github.com/janosh/tikz
-   cd tikz/site
+   git clone https://github.com/janosh/diagrams
+   cd diagrams/site
    npm install
    ```
 

@@ -1,13 +1,13 @@
 {
   "author": "Janosh Riebesell <janosh.riebesell@gmail.com>",
   "description": "Gallery of scientific diagrams along with their Typst and/or LaTeX source code",
-  "homepage": "https://janosh.github.io/tikz",
+  "homepage": "https://janosh.github.io/diagrams",
   "license": "MIT",
   "name": "tikz",
-  "repository": "https://github.com/janosh/tikz",
+  "repository": "https://github.com/janosh/diagrams",
   "type": "module",
   "version": "1.0.0",
-  "bugs": "https://github.com/janosh/tikz/issues",
+  "bugs": "https://github.com/janosh/diagrams/issues",
   "scripts": {
     "build": "vite build",
     "dev": "vite dev",

@@ -4,6 +4,6 @@ tags:
   - quantum field theory
   - symmetry
 description: |
-  The [Mexican hat potential](https://wikipedia.org/wiki/Spontaneous_symmetry_breaking) exhibits spontaneous symmetry breaking (SSB), a process by which a physical system starting in a symmetric state spontaneously enters and remains in an asymmetric state. This usually applies to systems whose equations of motion obey a set of symmetries while the lowest-energy state(s) do(es) not. When the system assumes one of its ground states, its symmetry is broken even though the Lagrangian as a whole retains it. See <https://janosh.github.io/tikz/higgs-potential> for a very similar image.
+  The [Mexican hat potential](https://wikipedia.org/wiki/Spontaneous_symmetry_breaking) exhibits spontaneous symmetry breaking (SSB), a process by which a physical system starting in a symmetric state spontaneously enters and remains in an asymmetric state. This usually applies to systems whose equations of motion obey a set of symmetries while the lowest-energy state(s) do(es) not. When the system assumes one of its ground states, its symmetry is broken even though the Lagrangian as a whole retains it. See <https://janosh.github.io/diagrams/higgs-potential> for a very similar image.
 
   In this image, the system starts out in the naive $O(N)$-invariant vacuum (blue dot) but quantum fluctuations quickly push it into the real vacuum (red dot) where $O(N)$ is broken down to $O(N-1)$.

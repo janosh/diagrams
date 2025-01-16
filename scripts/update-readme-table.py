@@ -44,7 +44,7 @@ for path1, path2 in zip_longest(unique_paths[::2], unique_paths[1::2]):
     img_link2 = f"![`{fig2}.png`](assets/{fig2}/{fig2}.png)" if path2 else ""
     md_table += f"| {img_link1} | {img_link2} |\n"
 
-with open(f"{ROOT}/README.md", "r") as file:
+with open(f"{ROOT}/readme.md", "r") as file:
     readme = file.read()
 
 # insert table markdown between "## Images\n" and "## Scripts\n" headings
@@ -58,7 +58,7 @@ readme = re.sub(
 # update count in "Collection of **110** "
 readme = re.sub(r"(?<=Collection of \*\*)\d+(?=\*\* )", str(len(unique_paths)), readme)
 
-with open(f"{ROOT}/README.md", "w") as file:
+with open(f"{ROOT}/readme.md", "w") as file:
     file.write(readme)
 
 # run pre-commit on readme to format white space in table
