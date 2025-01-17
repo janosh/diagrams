@@ -3,9 +3,7 @@ import runpy
 import subprocess
 import sys
 
-sys.path.append(".")
-
-from scripts import pdf_to_svg_png_compressed
+from scripts.convert_assets import pdf_to_svg_png_compressed
 
 # Get name of directory containing the TeX file.
 tex_file = sys.argv[1]

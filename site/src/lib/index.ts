@@ -12,7 +12,7 @@ export { default as Tags } from './Tags.svelte'
 export type Diagram = {
   slug: string
   downloads: string[]
-  code: string
+  code: { tex?: string; typst?: string }
   images: {
     hd: string // TODO fix type, actual is {sources: png: string, avif, string, ...}
     sd: string
@@ -27,6 +27,7 @@ export type YamlMetadata = {
   creator_url?: string
   url?: string
   date?: string
+  hide?: boolean
 }
 
 // Load all YAML files from assets directory
@@ -50,50 +51,52 @@ const image_files = import.meta.glob(`$assets/**/*.png`, {
 })
 
 // Process YAML files to create figure data
-export const diagrams = Object.entries(yaml_data).map(([path, metadata]) => {
-  const slug = path.split(`/`)[2] // get directory name
-  const figure_basename = `../assets/${slug}/${slug}`
+export const diagrams = Object.entries(yaml_data)
+  .filter(([_path, metadata]) => !metadata.hide)
+  .map(([path, metadata]) => {
+    const slug = path.split(`/`)[2] // get directory name
+    const figure_basename = `../assets/${slug}/${slug}`
 
-  // Check if .tex or .typ file exists and get its content
-  const tex_path = `${figure_basename}.tex`
-  const typ_path = `${figure_basename}.typ`
-  const code = code_files[tex_path] ?? code_files[typ_path] ?? ``
+    // Check if .tex or .typ file exists and get its content
+    const tex_path = `${figure_basename}.tex`
+    const typ_path = `${figure_basename}.typ`
+    const code = { tex: code_files[tex_path], typst: code_files[typ_path] }
 
-  let { tags = [] } = metadata
-  // Add typst and cetz tags if applicable
-  if (typ_path in code_files) {
-    tags = [...new Set([...tags, `cetz`])]
-  }
-  if (tex_path in code_files) {
-    tags = [...new Set([...tags, `tikz`])]
-  }
+    let { tags = [] } = metadata
+    // Add typst and cetz tags if applicable
+    if (typ_path in code_files) {
+      tags = [...new Set([...tags, `cetz`])]
+    }
+    if (tex_path in code_files) {
+      tags = [...new Set([...tags, `tikz`])]
+    }
 
-  // Create new metadata object with updated tags
-  metadata.tags = tags
+    // Create new metadata object with updated tags
+    metadata.tags = tags
 
-  // Process description with remark/rehype if needed
-  if (metadata.description) {
-    metadata.description = unified()
-      .use(remark_parse)
-      .use(remark_math)
-      .use(remark_rehype)
-      .use(rehype_katex)
-      .use(rehype_stringify)
-      .processSync(metadata.description)
-      .toString()
-  }
+    // Process description with remark/rehype if needed
+    if (metadata.description) {
+      metadata.description = unified()
+        .use(remark_parse)
+        .use(remark_math)
+        .use(remark_rehype)
+        .use(rehype_katex)
+        .use(rehype_stringify)
+        .processSync(metadata.description)
+        .toString()
+    }
 
-  const downloads = [
-    asset_files[`${figure_basename}-hd.png`],
-    asset_files[`${figure_basename}.png`],
-    asset_files[`${figure_basename}.pdf`],
-    asset_files[`${figure_basename}.svg`],
-  ].filter(Boolean)
+    const downloads = [
+      asset_files[`${figure_basename}-hd.png`],
+      asset_files[`${figure_basename}.png`],
+      asset_files[`${figure_basename}.pdf`],
+      asset_files[`${figure_basename}.svg`],
+    ].filter(Boolean)
 
-  const images = {
-    hd: image_files[`${figure_basename}-hd.png`],
-    sd: image_files[`${figure_basename}.png`],
-  }
+    const images = {
+      hd: image_files[`${figure_basename}-hd.png`],
+      sd: image_files[`${figure_basename}.png`],
+    }
 
-  return { ...metadata, slug, code, downloads, images }
-})
+    return { ...metadata, slug, code, downloads, images }
+  })

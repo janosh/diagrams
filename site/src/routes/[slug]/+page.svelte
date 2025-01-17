@@ -9,7 +9,6 @@
 
   $: ({ title, description, code, images } = data.diagram)
   $: ({ creator, creator_url, url, downloads, tags, slug } = data.diagram)
-  $: link = `GitHub||${repository}/blob/main/assets/${slug}/${slug}.tex`
   const labels = [
     [`.png`, `PNG`],
     [`-hd.png`, `PNG (HD)`],
@@ -104,7 +103,28 @@
   <Icon icon="octicon:code" inline />&nbsp; Code
 </h2>
 
-<CodeBlock {code} title="{slug}.tex" {link} />
+{#if code.tex}
+  <h3 class="code-title">
+    <Icon icon="file-icons:latex" inline style="color: white" />&nbsp; LaTeX
+  </h3>
+  <CodeBlock
+    code={code.tex}
+    title="{slug}.tex"
+    link="GitHub||{repository}/blob/main/assets/{slug}/{slug}.tex"
+  />
+{/if}
+
+{#if code.typst}
+  <h3 class="code-title">
+    <Icon icon="simple-icons:typst" inline />&nbsp; Typst
+  </h3>
+  <CodeBlock
+    code={code.typst}
+    title="{slug}.typ"
+    link="GitHub||{repository}/blob/main/assets/{slug}/{slug}.typ"
+  />
+{/if}
+
 <PrevNext
   items={data.diagrams.map((diagram) => [diagram.slug, diagram])}
   current={data.slug}
@@ -170,5 +190,8 @@
     position: absolute;
     top: 2em;
     left: 2em;
+  }
+  .code-title {
+    margin-bottom: -1em;
   }
 </style>
