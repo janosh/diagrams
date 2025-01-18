@@ -49,24 +49,24 @@
       return d1.title.localeCompare(d2.title)
     })
 
-  const meta_description = `Collection of ${diagrams.length} math/physics/chemistry/ML diagrams`
+  const meta_description = `${diagrams.length} physics/chemistry/ML diagrams`
 
-  let active_idx = -1
+  let active_diagram = -1
 
   function handle_keyup(event: KeyboardEvent) {
-    if (event.key === `Enter` && active_idx >= 0) {
-      const site = diagrams[active_idx]
+    if (event.key === `Enter` && active_diagram >= 0) {
+      const site = diagrams[active_diagram]
       goto(site.slug)
     }
     const to = {
       // wrap around
-      ArrowLeft: (active_idx - 1 + diagrams.length) % diagrams.length,
-      ArrowRight: (active_idx + 1) % diagrams.length,
+      ArrowLeft: (active_diagram - 1 + diagrams.length) % diagrams.length,
+      ArrowRight: (active_diagram + 1) % diagrams.length,
       Escape: -1,
     }[event.key]
     // if not arrow or escape key, return early for browser default behavior
     if (to === undefined) return
-    if (to >= 0) active_idx = to
+    if (to >= 0) active_diagram = to
     // keep active_idx in viewport
     const active = document.querySelector(`ul > li.active`)
     if (active) active.scrollIntoView()
@@ -90,12 +90,17 @@
   Collection
 </h1>
 <p>
-  {diagrams.length} Cetz (Typst) and TikZ (LaTeX) diagrams, mostly about
+  {diagrams.length} diagrams about
   {#each [`physics`, `chemistry`, `machine learning`] as tag, idx}
     {#if idx > 0},{/if}
     <button class="link" on:click={() => ($filter_tags = [{ label: tag, count: 0 }])}>
       {tag}
-    </button>{/each}.
+    </button>{/each},<br />
+  {diagrams.filter((diagram) => diagram.code.typst).length} of which in
+  <a href="https://cetz-package.github.io/docs/">Cetz</a>
+  (Typst) and
+  {diagrams.filter((diagram) => diagram.code.tex).length} in
+  <a href="https://tikz.dev">TikZ</a> (LaTeX) diagrams.
 </p>
 <p>
   <Icon icon="octicon:law" inline />&nbsp;
@@ -104,8 +109,11 @@
 </p>
 <p>
   Have a TikZ image you'd like to share with attribution?
-  <a href="{repository}/pulls">Submit a PR</a> with a standalone <code>.tex</code> file
-  and metadata <code>.yml</code> file to add it to this list.
+  <a href="{repository}/pulls">Submit a PR</a> with a <code>.tex</code> or
+  <code>.typ</code>
+  file and a corresponding metadata <code>.yml</code> file in the <code>assets/</code>
+  directory to add it to this list. Also be sure to add yourself to the
+  <a href="{repository}/blob/main/citation.cff"><code>citation.cff</code></a> file.
 </p>
 
 <div class="filters">
@@ -136,7 +144,7 @@
     use:highlight_matches={{ query: $search, css_class: `highlight-match` }}
   >
     {#each $filtered_diagrams as item, idx (item.slug)}
-      <li class:active={active_idx == idx}>
+      <li class:active={active_diagram == idx}>
         <Card {item} style="break-inside: avoid;" />
       </li>
     {/each}

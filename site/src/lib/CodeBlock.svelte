@@ -12,10 +12,9 @@
   // https://highlightjs.readthedocs.io/en/latest/language-requests.html
 
   export let code: string
-  export let link: string
+  export let github_link: string
   export let title: string
-
-  let [linkTitle, url] = (link ?? ``).split(`||`, 2)
+  export let tex_file_uri: string = ``
 </script>
 
 <div>
@@ -26,12 +25,25 @@
     </h3>
   {/if}
   <aside>
-    {#if link}<a href={url}>
+    {#if github_link}
+      {@const [link_title, href] = (github_link ?? ``).split(`||`, 2)}
+      <a {href}>
         <button>
           <Icon icon="octicon:mark-github" inline />
-          {linkTitle}
+          {link_title}
         </button>
-      </a>{/if}
+      </a>
+    {/if}
+    <!-- https://github.com/typst/webapp-issues/issues/516 tracks Typst web app API for opening code files -->
+    {#if tex_file_uri}
+      {@const href = `https://overleaf.com/docs?snip_uri=${tex_file_uri}`}
+      <a {href} target="_blank" rel="noreferrer">
+        <button>
+          <img src="overleaf.svg" alt="Overleaf Logo" height="16" />
+          Open in Overleaf
+        </button>
+      </a>
+    {/if}
     <CopyButton content={code} />
   </aside>
   <pre><code>{@html hljs.highlight(code, { language: `latex` }).value}</code></pre>
@@ -69,5 +81,10 @@
     overflow-x: scroll;
     font-size: 1.2em;
     border-radius: 3pt;
+  }
+  button {
+    display: inline-flex;
+    gap: 6pt;
+    align-items: center;
   }
 </style>

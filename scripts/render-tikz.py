@@ -22,8 +22,8 @@ ret_val = subprocess.run(
 if os.getenv("CI") == "true":
     print("Detected CI=true")
     if ret_val != 0:
-        with open(f"{base_path}.log", "r") as f:
-            print(f.read())
+        with open(f"{base_path}.log", mode="r") as file:
+            print(file.read())
         raise SystemExit(f"latexmk failed with return code {ret_val}. See log above.")
 
 print("Delete LaTeX auxiliary files")

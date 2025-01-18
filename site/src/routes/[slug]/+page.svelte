@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { dev } from '$app/environment'
   import { Card, CodeBlock, Tags } from '$lib'
   import { homepage, repository } from '$root/package.json'
   import Icon from '@iconify/svelte'
@@ -19,13 +18,8 @@
 
   // development server fetches files from local folder (specified by svelte.config.js kit.files.assets)
   // production server fetches files from GitHub (so we don't need to re-upload with every build)
-  const asset_uri = dev
-    ? ``
-    : `https://github.com/janosh/diagrams/raw/refs/heads/main/assets`
-  $: base_uri = `${asset_uri}/${slug}/${slug}`
+  $: base_uri = `https://github.com/janosh/diagrams/raw/refs/heads/main/assets/${slug}/${slug}`
   $: hd_png = `${base_uri}-hd.png`
-  $: tex_file_uri = `${base_uri}.tex`
-  $: overleaf_href = `https://overleaf.com/docs?snip_uri=${tex_file_uri}`
 
   $: if (downloads?.length < 2) throw `unexpectedly low number of assets for download`
   $: head_title = `${title} | TikZ Diagrams`
@@ -74,18 +68,6 @@
 
 <enhanced:img src={images.hd} alt={title} class="diagram" />
 
-<!-- https://github.com/typst/webapp-issues/issues/516 tracks Typst web app API for opening code files -->
-{#if tex_file_uri.endsWith(`.tex`)}
-  <h2>
-    <Icon icon="octicon:link-external" inline />&nbsp; Edit
-  </h2>
-  <section>
-    <a href={overleaf_href} target="_blank" rel="noreferrer" class="large-link">
-      <img src="overleaf.svg" alt="Overleaf Logo" height="30" />&nbsp;Open in Overleaf
-    </a>
-  </section>
-{/if}
-
 <h2>
   <Icon icon="octicon:download-16" inline />&nbsp; Download
 </h2>
@@ -110,7 +92,8 @@
   <CodeBlock
     code={code.tex}
     title="{slug}.tex"
-    link="GitHub||{repository}/blob/main/assets/{slug}/{slug}.tex"
+    github_link="GitHub||{repository}/blob/main/assets/{slug}/{slug}.tex"
+    tex_file_uri="{base_uri}.tex"
   />
 {/if}
 
@@ -121,7 +104,7 @@
   <CodeBlock
     code={code.typst}
     title="{slug}.typ"
-    link="GitHub||{repository}/blob/main/assets/{slug}/{slug}.typ"
+    github_link="GitHub||{repository}/blob/main/assets/{slug}/{slug}.typ"
   />
 {/if}
 

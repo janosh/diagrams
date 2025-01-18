@@ -23,7 +23,8 @@ a {
 a:hover {
   color: orange;
 }
-button {
+/* :where() needed to make less specific to not override svelte-multiselect button CSS */
+:where(button) {
   color: var(--text-color);
   background: teal;
   border: none;
