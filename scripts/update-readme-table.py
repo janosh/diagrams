@@ -54,13 +54,33 @@ unique_paths = sorted(path_dict.values())
 
 md_table = f"| {'&emsp;' * 22} | {'&emsp;' * 22} |\n| :---: | :---: |\n"
 
+
+def get_code_links(fig_name: str) -> str:
+    """Generate markdown for rendering links to LaTeX and/or CeTZ source files as language logo icons."""
+    tex_path = f"assets/{fig_name}/{fig_name}.tex"
+    typ_path = f"assets/{fig_name}/{fig_name}.typ"
+
+    links = []
+    if os.path.isfile(f"{ROOT}/{tex_path}"):
+        links.append(f"[![LaTeX][latex-logo]]({tex_path})")
+    if os.path.isfile(f"{ROOT}/{typ_path}"):
+        links.append(f"[![Typst][typst-logo]]({typ_path})")
+
+    if not links:
+        raise ValueError(
+            f"Neither LaTeX nor Typst source code found for {fig_name=}. this should never happen."
+        )
+
+    return "&nbsp;" + "&nbsp;".join(links)
+
+
 for path1, path2 in zip_longest(unique_paths[::2], unique_paths[1::2]):
     dir1, dir2 = map(os.path.dirname, (path1, path2 or ""))
     fig1, fig2 = map(os.path.basename, (dir1, dir2))
 
-    # file name row
-    dir_link1 = f"[`{fig1}`]({site_url}/{fig1})"
-    dir_link2 = f"[`{fig2}`]({site_url}/{fig2})" if path2 else ""
+    # file name row with source code links
+    dir_link1 = f"[`{fig1}`]({site_url}/{fig1}) {get_code_links(fig1)}"
+    dir_link2 = f"[`{fig2}`]({site_url}/{fig2}) {get_code_links(fig2)}" if path2 else ""
     md_table += f"| {dir_link1} | {dir_link2} |\n"
 
     # image row
