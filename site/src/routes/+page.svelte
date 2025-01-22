@@ -107,7 +107,7 @@
   <a href="{repository}/blob/main/license">MIT licensed</a> (free to reuse)&ensp;
   <a href={repository}><Icon icon="octicon:mark-github" inline />&nbsp;Repo</a>
 </p>
-<p>
+<p style="margin: auto; max-width: 40em;">
   Have a TikZ image you'd like to share with attribution?
   <a href="{repository}/pulls">Submit a PR</a> with a <code>.tex</code> or
   <code>.typ</code>
