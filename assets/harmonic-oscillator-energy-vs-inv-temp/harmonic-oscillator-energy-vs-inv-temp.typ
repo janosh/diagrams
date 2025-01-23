@@ -1,0 +1,45 @@
+#import "@preview/cetz:0.3.1": canvas, draw
+#import "@preview/cetz-plot:0.1.0": plot
+
+#set page(width: auto, height: auto, margin: 8pt)
+
+#let size = (8, 5)
+
+#canvas({
+  draw.set-style(
+    axes: (
+      y: (label: (anchor: "north-west", offset: -0.2), mark: (end: "stealth", fill: black)),
+      x: (label: (anchor: "north", offset: 0.1), mark: (end: "stealth", fill: black)),
+    ),
+  )
+
+  plot.plot(
+    size: size,
+    x-min: 0,
+    x-max: 11,
+    y-min: 0,
+    y-max: 2.3,
+    x-label: $beta$,
+    y-label: $angle.l E angle.r \/ planck.reduce omega$,
+    x-tick-step: 2,
+    y-tick-step: 0.5,
+    axis-style: "left",
+    {
+      // Define constants from original
+      let (h, w) = (1, 1)
+
+      // Add the energy expectation value curve
+      plot.add(
+        style: (stroke: blue + 1.5pt),
+        domain: (1e-5, 11),
+        samples: 200, // More samples for smoother curve
+        x => {
+          // E = (1/2)hω(1 + 4/(exp(xhω) - 1))
+          let hw = h * w
+          let exp_term = calc.exp(x * hw)
+          (1 / 2) * hw * (1 + 4 / (exp_term - 1))
+        },
+      )
+    },
+  )
+})

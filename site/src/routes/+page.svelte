@@ -93,13 +93,19 @@
   {diagrams.length} diagrams about
   {#each [`physics`, `chemistry`, `machine learning`] as tag, idx}
     {#if idx > 0},{/if}
-    <button class="link" on:click={() => ($filter_tags = [{ label: tag, count: 0 }])}>
+    <button on:click={() => ($filter_tags = [{ label: tag, count: 0 }])}>
       {tag}
     </button>{/each},<br />
-  {diagrams.filter((diagram) => diagram.code.typst).length} of which in
+  <button on:click={() => ($filter_tags = [{ label: `cetz`, count: 0 }])}>
+    {diagrams.filter((diagram) => diagram.code.typst).length}
+  </button>
+  of which in
   <a href="https://cetz-package.github.io/docs/">Cetz</a>
   (Typst) and
-  {diagrams.filter((diagram) => diagram.code.tex).length} in
+  <button on:click={() => ($filter_tags = [{ label: `tikz`, count: 0 }])}>
+    {diagrams.filter((diagram) => diagram.code.tex).length}
+  </button>
+  in
   <a href="https://tikz.dev">TikZ</a> (LaTeX) diagrams.
 </p>
 <p>
@@ -157,6 +163,7 @@
   }
   p {
     font-size: 2.2ex;
+    line-height: 1.5;
   }
   ul {
     list-style: none;
@@ -196,5 +203,10 @@
     --sms-options-bg: #0f0422;
     --sms-border: 0.5px solid gray;
     --sms-li-active-bg: rgba(255, 255, 255, 0.15);
+  }
+  button {
+    padding: 1pt 3pt;
+    background-color: rgba(255, 255, 255, 0.15);
+    font-size: inherit;
   }
 </style>
