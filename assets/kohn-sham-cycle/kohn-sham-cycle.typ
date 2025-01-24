@@ -15,6 +15,7 @@
     width: 22em,
     height: 12em,
     name: "enclosure",
+    radius: 5pt,
   )
 
   // Enclosure label
@@ -52,6 +53,7 @@
     width: 20em,
     name: "initial",
     padding: (3pt, 2em, 0),
+    radius: 1em,
   )
 
   // Potential box

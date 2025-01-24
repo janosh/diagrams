@@ -6,4 +6,5 @@ tags:
   - symmetries
   - group theory
 description: |
-  2D toy crystal with three occupied Wyckoff positions. The shaded areas illustrate the region of the unit cell the relevant atoms are constrained to lie in by specifying an anonymized Wyckoff position for that atom. Reproduction of fig. 2 from "Wyckoff Set Regression for Materials Discovery" by Rhys Goodall, inspired by [PyXtal docs](https://pyxtal.readthedocs.io/en/latest/Background.html#wyckoff-positions).
+  Unit cell representation of a 2D crystal with p4m symmetry and three occupied Wyckoff positions.
+  The shaded areas highlight the asymmetric unit and the site-symmetries of the atoms, indicating the region of the unit cell the each atom is constrained to lie in by specifying tis anonymized Wyckoff position. Reproduced from fig. 1 in ["Wyckoff Set Regression for Materials Discovery"](https://ml4physicalsciences.github.io/2020/files/NeurIPS_ML4PS_2020_21.pdf) by Rhys Goodall, inspired by [PyXtal docs](https://pyxtal.readthedocs.io/en/latest/Background.html#wyckoff-positions).

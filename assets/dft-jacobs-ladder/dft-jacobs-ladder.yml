@@ -1,0 +1,29 @@
+title: Jacob's Ladder of DFT
+description: |
+  A visualization of Perdew's Jacob's ladder of density functional theory (DFT),
+  representing a hierarchy of increasingly sophisticated approximations to the
+  exchange-correlation energy (E_xc). The ladder spans from simple local density
+  approximations at the bottom to accurate but expensive double-hybrid functionals
+  near the top, with each rung adding new physical ingredients to improve accuracy
+  at the cost of computational complexity.
+
+references:
+  - perdew_jacobs_2001:
+      title: Jacob's ladder of density functional approximations for the exchange-correlation energy
+      authors: John P. Perdew, Karsten Schmidt
+      year: 2001
+      publisher: AIP Conference Proceedings
+      doi: 10.1063/1.1390175
+      page: 1
+
+tags:
+  - density-functional-theory
+  - exchange-correlation
+  - computational-chemistry
+  - quantum-chemistry
+  - electronic-structure
+  - dft-functionals
+  - hybrid-functionals
+  - meta-gga
+  - gga
+  - lda

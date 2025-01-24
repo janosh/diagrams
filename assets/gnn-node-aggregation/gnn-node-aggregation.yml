@@ -1,0 +1,37 @@
+title: GNN Node Aggregation Process
+description: >
+  Diagram illustrating the message-passing process in graph neural networks (GNNs).
+  Shows how information flows from neighboring nodes to a target node A through
+  multiple layers of aggregation. The first layer combines information from direct
+  neighbors (B, C, D) while the second layer incorporates information from nodes
+  two hops away (E, F), demonstrating how a node's receptive field grows with
+  network depth.
+
+authors:
+  - Janosh Riebesell
+  - William L. Hamilton
+
+references:
+  - hamilton_graph_2020:
+      title: Graph Representation Learning
+      authors: William L. Hamilton
+      year: 2020
+      page: 55
+      publisher: Morgan & Claypool Publishers
+      doi: 10.2200/S01045ED1V01Y202009AIM046
+
+tags:
+  - graph-neural-networks
+  - message-passing
+  - node-aggregation
+  - neural-networks
+  - deep-learning
+  - information-flow
+  - receptive-field
+
+components:
+  - input-graph
+  - target-node
+  - aggregation-layers
+  - message-passing
+  - node-states
