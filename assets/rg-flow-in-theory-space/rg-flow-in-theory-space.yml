@@ -1,0 +1,28 @@
+title: RG Flow in Theory Space
+description: |
+  Visualization of renormalization group (RG) flow trajectories in the theory space
+  of all possible coupling constants (λ₁, λ₂, λ₃, λ₄) allowed by symmetries. The
+  diagram shows how different microscopic actions (S₁, S₂, S₃) flow to the same
+  quantum effective action (Γ) through different paths, each corresponding to a
+  different choice of infrared regulator R_k(q). This illustrates the universality
+  of the effective action despite different starting points and regulators.
+
+references:
+  - wetterich_exact_1993:
+      title: Exact evolution equation for the effective potential
+      authors: Christof Wetterich
+      year: 1993
+      publisher: Physics Letters B
+      doi: 10.1016/0370-2693(93)90726-X
+
+tags:
+  - physics
+  - quantum-field-theory
+  - renormalization
+  - renormalization-group
+  - effective-action
+  - theory-space
+  - universality
+  - infrared-regulator
+  - flow-equation
+  - coupling-constants
