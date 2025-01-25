@@ -173,7 +173,7 @@ You can cite the [Zenodo record](https://zenodo.org/badge/latestdoi/286220365) u
   doi = {10.5281/zenodo.7486911},
   url = {https://github.com/janosh/diagrams},
   note = {10.5281/zenodo.7486911 - https://github.com/janosh/diagrams},
-  version = {0.1.0},
+  version = {0.2.0},
   urldate = {2023-01-01}, % optional, replace with your date of access
 }
 ```
