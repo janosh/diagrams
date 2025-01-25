@@ -60,3 +60,13 @@ repos:
           - typescript-eslint
           - svelte-eslint-parser
           - "@stylistic/eslint-plugin"
+
+  - repo: local
+    hooks:
+      - id: check-yaml-titles
+        name: Check YAML titles match folder names
+        entry: python scripts/check_yaml_titles.py
+        language: python
+        pass_filenames: false
+        types: [yaml]
+        additional_dependencies: [pyyaml]

@@ -3,23 +3,22 @@
 import json
 import os
 import re
+import subprocess
 from glob import glob
 from itertools import zip_longest
 
 import yaml
 
-MOD_DIR = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.dirname(MOD_DIR)
-TEX_DIR = f"{ROOT}/assets"
+ROOT = os.path.dirname(os.path.dirname(__file__))
 
 with open(f"{ROOT}/site/package.json", mode="r") as file:
     site_url = json.load(file)["homepage"]
 
 # Get all YAML files
-yaml_paths = glob(f"{TEX_DIR}/**/*.yml")
+yaml_paths = glob(f"{ROOT}/assets/**/*.yml")
 # Also get .tex and .typ paths to check for missing YAML files
-tex_paths = glob(f"{TEX_DIR}/**/*.tex")
-typ_paths = glob(f"{TEX_DIR}/**/*.typ")
+tex_paths = glob(f"{ROOT}/assets/**/*.tex")
+typ_paths = glob(f"{ROOT}/assets/**/*.typ")
 
 # Check that every diagram has a YAML file
 for diagram_path in tex_paths + typ_paths:
@@ -51,6 +50,7 @@ for yaml_path in sorted(yaml_paths):
 
 # Convert back to sorted list
 unique_paths = sorted(path_dict.values())
+
 
 md_table = f"| {'&emsp;' * 22} | {'&emsp;' * 22} |\n| :---: | :---: |\n"
 
@@ -93,17 +93,25 @@ with open(f"{ROOT}/readme.md", mode="r") as file:
 
 # insert table markdown between "## Images\n" and "## Scripts\n" headings
 readme = re.sub(
-    r"(?<=## Images\n)(.*)(?=## Scripts\n)",
-    f"\n{md_table}\n",
-    readme,
-    flags=re.DOTALL,
+    r"(?<=## Images\n)(.*)(?=## Scripts\n)", f"\n{md_table}\n", readme, flags=re.DOTALL
 )
 
 # update count in "Collection of **110** "
 readme = re.sub(r"(?<=)\d+(?= Scientific Diagrams)", str(len(unique_paths)), readme)
 
+# Count number of Typst and LaTeX diagrams
+n_typst = len(typ_paths)
+n_latex = len(tex_paths)
+
+# update badge counts for Typst and LaTeX
+readme = re.sub(r"\[\!\[(\d+) with Typst\]", f"[![{n_typst}+1 with Typst]", readme)
+readme = re.sub(r"\[\!\[(\d+) with LaTeX\]", f"[![{n_latex} with LaTeX]", readme)
+# update the URL-encoded part
+readme = re.sub(r"badge/\d+%20with-Typst", f"badge/{n_typst}%20with-Typst", readme)
+readme = re.sub(r"badge/\d+%20with-LaTeX", f"badge/{n_latex}%20with-LaTeX", readme)
+
 with open(f"{ROOT}/readme.md", mode="w") as file:
     file.write(readme)
 
 # run pre-commit on readme to format white space in table
-os.system("pre-commit run --files readme.md")
+subprocess.run(["pre-commit", "run", "--files", "readme.md"])

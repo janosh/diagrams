@@ -1,9 +1,0 @@
-title: Identical Particle Energy Distribution Function Comparison
-tags:
-  - physics
-  - statistical-mechanics
-  - Bose-Einstein
-  - Boltzmann
-  - Fermi-Dirac
-  - pgfplots
-description: A plot comparing the distribution functions of Bose-Einstein, Boltzmann, and Fermi-Dirac statistics as a function of the reduced chemical potential $\beta (\epsilon - \mu)$. This visualization highlights the differences between the three types of distribution functions, which are used to describe the behavior of particles in different statistical systems.

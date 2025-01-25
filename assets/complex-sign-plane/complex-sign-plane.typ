@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.3.1": canvas, draw
+#import "@preview/cetz:0.3.2": canvas, draw
 
 #let size = 8
 #let half_size = size / 2

@@ -1,4 +1,4 @@
-title: GNN Node Aggregation Process
+title: GNN Node Aggregation
 description: >
   Diagram illustrating the message-passing process in graph neural networks (GNNs).
   Shows how information flows from neighboring nodes to a target node A through
