@@ -1,0 +1,21 @@
+title: Thermodynamic Potentials Venn Diagram
+description: |
+  A Venn diagram illustrating the relationships between thermodynamic potentials, forces, and flows. The diagram shows three main regions (Mechanical, Thermal, Chemical) and their intersections, representing different thermodynamic potentials. The subscript μ denotes an N-to-μ Legendre transform of the indicated potential (U, H, F, or G). The diagram helps visualize how different thermodynamic quantities are related through Legendre transforms.
+
+citation: |
+  R. K. P. Zia, Edward F. Redish, and Susan R. McKay, "Thermodynamic Venn diagrams: Sorting out forces, fluxes, and Legendre transforms," American Journal of Physics 79, 950 (2011). DOI: 10.1119/1.3599177
+
+tags:
+  - thermodynamics
+  - statistical mechanics
+  - physics
+  - venn diagram
+  - legendre transform
+  - potentials
+  - forces
+  - fluxes
+
+authors:
+  - R. K. P. Zia
+  - Edward F. Redish
+  - Susan R. McKay

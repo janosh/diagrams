@@ -1,7 +1,6 @@
 import yaml from '@rollup/plugin-yaml'
 import { enhancedImages } from '@sveltejs/enhanced-img'
 import { sveltekit } from '@sveltejs/kit/vite'
-import { exec } from 'node:child_process'
 import type { UserConfig } from 'vite'
 
 export default {
@@ -18,10 +17,3 @@ export default {
     port: 3000,
   },
 } satisfies UserConfig
-
-exec(
-  `python ../scripts/update-readme-table.py`,
-  (err: string, _stdout: string, _stderr: string) => {
-    if (err) console.error(err)
-  },
-)

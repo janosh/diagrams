@@ -49,7 +49,7 @@
       return d1.title.localeCompare(d2.title)
     })
 
-  const meta_description = `${diagrams.length} physics/chemistry/ML diagrams`
+  const meta_description = `${diagrams.length} Diagrams on Physics, Chemistry, Computer Science, and Machine Learning`
 
   let active_diagram = -1
 
@@ -75,10 +75,10 @@
 
 <svelte:head>
   <meta name="description" content={meta_description} />
-  <meta property="og:title" content="TikZ Diagrams on Physics and Machine Learning" />
+  <meta property="og:title" content="Scientific Diagrams" />
   <meta property="og:description" content={meta_description} />
   <meta property="og:image" content="{homepage}/index-page-2021-08-04.png" />
-  <meta property="og:image:alt" content="TikZ collection index page" />
+  <meta property="og:image:alt" content="Scientific Diagrams index page" />
   <meta property="og:url" content={homepage} />
   <meta name="twitter:card" content="summary" />
 </svelte:head>
@@ -86,11 +86,10 @@
 <svelte:window bind:innerWidth on:keyup={handle_keyup} />
 
 <h1>
-  <img src="favicon.svg" alt="Logo" style="height: 2em; vertical-align: middle;" />
-  Collection
+  {diagrams.length} Scientific Diagrams
 </h1>
 <p>
-  {diagrams.length} diagrams about
+  About
   {#each [`physics`, `chemistry`, `machine learning`] as tag, idx}
     {#if idx > 0},{/if}
     <button on:click={() => ($filter_tags = [{ label: tag, count: 0 }])}>

@@ -17,4 +17,4 @@ ret_val = subprocess.run(["typst", "compile", input_file]).returncode
 pdf_to_svg_png_compressed(f"{base_path}.pdf")
 
 print("Update readme table listing all figures in assets/")
-runpy.run_path("scripts/update-readme-table.py")
+runpy.run_path("scripts/update_readme_table.py")

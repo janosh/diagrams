@@ -26,7 +26,10 @@ jobs:
           echo "TeX files changed between BASE_REF=$BASE_REF and SHA=$GITHUB_SHA:"
           tex_files=$(git diff --name-only $BASE_REF $GITHUB_SHA | grep .tex$ | xargs)
           echo "$tex_files"
+          typst_files=$(git diff --name-only $BASE_REF $GITHUB_SHA | grep .typ$ | xargs)
+          echo "$typst_files"
           echo "::set-output name=tex-files::$tex_files"
+          echo "::set-output name=typst-files::$typst_files"
 
       - name: Install compression deps
         if: steps.diff.outputs.tex-files != ''
@@ -41,17 +44,25 @@ jobs:
         # texlive-latex-extra is needed for package standalone
         run: sudo apt-get install texlive latexmk texlive-latex-base texlive-latex-extra
 
-      - name: Run render-tikz.py on changed TeX files
+      - name: Install Typst
+        if: steps.diff.outputs.typst-files != ''
+        uses: typst-community/setup-typst@v3
+
+      - name: Run render_(typst|tikz).py on changed TeX files
         if: steps.diff.outputs.tex-files != ''
-        id: render-tikz
+        id: render-diagrams
         run: |
           for tex_file in ${{ steps.diff.outputs.tex-files }}; do
             echo "Processing $tex_file..."
-            ./scripts/render-tikz.py "$tex_file"
+            python scripts/render_tikz.py "$tex_file"
+          done
+          for typst_file in ${{ steps.diff.outputs.typst-files }}; do
+            echo "Processing $typst_file..."
+            python scripts/render_typst.py "$typst_file"
           done
 
       - name: Push changes if any
-        if: steps.render-tikz.outcome == 'success'
+        if: steps.render-diagrams.outcome == 'success'
         run: |
           git config user.name 'Janosh Riebesell'
           git config user.email janosh.riebesell@gmail.com

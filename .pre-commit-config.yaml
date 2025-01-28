@@ -29,7 +29,7 @@ repos:
           - svelte
 
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.4.0
+    rev: v2.4.1
     hooks:
       - id: codespell
         stages: [pre-commit, commit-msg]
@@ -66,6 +66,13 @@ repos:
       - id: check-yaml-titles
         name: Check YAML titles match folder names
         entry: python scripts/check_yaml_titles.py
+        language: python
+        pass_filenames: false
+        types: [yaml]
+        additional_dependencies: [pyyaml]
+      - id: update-readme-table
+        name: Update readme.md table
+        entry: python scripts/update_readme_table.py
         language: python
         pass_filenames: false
         types: [yaml]

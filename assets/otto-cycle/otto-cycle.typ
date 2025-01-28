@@ -42,10 +42,10 @@
   }
 
   // Add point labels
-  content((a.at(0), a.at(1) + 0.3), [1])
-  content((b.at(0) + 0.3, b.at(1)), [2])
-  content((c.at(0) + 0.3, c.at(1)), [3])
-  content((d.at(0) - 0.3, d.at(1)), [4])
+  content(a, [1], anchor: "south", padding: (bottom: 5pt))
+  content(b, [2], anchor: "west", padding: (left: 5pt))
+  content(c, [3], anchor: "north-west", padding: (left: 5pt))
+  content(d, [4], anchor: "east", padding: (right: 5pt))
 
   // Draw cycle paths with arrows and labels
   // a -> b (adiabatic expansion)

@@ -34,4 +34,4 @@ for file in os.listdir(in_dir):
 pdf_to_svg_png_compressed(f"{base_path}.pdf")
 
 print("Update readme table listing all figures in assets/")
-runpy.run_path("scripts/update-readme-table.py")
+runpy.run_path("scripts/update_readme_table.py")
