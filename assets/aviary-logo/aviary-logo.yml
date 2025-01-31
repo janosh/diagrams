@@ -1,0 +1,8 @@
+title: Aviary Logo
+tags:
+  - machine learning
+  - neural networks
+  - materials informatics
+description: |
+  Aviary logo: a repo of machine learning models for representation learning in materials discovery from stoichiometry and symmetries via graph convolutions. See <https://github.com/CompRhys/aviary>.
+hide: true

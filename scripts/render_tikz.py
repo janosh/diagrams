@@ -1,9 +1,10 @@
 import os
-import runpy
 import subprocess
 import sys
 
-from scripts.convert_assets import pdf_to_svg_png_compressed
+sys.path.append(os.path.dirname(__file__))
+
+from convert_assets import pdf_to_svg_png_compressed
 
 # Get name of directory containing the TeX file.
 tex_file = sys.argv[1]
@@ -34,4 +35,4 @@ for file in os.listdir(in_dir):
 pdf_to_svg_png_compressed(f"{base_path}.pdf")
 
 print("Update readme table listing all figures in assets/")
-runpy.run_path("scripts/update_readme_table.py")
+subprocess.run(["python", "scripts/update_readme_table.py"])

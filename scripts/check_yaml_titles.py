@@ -78,7 +78,9 @@ def check_yaml_titles():
 
         # Check if there's any overlap between the two sets of expansions
         if not (set(folder_expansions) & set(title_expansions)):
-            errors[yaml_file] = f"YAML title: {title}"
+            errors[yaml_file] = (
+                f"should match YAML {title=} after param-casing: {param_title!r}"
+            )
 
     for idx, (yaml_file, error) in enumerate(errors.items()):
         print(f"{idx + 1}/{len(errors)} {yaml_file}\n  {error}")

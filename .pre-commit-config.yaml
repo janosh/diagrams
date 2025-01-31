@@ -70,10 +70,11 @@ repos:
         pass_filenames: false
         types: [yaml]
         additional_dependencies: [pyyaml]
-      - id: update-readme-table
-        name: Update readme.md table
-        entry: python scripts/update_readme_table.py
-        language: python
-        pass_filenames: false
-        types: [yaml]
-        additional_dependencies: [pyyaml]
+      # TODO fix update-readme-table, gets stuck in infinite loop somewhow
+      # - id: update-readme-table
+      #   name: Update readme.md table
+      #   entry: python scripts/update_readme_table.py
+      #   language: python
+      #   pass_filenames: false
+      #   types: [file]
+      #   additional_dependencies: [pyyaml]
