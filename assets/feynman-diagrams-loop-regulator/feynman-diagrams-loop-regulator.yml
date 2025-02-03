@@ -1,0 +1,16 @@
+title: Feynman Diagrams Loop Regulator
+description: |
+  Two Feynman diagrams showing loop corrections to a propagator. Each diagram contains
+  a loop with momentum q₀ and two external lines with coupling g. The loops include
+  mass terms m₁², m₂² and width terms γ₁², γ₂². The diagrams differ in the position
+  of the regulator insertion (cross marker) which appears at the bottom vertex in the
+  first diagram and at the top in the second.
+
+tags:
+  - physics
+  - quantum field theory
+  - feynman diagrams
+  - loop corrections
+  - propagators
+  - quantum fluctuations
+  - regulator insertion

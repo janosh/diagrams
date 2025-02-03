@@ -2,7 +2,7 @@ title: RG Flow in Theory Space
 description: |
   Visualization of renormalization group (RG) flow trajectories in the theory space
   of all possible coupling constants (λ₁, λ₂, λ₃, λ₄) allowed by symmetries. The
-  diagram shows how different microscopic actions (S₁, S₂, S₃) flow to the same
+  diagram shows how different microscopic actions (S₁, S₂, S₃) obey the same symmetries and thus flow to the same
   quantum effective action (Γ) through different paths, each corresponding to a
   different choice of infrared regulator R_k(q). This illustrates the universality
   of the effective action despite different starting points and regulators.

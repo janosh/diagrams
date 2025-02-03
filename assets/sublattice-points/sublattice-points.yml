@@ -1,0 +1,22 @@
+title: Sublattice Points
+description: |
+  Visualization of lattice points with basis vectors showing a fundamental domain.
+  The points are colored to show the periodicity of the lattice, with points of the
+  same color related by lattice translations. The arrows indicate the basis vectors
+  that generate the lattice.
+
+attribution:
+  title: Crystal Symmetry Primer
+  creator: Kohei Shinohara
+  url: https://lan496.github.io/crystal-symmetry-primer/main.pdf
+  figure: Figure 8
+  repo: https://github.com/lan496/crystal-symmetry-primer
+  license: CC-BY-4.0
+
+tags:
+  - crystallography
+  - lattice
+  - basis vectors
+  - fundamental domain
+  - periodicity
+  - symmetry
