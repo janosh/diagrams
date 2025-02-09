@@ -3,4 +3,9 @@ tags:
   - physics
   - string theory
   - topology
-description: null
+  - geometry
+  - fundamental domain
+  - symmetries
+  - periodicity
+description: >-
+  Three-dimensional visualization of a torus with major radius R and minor radius r. The torus is a fundamental geometric object in string theory, where strings can wrap around its two independent cycles. Its topology allows for periodic boundary conditions in two directions, which is relevant when studying compactification, modular invariance, and dualities in string theory.

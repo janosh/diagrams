@@ -1,9 +1,8 @@
 title: Fermi-Dirac Distribution
 tags:
   - physics
-  - statistical-mechanics
-  - Fermi-Dirac
-  - distribution-functions
+  - statistical mechanics
+  - Fermi-Dirac distribution
+  - distribution functions
   - temperature
-  - pgfplots
 description: A plot illustrating the Fermi-Dirac distribution function for different temperatures relative to the chemical potential ($\epsilon/\mu$). The plot demonstrates how the occupation number ($n(\epsilon)$) changes as the temperature increases from zero to higher values. The visualization also highlights the effect of thermal fluctuations, which increase with higher temperatures.

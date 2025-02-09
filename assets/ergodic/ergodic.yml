@@ -2,4 +2,10 @@ title: Ergodic
 tags:
   - physics
   - statistical mechanics
-description: null
+  - dynamical systems
+  - ergodicity
+  - phase space
+  - chaos theory
+  - trajectories
+description: >-
+  Phase space diagram showing two types of trajectories in a 2D oscillator system: a non-ergodic trajectory R (in red) for rational frequency ratio ω = 2 which forms a closed orbit, and an ergodic region R (in orange) for irrational frequency ratio ω ∉ ℚ which densely fills the available phase space P (blue ellipse). The diagram illustrates how ergodicity depends on the rationality of frequency ratios.

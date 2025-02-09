@@ -1,9 +1,9 @@
 title: ML Activations
 tags:
-  - machine-learning
-  - neural-networks
-  - activation-functions
-  - deep-learning
+  - machine learning
+  - neural networks
+  - activation functions
+  - deep learning
 description: >
   Plot of common machine learning activation functions.
   Includes the Rectified Linear Unit (ReLU), Gaussian Error Linear Unit (GELU),

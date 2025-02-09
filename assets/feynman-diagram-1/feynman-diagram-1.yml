@@ -2,4 +2,9 @@ title: Feynman Diagram 1
 tags:
   - physics
   - quantum field theory
-description: null
+  - Feynman diagrams
+  - propagators
+  - Green's function
+  - effective action
+description: >-
+  Basic Feynman diagram showing a dressed propagator (hatched vertex) connecting two external fields φₐ and φᵦ with incoming momentum p₁ and outgoing momentum p₂. The vertex represents the full momentum-dependent two-point Green's function G_k, which includes all quantum corrections. This is a fundamental building block for more complex quantum field theory calculations.

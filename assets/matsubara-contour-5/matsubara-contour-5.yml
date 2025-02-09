@@ -3,4 +3,10 @@ tags:
   - physics
   - quantum field theory
   - Matsubara
-description: null
+  - complex analysis
+  - Green's function
+  - thermal field theory
+  - contour integration
+  - frequency sums
+description: >-
+  Integration contours used to evaluate bosonic Matsubara frequency sums in thermal field theory. The diagram shows contours C₁ and C₂ (enclosing the complex plane except an infinitesimal slice along the imaginary axis where the Matsubara frequencies lie). This contour deformation technique converts discrete frequency sums into continuous complex integrals via the residue theorem.

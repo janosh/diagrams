@@ -3,4 +3,10 @@ tags:
   - physics
   - quantum field theory
   - Matsubara
-description: null
+  - complex analysis
+  - Green's function
+  - thermal field theory
+  - contour integration
+  - frequency sums
+description: >-
+  Visualization of contour deformations used in evaluating Matsubara frequency sums. The diagram shows how the original contour along the imaginary axis can be deformed to separate contributions from poles and branch cuts, allowing systematic evaluation of thermal correlation functions.

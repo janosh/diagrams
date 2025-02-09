@@ -3,4 +3,10 @@ tags:
   - physics
   - quantum field theory
   - Matsubara
-description: null
+  - complex analysis
+  - Green's function
+  - thermal field theory
+  - contour integration
+  - frequency sums
+description: >-
+  Second deformation of the Matsubara contour where the small circles C₁ and C₂ are expanded to enclose the entire complex plane except for the imaginary axis. This contour picks up both pole and branch cut contributions from the propagator, with the branch cuts arising from the sign function s(p₀).

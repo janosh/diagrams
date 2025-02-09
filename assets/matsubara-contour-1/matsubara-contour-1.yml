@@ -3,5 +3,10 @@ tags:
   - physics
   - quantum field theory
   - Matsubara
-description: |
-  Complex contour plot illustrating a Matsubara summation. Used in thermal quantum field theory to compute Feynman diagrams at non-zero temperature. $C$ surrounds the imaginary $p_0$-axis counterclockwise but excludes poles of $(-p_0^2 + x^2)^{-1}$.
+  - complex analysis
+  - Green's function
+  - thermal field theory
+  - contour integration
+  - frequency sums
+description: >-
+  Initial contour C for evaluating Matsubara frequency sums. C runs counterclockwise around the imaginary p₀-axis where the Matsubara frequencies ωₙ = 2πn/β lie, but excludes the poles of the propagator 1/(-p₀² + x²). The integrand includes the Bose-Einstein distribution which has simple poles at all Matsubara frequencies with residue T.

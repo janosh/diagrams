@@ -2,7 +2,7 @@ title: Scattering Detailed Balance
 tags:
   - physics
   - kinematics
-  - particle-physics
+  - particle physics
   - scattering
-  - Feynman-diagrams
+  - Feynman diagrams
 description: A simple diagram representing a scattering process in particle physics, where two incoming particles with momenta $p$ and $k$ interact and produce two outgoing particles with momenta $p'$ and $k'$. The principle of detailed balance states that at equilibrium, each scattering process is in equilibrium with its reverse process.

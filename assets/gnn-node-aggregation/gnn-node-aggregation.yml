@@ -21,13 +21,13 @@ references:
       doi: 10.2200/S01045ED1V01Y202009AIM046
 
 tags:
-  - graph-neural-networks
-  - message-passing
-  - node-aggregation
-  - neural-networks
-  - deep-learning
-  - information-flow
-  - receptive-field
+  - graph neural networks
+  - message passing
+  - node aggregation
+  - neural networks
+  - deep learning
+  - information flow
+  - receptive field
 
 components:
   - input-graph

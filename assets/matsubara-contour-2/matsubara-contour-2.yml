@@ -3,4 +3,10 @@ tags:
   - physics
   - quantum field theory
   - Matsubara
-description: Deformation of contour $C$ in [Matsubara contour 1](https://janosh.github.io/diagrams/matsubara-contour-1) into a circle followed by taking the radius to infinity. This will enclose the poles of $(-p_0^2 + x^2)^{-1}$ scattered throughout the complex plane. Their contribution is removed again by enclosing them in clockwise contours.
+  - complex analysis
+  - Green's function
+  - thermal field theory
+  - contour integration
+  - frequency sums
+description: >-
+  First deformation of the Matsubara contour in https://diagrams.janosh.dev/matsubara-contour-1 where C is expanded into a circle followed by taking the radius to infinity, plus two small clockwise circles C₁ and C₂ around the propagator poles. Since the integrand falls off faster than 1/p₀, the contribution from the large circle vanishes at infinity, leaving only the pole contributions. The small circles around the poles are there to remove again the contribution from the poles that was added by enclosing them in the counterclockwise contour C.

@@ -2,5 +2,9 @@ title: Operator Orderings
 tags:
   - physics
   - quantum field theory
-  - renormalization
-description: null
+  - causality
+  - Green's function
+  - time ordering
+  - propagators
+description: >-
+  Visualization of different operator orderings in quantum field theory: time-ordered, retarded, advanced, and symmetric Green's functions. The diagram shows how these orderings relate to different boundary conditions  to illustrate the connection between causality and propagator types.

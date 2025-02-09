@@ -17,13 +17,13 @@ references:
       page: 1
 
 tags:
-  - density-functional-theory
-  - exchange-correlation
-  - computational-chemistry
-  - quantum-chemistry
-  - electronic-structure
-  - dft-functionals
-  - hybrid-functionals
-  - meta-gga
-  - gga
-  - lda
+  - density functional theory
+  - exchange-correlation energy
+  - computational chemistry
+  - quantum chemistry
+  - electronic structure
+  - DFT functionals
+  - hybrid functionals
+  - meta-GGA
+  - GGA
+  - LDA

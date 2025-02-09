@@ -2,6 +2,9 @@ title: Regular vs Bayes NN
 tags:
   - machine learning
   - neural networks
+  - Bayesian
   - statistics
+  - deep learning
   - probability
-description: null
+description: >-
+  Comparison between regular neural networks and Bayesian neural networks. The diagram illustrates how Bayesian networks incorporate uncertainty in their predictions by treating weights as probability distributions rather than point values, leading to more robust predictions with uncertainty estimates.

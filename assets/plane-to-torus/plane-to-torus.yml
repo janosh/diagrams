@@ -2,4 +2,11 @@ title: Plane to Torus
 tags:
   - physics
   - string theory
-description: null
+  - topology
+  - geometry
+  - fundamental domain
+  - periodicity
+  - symmetries
+  - compactification
+description: >-
+  Visualization of how a rectangular region of the plane becomes a torus through periodic boundary conditions. The diagram shows the identification of opposite edges and the resulting fundamental domain, a key concept in string theory compactification where spatial dimensions are "curled up" into compact geometries. This construction helps understand modular transformations and the origin of winding modes in string theory.

@@ -63,14 +63,14 @@ repos:
 
   - repo: local
     hooks:
-      - id: check-yaml-titles
-        name: Check YAML titles match folder names
-        entry: python scripts/check_yaml_titles.py
+      - id: check-yaml-files
+        name: Check YAML files match folder names, have descriptions and unique tags
+        entry: python scripts/check_yaml_files.py
         language: python
         pass_filenames: false
         types: [yaml]
         additional_dependencies: [pyyaml]
-      # TODO fix update-readme-table, gets stuck in infinite loop somewhow
+      # TODO fix update-readme-table, gets stuck in infinite loop somehow
       # - id: update-readme-table
       #   name: Update readme.md table
       #   entry: python scripts/update_readme_table.py

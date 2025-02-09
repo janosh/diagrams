@@ -3,4 +3,10 @@ tags:
   - physics
   - quantum field theory
   - Matsubara
-description: null
+  - complex analysis
+  - Green's function
+  - thermal field theory
+  - contour integration
+  - frequency sums
+description: >-
+  Special contour Cᵦ used to isolate branch cut contributions in Matsubara frequency sums. The contour runs along both sides of the real axis where the sign function s(p₀) changes discontinuously, giving rise to branch cuts in the propagator. This allows separating pole and branch cut contributions.
