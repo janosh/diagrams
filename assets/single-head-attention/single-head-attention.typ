@@ -1,10 +1,9 @@
 #import "@preview/cetz:0.3.2": canvas, draw
+#import draw: rect, content, line, set-style
 
 #set page(width: auto, height: auto, margin: 8pt)
 
 #canvas({
-  import draw: rect, content, line, set-style
-
   // Define spacing variables
   let h-sep = 1.2 // horizontal separation between elements
   let v-sep = 0.8 // vertical separation between elements

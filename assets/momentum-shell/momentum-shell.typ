@@ -1,12 +1,10 @@
 #import "@preview/cetz:0.3.2": canvas, draw
+#import draw: line, content, circle
 
 #set page(width: auto, height: auto, margin: 3pt)
 
 #canvas({
-  import draw: line, content, circle
-
-  let rx = 4
-  let ry = 2.2
+  let (rx, ry) = (4, 2.2)
   let arrow-style = (mark: (end: "stealth", fill: black), stroke: 1pt)
 
   // Axes

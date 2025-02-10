@@ -1,10 +1,9 @@
 #import "@preview/cetz:0.3.2": canvas, draw
+#import draw: line, content, rect, on-layer
 
 #set page(width: auto, height: auto, margin: 5pt)
 
 #canvas({
-  import draw: line, content, rect, on-layer
-
   let cell-size = 0.6
   let matrix-sep = 1.5
   let highlight = rgb(255, 200, 150) // orange!30

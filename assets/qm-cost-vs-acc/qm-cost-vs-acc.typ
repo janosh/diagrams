@@ -1,4 +1,5 @@
 #import "@preview/cetz:0.3.2": canvas, draw
+#import draw: line, content, circle
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -6,8 +7,6 @@
 #let xy-ratio = 2 / 3
 
 #canvas({
-  import draw: line, content, circle
-
   let arrow-style = (mark: (end: "stealth", scale: .75), stroke: black + 1pt, fill: black)
 
   // Draw axes

@@ -1,4 +1,5 @@
 #import "@preview/cetz:0.3.2": canvas, draw
+#import draw: line, content
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -24,8 +25,6 @@
 }
 
 #canvas({
-  import draw: line, content
-
   let input-x = 0
   let h1-x = 2
   let h2-x = 4

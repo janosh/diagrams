@@ -93,7 +93,10 @@ with open(f"{ROOT}/readme.md", mode="r") as file:
 
 # insert table markdown between "## Images\n" and "## Scripts\n" headings
 readme = re.sub(
-    r"(?<=## Images\n)(.*)(?=## Scripts\n)", f"\n{md_table}\n", readme, flags=re.DOTALL
+    r"(?<=<!-- diagram-table -->\n)(.*)(?=## Scripts\n)",
+    f"\n{md_table}\n",
+    readme,
+    flags=re.DOTALL,
 )
 
 # update count in "Collection of **110** "

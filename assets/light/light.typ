@@ -1,12 +1,11 @@
 
 // adapted from https://github.com/cetz-package/cetz/blob/a082e02a/gallery/waves.typ
 #import "@preview/cetz:0.3.2": canvas, draw, vector, matrix
+#import draw: set-transform, scale, content, line, grid, group, rotate
 
 #set page(width: auto, height: auto, margin: .5cm)
 
 #canvas({
-  import draw: set-transform, scale, content, line, grid, group, rotate
-
   // Set up the transformation matrix
   set-transform(matrix.transform-rotate-dir((1, 1, -1.3), (0, 1, .4)))
   scale(x: 1.5, z: -1)

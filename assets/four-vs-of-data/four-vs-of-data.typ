@@ -1,11 +1,10 @@
 #import "@preview/cetz:0.3.2": canvas, draw
 #import "@preview/cetz-plot:0.1.1": chart
+#import draw: line, content, arc
 
 #set page(width: auto, height: auto, margin: 8pt)
 
 #canvas({
-  import draw: *
-
   let radius = 3
   let arrow-radius = radius * 1.15 // Slightly larger for arrows
 

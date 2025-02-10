@@ -1,10 +1,9 @@
 #import "@preview/cetz:0.3.2": canvas, draw
+#import draw: rect, line, circle, rotate
 
 #set page(width: auto, height: auto, margin: 8pt)
 
 #canvas({
-  import draw: rect, line, circle, rotate
-
   let size = 5 // Base radius/size
   let small-square = 0.3 // Size of small squares
   let circle-radius = 0.3 // Size of circles

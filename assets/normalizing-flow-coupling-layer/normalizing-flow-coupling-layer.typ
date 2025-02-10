@@ -1,11 +1,10 @@
 #import "@preview/cetz:0.3.2": canvas, draw
+#import draw: line, content, group, circle, rect
 
 #set page(width: auto, height: auto, margin: 8pt)
 
 // polygons added in https://github.com/cetz-package/cetz/pull/777. once released, use them to turn rect into diamonds. can't get rotate(z: 45deg) to work for unknown reasons
 #canvas({
-  import draw: line, content, group, circle, rect
-
   let node-sep = 2.5 // Horizontal separation between nodes
   let vert-sep = 2.5 // Vertical separation between rows
 

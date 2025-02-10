@@ -1,10 +1,9 @@
 #import "@preview/cetz:0.3.2": canvas, draw
+#import draw: line, content, rect, circle
 
 #set page(width: auto, height: auto, margin: 8pt)
 
 #canvas({
-  import draw: line, content, rect, circle
-
   let rung-sep = 2 // Vertical separation between rungs
   let width = 8.4 // Width of each rung
   let height = 1 // Height of each rung

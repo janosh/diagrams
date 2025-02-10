@@ -1,5 +1,6 @@
 #import "@preview/cetz:0.3.2": canvas, draw
 #import "@preview/modpattern:0.1.0": modpattern
+#import draw: line, content, rect, on-layer
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -13,8 +14,6 @@
 }
 
 #canvas({
-  import draw: line, content, rect, on-layer
-
   let arrow-style = (mark: (end: ">", fill: black, scale: 0.7))
   let wall-width = 0.5
 

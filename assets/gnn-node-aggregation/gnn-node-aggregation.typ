@@ -1,10 +1,9 @@
 #import "@preview/cetz:0.3.2": canvas, draw
+#import draw: line, content, circle
 
 #set page(width: auto, height: auto, margin: 8pt)
 
 #canvas({
-  import draw: line, content, circle, rect
-
   // Styles
   let arrow-style = (mark: (end: "stealth", fill: black, scale: 0.5, offset: 2pt), stroke: 0.5pt)
   let edge-style = (stroke: 0.4pt)

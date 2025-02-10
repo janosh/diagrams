@@ -1,4 +1,5 @@
 #import "@preview/cetz:0.3.2": canvas, draw
+#import draw: line, rect, content
 
 #set page(width: auto, height: auto, margin: 15pt)
 
@@ -224,8 +225,6 @@
 }
 
 #canvas({
-  import draw: line, content, rect
-
   let cell-size = 3.25 // Increased cell size
   let start-x = 0
   let start-y = 0

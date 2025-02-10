@@ -1,10 +1,9 @@
 #import "@preview/cetz:0.3.2": canvas, draw
+#import draw: line, content, circle
 
 #set page(width: auto, height: auto, margin: 8pt)
 
 #canvas({
-  import draw: line, content, circle
-
   let node-sep = 1.5 // Horizontal separation between nodes
   let level-sep = 1.5 // Vertical separation between levels
   let node-radius = 0.35

@@ -6,8 +6,6 @@
 #let size = (8, 5)
 
 #canvas({
-  import draw: translate
-
   draw.set-style(
     axes: (
       y: (label: (anchor: "north-west", offset: -0.2), mark: (end: "stealth", fill: black)),
@@ -46,7 +44,7 @@
   )
 
   // Second plot (Fermi fluctuations)
-  translate((size.at(0) + 2.5, 0))
+  draw.translate((size.at(0) + 2.5, 0))
 
   plot.plot(
     size: size,

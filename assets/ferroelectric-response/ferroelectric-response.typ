@@ -1,10 +1,9 @@
 #import "@preview/cetz:0.3.2": canvas, draw
+#import draw: rect, line, circle, content, hobby, scale
 
 #set page(width: auto, height: auto, margin: 8pt)
 
 #canvas({
-  import draw: rect, line, circle, content, hobby, scale
-
   let arrow-style = (mark: (end: "stealth", fill: black, scale: .75))
   let plot-height = 4
   let plot-width = 10

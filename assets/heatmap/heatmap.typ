@@ -1,10 +1,9 @@
 #import "@preview/cetz:0.3.2": canvas, draw
+#import draw: rect, content
 
 #set page(width: auto, height: auto, margin: 3pt)
 
 #canvas({
-  import draw: rect, content
-
   let cell-size = .7 // Size of each heatmap cell
   let data = (
     (74, 25, 39, 20, 3, 3, 3, 3, 3),

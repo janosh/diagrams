@@ -1,12 +1,11 @@
 #import "@preview/cetz:0.3.2": canvas, draw
+#import draw: rect, content, line
 
 #set page(width: auto, height: auto, margin: 3pt)
 
 #set text(fill: white)
 
 #canvas({
-  import draw: rect, content, line
-
   // Define dimensions
   let width = 8
   let height = 5

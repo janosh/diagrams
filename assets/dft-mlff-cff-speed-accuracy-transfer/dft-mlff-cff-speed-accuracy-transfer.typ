@@ -1,10 +1,9 @@
 #import "@preview/cetz:0.3.2": canvas, draw
+#import draw: line, content
 
 #set page(width: auto, height: auto, margin: 8pt)
 
 #canvas({
-  import draw: line, content, rotate
-
   // Define coordinates
   let acc = (0, 4)
   let speed = (-3.464, -2) // -2*sqrt(3), -2

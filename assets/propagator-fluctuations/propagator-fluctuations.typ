@@ -1,5 +1,6 @@
 #import "@preview/cetz:0.3.2": canvas, draw
 #import "@preview/modpattern:0.1.0": modpattern
+#import draw: line, content, circle, rect, group
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -11,8 +12,6 @@
 )
 
 #canvas({
-  import draw: line, content, circle, rect, group
-
   // Define styles and constants
   let unit = 1
   let vertex-radius = 0.2 * unit
