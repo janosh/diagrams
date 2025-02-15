@@ -10,7 +10,7 @@
 #let med-rad = 0.13 * radius
 #let arrow-style = (
   mark: (end: "barbed", fill: black, scale: .5, width: .25, length: .2, angle: 60deg),
-  stroke: (paint: black, thickness: 0.75pt),
+  stroke: (thickness: 0.75pt),
 )
 #let hatched = modpattern(
   (.1cm, .1cm),

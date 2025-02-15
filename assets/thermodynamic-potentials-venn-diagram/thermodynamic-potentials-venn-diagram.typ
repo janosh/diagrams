@@ -1,10 +1,10 @@
-#import "@preview/cetz:0.3.2"
+#import "@preview/cetz:0.3.2": draw, canvas
 #import "@preview/cetz-venn:0.1.3": venn3
-#import cetz.draw: content, circle, scale
+#import draw: content, circle, scale
 
 #set page(width: auto, height: auto, margin: 8pt)
 
-#cetz.canvas({
+#canvas({
   // Scale up the diagram
   scale(2.5)
 

@@ -14,7 +14,7 @@
   // Colors and styles
   let arrow_style = (
     mark: (start: "stealth", fill: black, scale: 0.5),
-    stroke: (paint: black, thickness: 1.5pt),
+    stroke: (thickness: 1.1pt),
   )
 
   // Draw equals sign at center

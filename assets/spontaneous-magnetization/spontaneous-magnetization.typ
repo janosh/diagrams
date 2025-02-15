@@ -43,7 +43,7 @@
 
       // Dashed line y=x from 0 to 1
       plot.add(
-        style: (stroke: (dash: "dashed", paint: black, thickness: 1pt)),
+        style: (stroke: (dash: "dashed", thickness: 1pt)),
         domain: (0, 1),
         x => x,
       )

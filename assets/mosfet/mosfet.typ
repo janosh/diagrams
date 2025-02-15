@@ -56,7 +56,7 @@
     frame: "rect",
     padding: 2pt,
     fill: white,
-    stroke: (thickness: .5pt, paint: black),
+    stroke: (thickness: .5pt),
   )
 
   // Metal contacts

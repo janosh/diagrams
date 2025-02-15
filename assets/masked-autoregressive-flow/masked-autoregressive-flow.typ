@@ -19,7 +19,7 @@
       pos,
       (rel: (node-width, node-height)),
       fill: fill,
-      stroke: if input { input-style } else { (paint: black, thickness: 0.3pt) },
+      stroke: if input { input-style } else { (thickness: 0.3pt) },
       name: name,
     )
     content(name, text(baseline: -1pt)[#label])

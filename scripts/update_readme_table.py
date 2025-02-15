@@ -107,7 +107,7 @@ n_typst = len(typ_paths)
 n_latex = len(tex_paths)
 
 # update badge counts for Typst and LaTeX
-readme = re.sub(r"\[\!\[(\d+) with Typst\]", f"[![{n_typst}+1 with Typst]", readme)
+readme = re.sub(r"\[\!\[(\d+) with Typst\]", f"[![{n_typst} with Typst]", readme)
 readme = re.sub(r"\[\!\[(\d+) with LaTeX\]", f"[![{n_latex} with LaTeX]", readme)
 # update the URL-encoded part
 readme = re.sub(r"badge/\d+%20with-Typst", f"badge/{n_typst}%20with-Typst", readme)
