@@ -9,16 +9,17 @@
 #let leaky_relu(x) = if x < 0 { 0.01 * x } else { x }
 #let sigmoid(x) = 1 / (1 + calc.exp(-x))
 #let tanh(x) = (calc.exp(x) - calc.exp(-x)) / (calc.exp(x) + calc.exp(-x))
-#let size = (8, 5)
 
 #canvas({
   plot.plot(
-    size: size,
-    y-tick-step: 2,
+    size: (8, 5),
+    y-tick-step: 1,
     x-tick-step: 2,
     legend: "inner-north-west",
     legend-style: (item: (spacing: 0.18), padding: 0.1, stroke: .5pt),
     axis-style: "left",
+    x-grid: true,
+    y-grid: true,
     {
       plot.add-hline(0, style: (stroke: 0.5pt))
       plot.add-vline(0, style: (stroke: 0.5pt))
@@ -33,7 +34,6 @@
       }
     },
   )
-  draw.grid((0, 0), size, stroke: 0.1pt)
 })
 
 // #box(width: 30em)[

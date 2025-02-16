@@ -3,11 +3,9 @@
 
 #set page(width: auto, height: auto, margin: 8pt)
 
-#let size = (8, 5)
-
 #canvas({
   plot.plot(
-    size: size,
+    size: (8, 5),
     x-min: 0,
     x-max: 2.7,
     x-label: $x$,

@@ -3,8 +3,6 @@
 
 #set page(width: auto, height: auto, margin: 8pt)
 
-#let size = (8, 5)
-
 #canvas({
   draw.set-style(
     axes: (
@@ -14,7 +12,7 @@
   )
 
   plot.plot(
-    size: size,
+    size: (8, 5),
     x-min: 0,
     x-max: 11,
     y-min: 0,
