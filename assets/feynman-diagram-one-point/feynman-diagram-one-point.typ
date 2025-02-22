@@ -37,7 +37,7 @@
 }
 
 #let dressed-vertex(pos, label: none, rel-label: (3pt, 0), name: none, radius: small-rad) = {
-  circle(pos, radius: radius, fill: hatched, stroke: black, name: name)
+  circle(pos, radius: radius, fill: hatched, name: name)
   if label != none {
     content((rel: rel-label, to: pos), $#label$, anchor: if rel-label.at(1) > 0 { "south" } else { "north" })
   }

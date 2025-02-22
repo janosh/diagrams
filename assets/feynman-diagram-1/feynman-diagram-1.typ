@@ -33,6 +33,6 @@
   content((rel: (0, 0.3), to: "p2.mid"), $p_2$)
 
   // Draw vertex with hatched pattern
-  circle((0, 0), radius: 0.25, fill: hatched, stroke: black, name: "vertex")
+  circle((0, 0), radius: 0.25, fill: hatched, name: "vertex")
   content((rel: (0, 0.5), to: "vertex"), $G_(k,a b)(p_1,p_2)$)
 })

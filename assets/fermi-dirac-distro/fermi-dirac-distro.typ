@@ -71,7 +71,7 @@
         max: 1.2,
         style: (
           stroke: (thickness: 0.5pt),
-          mark: (start: "stealth", end: "stealth", stroke: black + 0.5pt, fill: black, scale: .1),
+          mark: (symbol: "stealth", stroke: 0.5pt, fill: black, scale: .1),
         ),
       )
     },

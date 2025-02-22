@@ -5,7 +5,7 @@
 
 #canvas({
   let node-sep = 2.5 // Horizontal separation between nodes
-  let arrow-style = (mark: (end: "stealth", fill: black, scale: 0.5), stroke: black)
+  let arrow-style = (mark: (end: "stealth", fill: black, scale: 0.5))
 
 
   // Draw main nodes
@@ -62,7 +62,6 @@
   line(
     (rel: (-2, 0), to: "l1"),
     "l1",
-    stroke: black,
     name: "input",
     mark: (end: "stealth", fill: black, scale: 0.5),
   )
@@ -81,7 +80,7 @@
   content((rel: (0, 0.3), to: "skip.mid"), $arrow(x)$)
   content(
     (rel: (0, -0.3), to: "skip.mid"),
-    align(center, text(size: 0.8em)[skip connection\ (identity)]),
+    align(center)[skip connection\ (identity)],
     anchor: "north",
   )
 

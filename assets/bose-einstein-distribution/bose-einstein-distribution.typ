@@ -12,7 +12,13 @@
 }
 
 #canvas({
-  draw.set-style(axes: (y: (label: (anchor: "south-east", angle: 90deg)), x: (label: (anchor: "north-east"))))
+  let mark = (end: "stealth", fill: black, scale: 0.7)
+  draw.set-style(
+    axes: (
+      y: (label: (anchor: "north-west", offset: -0.2), mark: mark),
+      x: (label: (anchor: "south-east", offset: -0.15), mark: mark),
+    ),
+  )
 
   plot.plot(
     size: (8, 7),
@@ -39,11 +45,7 @@
 
   // Add curved arrows between intersection points
   // We approximate the intersection points since CeTZ doesn't have direct intersection support
-  let arrow-style = (
-    end: "stealth",
-    stroke: black + 1pt,
-    fill: black,
-  )
+  let arrow-style = (end: "stealth", stroke: 1pt, fill: black)
 
   // First arrow (T=0.5 to T=1)
   bezier(

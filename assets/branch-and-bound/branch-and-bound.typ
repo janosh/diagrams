@@ -7,7 +7,7 @@
   let node-sep = 1.5 // Horizontal separation between nodes
   let level-sep = 1.5 // Vertical separation between levels
   let node-radius = 0.35
-  let arrow-style = (mark: (end: "stealth", fill: black, scale: 0.2), stroke: black + 1pt)
+  let arrow-style = (mark: (end: "stealth", fill: black, scale: 0.2, offset: 0.03))
 
   // Helper to draw a node with label
   let draw-node(pos, label, name: none) = {

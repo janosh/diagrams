@@ -24,7 +24,7 @@
       "enclosure.north",
       text(weight: "bold", size: 1.2em)[Kohn-Sham method],
       frame: "rect",
-      stroke: black + .5pt,
+      stroke: .5pt,
       fill: white,
       padding: 3pt,
     ),
@@ -32,7 +32,7 @@
 
   let box-style = (
     frame: "rect",
-    stroke: black + .5pt,
+    stroke: .5pt,
     fill: rgb("#DCDCDC"),
     padding: 8pt,
     width: 15em,

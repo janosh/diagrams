@@ -7,7 +7,7 @@
 #let xy-ratio = 2 / 3
 
 #canvas({
-  let arrow-style = (mark: (end: "stealth", scale: .75), stroke: black + 1pt, fill: black)
+  let arrow-style = (mark: (end: "stealth", scale: .75), fill: black)
 
   // Draw axes
   line((-0.5, 0), (range, 0), ..arrow-style) // x-axis

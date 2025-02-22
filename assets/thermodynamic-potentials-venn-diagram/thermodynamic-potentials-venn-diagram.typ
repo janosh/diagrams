@@ -31,7 +31,7 @@
   // Add labels for overlapping regions
   content(
     "venn.ab",
-    text(.8em, align(center, $U_[mu] =\ T S - P V$)),
+    align(center, $U_[mu] =\ T S - P V$),
     anchor: "center",
     offset: (0, 0.3),
   )

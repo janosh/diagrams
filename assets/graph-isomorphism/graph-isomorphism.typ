@@ -5,7 +5,7 @@
 
 // Helper function to draw a node with a name
 #let node(pos, label, color, name) = {
-  content(pos, $n_#label$, frame: "circle", radius: 0.25, fill: color, stroke: black + 0.8pt, name: name, padding: 1pt)
+  content(pos, $n_#label$, frame: "circle", radius: 0.25, fill: color, stroke: 0.8pt, name: name, padding: 1pt)
 }
 
 #canvas({
@@ -15,7 +15,7 @@
   let light-blue = rgb("#b9d6f2")
   let light-teal = rgb("#b1e2d8")
 
-  set-style(line: (stroke: black + 0.8pt))
+  set-style(line: (stroke: 0.8pt))
 
   // Draw first graph (square)
   scope({

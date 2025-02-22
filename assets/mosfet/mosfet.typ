@@ -42,13 +42,13 @@
 
   // P-type semiconductor substrate
   rect((0, 0), (11, 2), fill: rgb("#ffa500").lighten(50%), name: "substrate")
-  content("substrate", [#set align(center); $p$-type\ semiconductor])
+  content("substrate", align(center)[$p$-type\ semiconductor])
 
   // N-type semiconductor regions
   rect((1, 1), (4, 2), fill: rgb("#90ee90"), name: "source-n")
-  content("source-n", [#set align(center); $n$-type\ semiconductor])
+  content("source-n", align(center)[$n$-type\ semiconductor])
   rect((7, 1), (10, 2), fill: rgb("#90ee90"), name: "drain-n")
-  content("drain-n", [#set align(center); $n$-type\ semiconductor])
+  content("drain-n", align(center)[$n$-type\ semiconductor])
 
   content(
     "dielectric-box",

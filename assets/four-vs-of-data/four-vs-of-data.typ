@@ -31,7 +31,7 @@
     label-key: 2,
     radius: radius,
     slice-style: data.map(itm => itm.at(3)),
-    stroke: black + .8pt,
+    stroke: .5pt,
     inner-label: (
       content: (value, label) => text(weight: "regular")[#label],
       radius: 120%,
@@ -43,7 +43,7 @@
   )
 
   let arrow-style = (
-    stroke: black + .8pt,
+    stroke: .5pt,
     mark: (end: "stealth", fill: black, offset: 5pt, scale: .75),
   )
 

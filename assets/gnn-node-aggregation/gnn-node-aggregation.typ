@@ -22,13 +22,7 @@
 
   // Helper to draw a node with label
   let draw-node(pos, label, name) = {
-    circle(
-      pos,
-      radius: node-radius,
-      fill: colors.at(label),
-      stroke: black + 0.5pt,
-      name: name,
-    )
+    circle(pos, radius: node-radius, fill: colors.at(label), stroke: 0.5pt, name: name)
     content(pos, label, anchor: "center")
   }
 

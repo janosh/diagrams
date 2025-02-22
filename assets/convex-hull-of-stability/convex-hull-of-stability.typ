@@ -9,13 +9,14 @@
   let height = 8
   let point_radius = 0.15
   let line_thickness = 1.5pt
-  let arrow_style = (mark: (end: "stealth"), stroke: black + line_thickness, fill: black)
+  let arrow_style = (mark: (end: "stealth"), stroke: line_thickness, fill: black)
   let hull_style = (stroke: blue.darken(20%) + 2.5pt)
   let hyp_hull_style = (stroke: (paint: gray, thickness: line_thickness, dash: "dashed"))
 
+
   // Draw axes first to establish named positions
   line((0, 0), (0, height), ..arrow_style, name: "y-axis-left")
-  line((0, 0), (width, 0), ..arrow_style, name: "x-axis")
+  line((0, 0), (width, 0), stroke: line_thickness, name: "x-axis")
   line((width, 0), (width, height), ..arrow_style, name: "y-axis-right")
 
   // Draw stable points
@@ -83,7 +84,7 @@
   line(
     "a2x-isect.0",
     "a2x",
-    mark: (end: ">", fill: red),
+    mark: (end: "stealth", fill: red),
     stroke: red + line_thickness,
     name: "arrow-a2x",
   )
@@ -115,7 +116,7 @@
   line(
     "a2x5-isect.0",
     "a2x5",
-    mark: (end: ">", fill: rgb("#4d8000")),
+    mark: (end: "stealth", fill: rgb("#4d8000")),
     stroke: rgb("#4d8000") + line_thickness,
     name: "arrow-a2x5",
   )
@@ -152,7 +153,7 @@
   line(
     "hull-a-ax.2%",
     "mu-line.4%",
-    mark: (start: ">", end: ">", fill: orange),
+    mark: (symbol: "stealth", fill: orange, offset: 0.1, scale: 0.6),
     stroke: orange + line_thickness,
     name: "mu-arrow",
   )

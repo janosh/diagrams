@@ -53,6 +53,6 @@
   content((rel: (0.3, 0.1), to: "p4"), $p_4$)
 
   // Draw vertex with hatched pattern
-  circle(rot45(0, 0), radius: 0.25, fill: hatched, stroke: black, name: "vertex")
+  circle(rot45(0, 0), radius: 0.25, fill: hatched, name: "vertex")
   content((rel: (0.35, -.05), to: "vertex"), $Gamma_(k,a b c d)^((4))(p_1,p_2,p_3,p_4)$, anchor: "west")
 })

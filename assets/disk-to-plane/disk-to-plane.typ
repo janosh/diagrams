@@ -41,7 +41,7 @@
   )
 
   // Unit disk with gray fill
-  circle((0, 0), radius: radius, stroke: black + 0.8pt, fill: rgb(220, 220, 220).transparentize(60%), name: "disk")
+  circle((0, 0), radius: radius, stroke: 0.8pt, fill: rgb(220, 220, 220).transparentize(60%), name: "disk")
   content((rel: (-0.4, 0.5), to: "disk.center"), $DD^2$)
 
   // Dots at special points

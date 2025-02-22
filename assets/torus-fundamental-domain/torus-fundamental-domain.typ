@@ -1,5 +1,5 @@
 #import "@preview/cetz:0.3.2": canvas, draw
-#import draw: line, content, arc, rect, set-style, set-viewport
+#import draw: line, content, arc, rect
 
 #set page(width: auto, height: auto, margin: 1pt)
 
@@ -16,8 +16,8 @@
 // TODO this figure needs revisiting to get the gray-shaded areas right without overlaying white fills once CaTZ implements path clipping
 // https://github.com/cetz-package/cetz/discussions/813#discussioncomment-12218646
 #canvas({
-  set-style(stroke: (thickness: 0.4pt))
-  set-viewport((0, 0), (20, 20), bounds: (12, 12))
+  draw.set-style(stroke: (thickness: 0.4pt))
+  draw.set-viewport((0, 0), (20, 20), bounds: (12, 12))
 
 
   // Light gray vertical strip

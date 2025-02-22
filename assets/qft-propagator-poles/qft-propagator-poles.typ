@@ -9,7 +9,7 @@
 
   // Axes styles
   let arrow-style = (mark: (end: "stealth", fill: black))
-  let line-style = (stroke: black + .75pt)
+  let line-style = (stroke: 0.75pt)
   let zigzag-style = (amplitude: 0.1, segment-length: 0.2)
 
   // Main axes

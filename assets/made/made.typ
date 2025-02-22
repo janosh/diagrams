@@ -6,7 +6,7 @@
 #canvas({
   // Styles
   let arrow-style = (mark: (end: "stealth", fill: black, scale: 0.5, offset: 1pt), stroke: .5pt)
-  let node-style = (stroke: black + 0.7pt)
+  let node-style = (stroke: 0.7pt)
   let layer-sep = 2 // now vertical separation
   let horiz-sep = 1.3 // horizontal separation between nodes in a layer
 

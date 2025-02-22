@@ -36,7 +36,7 @@
 }
 
 #let dressed-vertex(pos, label: none, rel-label: none, name: none, radius: small-rad) = {
-  circle(pos, radius: radius, fill: hatched, stroke: black, name: name)
+  circle(pos, radius: radius, fill: hatched, name: name)
   if label != none {
     content(
       if rel-label != none { (rel: rel-label, to: pos) } else { pos },

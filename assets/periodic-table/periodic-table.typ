@@ -209,7 +209,7 @@
 
 // Helper function to create an element box
 #let element(number, mass, symbol, name, fill: white, text-color: black) = {
-  box(width: 3cm, height: 3cm, fill: fill, stroke: black, inset: 4pt)[
+  box(width: 3cm, height: 3cm, fill: fill, stroke: 0.7pt, inset: 4pt)[
     #set align(center)
     #text(size: 18pt, weight: "bold")[#number #h(1fr) #mass]\
     #v(1fr)
@@ -304,7 +304,6 @@
     content(
       (x, y + cell-size * 0.7),
       box(width: 3cm)[
-        #set align(center)
         #text(size: 14pt, weight: "bold")[#num #h(1fr) #label]
       ],
     )
@@ -329,7 +328,7 @@
       (legend-start.at(0), legend-start.at(1) - y-offset),
       (legend-start.at(0) + 0.8, legend-start.at(1) - y-offset - 0.8),
       fill: color,
-      stroke: black,
+      stroke: 0.7pt,
     )
     content(
       (legend-start.at(0) + 1, legend-start.at(1) - y-offset - 0.4),

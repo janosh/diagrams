@@ -9,10 +9,8 @@
 
 #canvas({
   // Constants for layout
-  let spacing = 4
-  let motif-x = 1
-  let lattice-x = spacing
-  let crystal-x = 2 * spacing
+  let (spacing, motif-x) = (4, 1)
+  let (lattice-x, crystal-x) = (spacing, 2 * spacing)
 
   // Draw motif/basis
   group({
@@ -45,7 +43,7 @@
   // Draw crystal structure
   group({
     // Draw unit cell outline
-    rect((crystal-x, 0), (crystal-x + 1, 1), stroke: black + 1pt)
+    rect((crystal-x, 0), (crystal-x + 1, 1), stroke: 1pt)
 
     // Draw atoms
     for x in range(3) {

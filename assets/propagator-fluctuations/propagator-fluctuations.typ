@@ -32,7 +32,7 @@
 
   // Helper function for hatched vertices
   let vertex(pos, label: none, rel-label: (0.35, 0.35)) = {
-    circle(pos, radius: vertex-radius, fill: hatched, stroke: black)
+    circle(pos, radius: vertex-radius, fill: hatched)
 
     if label != none {
       content(

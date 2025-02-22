@@ -37,7 +37,7 @@
       )
       content(
         (circle-offset, y + height / 2),
-        align(center)[#symbol],
+        align(center, symbol),
       )
     }
   }

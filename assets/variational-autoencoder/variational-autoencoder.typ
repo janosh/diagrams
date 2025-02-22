@@ -4,7 +4,6 @@
 #set page(width: auto, height: auto, margin: 8pt)
 
 #canvas({
-  let node-style = (stroke: black + 1pt, fill: white)
   let layer-sep = 2 // Horizontal separation between layers
   let node-sep = 1.4 // Vertical separation between nodes
   let arrow-style = (stroke: .5pt, mark: (end: "stealth", fill: black, scale: .3))
@@ -19,7 +18,6 @@
         (x, nodes / 2 - node-sep * ii),
         radius: 0.3,
         name: prefix + str(ii + 1),
-        ..node-style,
       )
     }
     // Create named points for the layer bounds
@@ -57,7 +55,6 @@
       radius: 0.4,
       name: "mu" + str(ii + 1),
       fill: rgb(100%, 100%, 0%, 20%),
-      ..node-style,
     )
   }
 
@@ -68,7 +65,6 @@
       radius: 0.4,
       name: "sigma" + str(ii + 1),
       fill: rgb(0%, 0%, 100%, 10%),
-      ..node-style,
     )
   }
 
@@ -80,7 +76,6 @@
       radius: 0.4,
       name: "sample" + str(ii + 1),
       fill: rgb(0%, 100%, 0%, 10%),
-      ..node-style,
     )
   }
 

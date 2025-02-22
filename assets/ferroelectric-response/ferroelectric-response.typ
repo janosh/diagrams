@@ -10,18 +10,17 @@
   let y-offset = 4.65 // Reduced from 6 to bring plots closer together
 
   // Helper to draw axes
-  let draw-axes(origin, width, height, arrow: true) = {
-    let style = if arrow { arrow-style } else { (stroke: black + 1pt) }
+  let draw-axes(origin, width, height) = {
     line(
       (origin.at(0) - 0.5, origin.at(1)),
       (origin.at(0) + width, origin.at(1)),
-      ..style,
+      ..arrow-style,
       name: "x-axis",
     )
     line(
       (origin.at(0), origin.at(1) - 0.5),
       (origin.at(0), origin.at(1) + height),
-      ..style,
+      ..arrow-style,
       name: "y-axis",
     )
   }
@@ -39,7 +38,6 @@
     (top-origin.at(0) + 8.2, top-origin.at(1) + 0.3), // right minimum
     (top-origin.at(0) + 8.3, top-origin.at(1) + 0.4), // right minimum
     (top-origin.at(0) + 9.5, top-origin.at(1) + 3.5), // up high again
-    stroke: black + 1.5pt,
     omega: 0,
     name: "potential-curve",
   )
@@ -113,7 +111,7 @@
   let draw-unit-cell(center-x, center-y, ti-y, cell-name) = {
     let (x, y) = (center-x, center-y)
     let z-offset = 0.3 // Consistent offset for back face
-    let cube-style = (stroke: black + 0.7pt)
+    let cube-style = (stroke: 0.7pt)
 
     // Draw unit cell cube with consistent offsets
     rect(

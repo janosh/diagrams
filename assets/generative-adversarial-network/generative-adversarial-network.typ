@@ -11,7 +11,7 @@
     radius: 0.53,
   )
   let arrow-style = (
-    stroke: black + 0.8pt,
+    stroke: 0.8pt,
     mark: (end: "stealth", scale: 0.4, fill: black),
   )
 

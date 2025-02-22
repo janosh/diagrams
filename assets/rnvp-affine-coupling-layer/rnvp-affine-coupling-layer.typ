@@ -18,7 +18,7 @@
       pos,
       (rel: (node-width, node-height)),
       fill: fill,
-      stroke: black + 0.3pt,
+      stroke: 0.3pt,
       name: name,
     )
     content(name, text)

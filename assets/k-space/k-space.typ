@@ -41,7 +41,7 @@
   content((rel: (.55, 0), to: "y-axis.end"), $k_y$, anchor: "north-east")
 
   // Draw lattice spacing indicators with arrows
-  let spacing-arrow = (mark: (start: "stealth", end: "stealth", fill: black, scale: .3, offset: 0.1), stroke: 0.7pt)
+  let spacing-arrow = (mark: (symbol: "stealth", fill: black, scale: .3, offset: 0.1), stroke: 0.7pt)
   let x-start = (x-range - 1, -ratio * y-range)
   let x-end = (x-range, -ratio * y-range)
   let x-mid = ((x-start.at(0) + x-end.at(0)) / 2, x-start.at(1))

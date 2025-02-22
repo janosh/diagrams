@@ -17,7 +17,7 @@
       (rel: (-width, -height / 2), to: pos),
       (rel: (2 * width, height)),
       fill: fill,
-      stroke: black + 0.4pt,
+      stroke: 0.4pt,
       radius: 0.2,
       name: name,
     )

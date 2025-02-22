@@ -19,7 +19,7 @@
   )
 
   // Draw axes
-  let arrow-style = (mark: (end: "stealth", fill: black, scale: 0.7), stroke: black + 1pt)
+  let arrow-style = (mark: (end: "stealth", fill: black, scale: 0.7))
   let axis-overshoot = -0.75
   line((axis-overshoot, 0), (8, 0), ..arrow-style, name: "x-axis") // x-axis
   line((0, axis-overshoot), (0, 5), ..arrow-style, name: "y-axis") // y-axis
@@ -31,14 +31,8 @@
   content((rel: (0.1, 0), to: "y-axis.95%"), text(weight: "bold")[reaction rate], anchor: "west")
 
   // Add region labels
-  content(
-    (2.5, 1),
-    align(center)[limited by\ desorption\ of product],
-  )
-  content(
-    (6, 1),
-    align(center)[limited by\ activation\ of reactant],
-  )
+  content((2.5, 1), [limited by\ desorption\ of product])
+  content((6, 1), [limited by\ activation\ of reactant])
 
   // Draw Sabatier optimum label
   let ellipse-center = (4.5, 4.2)
@@ -60,7 +54,7 @@
     (4.5, 3.7),
     (6, 2.8),
     (8, 1),
-    stroke: black + 1.2pt,
+    stroke: 1.2pt,
     omega: 1,
   )
   // Add label

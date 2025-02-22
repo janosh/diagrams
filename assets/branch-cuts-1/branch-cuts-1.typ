@@ -29,16 +29,16 @@
     left-point,
     right-point,
     name: "x-axis",
-    mark: (start: "circle", end: "circle", fill: blue, scale: 0.5),
+    mark: (symbol: "circle", fill: blue, scale: 0.75),
   )
   // Add branch point labels
   content(
-    (rel: (0, 0.2), to: "x-axis.start"),
+    (rel: (0, 0.3), to: "x-axis.start"),
     $-sqrt(arrow(p)^2)$,
     name: "left-label",
   )
   content(
-    (rel: (0, 0.2), to: "x-axis.end"),
+    (rel: (0, 0.3), to: "x-axis.end"),
     $sqrt(arrow(p)^2)$,
     name: "right-label",
   )

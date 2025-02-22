@@ -37,6 +37,6 @@
   content((rel: (0.3, 0.3), to: "p3"), $p_3$)
 
   // Draw vertex with hatched pattern
-  circle((0, 0), radius: 0.25, fill: hatched, stroke: black, name: "vertex")
+  circle((0, 0), radius: 0.25, fill: hatched, name: "vertex")
   content((rel: (0.35, -.05), to: "vertex"), $Gamma_(k,a b c)^((3))(p_1,p_2,p_3)$, anchor: "west")
 })

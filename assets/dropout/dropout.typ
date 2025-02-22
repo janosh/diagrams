@@ -4,11 +4,9 @@
 #set page(width: auto, height: auto, margin: 8pt)
 
 #canvas({
-  let node-style = (stroke: black + 1pt, fill: white)
-
   let layer-sep = 2.5 // Horizontal separation between layers
   let node-sep = 1.5 // Vertical separation between nodes
-  let arrow-style = (stroke: black + 1pt, mark: (end: "stealth"), fill: black)
+  let arrow-style = (mark: (end: "stealth", scale: 0.7), fill: black)
 
   // Helper function to draw a layer of nodes
   let draw-layer(x, nodes, prefix: "") = {
@@ -17,7 +15,6 @@
         (x, node-sep * (ii + 1)),
         radius: 0.3,
         name: prefix + str(ii + 1),
-        ..node-style,
       )
     }
   }
@@ -42,8 +39,8 @@
   draw-layer(2 * layer-sep, 5, prefix: "h2") // Second hidden layer
 
   // Draw output nodes
-  circle((3 * layer-sep, 2 * node-sep), radius: 0.3, name: "o1", ..node-style)
-  circle((3 * layer-sep, 4 * node-sep), radius: 0.3, name: "o2", ..node-style)
+  circle((3 * layer-sep, 2 * node-sep), radius: 0.3, name: "o1")
+  circle((3 * layer-sep, 4 * node-sep), radius: 0.3, name: "o2")
 
   // Connect all layers
   connect-layers("i", "h1", 5, 5)
@@ -77,8 +74,8 @@
   draw-layer(mid-x + 3 * layer-sep, 5, prefix: "dh2")
 
   // Draw output nodes
-  circle((mid-x + 4 * layer-sep, 2 * node-sep), radius: 0.3, name: "do1", ..node-style)
-  circle((mid-x + 4 * layer-sep, 4 * node-sep), radius: 0.3, name: "do2", ..node-style)
+  circle((mid-x + 4 * layer-sep, 2 * node-sep), radius: 0.3, name: "do1")
+  circle((mid-x + 4 * layer-sep, 4 * node-sep), radius: 0.3, name: "do2")
 
   // Add dropout X marks
   let x-style = (fill: red, weight: "bold", size: 4em, baseline: -4pt)

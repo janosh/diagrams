@@ -11,7 +11,7 @@
   // Node styles
   let arrow-style = (
     mark: (end: "stealth", fill: black, scale: 0.75),
-    stroke: black + 0.7pt,
+    stroke: 0.7pt,
   )
 
   // Helper to draw diamond node with its label
@@ -19,7 +19,7 @@
     rect(
       (pos.at(0) - 0.5, pos.at(1) - 0.5),
       (pos.at(0) + 0.5, pos.at(1) + 0.5),
-      stroke: black + 0.7pt,
+      stroke: 0.7pt,
       fill: fill,
       name: name,
     )
@@ -28,7 +28,7 @@
 
   // Helper to draw circle node with its label
   let circle-node(pos, name, label) = {
-    circle(pos, radius: 0.4, name: name, stroke: black + 0.7pt, fill: rgb("#ffa64d").lighten(40%))
+    circle(pos, radius: 0.4, name: name, stroke: 0.7pt, fill: rgb("#ffa64d").lighten(40%))
     content(pos, label, anchor: "center")
   }
 
