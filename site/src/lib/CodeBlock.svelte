@@ -11,10 +11,14 @@
   // and won't unless someone contributes a grammar
   // https://highlightjs.readthedocs.io/en/latest/language-requests.html
 
-  export let code: string
-  export let github_link: string
-  export let title: string
-  export let tex_file_uri: string = ``
+  interface Props {
+    code: string
+    github_link: string
+    title: string
+    tex_file_uri?: string
+  }
+
+  let { code, github_link, title, tex_file_uri = `` }: Props = $props()
 </script>
 
 <div>

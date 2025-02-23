@@ -6,10 +6,17 @@
   import { CmdPalette } from 'svelte-multiselect'
   import { GitHubCorner } from 'svelte-zoo'
   import '../app.css'
+  interface Props {
+    children?: import('svelte').Snippet
+  }
 
-  $: actions = diagrams.map(({ title, slug }) => {
-    return { label: title, action: () => goto(slug) }
-  })
+  let { children }: Props = $props()
+
+  let actions = $derived(
+    diagrams.map(({ title, slug }) => {
+      return { label: title, action: () => goto(slug) }
+    }),
+  )
 </script>
 
 <CmdPalette {actions} placeholder="Go to..." />
@@ -20,7 +27,7 @@
   --zoo-gh-corner-color="var(--body-bg)"
 />
 
-<slot />
+{@render children?.()}
 
 <footer style="margin: 6em 0 3em;">
   &copy; Janosh Riebesell 2021 &ensp;-&ensp;

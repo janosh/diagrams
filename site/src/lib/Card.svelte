@@ -3,11 +3,15 @@
   import type { Diagram } from '.'
   import { Tags } from '.'
 
-  export let item: Diagram
-  export let style = ``
-  export let format: `short` | `full` = `full`
+  interface Props {
+    item: Diagram
+    style?: string | null
+    format?: `short` | `full`
+  }
 
-  $: ({ slug, title, description, tags } = item)
+  let { item, style = null, format = `full` }: Props = $props()
+
+  let { slug, title, description, tags } = $derived(item)
 </script>
 
 <a href={slug} transition:fade={{ duration: 200 }} {style}>

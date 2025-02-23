@@ -1,8 +1,12 @@
 <script lang="ts">
-  export let tags: string[]
-  export let font_size: string = `9pt`
-  export let margin: string = `auto`
-  export let style: string | null = null
+  interface Props {
+    tags: string[]
+    font_size?: string
+    margin?: string
+    style?: string | null
+  }
+
+  let { tags, font_size = `9pt`, margin = `auto`, style = null }: Props = $props()
 </script>
 
 <p class="tags" style:margin {style}>

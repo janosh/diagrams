@@ -10,4 +10,3 @@ jobs:
     uses: janosh/workflows/.github/workflows/nodejs-gh-pages.yml@main
     with:
       working-directory: site
-      install-cmd: npm install --force

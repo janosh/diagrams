@@ -3,7 +3,7 @@
   import { homepage, name } from '$root/package.json'
   import Icon from '@iconify/svelte'
 
-  let online: boolean
+  let online: boolean = $state(true)
 </script>
 
 <svelte:head>

@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { Card, CodeBlock, Tags } from '$lib'
+  import { Card, CodeBlock, type Diagram, Tags } from '$lib'
   import { homepage, repository } from '$root/package.json'
   import Icon from '@iconify/svelte'
   import { PrevNext } from 'svelte-zoo'
 
-  export let data
+  let { data } = $props()
 
-  $: ({ title, description, code, images } = data.diagram)
-  $: ({ creator, creator_url, url, downloads, tags, slug } = data.diagram)
+  let { title, description, code, images } = $derived(data.diagram)
+  let { creator, creator_url, url, downloads, tags, slug } = $derived(data.diagram)
   const labels = [
     [`.png`, `PNG`],
     [`-hd.png`, `PNG (HD)`],
@@ -18,22 +18,23 @@
 
   // development server fetches files from local folder (specified by svelte.config.js kit.files.assets)
   // production server fetches files from GitHub (so we don't need to re-upload with every build)
-  $: base_uri = `https://github.com/janosh/diagrams/raw/refs/heads/main/assets/${slug}/${slug}`
-  $: hd_png = `${base_uri}-hd.png`
+  const raw_repo_url = `https://github.com/janosh/diagrams/raw/refs/heads/main/assets/`
+  let base_uri = $derived(`${raw_repo_url}/${slug}/${slug}`)
 
-  $: if (downloads?.length < 2) throw `unexpectedly low number of assets for download`
-  $: head_title = `${title} | TikZ Diagrams`
-  $: plain_description = description?.replace(/<[^>]*>/g, ``)
+  $effect(() => {
+    if (downloads?.length < 2) throw `unexpectedly low number of assets for download`
+  })
+  let plain_description = $derived(description?.replace(/<[^>]*>/g, ``))
 </script>
 
 <svelte:head>
-  <title>{head_title}</title>
-  <meta property="og:title" content={head_title} />
+  <title>{title} | TikZ Diagrams</title>
+  <meta property="og:title" content="{title} | TikZ Diagrams" />
   {#if plain_description}
     <meta name="description" content={plain_description} />
     <meta property="og:description" content={plain_description} />
   {/if}
-  <meta property="og:image" content={hd_png} />
+  <meta property="og:image" content="{base_uri}-hd.png" />
   <meta property="og:image:alt" content={title} />
   <meta property="og:url" content="{homepage}/{slug}" />
   <meta name="twitter:card" content="summary" />
@@ -112,17 +113,17 @@
   items={data.diagrams.map((diagram) => [diagram.slug, diagram])}
   current={data.slug}
   style="max-width: 55em; margin: auto;"
-  let:item
-  let:kind
 >
-  <div>
-    <h3>
-      <a href={item.slug}>
-        {@html kind == `next` ? `Next &rarr;` : `&larr; Previous`}
-      </a>
-    </h3>
-    <Card {item} style="max-width: 250px;" format="short" />
-  </div>
+  {#snippet children({ item, kind }: { item: Diagram; kind: `next` | `prev` })}
+    <div>
+      <h3>
+        <a href={item.slug}>
+          {@html kind == `next` ? `Next &rarr;` : `&larr; Previous`}
+        </a>
+      </h3>
+      <Card {item} style="max-width: 250px;" format="short" />
+    </div>
+  {/snippet}
 </PrevNext>
 
 <style>

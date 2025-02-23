@@ -5,53 +5,17 @@
   import { filter_tags, filtered_diagrams, search, tag_filter_mode } from '$lib/stores'
   import { homepage, repository } from '$root/package.json'
   import Icon from '@iconify/svelte'
-  import MultiSelect from 'svelte-multiselect'
+  import MultiSelect, { type ObjectOption } from 'svelte-multiselect'
   import { RadioButtons, highlight_matches } from 'svelte-zoo'
 
-  let innerWidth: number
-  $: cols = clamp(Math.floor(innerWidth / 300), 1, 6)
-
-  $: tags = Object.entries(
-    diagrams
-      ?.flatMap((diagram) => diagram.tags)
-      .reduce(
-        (acc, el) => {
-          acc[el] = (acc[el] ?? 0) + 1
-          return acc
-        },
-        {} as Record<string, number>,
-      ),
-  )
-    .filter(([, count]) => count > 2)
-    .sort(([t1], [t2]) => t1.localeCompare(t2))
+  let innerWidth: number = $state(0)
 
   const clamp = (num: number, min: number, max: number) =>
     Math.min(Math.max(num, min), max)
 
-  $: $filtered_diagrams = diagrams
-    .filter((file) => {
-      const searchTerms = $search?.toLowerCase().split(` `)
-      const matches_search = searchTerms?.every((term) =>
-        JSON.stringify(file).toLowerCase().includes(term),
-      )
-
-      let matches_tags = true
-      if ($filter_tags.length > 0) {
-        if ($tag_filter_mode === `or`) {
-          matches_tags = $filter_tags.some((tag) => file.tags.includes(tag.label))
-        } else if ($tag_filter_mode === `and`) {
-          matches_tags = $filter_tags.every((tag) => file.tags.includes(tag.label))
-        }
-      }
-      return matches_search && matches_tags
-    })
-    .sort((d1, d2) => {
-      return d1.title.localeCompare(d2.title)
-    })
-
   const meta_description = `${diagrams.length} Diagrams on Physics, Chemistry, Computer Science, and Machine Learning`
 
-  let active_diagram = -1
+  let active_diagram = $state(-1)
 
   function handle_keyup(event: KeyboardEvent) {
     if (event.key === `Enter` && active_diagram >= 0) {
@@ -71,6 +35,44 @@
     const active = document.querySelector(`ul > li.active`)
     if (active) active.scrollIntoView()
   }
+  let cols = $derived(clamp(Math.floor(innerWidth / 300), 1, 6))
+  let tags = $derived(
+    Object.entries(
+      diagrams
+        ?.flatMap((diagram) => diagram.tags)
+        .reduce(
+          (acc, el) => {
+            acc[el] = (acc[el] ?? 0) + 1
+            return acc
+          },
+          {} as Record<string, number>,
+        ),
+    )
+      .filter(([, count]) => count > 2)
+      .sort(([t1], [t2]) => t1.localeCompare(t2)),
+  )
+  $effect(() => {
+    $filtered_diagrams = diagrams
+      .filter((file) => {
+        const searchTerms = $search?.toLowerCase().split(` `)
+        const matches_search = searchTerms?.every((term) =>
+          JSON.stringify(file).toLowerCase().includes(term),
+        )
+
+        let matches_tags = true
+        if ($filter_tags.length > 0) {
+          if ($tag_filter_mode === `or`) {
+            matches_tags = $filter_tags.some((tag) => file.tags.includes(tag.label))
+          } else if ($tag_filter_mode === `and`) {
+            matches_tags = $filter_tags.every((tag) => file.tags.includes(tag.label))
+          }
+        }
+        return matches_search && matches_tags
+      })
+      .sort((d1, d2) => {
+        return d1.title.localeCompare(d2.title)
+      })
+  })
 </script>
 
 <svelte:head>
@@ -83,7 +85,7 @@
   <meta name="twitter:card" content="summary" />
 </svelte:head>
 
-<svelte:window bind:innerWidth on:keyup={handle_keyup} />
+<svelte:window bind:innerWidth onkeyup={handle_keyup} />
 
 <h1>
   {diagrams.length} Scientific Diagrams
@@ -92,16 +94,16 @@
   About
   {#each [`physics`, `chemistry`, `machine learning`] as tag, idx}
     {#if idx > 0},{/if}
-    <button on:click={() => ($filter_tags = [{ label: tag, count: 0 }])}>
+    <button onclick={() => ($filter_tags = [{ label: tag, count: 0 }])}>
       {tag}
     </button>{/each},<br />
-  <button on:click={() => ($filter_tags = [{ label: `cetz`, count: 0 }])}>
+  <button onclick={() => ($filter_tags = [{ label: `cetz`, count: 0 }])}>
     {diagrams.filter((diagram) => diagram.code.typst).length}
   </button>
   of which in
   <a href="https://cetz-package.github.io/docs/">Cetz</a>
   (Typst) and
-  <button on:click={() => ($filter_tags = [{ label: `tikz`, count: 0 }])}>
+  <button onclick={() => ($filter_tags = [{ label: `tikz`, count: 0 }])}>
     {diagrams.filter((diagram) => diagram.code.tex).length}
   </button>
   in
@@ -128,10 +130,12 @@
     placeholder="Filter by tag..."
     bind:selected={$filter_tags}
   >
-    <span slot="option" let:option style="display: flex; gap: 5pt; align-items: center;">
-      {option.label} <span style="flex: 1;"></span>
-      {option.count}
-    </span>
+    {#snippet option({ option }: { option: ObjectOption })}
+      <span style="display: flex; gap: 5pt; align-items: center;">
+        {option.label} <span style="flex: 1;"></span>
+        {option.count}
+      </span>
+    {/snippet}
   </MultiSelect>
   {#if $filter_tags?.length > 1}
     <RadioButtons bind:selected={$tag_filter_mode} options={[`and`, `or`]} />
