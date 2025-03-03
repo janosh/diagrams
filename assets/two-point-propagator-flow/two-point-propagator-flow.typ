@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.3.2": canvas, draw
+#import "@preview/cetz:0.3.3": canvas, draw
 #import "@preview/modpattern:0.1.0": modpattern
 #import draw: line, content, circle, mark
 
@@ -18,30 +18,20 @@
   background: white,
 )
 
-
 // Helper functions
-#let cross(pos, label: none, rel-label: (0, 5pt), name: none) = {
-  content(
-    pos,
-    text(size: 16pt)[$times.circle$],
-    stroke: none,
-    fill: white,
-    frame: "circle",
-    padding: -2.5pt,
-    name: name,
-  )
+#let cross(pos, label: none, rel-label: (0, 5pt), name: none, ..rest) = {
+  let txt = text(size: 16pt)[$times.circle$]
+  content(pos, txt, stroke: none, fill: white, frame: "circle", padding: -2.5pt, name: name, ..rest)
   if label != none {
     content((rel: rel-label, to: pos), $#label$)
   }
 }
 
-#let dressed-vertex(pos, label: none, rel-label: none, name: none, radius: small-rad) = {
-  circle(pos, radius: radius, fill: hatched, name: name)
+#let dressed-vertex(pos, label: none, rel-label: none, name: none, radius: small-rad, ..rest) = {
+  circle(pos, radius: radius, fill: hatched, name: name, stroke: 0.5pt)
   if label != none {
-    content(
-      if rel-label != none { (rel: rel-label, to: pos) } else { pos },
-      label,
-    )
+    let label-pos = if rel-label != none { (rel: rel-label, to: pos) } else { pos }
+    content(label-pos, $#label$, ..rest)
   }
 }
 
