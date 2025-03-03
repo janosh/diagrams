@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.3.2": canvas, draw, angle
+#import "@preview/cetz:0.3.3": canvas, draw, angle
 #import draw: line, content, circle
 
 #set page(width: auto, height: auto, margin: 8pt)
@@ -8,26 +8,24 @@
   let rad = 2.5
   let vec-a = (rad / 3, rad / 2)
   let phi-point = (rad / 3, -rad / 5)
+  let mark = (end: "stealth", fill: black)
 
   // Bloch vector
-  line((0, 0), vec-a)
-  circle((0, 0), radius: 1pt, fill: black)
-  circle(vec-a, radius: 1pt, fill: black)
-  // content(vec-a + (0.1, 0.2), [$vec(a)$])
+  line((0, 0), vec-a, mark: (start: "circle", end: "circle", fill: black, scale: .5, anchor: "center"))
 
   // Dashed line forming angle
   line((0, 0), phi-point, style: "dashed")
   line(phi-point, vec-a, style: "dashed")
   // Axes
   let arrow-extend = 1.15
-  line((0, 0), (-rad / 5, -rad / 3), mark: (end: "stealth", fill: black))
-  content((-rad / 5 - 0.2, -rad / 3 - 0.2), [$x_1$])
+  line((0, 0), (-rad / 5 * 1.2, -rad / 3 * 1.2), mark: mark, name: "x1")
+  content("x1.end", [$x_1$], anchor: "north")
 
-  line((0, 0), (arrow-extend * rad, 0), mark: (end: "stealth", fill: black))
-  content((arrow-extend * rad + 0.2, 0), [$x_2$])
+  line((0, 0), (arrow-extend * rad, 0), mark: mark, name: "x2")
+  content("x2.end", [$x_2$], anchor: "west")
 
-  line((0, 0), (0, arrow-extend * rad), mark: (end: "stealth", fill: black))
-  content((0, arrow-extend * rad + 0.2), [$x_3$])
+  line((0, 0), (0, arrow-extend * rad), mark: mark, name: "x3")
+  content("x3.end", [$x_3$], anchor: "south")
 
   // Angles
   angle.angle(

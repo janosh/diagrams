@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.3.2": canvas, draw
+#import "@preview/cetz:0.3.3": canvas, draw
 
 #let size = 8
 #let gap = 0.15 // gap between squares
@@ -18,6 +18,6 @@
     // Draw squares with gap
     draw.rect((gap * s1, gap * s2), (s1 * size / 2, s2 * size / 2), fill: color.lighten(80%), stroke: color.darken(40%))
     // Add labels
-    draw.content((size / 4 * s1, size / 4 * s2), $s(p_0) = #s1#s2$)
+    draw.content((size / 4 * s1, size / 4 * s2), $s(p_0) = #calc.quo(s1, s2)$)
   }
 })

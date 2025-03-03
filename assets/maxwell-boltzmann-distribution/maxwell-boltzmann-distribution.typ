@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.3.2": canvas, draw
+#import "@preview/cetz:0.3.3": canvas, draw
 #import "@preview/cetz-plot:0.1.1": plot
 
 #set page(width: auto, height: auto, margin: 8pt)
@@ -9,25 +9,12 @@
 
 // Maxwell-Boltzmann distribution function
 #let maxwell_boltzmann(x, T) = {
-  (
-    4
-      * calc.pi
-      * calc.pow(m_u / (2 * calc.pi * k_B * T), 3 / 2)
-      * calc.pow(x, 2)
-      * calc.exp(-m_u * calc.pow(x, 2) / (2 * k_B * T))
-  )
+  let exp = calc.exp(-m_u * calc.pow(x, 2) / (2 * k_B * T))
+  let prefactor = calc.pow(m_u / (2 * calc.pi * k_B * T), 3 / 2)
+  4 * calc.pi * prefactor * calc.pow(x, 2) * exp
 }
 
 #canvas({
-  draw.set-style(
-    axes: (
-      left: (
-        tick: (
-          label: (offset: .3, angle: 90deg),
-        ),
-      ),
-    ),
-  )
   plot.plot(
     size: (10, 6),
     x-label: [$v$ (m/s)],
@@ -41,10 +28,6 @@
     y-grid: true,
     legend-style: (stroke: .5pt),
     {
-      // Add grid lines
-      plot.add-hline(0, style: (stroke: 0.5pt))
-      plot.add-vline(0, style: (stroke: 0.5pt))
-
       // Plot distributions for different temperatures
       for (temp, color) in ((100, red), (300, orange), (1000, blue)) {
         plot.add(

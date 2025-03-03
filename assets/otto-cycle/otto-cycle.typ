@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.3.2": canvas, draw
+#import "@preview/cetz:0.3.3": canvas, draw
 #import draw: line, content, circle, bezier
 
 #set page(width: auto, height: auto, margin: 8pt)
@@ -7,62 +7,143 @@
 
 #canvas({
   // Draw axes
-  line((0, 0), (0, p), mark: (end: "stealth", fill: black))
-  content((0.2, p), $p$)
-  line((0, 0), (V, 0), mark: (end: "stealth", fill: black))
-  content((V + 0.2, 0), $V$)
+  line((0, 0), (0, p), mark: (end: "stealth", fill: black), name: "y-axis")
+  content((rel: (0.2, 0), to: "y-axis.end"), $p$, name: "p-label")
 
-  // Draw dashed lines for min/max values
-  let p-max = 0.9 * p
-  let p-min = 0.2 * p
-  let V-min = 0.2 * V
-  let V-max = 0.9 * V
+  line((0, 0), (V, 0), mark: (end: "stealth", fill: black), name: "x-axis")
+  content((rel: (0.2, 0), to: "x-axis.end"), $V$, name: "V-label")
+
+  // Define key values
+  let (p-min, p-max) = (0.2 * p, 0.9 * p)
+  let (V-min, V-max) = (0.2 * V, 0.9 * V)
+
+  // Create reference points for min/max values
+  content((0, p-max), name: "p-max-ref", [])
+  content((0, p-min), name: "p-min-ref", [])
+  content((V-min, 0), name: "V-min-ref", [])
+  content((V-max, 0), name: "V-max-ref", [])
+
+  // Horizontal dashed line for p-max
+  line(
+    "p-max-ref",
+    (rel: (V-min, 0), to: "p-max-ref"),
+    stroke: (dash: "dashed", thickness: 0.8pt),
+    name: "p-max-line",
+  )
 
   // Vertical dashed line for V-min
-  line((0, p-max), (V-min, p-max), stroke: (dash: "dotted", thickness: 0.8pt))
-  line((V-min, 0), (V-min, p-max), stroke: (dash: "dotted", thickness: 0.8pt))
-  content((-0.5, p-max), $p_"max"$)
-  content((V-min, -0.5), $V_"min"$)
+  line(
+    "V-min-ref",
+    (rel: (0, p-max), to: "V-min-ref"),
+    stroke: (dash: "dashed", thickness: 0.8pt),
+    name: "V-min-line",
+  )
+
+  // Labels for p-max and V-min
+  content((rel: (-0.5, 0), to: "p-max-ref"), $p_"max"$, name: "p-max-label")
+  content((rel: (0, -0.5), to: "V-min-ref"), $V_"min"$, name: "V-min-label")
+
+  // Horizontal dashed line for p-min
+  line(
+    "p-min-ref",
+    (rel: (V-max, 0), to: "p-min-ref"),
+    stroke: (dash: "dashed", thickness: 0.8pt),
+    name: "p-min-line",
+  )
 
   // Vertical dashed line for V-max
-  line((0, p-min), (V-max, p-min), stroke: (dash: "dotted", thickness: 0.8pt))
-  line((V-max, 0), (V-max, p-min), stroke: (dash: "dotted", thickness: 0.8pt))
-  content((-0.5, p-min), $p_"min"$)
-  content((V-max, -0.5), $V_"max"$)
+  line(
+    "V-max-ref",
+    (rel: (0, p-min), to: "V-max-ref"),
+    stroke: (dash: "dashed", thickness: 0.8pt),
+    name: "V-max-line",
+  )
 
-  // Define points
-  let a = (V-min, p-max)
-  let b = (V-max, 0.5 * p)
-  let c = (V-max, p-min)
-  let d = (V-min, 0.45 * p)
+  // Labels for p-min and V-max
+  content((rel: (-0.5, 0), to: "p-min-ref"), $p_"min"$, name: "p-min-label")
+  content((rel: (0, -0.5), to: "V-max-ref"), $V_"max"$, name: "V-max-label")
 
-  // Draw points
-  for pt in (a, b, c, d) {
-    circle(pt, radius: 3pt, fill: black)
-  }
+  // Define cycle points
+  circle((V-min, p-max), radius: 3pt, fill: black, name: "point-a")
+
+  circle((V-max, 0.5 * p), radius: 3pt, fill: black, name: "point-b")
+
+  circle((V-max, p-min), radius: 3pt, fill: black, name: "point-c")
+
+  circle((V-min, 0.45 * p), radius: 3pt, fill: black, name: "point-d")
 
   // Add point labels
-  content(a, [1], anchor: "south", padding: (bottom: 5pt))
-  content(b, [2], anchor: "west", padding: (left: 5pt))
-  content(c, [3], anchor: "north-west", padding: (left: 5pt))
-  content(d, [4], anchor: "east", padding: (right: 5pt))
+  content("point-a", [1], anchor: "south", padding: (bottom: 5pt), name: "label-a")
+  content("point-b", [2], anchor: "west", padding: (left: 5pt), name: "label-b")
+  content("point-c", [3], anchor: "north-west", padding: (left: 5pt), name: "label-c")
+  content("point-d", [4], anchor: "east", padding: (right: 5pt), name: "label-d")
+
+  // Define styles for paths
+  let arrow_style = (end: "stealth", fill: black)
+  let stroke_style = (paint: rgb("#00008b"), thickness: 1.5pt)
 
   // Draw cycle paths with arrows and labels
   // a -> b (adiabatic expansion)
-  let arrow_style = (end: "stealth", fill: black)
-  let stroke_style = (paint: rgb("#00008b"), thickness: 1.5pt)
-  bezier(a, b, (b.at(0) - 5, b.at(1) + 1), stroke: stroke_style, mark: arrow_style)
-  content(((a.at(0) + b.at(0)) / 2, (a.at(1) + b.at(1)) / 2 + 0.1), $Delta Q = 0$)
+  bezier(
+    "point-a",
+    "point-b",
+    (rel: (-5, 1), to: "point-b"),
+    stroke: stroke_style,
+    mark: arrow_style,
+    name: "path-ab",
+  )
+
+  // Calculate midpoint for label using relative positioning
+  // Create a midpoint reference
+  content(
+    ((V-min + V-max) / 2, (p-max + 0.5 * p) / 2 - 0.35),
+    text(fill: blue.darken(25%), $Delta Q = 0$),
+    name: "label-ab",
+    anchor: "south",
+    padding: (bottom: 5pt),
+  )
 
   // b -> c (heat rejection)
-  line(b, c, mark: arrow_style, stroke: stroke_style)
-  content((b.at(0) + 0.7, (b.at(1) + c.at(1)) / 2), text(fill: blue.darken(5%))[$arrow.r Q_"out"$])
+  line("point-b", "point-c", mark: arrow_style, stroke: stroke_style, name: "path-bc")
+
+  content(
+    (rel: (0.1, 0), to: "path-bc"),
+    text(fill: blue.darken(5%), $arrow.double.r Q_"out"$),
+    name: "label-bc",
+    anchor: "west",
+  )
 
   // c -> d (adiabatic compression)
-  bezier(c, d, (d.at(0) + 2.4, d.at(1) - 1.3), stroke: stroke_style, mark: arrow_style)
-  content(((c.at(0) + d.at(0)) / 2, (c.at(1) + d.at(1)) / 2 + 0.15), $Delta Q = 0$)
+  bezier(
+    "point-c",
+    "point-d",
+    (rel: (2.4, -1.3), to: "point-d"),
+    stroke: stroke_style,
+    mark: arrow_style,
+    name: "path-cd",
+  )
+
+  content(
+    ((V-max + V-min) / 2, (p-min + 0.45 * p) / 2 - 0.35),
+    text(fill: blue.darken(15%), $Delta Q = 0$),
+    name: "label-cd",
+    anchor: "south",
+    padding: (bottom: 5pt),
+  )
 
   // d -> a (heat addition)
-  line(d, a, mark: arrow_style, stroke: stroke_style)
-  content((d.at(0) - 0.6, (d.at(1) + a.at(1)) / 2), text(fill: red)[$Q_"in" arrow.r$])
+  line(
+    "point-d",
+    "point-a",
+    mark: arrow_style,
+    stroke: stroke_style,
+    name: "path-da",
+  )
+
+  content(
+    (rel: (-0.1, 0), to: "path-da"),
+    text(fill: red)[$Q_"in" arrow.double.r$],
+    name: "label-da",
+    anchor: "east",
+  )
 })

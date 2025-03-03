@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.3.2": canvas, draw
+#import "@preview/cetz:0.3.3": canvas, draw
 #import "@preview/cetz-plot:0.1.1": plot
 
 #let vector(v) = $bold(#v)$
@@ -11,18 +11,23 @@
 #let tanh(x) = (calc.exp(x) - calc.exp(-x)) / (calc.exp(x) + calc.exp(-x))
 
 #canvas({
+  let arrow-style = (end: "stealth", fill: black)
+  draw.set-style(
+    axes: (
+      y: (label: (anchor: "north-west", offset: -0.2), mark: arrow-style),
+      x: (mark: arrow-style),
+    ),
+  )
   plot.plot(
     size: (8, 5),
     y-tick-step: 1,
     x-tick-step: 2,
     legend: "inner-north-west",
-    legend-style: (item: (spacing: 0.18), padding: 0.1, stroke: .5pt),
+    legend-style: (item: (spacing: 0.1), padding: 0.1, stroke: .5pt),
     axis-style: "left",
     x-grid: true,
     y-grid: true,
     {
-      plot.add-hline(0, style: (stroke: 0.5pt))
-      plot.add-vline(0, style: (stroke: 0.5pt))
       for (key, (func, color)) in (
         "ReLU": (relu, red),
         "GELU": (gelu, blue),
