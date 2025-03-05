@@ -99,4 +99,4 @@ export const diagrams = Object.entries(yaml_data)
     }
 
     return { ...metadata, slug, code, downloads, images }
-  })
+  }) as Diagram[]

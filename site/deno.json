@@ -13,11 +13,7 @@
     "exclude": ["build/", ".svelte-kit/"],
     "rules": {
       "tags": ["recommended"],
-      "include": [
-        "ban-untagged-todo",
-        "ban-unused-ignore",
-        "default-param-last"
-      ]
+      "include": ["ban-unused-ignore", "default-param-last"]
     }
   },
   "fmt": {
