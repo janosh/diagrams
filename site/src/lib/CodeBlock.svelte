@@ -24,8 +24,7 @@
 <div>
   {#if title}
     <h3>
-      {title}
-      <small>({code.split(`\n`).length} lines)</small>
+      {title} <small>({code.split(`\n`).length} lines)</small>
     </h3>
   {/if}
   <aside>
@@ -33,8 +32,7 @@
       {@const [link_title, href] = (github_link ?? ``).split(`||`, 2)}
       <a {href}>
         <button>
-          <Icon icon="octicon:mark-github" inline />
-          {link_title}
+          <Icon icon="octicon:mark-github" inline /> {link_title}
         </button>
       </a>
     {/if}

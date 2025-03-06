@@ -18,7 +18,8 @@
 
   // development server fetches files from local folder (specified by svelte.config.js kit.files.assets)
   // production server fetches files from GitHub (so we don't need to re-upload with every build)
-  const raw_repo_url = `https://github.com/janosh/diagrams/raw/refs/heads/main/assets/`
+  const raw_repo_url =
+    `https://github.com/janosh/diagrams/raw/refs/heads/main/assets/`
   let base_uri = $derived(`${raw_repo_url}/${slug}/${slug}`)
 
   $effect(() => {
@@ -112,7 +113,7 @@
 <PrevNext
   items={data.diagrams.map((diagram) => [diagram.slug, diagram])}
   current={data.slug}
-  style="max-width: 55em; margin: auto;"
+  style="max-width: 55em; margin: auto"
 >
   {#snippet children({ item, kind }: { item: Diagram; kind: `next` | `prev` })}
     <div>
@@ -121,7 +122,7 @@
           {@html kind == `next` ? `Next &rarr;` : `&larr; Previous`}
         </a>
       </h3>
-      <Card {item} style="max-width: 250px;" format="short" />
+      <Card {item} style="max-width: 250px" format="short" />
     </div>
   {/snippet}
 </PrevNext>
@@ -158,9 +159,7 @@
     padding: 4pt 1ex;
     border-radius: 4pt;
     margin: 2pt;
-    transition:
-      color 0.3s,
-      background-color 0.3s;
+    transition: color 0.3s, background-color 0.3s;
     font-size: 16pt;
   }
   a.large-link:hover {

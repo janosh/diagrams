@@ -1,0 +1,41 @@
+{
+  "tasks": {
+    "dev": "deno run -A --node-modules-dir npm:vite dev",
+    "build": "deno run -A --node-modules-dir npm:vite build",
+    "preview": "deno run -A --node-modules-dir npm:vite preview",
+    "lint": "deno lint",
+    "fmt": "deno fmt"
+  },
+  "lock": false,
+  "lint": {
+    "rules": {
+      "tags": ["recommended"],
+      "include": [
+        "ban-unused-ignore",
+        "default-param-last",
+        "eqeqeq",
+        "guard-for-in",
+        "no-await-in-loop",
+        "no-boolean-literal-for-arguments",
+        "no-const-assign",
+        "no-eval",
+        "no-inferrable-types",
+        "no-non-null-asserted-optional-chain",
+        "no-non-null-assertion",
+        "no-self-compare",
+        "no-sparse-arrays",
+        "no-sync-fn-in-async-fn",
+        "no-throw-literal",
+        "no-useless-rename",
+        "prefer-ascii"
+      ]
+    }
+  },
+  "fmt": {
+    "indentWidth": 2,
+    "lineWidth": 90,
+    "semiColons": false,
+    "singleQuote": true
+  },
+  "unstable": ["fmt-component"]
+}

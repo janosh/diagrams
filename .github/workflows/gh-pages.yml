@@ -3,10 +3,12 @@ name: GitHub Pages
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 jobs:
   build:
-    uses: janosh/workflows/.github/workflows/nodejs-gh-pages.yml@main
+    uses: janosh/workflows/.github/workflows/deno-gh-pages.yml@main
     with:
       working-directory: site

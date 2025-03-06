@@ -2,18 +2,19 @@
   import { building } from '$app/environment'
   import { goto } from '$app/navigation'
   import { Card, diagrams } from '$lib'
-  import { filter_tags, filtered_diagrams, search, tag_filter_mode } from '$lib/stores'
+  import { filtered_diagrams, filters } from '$lib/state.svelte'
   import { homepage, repository } from '$root/package.json'
   import Icon from '@iconify/svelte'
   import MultiSelect, { type ObjectOption } from 'svelte-multiselect'
-  import { RadioButtons, highlight_matches } from 'svelte-zoo'
+  import { highlight_matches, RadioButtons } from 'svelte-zoo'
 
   let innerWidth: number = $state(0)
 
   const clamp = (num: number, min: number, max: number) =>
     Math.min(Math.max(num, min), max)
 
-  const meta_description = `${diagrams.length} Diagrams on Physics, Chemistry, Computer Science, and Machine Learning`
+  const meta_description =
+    `${diagrams.length} Diagrams on Physics, Chemistry, Computer Science, and Machine Learning`
 
   let active_diagram = $state(-1)
 
@@ -51,28 +52,6 @@
       .filter(([, count]) => count > 2)
       .sort(([t1], [t2]) => t1.localeCompare(t2)),
   )
-  $effect(() => {
-    $filtered_diagrams = diagrams
-      .filter((file) => {
-        const searchTerms = $search?.toLowerCase().split(` `)
-        const matches_search = searchTerms?.every((term) =>
-          JSON.stringify(file).toLowerCase().includes(term),
-        )
-
-        let matches_tags = true
-        if ($filter_tags.length > 0) {
-          if ($tag_filter_mode === `or`) {
-            matches_tags = $filter_tags.some((tag) => file.tags.includes(tag.label))
-          } else if ($tag_filter_mode === `and`) {
-            matches_tags = $filter_tags.every((tag) => file.tags.includes(tag.label))
-          }
-        }
-        return matches_search && matches_tags
-      })
-      .sort((d1, d2) => {
-        return d1.title.localeCompare(d2.title)
-      })
-  })
 </script>
 
 <svelte:head>
@@ -94,16 +73,16 @@
   About
   {#each [`physics`, `chemistry`, `machine learning`] as tag, idx}
     {#if idx > 0},{/if}
-    <button onclick={() => ($filter_tags = [{ label: tag, count: 0 }])}>
+    <button onclick={() => (filters.tags = [{ label: tag, count: 0 }])}>
       {tag}
     </button>{/each},<br />
-  <button onclick={() => ($filter_tags = [{ label: `cetz`, count: 0 }])}>
+  <button onclick={() => (filters.tags = [{ label: `cetz`, count: 0 }])}>
     {diagrams.filter((diagram) => diagram.code.typst).length}
   </button>
   of which in
   <a href="https://cetz-package.github.io/docs/">Cetz</a>
   (Typst) and
-  <button onclick={() => ($filter_tags = [{ label: `tikz`, count: 0 }])}>
+  <button onclick={() => (filters.tags = [{ label: `tikz`, count: 0 }])}>
     {diagrams.filter((diagram) => diagram.code.tex).length}
   </button>
   in
@@ -114,7 +93,7 @@
   <a href="{repository}/blob/main/license">MIT licensed</a> (free to reuse)&ensp;
   <a href={repository}><Icon icon="octicon:mark-github" inline />&nbsp;Repo</a>
 </p>
-<p style="margin: auto; max-width: 40em;">
+<p style="margin: auto; max-width: 40em">
   Have a TikZ image you'd like to share with attribution?
   <a href="{repository}/pulls">Submit a PR</a> with a <code>.tex</code> or
   <code>.typ</code>
@@ -124,37 +103,38 @@
 </p>
 
 <div class="filters">
-  <input name="Search" bind:value={$search} placeholder="Search..." />
+  <input name="Search" bind:value={filters.search} placeholder="Search..." />
   <MultiSelect
     options={tags.map(([label, count]) => ({ label, count }))}
     placeholder="Filter by tag..."
-    bind:selected={$filter_tags}
+    bind:selected={filters.tags}
   >
     {#snippet option({ option }: { option: ObjectOption })}
-      <span style="display: flex; gap: 5pt; align-items: center;">
-        {option.label} <span style="flex: 1;"></span>
-        {option.count}
+      <span style="display: flex; gap: 5pt; align-items: center">
+        {option.label} <span style="flex: 1"></span> {option.count}
       </span>
     {/snippet}
   </MultiSelect>
-  {#if $filter_tags?.length > 1}
-    <RadioButtons bind:selected={$tag_filter_mode} options={[`and`, `or`]} />
+  {#if filters.tags?.length > 1}
+    <RadioButtons bind:selected={filters.tag_mode} options={[`and`, `or`]} />
   {/if}
 </div>
 
-{#if $search?.length || $filter_tags?.length}
-  <p>{$filtered_diagrams.length} match{$filtered_diagrams.length != 1 ? `es` : ``}</p>
+{#if filters.search?.length || filters.tags?.length}
+  <p>
+    {filtered_diagrams().length} match{filtered_diagrams().length != 1 ? `es` : ``}
+  </p>
 {/if}
 
 {#if cols || building}
   <ul
     style:column-count={cols}
-    style="column-gap: 1em;"
-    use:highlight_matches={{ query: $search, css_class: `highlight-match` }}
+    style="column-gap: 1em"
+    use:highlight_matches={{ query: filters.search, css_class: `highlight-match` }}
   >
-    {#each $filtered_diagrams as item, idx (item.slug)}
+    {#each filtered_diagrams() as item, idx (item.slug)}
       <li class:active={active_diagram == idx}>
-        <Card {item} style="break-inside: avoid;" />
+        <Card {item} style="break-inside: avoid" />
       </li>
     {/each}
   </ul>

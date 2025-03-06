@@ -58,9 +58,7 @@
     margin: 0;
     visibility: hidden;
     opacity: 0;
-    transition:
-      opacity 0.4s,
-      visibility 0.4s;
+    transition: opacity 0.4s, visibility 0.4s;
     overflow-wrap: break-word;
     width: 100%;
     box-sizing: border-box;

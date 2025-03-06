@@ -3,9 +3,9 @@ name: Link check
 on:
   push:
     branches: [main]
-    paths: ["**/*.md"]
+    paths: ['**/*.md']
   schedule:
-    - cron: "0 0 1 * *" # monthly
+    - cron: '0 0 1 * *' # monthly
 
 jobs:
   markdown-link-check:

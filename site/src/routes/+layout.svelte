@@ -29,7 +29,7 @@
 
 {@render children?.()}
 
-<footer style="margin: 6em 0 3em;">
+<footer style="margin: 6em 0 3em">
   &copy; Janosh Riebesell 2021 &ensp;-&ensp;
   <Icon icon="octicon:law" inline />
   <a href="{repository}/blob/main/license">MIT License</a>
