@@ -7,10 +7,8 @@
     "fmt": "deno fmt"
   },
   "lock": false,
-  "nodeModulesDir": "auto",
   "lint": {
     "include": ["src/"],
-    "exclude": ["build/", ".svelte-kit/"],
     "rules": {
       "tags": ["recommended"],
       "include": ["ban-unused-ignore", "default-param-last"]
@@ -18,7 +16,6 @@
   },
   "fmt": {
     "include": ["src/"],
-    "exclude": ["build/", ".svelte-kit/"],
     "indentWidth": 2,
     "lineWidth": 90,
     "semiColons": false,
