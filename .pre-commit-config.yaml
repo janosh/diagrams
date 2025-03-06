@@ -25,7 +25,6 @@ repos:
         types: [file]
         files: \.(js|ts|svelte|json|jsonc)$
         language: system
-
       - id: deno-lint
         name: Deno lint
         entry: deno lint
