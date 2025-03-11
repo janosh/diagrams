@@ -1,9 +1,10 @@
-#import "@preview/cetz:0.3.3": canvas, draw
-#import draw: line, content, circle, bezier
+#import "@preview/cetz:0.3.4": canvas, draw
+#import draw: line, content, circle, bezier, set-style
 
 #set page(width: auto, height: auto, margin: 8pt)
 
 #let (V, p) = (9, 6)
+#set-style(line: (mark: (scale: .5)))
 
 #canvas({
   // Draw axes
@@ -79,7 +80,7 @@
   content("point-d", [4], anchor: "east", padding: (right: 5pt), name: "label-d")
 
   // Define styles for paths
-  let arrow_style = (end: "stealth", fill: black)
+  let arrow_style = (end: "stealth", fill: black, scale: .5)
   let stroke_style = (paint: rgb("#00008b"), thickness: 1.5pt)
 
   // Draw cycle paths with arrows and labels

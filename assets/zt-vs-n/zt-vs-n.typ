@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.3.3": canvas, draw
+#import "@preview/cetz:0.3.4": canvas, draw
 #import "@preview/cetz-plot:0.1.1": plot
 
 #set page(width: auto, height: auto, margin: 8pt)

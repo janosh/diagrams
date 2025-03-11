@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.3.3": canvas
+#import "@preview/cetz:0.3.4": canvas
 #import "@preview/cetz-plot:0.1.1": chart
 
 #set page(width: auto, height: auto, margin: 0pt)
