@@ -1,0 +1,10 @@
+title: Train-Test Split
+date: 2025-03-12
+tags:
+  - machine learning
+  - data science
+  - model training
+  - model evaluation
+  - data visualization
+description: |
+  Illustration of the train-test split concept in machine learning. The diagram shows how a full dataset is divided into features (X) and target (y) matrices, which are then split into training and testing subsets. The training data (X_train, y_train) is used to train a machine learning model, while the test data (X_test, y_test) is used to evaluate the model's performance on unseen data. This separation helps assess how well the model generalizes to new examples. The diagram uses color coding to distinguish between training data (darker) and test data (lighter), with a neural network representation of the ML model.
