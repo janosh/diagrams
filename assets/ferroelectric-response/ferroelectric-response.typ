@@ -110,7 +110,7 @@
   // Helper function to draw BaTiO3 unit cell
   let atom(pos, radius: 0.20, fill: luma(50), ..args) = {
     circle(
-      pos, 
+      pos,
       radius: radius,
       stroke: none,
       fill: fill,
@@ -200,7 +200,7 @@
       stroke: 1pt,
       name: cell-name + "-bond-" + name,
     )
-    
+
     // --- Back Plane (z = z-offset) ---
     Ba-atom((x - 1, y - 1, z-offset), "back-bl")
     Ba-atom((x + 1, y - 1, z-offset), "back-br")
@@ -208,7 +208,7 @@
     Ba-atom((x + 1, y + 1, z-offset), "back-tr")
     O-atom((x, y, z-offset), "back")
     Ti-O-bond((x, y, z-offset), "back")
-    
+
     // --- Middle Plane (z = z-offset/2) ---
     if ti-y >= 0 {
       Ti-O-bond((x, y + 1, z-offset/2), "top")
@@ -223,7 +223,7 @@
     O-atom((x - 1, y, z-offset/2), "left")
     O-atom((x + 1, y, z-offset/2), "right")
     Ti-atom((x, y + ti-y, z-offset/2))
-    
+
     // --- Front Plane (z = 0) ---
     Ti-O-bond((x, y, 0), "front")
     Ba-atom((x - 1, y - 1, 0), "front-bl")
