@@ -1,5 +1,5 @@
 #import "@preview/cetz:0.3.4": canvas, draw
-#import draw: rect, line, circle, content, hobby, scale
+#import draw: rect, line, circle, content, hobby, scale, set-origin
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -7,18 +7,18 @@
   let arrow-style = (mark: (end: "stealth", fill: black, scale: .75))
   let plot-height = 4
   let plot-width = 10
-  let y-offset = 4.65 // Reduced from 6 to bring plots closer together
+  let y-offset = 4.5
 
   // Helper to draw axes
   let draw-axes(origin, width, height) = {
     line(
-      (origin.at(0) - 0.5, origin.at(1)),
+      (origin.at(0) - 0.3, origin.at(1)),
       (origin.at(0) + width, origin.at(1)),
       ..arrow-style,
       name: "x-axis",
     )
     line(
-      (origin.at(0), origin.at(1) - 0.5),
+      (origin.at(0), origin.at(1) - 0.3),
       (origin.at(0), origin.at(1) + height),
       ..arrow-style,
       name: "y-axis",
@@ -31,15 +31,16 @@
 
   // Draw double-well potential curve using hobby spline
   hobby(
-    (top-origin.at(0) + .5, top-origin.at(1) + 3.5), // start high
+    (top-origin.at(0) + .5, top-origin.at(1) + 4), // start high
     (top-origin.at(0) + 1.7, top-origin.at(1) + 0.4), // left minimum
     (top-origin.at(0) + 1.8, top-origin.at(1) + 0.3), // left minimum
     (top-origin.at(0) + 5, top-origin.at(1) + 1.5), // up to middle peak
     (top-origin.at(0) + 8.2, top-origin.at(1) + 0.3), // right minimum
     (top-origin.at(0) + 8.3, top-origin.at(1) + 0.4), // right minimum
-    (top-origin.at(0) + 9.5, top-origin.at(1) + 3.5), // up high again
+    (top-origin.at(0) + 9.5, top-origin.at(1) + 4), // up high again
     omega: 0,
     name: "potential-curve",
+    stroke: 1.5pt,
   )
 
   // Add "Free Energy" label
@@ -107,129 +108,130 @@
   )
 
   // Helper function to draw BaTiO3 unit cell
-  // TODO the face-centered oxygen atom positions need fixing and the lines overlap the atoms
+  let atom(pos, radius: 0.20, fill: luma(50), ..args) = {
+    circle(
+      pos, 
+      radius: radius,
+      stroke: none,
+      fill: fill,
+      ..args
+    )
+    circle(
+      (),
+      radius: radius,
+      stroke: none,
+      fill: gradient.radial(fill.lighten(75%), fill.lighten(25%), fill, fill.darken(15%), center: (30%, 30%)),
+    )
+  }
   let draw-unit-cell(center-x, center-y, ti-y, cell-name) = {
     let (x, y) = (center-x, center-y)
-    let z-offset = 0.3 // Consistent offset for back face
+    let z-offset = -1.0 // Consistent offset for back face
     let cube-style = (stroke: 0.7pt)
+
 
     // Draw unit cell cube with consistent offsets
     rect(
-      (x - 1, y - 1),
-      (x + 1, y + 1),
+      (x - 1, y - 1, 0),
+      (x + 1, y + 1, 0),
       ..cube-style,
       name: cell-name + "-front",
     ) // Front face
     line(
-      (x - 1, y - 1),
-      (x - 1 + z-offset, y - 1 + z-offset),
+      (x - 1, y - 1, 0),
+      (x - 1, y - 1, z-offset),
       ..cube-style,
       name: cell-name + "-left",
     ) // Left edge
     line(
-      (x + 1, y - 1),
-      (x + 1 + z-offset, y - 1 + z-offset),
+      (x + 1, y - 1, 0),
+      (x + 1, y - 1, z-offset),
       ..cube-style,
       name: cell-name + "-right",
     ) // Right edge
     line(
-      (x - 1 + z-offset, y - 1 + z-offset),
-      (x + 1 + z-offset, y - 1 + z-offset),
+      (x - 1, y - 1, z-offset),
+      (x + 1, y - 1, z-offset),
       ..cube-style,
       name: cell-name + "-back",
     ) // Back edge
     line(
-      (x - 1 + z-offset, y + 1 + z-offset),
-      (x + 1 + z-offset, y + 1 + z-offset),
+      (x - 1, y + 1, z-offset),
+      (x + 1, y + 1, z-offset),
       ..cube-style,
       name: cell-name + "-top-back",
     ) // Top back edge
     line(
-      (x - 1 + z-offset, y - 1 + z-offset),
-      (x - 1 + z-offset, y + 1 + z-offset),
+      (x - 1, y - 1, z-offset),
+      (x - 1, y + 1, z-offset),
       ..cube-style,
       name: cell-name + "-left-back",
     ) // Left back edge
     line(
-      (x + 1 + z-offset, y - 1 + z-offset),
-      (x + 1 + z-offset, y + 1 + z-offset),
+      (x + 1, y - 1, z-offset),
+      (x + 1, y + 1, z-offset),
       ..cube-style,
       name: cell-name + "-right-back",
     ) // Right back edge
+    line(
+      (x + 1, y - -1),
+      (x + 1, y - -1, z-offset),
+      ..cube-style,
+      name: cell-name + "top-right",
+    ) // top right edge
+    line(
+      (x + -1, y - -1),
+      (x + -1, y - -1, z-offset),
+      ..cube-style,
+      name: cell-name + "top-left",
+    ) // top right edge
 
-    // Draw Ba atoms (all 8 corners)
-    let ba-style = (stroke: none, fill: rgb("#00ffff"))
-    for (pos, suffix) in (
-      // Front face corners
-      ((x - 1, y - 1), "front-bl"),
-      ((x + 1, y - 1), "front-br"),
-      ((x - 1, y + 1), "front-tl"),
-      ((x + 1, y + 1), "front-tr"),
-      // Back face corners
-      ((x - 1 + z-offset, y - 1 + z-offset), "back-bl"),
-      ((x + 1 + z-offset, y - 1 + z-offset), "back-br"),
-      ((x - 1 + z-offset, y + 1 + z-offset), "back-tl"),
-      ((x + 1 + z-offset, y + 1 + z-offset), "back-tr"),
-    ) {
-      circle(
-        pos,
-        radius: 0.15,
-        ..ba-style,
-        name: cell-name + "-ba-" + suffix,
-      )
-    }
-
-    // Draw O atoms (all 6 face centers)
-    let o-style = (stroke: none, fill: red)
-    for (pos, suffix) in (
-      // Front and back face centers
-      ((x, y), "front"), // Front face center
-      ((x + z-offset, y + z-offset), "back"), // Back face center
-      // Face centers with consistent offsets
-      ((x, y + 1), "top"), // Top face center
-      ((x, y - 1), "bottom"), // Bottom face center
-      ((x - 1, y), "left"), // Left face center
-      ((x + 1, y), "right"), // Right face center
-    ) {
-      circle(
-        pos,
-        radius: 0.12,
-        ..o-style,
-        name: cell-name + "-o-" + suffix,
-      )
-    }
-
-    // Draw Ti atom (center, displaced)
-    let ti-style = (stroke: none, fill: gray)
-    circle(
-      (x + z-offset / 2, y + ti-y),
-      radius: 0.1,
-      ..ti-style,
-      name: cell-name + "-ti",
+    // Define helper functions for each atom style
+    let Ba-atom(pos, name) = atom(pos, fill: rgb("#00ffff"), name: cell-name + "-ba-" + name)
+    let O-atom(pos, name) = atom( pos, fill: red, name: cell-name + "-o-" + name)
+    let Ti-atom(pos) = atom( pos, fill: gray, name: cell-name + "-ti")
+    let Ti-O-bond(end-pos, name) = line(
+      ((x, y + ti-y, z-offset/2), 16%, end-pos),
+      end-pos,
+      stroke: 1pt,
+      name: cell-name + "-bond-" + name,
     )
-
-    // Draw Ti-O bonds
-    let bond-style = (stroke: (thickness: 0.5pt))
-    for (end-pos, suffix) in (
-      ((x, y), "front"), // Front face center
-      ((x + z-offset, y + z-offset), "back"), // Back face center
-      ((x, y + 1), "top"), // Top face center
-      ((x, y - 1), "bottom"), // Bottom face center
-      ((x - 1, y), "left"), // Left face center
-      ((x + 1, y), "right"), // Right face center
-    ) {
-      line(
-        (x + z-offset / 2, y + ti-y), // Ti position
-        end-pos,
-        ..bond-style,
-        name: cell-name + "-bond-" + suffix,
-      )
+    
+    // --- Back Plane (z = z-offset) ---
+    Ti-O-bond((x, y, z-offset), "back")
+    Ba-atom((x - 1, y - 1, z-offset), "back-bl")
+    Ba-atom((x + 1, y - 1, z-offset), "back-br")
+    Ba-atom((x - 1, y + 1, z-offset), "back-tl")
+    Ba-atom((x + 1, y + 1, z-offset), "back-tr")
+    O-atom((x, y, z-offset), "back")
+    
+    // --- Middle Plane (z = z-offset/2) ---
+    if ti-y >= 0 {
+      Ti-O-bond((x, y + 1, z-offset/2), "top")
     }
+    if ti-y <= 0 {
+      Ti-O-bond((x, y - 1, z-offset/2), "bottom")
+    }
+    Ti-O-bond((x - 1, y, z-offset/2), "left")
+    Ti-O-bond((x + 1, y, z-offset/2), "right")
+    O-atom((x, y + 1, z-offset/2), "top")
+    O-atom((x, y - 1, z-offset/2), "bottom")
+    O-atom((x - 1, y, z-offset/2), "left")
+    O-atom((x + 1, y, z-offset/2), "right")
+    Ti-atom((x, y + ti-y, z-offset/2))
+    
+    // --- Front Plane (z = 0) ---
+    Ti-O-bond((x, y, 0), "front")
+    Ba-atom((x - 1, y - 1, 0), "front-bl")
+    Ba-atom((x + 1, y - 1, 0), "front-br")
+    Ba-atom((x - 1, y + 1, 0), "front-tl")
+    Ba-atom((x + 1, y + 1, 0), "front-tr")
+    O-atom((x, y, 0), "front")
   }
 
   // Draw three unit cells with different Ti displacements
-  scale(0.75)
-  draw-unit-cell(-4, y-offset + 5, -0.2, "cell1")
-  draw-unit-cell(0, y-offset + 5, 0, "cell2")
-  draw-unit-cell(4, y-offset + 5, 0.2, "cell3")
+  scale(0.64)
+  set-origin("potential-curve.mid")
+  draw-unit-cell(-4.5, 2, -0.2, "cell1")
+  draw-unit-cell(-0.5, 2, 0, "cell2")
+  draw-unit-cell(3.5, 2, 0.2, "cell3")
 })
