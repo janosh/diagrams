@@ -3,6 +3,24 @@
 
 #set page(width: auto, height: auto, margin: 8pt)
 
+// Atom with 3D shading effect
+#let shaded-circle(pos, color, radius: 0.1, name: none, stroke: 0.2pt) = {
+  circle(
+    pos,
+    radius: radius,
+    stroke: stroke,
+    fill: gradient.radial(
+      color.lighten(85%),
+      color,
+      color.darken(25%),
+      focal-center: (25%, 20%),
+      focal-radius: 10%,
+      center: (30%, 25%),
+    ),
+    name: name,
+  )
+}
+
 #canvas({
   // Define styles and constants
   let grid-size = 2 // number of points in each direction
@@ -29,11 +47,12 @@
       // Use modulo to cycle through colors
       let color-idx = calc.rem(ii - 2 * jj, colors.len())
       if color-idx < 0 { color-idx += colors.len() }
-      circle(
+
+      // Use the shaded-circle function instead of regular circle
+      shaded-circle(
         (x, y),
+        colors.at(color-idx),
         radius: dot-radius * 1.2,
-        fill: colors.at(color-idx),
-        stroke: .5pt,
         name: str(ii) + "," + str(jj),
       )
     }
