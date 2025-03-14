@@ -1,5 +1,5 @@
 #import "@preview/cetz:0.3.4": canvas, draw
-#import draw: line, content, rect
+#import draw: line, content, rect, circle
 
 #set page(width: auto, height: auto, margin: 5pt)
 
@@ -16,13 +16,37 @@
 }
 
 #let atom(pos, element, color: white, text-color: black, padding: 6pt, name: none) = {
-  draw.content(
+  // Calculate the radius based on padding to match the original size
+  let radius = padding + 7pt // Approximation of text size + padding
+
+  // Draw base circle with the main color
+  circle(
+    pos,
+    radius: radius,
+    stroke: none,
+    fill: color,
+  )
+
+  // Draw gradient overlay for 3D shading effect
+  circle(
+    pos,
+    radius: radius,
+    stroke: none,
+    fill: gradient.radial(
+      color.lighten(75%),
+      color,
+      color.darken(15%),
+      focal-center: (30%, 25%),
+      focal-radius: 5%,
+      center: (35%, 30%),
+    ),
+  )
+
+  // Draw the element text on top
+  content(
     pos,
     text(fill: text-color, weight: "bold", size: 14pt)[#element],
-    frame: "circle",
-    fill: color,
-    stroke: 0.5pt,
-    padding: padding,
+    anchor: "center",
     name: name,
   )
 }
