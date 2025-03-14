@@ -120,7 +120,12 @@
       (),
       radius: radius,
       stroke: none,
-      fill: gradient.radial(fill.lighten(75%), fill.lighten(25%), fill, fill.darken(15%), center: (30%, 30%)),
+      fill: gradient.radial(
+        fill.lighten(75%), fill, fill.darken(15%),
+        focal-center: (30%, 25%),
+        focal-radius: 5%,
+        center: (35%, 30%),
+      ),
     )
   }
   let draw-unit-cell(center-x, center-y, ti-y, cell-name) = {
@@ -190,19 +195,19 @@
     let O-atom(pos, name) = atom( pos, fill: red, name: cell-name + "-o-" + name)
     let Ti-atom(pos) = atom( pos, fill: gray, name: cell-name + "-ti")
     let Ti-O-bond(end-pos, name) = line(
-      ((x, y + ti-y, z-offset/2), 16%, end-pos),
-      end-pos,
+      ((x, y + ti-y, z-offset/2), 15%, end-pos),
+      ((x, y + ti-y, z-offset/2), 85%, end-pos),
       stroke: 1pt,
       name: cell-name + "-bond-" + name,
     )
     
     // --- Back Plane (z = z-offset) ---
-    Ti-O-bond((x, y, z-offset), "back")
     Ba-atom((x - 1, y - 1, z-offset), "back-bl")
     Ba-atom((x + 1, y - 1, z-offset), "back-br")
     Ba-atom((x - 1, y + 1, z-offset), "back-tl")
     Ba-atom((x + 1, y + 1, z-offset), "back-tr")
     O-atom((x, y, z-offset), "back")
+    Ti-O-bond((x, y, z-offset), "back")
     
     // --- Middle Plane (z = z-offset/2) ---
     if ti-y >= 0 {
