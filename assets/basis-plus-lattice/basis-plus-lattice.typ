@@ -4,7 +4,27 @@
 #set page(width: auto, height: auto, margin: 8pt)
 
 #let atom(pos, color) = {
-  circle(pos, radius: 0.25, fill: color.lighten(20%), stroke: 0.3pt)
+  // First draw the base circle with the main color
+  circle(
+    pos,
+    radius: 0.25,
+    stroke: none,
+    fill: color,
+  )
+  // Then draw the gradient overlay for 3D shading effect
+  circle(
+    (),
+    radius: 0.25,
+    stroke: none,
+    fill: gradient.radial(
+      color.lighten(75%),
+      color,
+      color.darken(15%),
+      focal-center: (30%, 25%),
+      focal-radius: 5%,
+      center: (35%, 30%),
+    ),
+  )
 }
 
 #canvas({
