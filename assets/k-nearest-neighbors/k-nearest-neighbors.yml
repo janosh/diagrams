@@ -1,0 +1,9 @@
+title: k-Nearest Neighbors
+tags:
+  - machine learning
+  - classification
+  - data science
+  - algorithms
+  - KNN
+description: This image illustrates the K-Nearest Neighbors classification algorithm, showing how different values of $k$ affect classification results. Red stars represent Class A data points, green triangles represent Class B data points, and the yellow square with a question mark is a new instance to be classified. The dashed circles show the $k=3$ and $k=7$ neighborhoods around the instance.
+source: https://kdnuggets.com/2020/11/most-popular-distance-metrics-knn.html
