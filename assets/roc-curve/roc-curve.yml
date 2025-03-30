@@ -1,0 +1,14 @@
+title: ROC Curve
+tags:
+  - statistics
+  - classification
+  - machine learning
+  - performance metrics
+  - data science
+  - model evaluation
+description: |
+  The Receiver Operating Characteristic (ROC) curve is a widely used evaluation tool in statistics that plots the True Positive Rate (Sensitivity) against the False Positive Rate (1-Specificity) at various classification thresholds.
+
+  This visualization compares classifiers of different performance levels, from near-perfect (AUC = 0.99) to poor (AUC = 0.65), with a random classifier (AUC = 0.5) as baseline. The Area Under the Curve (AUC) serves as a threshold-independent measure of classifier performance, with values closer to 1.0 indicating better discrimination ability.
+
+  ROC curves are particularly valuable in domains requiring careful trade-off between sensitivity and specificity, such as medical diagnostics (balancing false negatives vs. false positives), fraud detection (minimizing false alerts while catching true fraud), and information retrieval (evaluating ranking algorithms). They provide insights into model behavior across all possible decision thresholds, allowing practitioners to select operating points that best align with application requirements and costs of different types of errors.

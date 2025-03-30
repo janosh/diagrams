@@ -5,7 +5,7 @@
 
 #canvas({
   let cell-size = .7 // Size of each heatmap cell
-  let data = (
+  let cell-data = (
     (74, 25, 39, 20, 3, 3, 3, 3, 3),
     (25, 53, 31, 17, 7, 7, 2, 3, 2),
     (39, 31, 37, 24, 3, 3, 3, 3, 3),
@@ -16,7 +16,7 @@
     (3, 3, 3, 5, 0, 0, 1, 23, 1),
     (3, 2, 3, 5, 0, 0, 1, 1, 78),
   )
-  let row-labels = ("a", "b", "c", "d", "e", "f", "g", "h", "i")
+  let row-labels = "abcdefghi".split("").slice(1)
 
   // Draw column labels (1-9)
   for col in range(9) {
@@ -39,7 +39,7 @@
   // Draw heatmap cells
   for row in range(9) {
     for col in range(9) {
-      let value = data.at(row).at(col)
+      let value = cell-data.at(row).at(col)
       rect(
         ((col + 1) * cell-size - cell-size / 2, -(row + 1) * cell-size - cell-size / 2),
         ((col + 1) * cell-size + cell-size / 2, -(row + 1) * cell-size + cell-size / 2),

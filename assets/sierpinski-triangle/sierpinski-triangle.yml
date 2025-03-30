@@ -1,0 +1,29 @@
+title: Sierpinski Triangle
+description: |
+  A Sierpiński triangle is a fractal with the overall shape of an equilateral triangle, subdivided recursively into smaller equilateral triangles. The diagram shows a fifth-order Sierpiński triangle, which was experimentally realized out of Fe/C3PC molecules on a reconstructed Au(100)-(hex) in https://doi.org/10.1021/jacs.7b05720.
+
+  The visualization shows a yellow Sierpiński triangle (representing Fe/C3PC molecules) with a gold border (representing BPyB molecules) on a background of red dots arranged in a hexagonal close-packed pattern (representing the Au(100) substrate atoms). Previous molecular Sierpiński triangle fractals were limited to fourth-order due to kinetic growth constraints.
+
+references:
+  - li_construction_2017:
+      title: Construction of Sierpiński Triangles up to the Fifth Order
+      authors: Chao Li, Xue Zhang, Na Li, Yawei Wang, Jiajia Yang, Gaochen Gu, Yajie Zhang, Shimin Hou, Lianmao Peng, Kai Wu, Damian Nieckarz, Paweł Szabelski, Hao Tang, Yongfeng Wang
+      year: 2017
+      publisher: Journal of the American Chemical Society
+      doi: 10.1021/jacs.7b05720
+      page: 13701-13707
+      volume: 139
+      issue: 39
+
+tags:
+  - fractal
+  - self-assembly
+  - surface science
+  - nanotechnology
+  - materials science
+  - molecular assembly
+  - self-similar structure
+  - mathematical pattern
+  - Au(100) surface
+  - ultrahigh vacuum
+  - recursive pattern
