@@ -7,7 +7,9 @@
   let { data } = $props()
 
   let { title, description, code, images } = $derived(data.diagram)
-  let { creator, creator_url, url, downloads, tags, slug } = $derived(data.diagram)
+  let { creator, creator_url, url, downloads, tags, slug } = $derived(
+    data.diagram,
+  )
   const labels = [
     [`.png`, `PNG`],
     [`-hd.png`, `PNG (HD)`],
@@ -23,7 +25,9 @@
   let base_uri = $derived(`${raw_repo_url}/${slug}/${slug}`)
 
   $effect(() => {
-    if (downloads?.length < 2) throw `unexpectedly low number of assets for download`
+    if (downloads?.length < 2) {
+      throw `unexpectedly low number of assets for download`
+    }
   })
   let plain_description = $derived(description?.replace(/<[^>]*>/g, ``))
 </script>
@@ -59,7 +63,7 @@
   </p>
 {/if}
 
-<section>
+<section class="description">
   <Tags {tags} font_size="11pt" />
 
   {#if description}
@@ -76,7 +80,12 @@
 <section>
   {#each labels as [ext, label]}
     {#if downloads?.some((filename) => filename.includes(ext))}
-      <a href="{base_uri}{ext}" target="_blank" rel="noreferrer" class="large-link">
+      <a
+        href="{base_uri}{ext}"
+        target="_blank"
+        rel="noreferrer"
+        class="large-link"
+      >
         {label}
       </a>
     {/if}
@@ -86,7 +95,6 @@
 <h2>
   <Icon icon="octicon:code" inline />&nbsp; Code
 </h2>
-
 {#if code.tex}
   <h3 class="code-title">
     <Icon icon="file-icons:latex" inline style="color: white" />&nbsp; LaTeX
@@ -142,6 +150,9 @@
     margin: 1em auto;
     line-height: 3ex;
     text-align: center;
+  }
+  section.description :global(ul) {
+    text-align: left;
   }
   .diagram {
     background: #ffffff85;
