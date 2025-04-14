@@ -42,7 +42,7 @@
   // Add title
   content(
     (plot_size / 2, title_height),
-    text(weight: "bold", size: 14pt)[Concurrent MLIP Structure Relaxations with Hot-Swapped Auto-Batching],
+    text(weight: "bold", size: 14pt)[Concurrent MLIP Structure Relaxations with In-Flight Auto-Batching],
     name: "title",
   )
 

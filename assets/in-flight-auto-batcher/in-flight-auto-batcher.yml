@@ -1,4 +1,4 @@
-title: Hot-Swapping Auto-Batcher
+title: In-Flight Auto-Batcher
 tags:
   - structure relaxation
   - materials discovery
@@ -10,10 +10,10 @@ tags:
   - auto-batching
   - torch-sim
 description: |
-  When relaxing atomic structures towards their ground state, each structure requires an a priori unknown number of ionic steps. Hot-swapping auto-batching optimizes GPU utilization by dynamically replacing converged structures with new ones based on memory availability for efficient GPU utilization, especially when relaxing large numbers of structures with varying degrees of equilibrium distance.
+  When relaxing atomic structures towards their ground state, each structure requires an a priori unknown number of ionic steps. In-flight auto-batching optimizes GPU utilization by dynamically replacing converged structures with new ones based on memory availability for efficient GPU utilization, especially when relaxing large numbers of structures with varying degrees of equilibrium distance.
 
   - Dynamically replaces converged structures with new ones to maintain high GPU utilization
   - Batch size (number of concurrent relaxations) varies based on memory requirements of individual structures (mainly determined by atom count and density [higher density = more edges in graph representation of structure, often with cubic scaling])
   - Memory scaling can be configured based on `n_atoms` or `n_atoms` × `density` metrics
 
-  For more details, see the [TorchSim HotSwappingAutoBatcher documentation](https://radical-ai.github.io/torch-sim/reference/torch_sim.autobatching.HotSwappingAutoBatcher.html)
+  For more details, see the [TorchSim InFlightAutoBatcher documentation](https://radical-ai.github.io/torch-sim/reference/torch_sim.autobatching.InFlightAutoBatcher.html)

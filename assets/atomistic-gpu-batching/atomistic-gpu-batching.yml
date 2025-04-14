@@ -1,0 +1,20 @@
+title: Atomistic GPU Batching
+tags:
+  - gpu computing
+  - parallel computing
+  - molecular dynamics
+  - molecular simulations
+  - performance optimization
+description: |
+  Comparison of three strategies for running multiple atomistic simulations on GPUs:
+  1. Unbatched - Sequential execution with minimal GPU utilization (0-5%)
+  2. Binned Auto-Batcher - Fixed-size batches improve GPU utilization (40-60%) but waste resources as structures complete
+  3. In-Flight Auto-Batcher - Dynamic reallocation eliminates GPU idle time by immediately swapping in new structures when others complete, maintaining high GPU utilization (80-90%)
+
+  Key points:
+  - GPU resources are wasted when not fully utilized by a single simulation
+  - Fixed batching improves utilization but suffers as structures complete at different rates
+  - Dynamic in-flight batching maximizes GPU utilization by maintaining a full batch at all times
+  - The overall time to process all structures is significantly reduced with in-flight batching
+  - Effective GPU utilization leads to higher throughput and energy efficiency
+creator: Janosh Riebesell

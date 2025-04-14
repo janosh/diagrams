@@ -1,5 +1,5 @@
 <h1 align="center">
-  120 Scientific Diagrams
+  122 Scientific Diagrams
 </h1>
 
 <h4 align="center">
@@ -8,7 +8,7 @@
 
 <h3 align="center">
 
-[![100 with Typst](https://img.shields.io/badge/100%20with-Typst-1f425f.svg?logo=typst)](https://typst.app)
+[![102 with Typst](https://img.shields.io/badge/102%20with-Typst-1f425f.svg?logo=typst)](https://typst.app)
 [![112 with LaTeX](https://img.shields.io/badge/112%20with-LaTeX-1f425f.svg?logo=latex)](https://latex-project.org)
 [![Site](https://github.com/janosh/diagrams/actions/workflows/gh-pages.yml/badge.svg)](https://github.com/janosh/diagrams/actions/workflows/gh-pages.yml)
 [![Pull Requests Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?logo=github)](https://github.com/janosh/diagrams/pulls)
@@ -24,8 +24,10 @@ Have a TikZ/Cetz diagram you'd like to share? [Submit a PR](https://github.com/j
 
 | &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; | &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; |
 | :---: | :---: |
-| [`2d-convolution`](https://janosh.github.io/diagrams/2d-convolution) &nbsp;[![LaTeX][latex-logo]](assets/2d-convolution/2d-convolution.tex)&nbsp;[![Typst][typst-logo]](assets/2d-convolution/2d-convolution.typ) | [`autoencoder`](https://janosh.github.io/diagrams/autoencoder) &nbsp;[![LaTeX][latex-logo]](assets/autoencoder/autoencoder.tex)&nbsp;[![Typst][typst-logo]](assets/autoencoder/autoencoder.typ) |
-| ![`2d-convolution.png`](assets/2d-convolution/2d-convolution.png) | ![`autoencoder.png`](assets/autoencoder/autoencoder.png) |
+| [`2d-convolution`](https://janosh.github.io/diagrams/2d-convolution) &nbsp;[![LaTeX][latex-logo]](assets/2d-convolution/2d-convolution.tex)&nbsp;[![Typst][typst-logo]](assets/2d-convolution/2d-convolution.typ) | [`angular-momentum-quantization`](https://janosh.github.io/diagrams/angular-momentum-quantization) &nbsp;[![Typst][typst-logo]](assets/angular-momentum-quantization/angular-momentum-quantization.typ) |
+| ![`2d-convolution.png`](assets/2d-convolution/2d-convolution.png) | ![`angular-momentum-quantization.png`](assets/angular-momentum-quantization/angular-momentum-quantization.png) |
+| [`atomistic-gpu-batching`](https://janosh.github.io/diagrams/atomistic-gpu-batching) &nbsp;[![Typst][typst-logo]](assets/atomistic-gpu-batching/atomistic-gpu-batching.typ) | [`autoencoder`](https://janosh.github.io/diagrams/autoencoder) &nbsp;[![LaTeX][latex-logo]](assets/autoencoder/autoencoder.tex)&nbsp;[![Typst][typst-logo]](assets/autoencoder/autoencoder.typ) |
+| ![`atomistic-gpu-batching.png`](assets/atomistic-gpu-batching/atomistic-gpu-batching.png) | ![`autoencoder.png`](assets/autoencoder/autoencoder.png) |
 | [`basis-plus-lattice`](https://janosh.github.io/diagrams/basis-plus-lattice) &nbsp;[![LaTeX][latex-logo]](assets/basis-plus-lattice/basis-plus-lattice.tex)&nbsp;[![Typst][typst-logo]](assets/basis-plus-lattice/basis-plus-lattice.typ) | [`bloch-sphere`](https://janosh.github.io/diagrams/bloch-sphere) &nbsp;[![LaTeX][latex-logo]](assets/bloch-sphere/bloch-sphere.tex)&nbsp;[![Typst][typst-logo]](assets/bloch-sphere/bloch-sphere.typ) |
 | ![`basis-plus-lattice.png`](assets/basis-plus-lattice/basis-plus-lattice.png) | ![`bloch-sphere.png`](assets/bloch-sphere/bloch-sphere.png) |
 | [`bose-einstein-distribution-3d`](https://janosh.github.io/diagrams/bose-einstein-distribution-3d) &nbsp;[![LaTeX][latex-logo]](assets/bose-einstein-distribution-3d/bose-einstein-distribution-3d.tex) | [`bose-einstein-distribution`](https://janosh.github.io/diagrams/bose-einstein-distribution) &nbsp;[![LaTeX][latex-logo]](assets/bose-einstein-distribution/bose-einstein-distribution.tex)&nbsp;[![Typst][typst-logo]](assets/bose-einstein-distribution/bose-einstein-distribution.typ) |
@@ -74,8 +76,8 @@ Have a TikZ/Cetz diagram you'd like to share? [Submit a PR](https://github.com/j
 | ![`harmonic-oscillator-energy-vs-inv-temp.png`](assets/harmonic-oscillator-energy-vs-inv-temp/harmonic-oscillator-energy-vs-inv-temp.png) | ![`heatmap.png`](assets/heatmap/heatmap.png) |
 | [`higgs-potential`](https://janosh.github.io/diagrams/higgs-potential) &nbsp;[![LaTeX][latex-logo]](assets/higgs-potential/higgs-potential.tex) | [`high-entropy-alloy`](https://janosh.github.io/diagrams/high-entropy-alloy) &nbsp;[![LaTeX][latex-logo]](assets/high-entropy-alloy/high-entropy-alloy.tex)&nbsp;[![Typst][typst-logo]](assets/high-entropy-alloy/high-entropy-alloy.typ) |
 | ![`higgs-potential.png`](assets/higgs-potential/higgs-potential.png) | ![`high-entropy-alloy.png`](assets/high-entropy-alloy/high-entropy-alloy.png) |
-| [`hot-swapping-auto-batcher`](https://janosh.github.io/diagrams/hot-swapping-auto-batcher) &nbsp;[![Typst][typst-logo]](assets/hot-swapping-auto-batcher/hot-swapping-auto-batcher.typ) | [`isotherms`](https://janosh.github.io/diagrams/isotherms) &nbsp;[![LaTeX][latex-logo]](assets/isotherms/isotherms.tex)&nbsp;[![Typst][typst-logo]](assets/isotherms/isotherms.typ) |
-| ![`hot-swapping-auto-batcher.png`](assets/hot-swapping-auto-batcher/hot-swapping-auto-batcher.png) | ![`isotherms.png`](assets/isotherms/isotherms.png) |
+| [`in-flight-auto-batcher`](https://janosh.github.io/diagrams/in-flight-auto-batcher) &nbsp;[![Typst][typst-logo]](assets/in-flight-auto-batcher/in-flight-auto-batcher.typ) | [`isotherms`](https://janosh.github.io/diagrams/isotherms) &nbsp;[![LaTeX][latex-logo]](assets/isotherms/isotherms.tex)&nbsp;[![Typst][typst-logo]](assets/isotherms/isotherms.typ) |
+| ![`in-flight-auto-batcher.png`](assets/in-flight-auto-batcher/in-flight-auto-batcher.png) | ![`isotherms.png`](assets/isotherms/isotherms.png) |
 | [`jensens-inequality`](https://janosh.github.io/diagrams/jensens-inequality) &nbsp;[![LaTeX][latex-logo]](assets/jensens-inequality/jensens-inequality.tex)&nbsp;[![Typst][typst-logo]](assets/jensens-inequality/jensens-inequality.typ) | [`k-nearest-neighbors`](https://janosh.github.io/diagrams/k-nearest-neighbors) &nbsp;[![Typst][typst-logo]](assets/k-nearest-neighbors/k-nearest-neighbors.typ) |
 | ![`jensens-inequality.png`](assets/jensens-inequality/jensens-inequality.png) | ![`k-nearest-neighbors.png`](assets/k-nearest-neighbors/k-nearest-neighbors.png) |
 | [`k-space`](https://janosh.github.io/diagrams/k-space) &nbsp;[![LaTeX][latex-logo]](assets/k-space/k-space.tex)&nbsp;[![Typst][typst-logo]](assets/k-space/k-space.typ) | [`kohn-sham-cycle`](https://janosh.github.io/diagrams/kohn-sham-cycle) &nbsp;[![LaTeX][latex-logo]](assets/kohn-sham-cycle/kohn-sham-cycle.tex)&nbsp;[![Typst][typst-logo]](assets/kohn-sham-cycle/kohn-sham-cycle.typ) |
