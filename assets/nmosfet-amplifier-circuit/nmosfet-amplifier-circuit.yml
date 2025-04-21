@@ -1,0 +1,13 @@
+title: NMOSFET Amplifier Circuit
+creator: Kreijstal
+creator_url: https://github.com/kreijstal
+date: 2025-04-21
+tags:
+  - electronics
+  - analog circuits
+  - amplifier
+  - mosfet
+  - nmos
+  - circuit diagram
+description: |
+  Diagram illustrating a basic amplifier circuit topology using an N-channel MOSFET (NMOS), concepts or circuits related to the course "Advanced Analog Integrated Circuits and Systems (AAIC)" (#41178, TU Berlin).

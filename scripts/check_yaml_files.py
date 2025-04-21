@@ -85,9 +85,12 @@ def report_similar_tags(yaml_files: list[str]):
             raise
 
     # Print tag statistics
-    print("\nTag usage statistics:")
+    n_tags_to_print = 20
+    print(f"\nTop {n_tags_to_print} tags by usage:")
     print("-" * 40)
-    for tag, count in sorted(tag_counter.items(), key=lambda x: (-x[1], x[0])):
+    for tag, count in sorted(tag_counter.items(), key=lambda x: (-x[1], x[0]))[
+        :n_tags_to_print
+    ]:
         print(f"{tag:25} {count:5d}")
 
     # Find similar tags
