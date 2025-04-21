@@ -1,0 +1,17 @@
+ltitle: Timed Event Graph 
+creator: Kreijstal
+date: 2025-04-21
+tags:
+  - petri net
+  - timed event graph
+  - event graph
+  - discrete event system
+  - process modeling
+  - concurrency
+  - graph
+  - automation
+description: |
+  A representation of a Timed Event Graph, a specific type of Petri net.
+  Uses custom functions to draw places (circles, potentially with tokens)
+  and transitions (bars), connected by directed arcs to model processes
+  or workflows with timing considerations.
