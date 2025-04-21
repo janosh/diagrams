@@ -1,16 +1,16 @@
 #import "@preview/cetz:0.3.4" as cetz
 #set page(width: auto, height: auto, margin: 8pt)
 #let connect-orthogonal(
-  start_anchor, 
-  end_anchor,   
-  style: "hv", 
-  ..styling    
+  start_anchor,
+  end_anchor,
+  style: "hv",
+  ..styling
 ) = {
   assert(style in ("hv", "vh"), message: "Orthogonal connection style must be 'hv' or 'vh'.")
 
   let corner = if style == "hv" {
     (start_anchor, "|-", end_anchor)
-  } else { 
+  } else {
     (start_anchor, "-|", end_anchor)
   }
 
@@ -64,7 +64,7 @@
     cetz.draw.anchor("west", (0, height/2))
     cetz.draw.anchor("north-east", (width, height))
     cetz.draw.anchor("south-west", (0, 0))
-    cetz.draw.anchor("default", gate_term_rel) 
+    cetz.draw.anchor("default", gate_term_rel)
 
     cetz.draw.line(channel_bottom, channel_top, ..styling, thickness: 0.6pt * thick_factor)
     cetz.draw.line(gate_line_bottom, gate_line_top, ..styling, thickness: 0.6pt * thick_factor)
@@ -120,8 +120,8 @@
     let channel_line_x = channel_pos_factor * width
     let gate_v_extent = height * gate_v_extent_factor
     let channel_v_extent = height * channel_v_extent_factor
-    let source_term_rel = (width, height) 
-    let drain_term_rel = (width, 0)      
+    let source_term_rel = (width, height)
+    let drain_term_rel = (width, 0)
     let gate_term_rel = (-gate_lead_factor * width, center_y)
     let bulk_term_rel = (width + bulk_lead_factor * width, center_y)
     let gate_line_top = (gate_line_x, center_y + gate_v_extent)
@@ -130,25 +130,25 @@
     let channel_top = (channel_line_x, center_y + channel_v_extent)
     let channel_bottom = (channel_line_x, center_y - channel_v_extent)
     let bulk_conn_pt = (channel_line_x, center_y)
-    let source_horiz = (width, center_y + channel_v_extent) 
-    let drain_horiz = (width, center_y - channel_v_extent)  
+    let source_horiz = (width, center_y + channel_v_extent)
+    let drain_horiz = (width, center_y - channel_v_extent)
     let bubble_radius = height * bubble_radius_factor
 
     cetz.draw.anchor("G", gate_term_rel)
-    cetz.draw.anchor("S", source_term_rel) 
-    cetz.draw.anchor("D", drain_term_rel)  
+    cetz.draw.anchor("S", source_term_rel)
+    cetz.draw.anchor("D", drain_term_rel)
     cetz.draw.anchor("B", bulk_term_rel)
     cetz.draw.anchor("center", (width/2, height/2))
     cetz.draw.anchor("bulk_conn", bulk_conn_pt)
     cetz.draw.anchor("gate_conn", gate_conn_pt)
-    cetz.draw.anchor("north", (width/2, height)) 
-    cetz.draw.anchor("south", (width/2, 0))    
+    cetz.draw.anchor("north", (width/2, height))
+    cetz.draw.anchor("south", (width/2, 0))
     cetz.draw.anchor("east", (width, height/2))
     cetz.draw.anchor("west", (0, height/2))
-    cetz.draw.anchor("north-east", (width, height)) 
-    cetz.draw.anchor("south-east", (width, 0))    
+    cetz.draw.anchor("north-east", (width, height))
+    cetz.draw.anchor("south-east", (width, 0))
     cetz.draw.anchor("south-west", (0, 0))
-    cetz.draw.anchor("default", gate_term_rel) 
+    cetz.draw.anchor("default", gate_term_rel)
 
     cetz.draw.line(channel_bottom, channel_top, ..styling, thickness: 0.6pt * thick_factor)
     cetz.draw.line(gate_line_bottom, gate_line_top, ..styling, thickness: 0.6pt * thick_factor)
@@ -171,8 +171,8 @@
     if show_pin_labels {
 
       cetz.draw.content((rel: (-0.05, 0), to: "G"), text(size: pin_label_size, $G$), anchor: "east")
-      cetz.draw.content((rel: (0.05, 0), to: "S"), text(size: pin_label_size, $S$), anchor: "west") 
-      cetz.draw.content((rel: (0.05, 0), to: "D"), text(size: pin_label_size, $D$), anchor: "west") 
+      cetz.draw.content((rel: (0.05, 0), to: "S"), text(size: pin_label_size, $S$), anchor: "west")
+      cetz.draw.content((rel: (0.05, 0), to: "D"), text(size: pin_label_size, $D$), anchor: "west")
       cetz.draw.content((rel: (0.05, 0), to: "B"), text(size: pin_label_size, $B$), anchor: "west")
     }
     if label != none {
@@ -211,13 +211,13 @@
     let bar3_half_w = bar_width * bar_width_factors.at(2) / 2
     let south_y = bar3_y
 
-    cetz.draw.anchor("T", (0, 0)) 
-    cetz.draw.anchor("north", (0, 0)) 
-    cetz.draw.anchor("south", (0, south_y)) 
-    cetz.draw.anchor("west", (-bar1_half_w, bar1_y)) 
-    cetz.draw.anchor("east", (bar1_half_w, bar1_y)) 
-    cetz.draw.anchor("center", (0, (bar1_y + bar3_y) / 2)) 
-    cetz.draw.anchor("default", (0, 0)) 
+    cetz.draw.anchor("T", (0, 0))
+    cetz.draw.anchor("north", (0, 0))
+    cetz.draw.anchor("south", (0, south_y))
+    cetz.draw.anchor("west", (-bar1_half_w, bar1_y))
+    cetz.draw.anchor("east", (bar1_half_w, bar1_y))
+    cetz.draw.anchor("center", (0, (bar1_y + bar3_y) / 2))
+    cetz.draw.anchor("default", (0, 0))
 
     cetz.draw.line((0, 0), (0, lead_end_y), ..styling)
     cetz.draw.line((-bar1_half_w, bar1_y), (bar1_half_w, bar1_y), ..styling)
@@ -251,21 +251,21 @@
 ) = {
   cetz.draw.group(name: name, {
     cetz.draw.set-origin(position)
-    cetz.draw.scale(scale) 
-    cetz.draw.rotate(rotate) 
+    cetz.draw.scale(scale)
+    cetz.draw.rotate(rotate)
 
     let half_width = width / 2
     let half_height = height / 2
     let lead_start_x = -half_width - lead_extension
     let lead_end_x = half_width + lead_extension
     let zig_start_x = -half_width
-    let zig_end_x = half_width 
+    let zig_end_x = half_width
 
     let num_segments = zigs * 2
 
     let segment_h_dist = width / num_segments
 
-    let sgn = 1 
+    let sgn = 1
 
     cetz.draw.line(
       (lead_start_x, 0),
@@ -285,17 +285,17 @@
       ..styling
     )
 
-    cetz.draw.anchor("L", (lead_start_x, 0)) 
-    cetz.draw.anchor("R", (lead_end_x, 0)) 
+    cetz.draw.anchor("L", (lead_start_x, 0))
+    cetz.draw.anchor("R", (lead_end_x, 0))
     cetz.draw.anchor("center", (0, 0))
     cetz.draw.anchor("north", (0, half_height))
     cetz.draw.anchor("south", (0, -half_height))
-    cetz.draw.anchor("east", (lead_end_x, 0)) 
-    cetz.draw.anchor("west", (lead_start_x, 0)) 
+    cetz.draw.anchor("east", (lead_end_x, 0))
+    cetz.draw.anchor("west", (lead_start_x, 0))
 
-    cetz.draw.anchor("T", (0, half_height)) 
-    cetz.draw.anchor("B", (0, -half_height)) 
-    cetz.draw.anchor("default", (lead_start_x, 0)) 
+    cetz.draw.anchor("T", (0, half_height))
+    cetz.draw.anchor("B", (0, -half_height))
+    cetz.draw.anchor("default", (lead_start_x, 0))
 
     if label != none {
       cetz.draw.content(
@@ -324,8 +324,8 @@
 ) = {
   cetz.draw.group(name: name, {
     cetz.draw.set-origin(position)
-    cetz.draw.scale(scale) 
-    cetz.draw.rotate(rotate) 
+    cetz.draw.scale(scale)
+    cetz.draw.rotate(rotate)
 
     let half_gap = plate_gap / 2
     let half_height = plate_height / 2
@@ -340,17 +340,17 @@
     cetz.draw.line( (plate_right_x, half_height), (plate_right_x, -half_height), ..styling )
     cetz.draw.line( (plate_right_x, 0), (lead_end_x, 0), ..styling )
 
-    cetz.draw.anchor("L", (lead_start_x, 0)) 
-    cetz.draw.anchor("R", (lead_end_x, 0)) 
+    cetz.draw.anchor("L", (lead_start_x, 0))
+    cetz.draw.anchor("R", (lead_end_x, 0))
     cetz.draw.anchor("center", (0, 0))
-    cetz.draw.anchor("north", (0, half_height)) 
-    cetz.draw.anchor("south", (0, -half_height)) 
-    cetz.draw.anchor("east", (lead_end_x, 0)) 
-    cetz.draw.anchor("west", (lead_start_x, 0)) 
+    cetz.draw.anchor("north", (0, half_height))
+    cetz.draw.anchor("south", (0, -half_height))
+    cetz.draw.anchor("east", (lead_end_x, 0))
+    cetz.draw.anchor("west", (lead_start_x, 0))
 
-    cetz.draw.anchor("T", (0, half_height)) 
-    cetz.draw.anchor("B", (0, -half_height)) 
-    cetz.draw.anchor("default", (lead_start_x, 0)) 
+    cetz.draw.anchor("T", (0, half_height))
+    cetz.draw.anchor("B", (0, -half_height))
+    cetz.draw.anchor("default", (lead_start_x, 0))
 
     if label != none {
       cetz.draw.content(
@@ -391,7 +391,7 @@
   cetz.draw.group(name: name, {
     cetz.draw.set-origin(position)
     cetz.draw.scale(scale)
-    cetz.draw.rotate(rotate) 
+    cetz.draw.rotate(rotate)
 
     let circle_top_y = radius
     let circle_bottom_y = -radius
@@ -408,7 +408,7 @@
 
       let arrow_x = if voltage_arrow_pos == "left" {
          -radius * (1 + voltage_arrow_offset_factor)
-      } else { 
+      } else {
          radius * (1 + voltage_arrow_offset_factor)
       }
       let arrow_len = radius * voltage_arrow_length_factor
@@ -416,12 +416,12 @@
 
       let (arrow_start_y, arrow_end_y) = if voltage_arrow_dir == "down" {
         (arrow_half_len, -arrow_half_len)
-      } else { 
+      } else {
         (-arrow_half_len, arrow_half_len)
       }
       let arrow_start = (arrow_x, arrow_start_y)
       let arrow_end = (arrow_x, arrow_end_y)
-      let arrow_mid_pt = (arrow_x, 0) 
+      let arrow_mid_pt = (arrow_x, 0)
 
       cetz.draw.line(
         arrow_start, arrow_end,
@@ -434,19 +434,19 @@
         )
       )
 
-      if label != none { 
+      if label != none {
 
         let (default_anchor, default_offset) = if annotation_label_pos == "left" {
-           ("east", (-0.05, 0)) 
-        } else { 
-           ("west", (0.05, 0))  
+           ("east", (-0.05, 0))
+        } else {
+           ("west", (0.05, 0))
         }
 
         let final_anchor = if annotation_label_anchor == auto { default_anchor } else { annotation_label_anchor }
         let final_offset = if annotation_label_offset == auto { default_offset } else { annotation_label_offset }
 
         cetz.draw.content(
-          (rel:(0.1*scale*arrow_x/calc.abs(arrow_x),0),to:arrow_mid_pt), 
+          (rel:(0.1*scale*arrow_x/calc.abs(arrow_x),0),to:arrow_mid_pt),
           text(size: annotation_label_size, fill: arrow_fill, label),
           anchor: final_anchor,
           offset: final_offset
@@ -454,13 +454,13 @@
       }
     }
 
-    cetz.draw.anchor("T", (0, top_lead_end_y))    
-    cetz.draw.anchor("B", (0, bottom_lead_end_y)) 
-    cetz.draw.anchor("center", (0, 0))          
-    cetz.draw.anchor("north", (0, top_lead_end_y)) 
-    cetz.draw.anchor("south", (0, bottom_lead_end_y)) 
-    cetz.draw.anchor("east", (radius, 0))         
-    cetz.draw.anchor("west", (-radius, 0))        
+    cetz.draw.anchor("T", (0, top_lead_end_y))
+    cetz.draw.anchor("B", (0, bottom_lead_end_y))
+    cetz.draw.anchor("center", (0, 0))
+    cetz.draw.anchor("north", (0, top_lead_end_y))
+    cetz.draw.anchor("south", (0, bottom_lead_end_y))
+    cetz.draw.anchor("east", (radius, 0))
+    cetz.draw.anchor("west", (-radius, 0))
   })
 }
 
@@ -530,7 +530,7 @@
 ) = {
   cetz.draw.group(name: name, {
 
-    cetz.draw.set-origin(position) 
+    cetz.draw.set-origin(position)
     cetz.draw.scale(scale)
     cetz.draw.rotate(rotate)
 
@@ -543,17 +543,17 @@
 
     cetz.draw.line((bar_left_x, stem_top_y), (bar_right_x, stem_top_y), ..styling)
 
-    cetz.draw.anchor("B", (0, 0))           
-    cetz.draw.anchor("south", (0, 0))       
-    cetz.draw.anchor("default", (0, 0))     
-    cetz.draw.anchor("T", (0, stem_top_y))  
-    cetz.draw.anchor("north", (0, stem_top_y)) 
-    cetz.draw.anchor("TL", (bar_left_x, stem_top_y)) 
-    cetz.draw.anchor("TR", (bar_right_x, stem_top_y)) 
+    cetz.draw.anchor("B", (0, 0))
+    cetz.draw.anchor("south", (0, 0))
+    cetz.draw.anchor("default", (0, 0))
+    cetz.draw.anchor("T", (0, stem_top_y))
+    cetz.draw.anchor("north", (0, stem_top_y))
+    cetz.draw.anchor("TL", (bar_left_x, stem_top_y))
+    cetz.draw.anchor("TR", (bar_right_x, stem_top_y))
 
-    cetz.draw.anchor("west", (bar_left_x, stem_top_y)) 
-    cetz.draw.anchor("east", (bar_right_x, stem_top_y)) 
-    cetz.draw.anchor("center", (0, stem_top_y / 2)) 
+    cetz.draw.anchor("west", (bar_left_x, stem_top_y))
+    cetz.draw.anchor("east", (bar_right_x, stem_top_y))
+    cetz.draw.anchor("center", (0, stem_top_y / 2))
 
     if label != none {
       cetz.draw.content(
@@ -571,14 +571,14 @@
 #let current_source(
   position, name,
   label: none,
-  label_pos: "west", 
-  label_anchor: "west", 
-  label_offset: (0.1, 0), 
+  label_pos: "west",
+  label_anchor: "west",
+  label_offset: (0.1, 0),
   label_size: 8pt,
   scale: 1.0, rotate: 0deg,
   radius: 0.3,
   lead_length: 0.3,
-  arrow_dir: "up", 
+  arrow_dir: "up",
   arrow_scale: 1.0,
   arrow_fill: black,
 
@@ -600,11 +600,11 @@
     cetz.draw.line((0, circle_top_y), (0, top_lead_end_y), ..styling)
     cetz.draw.line((0, circle_bottom_y), (0, bottom_lead_end_y), ..styling)
 
-    let arrow_v_extent = radius * 0.7 
+    let arrow_v_extent = radius * 0.7
     assert(arrow_dir in ("up", "down"), message: "Arrow direction must be 'up' or 'down'.")
     let (arrow_start_y, arrow_end_y) = if arrow_dir == "up" {
       (-arrow_v_extent, arrow_v_extent)
-    } else { 
+    } else {
       (arrow_v_extent, -arrow_v_extent)
     }
     let arrow_start = (0, arrow_start_y)
@@ -612,23 +612,23 @@
 
     cetz.draw.line(
       arrow_start, arrow_end,
-      ..styling, 
+      ..styling,
       mark: (
         end: "stealth",
-        scale: arrow_scale * 0.4, 
+        scale: arrow_scale * 0.4,
         fill: arrow_fill,
 
       )
     )
 
-    cetz.draw.anchor("T", (0, top_lead_end_y))     
-    cetz.draw.anchor("B", (0, bottom_lead_end_y))  
+    cetz.draw.anchor("T", (0, top_lead_end_y))
+    cetz.draw.anchor("B", (0, bottom_lead_end_y))
     cetz.draw.anchor("center", (0, 0))
     cetz.draw.anchor("north", (0, top_lead_end_y))
     cetz.draw.anchor("south", (0, bottom_lead_end_y))
     cetz.draw.anchor("east", (radius, 0))
     cetz.draw.anchor("west", (-radius, 0))
-    cetz.draw.anchor("default", (0, top_lead_end_y)) 
+    cetz.draw.anchor("default", (0, top_lead_end_y))
 
     if label != none {
       cetz.draw.content(
@@ -643,40 +643,40 @@
 #let voltage_points(
   position, name,
 
-  label: none, 
-  annotation_label_pos: "left", 
-  annotation_label_anchor: auto, 
-  annotation_label_offset: auto, 
+  label: none,
+  annotation_label_pos: "left",
+  annotation_label_anchor: auto,
+  annotation_label_offset: auto,
   annotation_label_size: 8pt,
-  annotation_text_fill: black, 
+  annotation_text_fill: black,
 
-  show_voltage_annotation: true, 
-  voltage_arrow_pos: "left", 
-  voltage_arrow_dir: "down", 
-  arrow_length_factor: 1.0, 
-  arrow_offset: 0.3,        
-  arrow_scale: 1.0,         
-  arrow_fill: black,        
-  arrow_stroke: black,      
-  arrow_stroke_thickness: 0.6pt, 
+  show_voltage_annotation: true,
+  voltage_arrow_pos: "left",
+  voltage_arrow_dir: "down",
+  arrow_length_factor: 1.0,
+  arrow_offset: 0.3,
+  arrow_scale: 1.0,
+  arrow_fill: black,
+  arrow_stroke: black,
+  arrow_stroke_thickness: 0.6pt,
 
-  point_separation: 0.6,    
-  point_radius: 0.05,       
-  point_fill: black,        
-  point_stroke: none,       
+  point_separation: 0.6,
+  point_radius: 0.05,
+  point_fill: black,
+  point_stroke: none,
 
-  show_point_labels: false, 
-  top_label: $[+]$,         
-  bottom_label: $[-]$,      
-  point_label_size: 7pt,    
-  point_text_fill: black,   
-  top_label_offset: (0, 0.05), 
-  top_label_anchor: "south", 
-  bottom_label_offset: (0, -0.05), 
-  bottom_label_anchor: "north", 
+  show_point_labels: false,
+  top_label: $[+]$,
+  bottom_label: $[-]$,
+  point_label_size: 7pt,
+  point_text_fill: black,
+  top_label_offset: (0, 0.05),
+  top_label_anchor: "south",
+  bottom_label_offset: (0, -0.05),
+  bottom_label_anchor: "north",
 
   scale: 1.0, rotate: 0deg,
-  ..styling 
+  ..styling
 ) = {
   cetz.draw.group(name: name, {
     cetz.draw.set-origin(position)
@@ -690,20 +690,20 @@
     cetz.draw.circle(top_pos, radius: point_radius, fill: point_fill, stroke: point_stroke, ..styling)
     cetz.draw.circle(bottom_pos, radius: point_radius, fill: point_fill, stroke: point_stroke, ..styling)
 
-    cetz.draw.anchor("T", top_pos)      
-    cetz.draw.anchor("B", bottom_pos)     
-    cetz.draw.anchor("center", (0, 0))    
-    cetz.draw.anchor("north", top_pos)    
-    cetz.draw.anchor("south", bottom_pos)   
+    cetz.draw.anchor("T", top_pos)
+    cetz.draw.anchor("B", bottom_pos)
+    cetz.draw.anchor("center", (0, 0))
+    cetz.draw.anchor("north", top_pos)
+    cetz.draw.anchor("south", bottom_pos)
 
-    cetz.draw.anchor("east", (point_radius, 0))  
-    cetz.draw.anchor("west", (-point_radius, 0)) 
-    cetz.draw.anchor("default", top_pos) 
+    cetz.draw.anchor("east", (point_radius, 0))
+    cetz.draw.anchor("west", (-point_radius, 0))
+    cetz.draw.anchor("default", top_pos)
 
     if show_voltage_annotation {
       let arrow_x = if voltage_arrow_pos == "left" {
          -arrow_offset
-      } else { 
+      } else {
          arrow_offset
       }
       let arrow_len = point_separation * arrow_length_factor
@@ -711,7 +711,7 @@
 
       let (arrow_start_y, arrow_end_y) = if voltage_arrow_dir == "down" {
         (arrow_half_len, -arrow_half_len)
-      } else { 
+      } else {
         (-arrow_half_len, arrow_half_len)
       }
       let arrow_start = (arrow_x, arrow_start_y)
@@ -721,19 +721,19 @@
       cetz.draw.line(
         arrow_start, arrow_end,
         stroke: (paint: arrow_stroke, thickness: arrow_stroke_thickness),
-        ..styling, 
+        ..styling,
         mark: (
           end: "stealth",
-          scale: arrow_scale * 0.4, 
+          scale: arrow_scale * 0.4,
           fill: arrow_fill,
-          stroke: (paint: arrow_stroke, thickness: arrow_stroke_thickness) 
+          stroke: (paint: arrow_stroke, thickness: arrow_stroke_thickness)
         )
       )
 
       if label != none {
         let (default_anchor, default_offset) = if annotation_label_pos == "left" {
            ("east", (-0.05, 0))
-        } else { 
+        } else {
            ("west", (0.05, 0))
         }
 
@@ -744,7 +744,7 @@
         let adjusted_offset = (final_offset.at(0), final_offset.at(1) )
 
         cetz.draw.content(
-          arrow_mid_pt, 
+          arrow_mid_pt,
           text(size: annotation_label_size, fill: annotation_text_fill, label),
           anchor: final_anchor,
           offset: adjusted_offset
@@ -772,7 +772,7 @@
   wire2_start, wire2_end,
   hopping_wire: 1,
   hop_radius: 0.15,
-  hop_direction: 1, 
+  hop_direction: 1,
   ..styling
 ) = {
 
@@ -794,7 +794,7 @@
   cetz.draw.line(straight_start, straight_end, ..styling)
 
   let hop_vec = cetz.vector.sub(hopping_end, hopping_start)
-  let wire_angle = calc.atan2(..hop_vec) 
+  let wire_angle = calc.atan2(..hop_vec)
 
   let hop_unit_vec = cetz.vector.norm(hop_vec)
   assert(hop_unit_vec != none, message: "Cannot get unit vector for zero-length hopping wire.")
@@ -827,18 +827,18 @@
   let x_vin = 0
   let x_r1 = 1.
   let x_m1 = 1.9
-  let x_out_comps = x_m1 + 0.9 
-  let x_cl = x_out_comps + 2.0 
-  let x_vout = x_cl + 1.0 
+  let x_out_comps = x_m1 + 0.9
+  let x_cl = x_out_comps + 2.0
+  let x_vout = x_cl + 1.0
 
-  let y_gate = 1.6 
-  let y_m1_base = 1.0 
-  let y_m1_s = y_m1_base 
-  let y_m1_d = y_m1_base + 1.2 
-  let y_m1_b = y_m1_base + 0.6 
-  let y_vdd = y_m1_d + 1.5 
-  let y_gnd = -1 
-  let y_cl_center = y_m1_s - 0.95 
+  let y_gate = 1.6
+  let y_m1_base = 1.0
+  let y_m1_s = y_m1_base
+  let y_m1_d = y_m1_base + 1.2
+  let y_m1_b = y_m1_base + 0.6
+  let y_vdd = y_m1_d + 1.5
+  let y_gnd = -1
+  let y_cl_center = y_m1_s - 0.95
 
   voltage_source((x_vin, y_gate -1), "Vin",
     label: $V_"in"$,
@@ -867,14 +867,14 @@
 
   node((x_vout, y_m1_b), "VoutNode", label:$V_"out"$,  label_offset: (0.15, 0), label_anchor: "west", ..default_stroke)
 
-  connect-orthogonal("Vin.T", "R1.L", style: "hv", ..default_stroke) 
+  connect-orthogonal("Vin.T", "R1.L", style: "hv", ..default_stroke)
   connect-orthogonal("Vin.B", "GND_Vin.T", style: "hv", ..default_stroke)
-  connect-orthogonal("R1.R", "M1.G", style: "hv", ..default_stroke) 
-  connect-orthogonal("M1.D", "Vdd.B", style: "hv", ..default_stroke) 
+  connect-orthogonal("R1.R", "M1.G", style: "hv", ..default_stroke)
+  connect-orthogonal("M1.D", "Vdd.B", style: "hv", ..default_stroke)
   connect-orthogonal("M1.B", "GND_M1B.T", style: "hv", ..default_stroke)
   connect-orthogonal("M1.S", "R2.R", style: "hv", ..default_stroke)
-   connect-orthogonal("GND_R2.T", "R2.L", style: "hv", ..default_stroke) 
-   connect-orthogonal("GND_CL.T", "CL.L", style: "hv", ..default_stroke) 
-  connect-orthogonal("CL.R", "M1.S", style: "hv", ..default_stroke) 
-  connect-orthogonal("VoutNode", "M1.S", style: "hv", ..default_stroke) 
+   connect-orthogonal("GND_R2.T", "R2.L", style: "hv", ..default_stroke)
+   connect-orthogonal("GND_CL.T", "CL.L", style: "hv", ..default_stroke)
+  connect-orthogonal("CL.R", "M1.S", style: "hv", ..default_stroke)
+  connect-orthogonal("VoutNode", "M1.S", style: "hv", ..default_stroke)
 })

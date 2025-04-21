@@ -18,7 +18,7 @@
     cetz.draw.anchor("bottom", bottom_pos)
 
     if content != none {
-       cetz.draw.content((rel:(-0,-0.8),to:coords))[ 
+       cetz.draw.content((rel:(-0,-0.8),to:coords))[
          #set text( size: 15pt)
          #content
        ]
@@ -29,7 +29,7 @@
 #let place(coords, name: none, content: none, token: false) = {
 
   cetz.draw.group(name: name, {
-    let radius = 0.4 
+    let radius = 0.4
 
     cetz.draw.arc(coords, start: 0deg, stop: 360deg, radius: radius)
 
@@ -39,8 +39,8 @@
     cetz.draw.anchor("south", (rel: (0, -radius), to: coords))
     cetz.draw.anchor("east", (rel: (radius, 0), to: coords))
     cetz.draw.anchor("west", (rel: (-radius, 0), to: coords))
-    cetz.draw.anchor("left", (rel: (-2*radius, 0), to: coords)) 
-    cetz.draw.anchor("right", (rel: (0, 0), to: coords)) 
+    cetz.draw.anchor("left", (rel: (-2*radius, 0), to: coords))
+    cetz.draw.anchor("right", (rel: (0, 0), to: coords))
     let diag = radius * calc.cos(45deg)
     cetz.draw.anchor("north-east", (rel: (diag, diag), to: coords))
     cetz.draw.anchor("north-west", (rel: (-diag, diag), to: coords))
@@ -48,15 +48,15 @@
     cetz.draw.anchor("south-west", (rel: (-diag, -diag), to: coords))
 
     if content != none {
-       cetz.draw.arc((rel:(-.1,0),to:coords), start: 0deg, stop: 360deg, radius: 0.4 -0.1) 
+       cetz.draw.arc((rel:(-.1,0),to:coords), start: 0deg, stop: 360deg, radius: 0.4 -0.1)
     }
 
     if token {
-       cetz.draw.arc((rel:(-.35,0),to:coords), start: 0deg, stop: 360deg, radius: 0.4 -0.35,fill:black) 
+       cetz.draw.arc((rel:(-.35,0),to:coords), start: 0deg, stop: 360deg, radius: 0.4 -0.35,fill:black)
     }
 
-    if content != none { 
-       cetz.draw.content((rel:(-0.35,-0.5),to:coords))[ 
+    if content != none {
+       cetz.draw.content((rel:(-0.35,-0.5),to:coords))[
          #set text( size: 15pt)
          #content
        ]
