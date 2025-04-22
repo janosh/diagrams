@@ -6,10 +6,11 @@
   import { CmdPalette } from 'svelte-multiselect'
   import { GitHubCorner } from 'svelte-zoo'
   import '../app.css'
-  interface Props {
-    children?: import('svelte').Snippet
-  }
+  import type { Snippet } from 'svelte'
 
+  interface Props {
+    children?: Snippet<[]>
+  }
   let { children }: Props = $props()
 
   let actions = $derived(

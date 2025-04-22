@@ -3,6 +3,7 @@
     "dev": "deno run -A --node-modules-dir npm:vite dev",
     "build": "deno run -A --node-modules-dir npm:vite build",
     "preview": "deno run -A --node-modules-dir npm:vite preview",
+    "serve": "deno task build && deno task preview",
     "lint": "deno lint",
     "fmt": "deno fmt"
   },

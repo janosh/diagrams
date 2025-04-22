@@ -13,7 +13,7 @@
     "@rollup/plugin-yaml": "^4.1.2",
     "@sveltejs/adapter-static": "^3.0.8",
     "@sveltejs/enhanced-img": "^0.4.4",
-    "@sveltejs/kit": "^2.17.2",
+    "@sveltejs/kit": "^2.20.7",
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "@types/js-yaml": "^4.0.9",
     "highlight.js": "^11.11.1",
@@ -22,14 +22,14 @@
     "rehype-stringify": "^10.0.1",
     "remark-math": "6.0.0",
     "remark-parse": "^11.0.0",
-    "remark-rehype": "^11.1.1",
-    "svelte": "5.20.2",
-    "svelte-check": "^4.1.4",
+    "remark-rehype": "^11.1.2",
+    "svelte": "5.28.2",
+    "svelte-check": "^4.1.6",
     "svelte-multiselect": "11.0.0-rc.1",
     "svelte-preprocess": "^6.0.3",
     "svelte-zoo": "^0.4.17",
-    "svelte2tsx": "^0.7.34",
+    "svelte2tsx": "^0.7.36",
     "unified": "^11.0.5",
-    "vite": "^6.1.1"
+    "vite": "^6.3.3"
   }
 }
