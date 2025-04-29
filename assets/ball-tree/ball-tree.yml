@@ -1,0 +1,15 @@
+title: Ball Tree
+tags:
+  - algorithms
+  - data structures
+  - machine learning
+  - nearest neighbors
+  - space partitioning
+description: |
+  Visualization of the Ball Tree algorithm, a space-partitioning data structure used for efficient nearest neighbor searches, particularly in high-dimensional spaces.
+
+  The left side illustrates the hierarchical partitioning of a dataset into nested hyperspheres (balls). Each ball represents a region of the space containing a subset of data points.
+
+  The right side shows the corresponding tree structure where each node represents a ball. Internal nodes represent larger balls encompassing the balls of their children, while leaf nodes contain the actual data points.
+
+  This hierarchical structure allows the search algorithm to prune large portions of the data space by comparing the query point's distance to the ball's center and radius, making it faster than exhaustive search, especially for high-dimensional non-uniformly distributed data.
