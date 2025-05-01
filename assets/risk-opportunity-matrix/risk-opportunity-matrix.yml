@@ -1,9 +1,15 @@
-title: Risk/Opportunity Matrix
+title: Risk-Opportunity Matrix
 creator: Clemens Koza
 creator_url: https://github.com/SillyFreak/
 # url: https://github.com/PetarV-/TikZ/tree/86aee049f5355d77c598b936399e42caf8941e60/2D%20Convolution
 date: 2025-05-01
 tags:
   - risk management
+  - project management
+  - decision making
+  - probability
 description: |
-  The risk/opportunity matrix is a tool for prioritization in risk management. This version is adapted from [Roland Wanner](https://rolandwanner.com/do-you-really-know-the-risk-matrix/).
+  The risk/opportunity matrix is a visual tool used in risk management for prioritizing actions based on the likelihood (probability) and potential impact of identified risks and opportunities.
+  It typically plots probability on the Y-axis and impact on the X-axis. The matrix is divided into two mirrored halves: one for risks (negative impact) and one for opportunities (positive impact).
+  Items falling into high-probability, high-impact areas (often colored red or orange) require the most urgent attention, while those in low-probability, low-impact areas (often green) require less immediate focus.
+  This version is adapted from [Roland Wanner](https://rolandwanner.com/do-you-really-know-the-risk-matrix), featuring a 5x5 grid for both risks and opportunities and an "Arrow of Attention" highlighting the highest priority zones.
