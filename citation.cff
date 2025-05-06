@@ -12,8 +12,12 @@ authors:
     orcid: https://orcid.org/0000-0001-6753-1437
     affiliation: University of Arizona
     email: stefanbringuier@gmail.com
+  - family-names: Koza
+    given-names: Clemens
+    orcid: https://orcid.org/0009-0004-0335-8144
+    affiliation: Practical Robotics Institute Austria
 license: MIT
-license-url: https://github.com/janosh/diagrams/blob/main/license"
+license-url: https://github.com/janosh/diagrams/blob/main/license
 repository-code: https://github.com/janosh/diagrams
 type: software
 url: https://github.com/janosh/diagrams
