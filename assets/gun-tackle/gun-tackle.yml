@@ -1,0 +1,14 @@
+title: Gun Tackle
+creator: Clemens Koza
+creator_url: https://github.com/SillyFreak/
+url: https://github.com/SillyFreak/typst-pull-eh/blob/edd08588bbb0f2ec0475c619c6ddd5915aa0c9bf/docs/gun-tackle.typ
+date: 2025-05-06
+tags:
+  - physics
+  - classical mechanics
+description: |
+  A [gun tackle](https://en.wikipedia.org/wiki/Block_and_tackle#Overview) is a pulley system in which a rope is wound around two pulleys once each.
+  One pulley is fixed, e.g. mounted to a ceiling, while the other connects to the load.
+  As two parts of the rope act on the load, the system gives a mechanical advantage of two.
+  In analyzing a tackle, it can be useful to "separate" the pulleys and mounting points to make the mechanical characteristics stand out.
+  This diagram therefore shows a stylized gun tackle in a typical assembled form and a separated form.
