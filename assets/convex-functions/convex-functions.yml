@@ -2,4 +2,4 @@ title: Convex Functions
 tags:
   - math
 description: |
-  $x$ and $-x\log(x)$ are concave functions. Since $\ln(p)$ decomposes into sums of these two components, it too must be concave. Any extremum of a concave function is a maximum. This fact is used in statistical physics to find the equilibrium distribution of many-particle systems. See problem 2 on this [exercise sheet](https://janosh.dev/87c099ce7b720d3f638ce9800abf3407/sol-06.pdf).
+  $x$ and $-x\log(x)$ are concave functions. Since $\ln(p)$ decomposes into sums of these two components, it too must be concave. Any extremum of a concave function is a maximum. This fact is used in statistical physics to find the equilibrium distribution of many-particle systems. See problem 2 on this [exercise sheet](https://janosh.dev/_app/immutable/assets/sol-06.RXJ4ap4j.pdf).
