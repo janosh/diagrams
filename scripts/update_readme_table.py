@@ -6,6 +6,7 @@ import re
 import subprocess
 from glob import glob
 from itertools import zip_longest
+from typing import Any, TypedDict
 
 import yaml
 
@@ -27,29 +28,54 @@ for diagram_path in tex_paths + typ_paths:
     if not os.path.isfile(yaml_path):
         raise FileNotFoundError(f"Missing {yaml_path=} for {diagram_path=}")
 
-# Create a dict mapping directory names to file paths
+
+# Create a dict mapping directory names to file paths and titles
 # Prefer .typ files over .tex files when both exist
-path_dict: dict[str, str] = {}
+class DiagramInfo(TypedDict):
+    """Structure to hold diagram source path and title."""
+
+    source_path: str
+    title: str
+
+
+diagram_data_map: dict[str, DiagramInfo] = {}
 for yaml_path in sorted(yaml_paths):
-    base_name = os.path.basename(os.path.dirname(yaml_path))
+    dir_of_yaml = os.path.dirname(yaml_path)
+    base_name = os.path.basename(
+        dir_of_yaml
+    )  # This is the fig_name/diagram directory name
 
     # Skip if diagram is marked as hidden in YAML
     with open(yaml_path, mode="r") as file:
-        metadata = yaml.safe_load(file) or {}
+        metadata: dict[str, Any] = yaml.safe_load(file) or {}
         if metadata.get("hide"):
             continue
 
+        try:
+            title: str = metadata["title"]
+        except KeyError:
+            raise ValueError(
+                f"Missing 'title' in YAML metadata for {base_name} ({yaml_path})"
+            )
+
     # Look for corresponding .typ or .tex file
-    typ_path = f"{os.path.dirname(yaml_path)}/{base_name}.typ"
-    tex_path = f"{os.path.dirname(yaml_path)}/{base_name}.tex"
+    typ_path = f"{dir_of_yaml}/{base_name}.typ"
+    tex_path = f"{dir_of_yaml}/{base_name}.tex"
 
+    source_file_path: str | None = None
     if os.path.isfile(typ_path):
-        path_dict[base_name] = typ_path
+        source_file_path = typ_path
     elif os.path.isfile(tex_path):
-        path_dict[base_name] = tex_path
+        source_file_path = tex_path
 
-# Convert back to sorted list
-unique_paths = sorted(path_dict.values())
+    if source_file_path:
+        diagram_data_map[base_name] = {"source_path": source_file_path, "title": title}
+
+# Convert to a sorted list of diagram information objects
+sorted_base_names = sorted(diagram_data_map.keys())
+unique_diagram_infos: list[DiagramInfo] = [
+    diagram_data_map[name] for name in sorted_base_names
+]
 
 
 md_table = f"| {'&emsp;' * 22} | {'&emsp;' * 22} |\n| :---: | :---: |\n"
@@ -74,18 +100,32 @@ def get_code_links(fig_name: str) -> str:
     return "&nbsp;" + "&nbsp;".join(links)
 
 
-for path1, path2 in zip_longest(unique_paths[::2], unique_paths[1::2]):
-    dir1, dir2 = map(os.path.dirname, (path1, path2 or ""))
-    fig1, fig2 = map(os.path.basename, (dir1, dir2))
+for data1, data2 in zip_longest(unique_diagram_infos[::2], unique_diagram_infos[1::2]):
+    # Prepare data for the first column
+    title1 = data1["title"]
+    # fig_basename1 is the directory name, e.g., "alpha-helical-wheel"
+    fig_basename1 = os.path.basename(os.path.dirname(data1["source_path"]))
 
-    # file name row with source code links
-    dir_link1 = f"[`{fig1}`]({site_url}/{fig1}) {get_code_links(fig1)}"
-    dir_link2 = f"[`{fig2}`]({site_url}/{fig2}) {get_code_links(fig2)}" if path2 else ""
+    dir_link1 = (
+        f"[{title1}]({site_url}/{fig_basename1}) {get_code_links(fig_basename1)}"
+    )
+    img_link1 = f"![{title1}](assets/{fig_basename1}/{fig_basename1}.png)"
+
+    # Prepare data for the second column (if it exists)
+    dir_link2 = ""
+    img_link2 = ""
+    if data2:
+        title2 = data2["title"]
+        fig_basename2 = os.path.basename(os.path.dirname(data2["source_path"]))
+        dir_link2 = (
+            f"[{title2}]({site_url}/{fig_basename2}) {get_code_links(fig_basename2)}"
+        )
+        img_link2 = f"![{title2}](assets/{fig_basename2}/{fig_basename2}.png)"
+
+    # Add row for figure names/titles and source code links
     md_table += f"| {dir_link1} | {dir_link2} |\n"
 
-    # image row
-    img_link1 = f"![`{fig1}.png`](assets/{fig1}/{fig1}.png)"
-    img_link2 = f"![`{fig2}.png`](assets/{fig2}/{fig2}.png)" if path2 else ""
+    # Add row for images
     md_table += f"| {img_link1} | {img_link2} |\n"
 
 with open(f"{ROOT}/readme.md", mode="r") as file:
@@ -99,11 +139,17 @@ readme = re.sub(
     flags=re.DOTALL,
 )
 
-# update count in "Collection of **110** "
-readme = re.sub(r"(?<=)\d+(?= Scientific Diagrams)", str(len(unique_paths)), readme)
+# update count in "Collection of **XXX** "
+readme = re.sub(
+    r"(?<=Collection of \*\*)\d+(?=\*\* Scientific Diagrams)",
+    str(len(unique_diagram_infos)),
+    readme,
+)
 
 # Count number of Typst and LaTeX diagrams
-n_typst = len(typ_paths)
+n_typst = len(
+    typ_paths
+)  # This counts source files, not necessarily rendered diagrams if some are hidden
 n_latex = len(tex_paths)
 
 # update badge counts for Typst and LaTeX
