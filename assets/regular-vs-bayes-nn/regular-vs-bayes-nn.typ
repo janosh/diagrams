@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.3.4": canvas, draw
-#import "@preview/cetz-plot:0.1.1": plot
+#import "@preview/cetz:0.4.0": canvas, draw
+#import "@preview/cetz-plot:0.1.2": plot
 #import draw: line, circle, content, group, bezier, translate
 
 #set page(width: auto, height: auto, margin: 8pt)

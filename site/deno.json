@@ -15,11 +15,17 @@
         "ban-unused-ignore",
         "default-param-last",
         "eqeqeq",
+        "explicit-function-return-type",
         "guard-for-in",
+        "jsx-key",
+        "jsx-no-duplicate-props",
+        "jsx-no-useless-fragment",
+        "no-async-promise-executor",
         "no-await-in-loop",
         "no-boolean-literal-for-arguments",
         "no-const-assign",
         "no-eval",
+        "no-explicit-any",
         "no-inferrable-types",
         "no-non-null-asserted-optional-chain",
         "no-non-null-assertion",
@@ -27,8 +33,12 @@
         "no-sparse-arrays",
         "no-sync-fn-in-async-fn",
         "no-throw-literal",
+        "no-unused-vars",
         "no-useless-rename",
-        "prefer-ascii"
+        "prefer-ascii",
+        "prefer-const",
+        "require-await",
+        "single-var-declarator"
       ]
     }
   },
