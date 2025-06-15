@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.3.4": canvas, draw
+#import "@preview/cetz:0.4.0": canvas, draw
 #import "@preview/modpattern:0.1.0": modpattern
 #import draw: line, content, rect, on-layer
 

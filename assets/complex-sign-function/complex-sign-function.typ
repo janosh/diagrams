@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.3.4": canvas, draw, vector, matrix
+#import "@preview/cetz:0.4.0": canvas, draw, vector, matrix
 #import draw: set-transform, scale, content, line, rect, group
 
 #set page(width: auto, height: auto, margin: 8pt)

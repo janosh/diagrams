@@ -5,8 +5,8 @@
   import { filtered_diagrams, filters } from '$lib/state.svelte'
   import { homepage, repository } from '$root/package.json'
   import Icon from '@iconify/svelte'
-  import MultiSelect, { type ObjectOption } from 'svelte-multiselect'
-  import { highlight_matches, RadioButtons } from 'svelte-zoo'
+  import MultiSelect, { type ObjectOption, RadioButtons } from 'svelte-multiselect'
+  import { highlight_matches } from 'svelte-multiselect/attachments'
 
   let innerWidth: number = $state(0)
 
@@ -130,7 +130,7 @@
   <ul
     style:column-count={cols}
     style="column-gap: 1em"
-    use:highlight_matches={{ query: filters.search, css_class: `highlight-match` }}
+    {@attach highlight_matches({ query: filters.search, css_class: `highlight-match` })}
   >
     {#each filtered_diagrams() as item, idx (item.slug)}
       <li class:active={active_diagram == idx}>

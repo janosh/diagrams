@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.3.4": canvas, draw
+#import "@preview/cetz:0.4.0": canvas, draw
 #import draw: rect, line, circle, content, hobby, scale, set-origin
 
 #set page(width: auto, height: auto, margin: 8pt)
@@ -114,14 +114,16 @@
       radius: radius,
       stroke: none,
       fill: fill,
-      ..args
+      ..args,
     )
     circle(
       (),
       radius: radius,
       stroke: none,
       fill: gradient.radial(
-        fill.lighten(75%), fill, fill.darken(15%),
+        fill.lighten(75%),
+        fill,
+        fill.darken(15%),
         focal-center: (30%, 25%),
         focal-radius: 5%,
         center: (35%, 30%),
@@ -192,11 +194,11 @@
 
     // Define helper functions for each atom style
     let Ba-atom(pos, name) = atom(pos, fill: rgb("#00ffff"), name: cell-name + "-ba-" + name)
-    let O-atom(pos, name) = atom( pos, fill: red, name: cell-name + "-o-" + name)
-    let Ti-atom(pos) = atom( pos, fill: gray, name: cell-name + "-ti")
+    let O-atom(pos, name) = atom(pos, fill: red, name: cell-name + "-o-" + name)
+    let Ti-atom(pos) = atom(pos, fill: gray, name: cell-name + "-ti")
     let Ti-O-bond(end-pos, name) = line(
-      ((x, y + ti-y, z-offset/2), 15%, end-pos),
-      ((x, y + ti-y, z-offset/2), 85%, end-pos),
+      ((x, y + ti-y, z-offset / 2), 15%, end-pos),
+      ((x, y + ti-y, z-offset / 2), 85%, end-pos),
       stroke: 1pt,
       name: cell-name + "-bond-" + name,
     )
@@ -211,18 +213,18 @@
 
     // --- Middle Plane (z = z-offset/2) ---
     if ti-y >= 0 {
-      Ti-O-bond((x, y + 1, z-offset/2), "top")
+      Ti-O-bond((x, y + 1, z-offset / 2), "top")
     }
     if ti-y <= 0 {
-      Ti-O-bond((x, y - 1, z-offset/2), "bottom")
+      Ti-O-bond((x, y - 1, z-offset / 2), "bottom")
     }
-    Ti-O-bond((x - 1, y, z-offset/2), "left")
-    Ti-O-bond((x + 1, y, z-offset/2), "right")
-    O-atom((x, y + 1, z-offset/2), "top")
-    O-atom((x, y - 1, z-offset/2), "bottom")
-    O-atom((x - 1, y, z-offset/2), "left")
-    O-atom((x + 1, y, z-offset/2), "right")
-    Ti-atom((x, y + ti-y, z-offset/2))
+    Ti-O-bond((x - 1, y, z-offset / 2), "left")
+    Ti-O-bond((x + 1, y, z-offset / 2), "right")
+    O-atom((x, y + 1, z-offset / 2), "top")
+    O-atom((x, y - 1, z-offset / 2), "bottom")
+    O-atom((x - 1, y, z-offset / 2), "left")
+    O-atom((x + 1, y, z-offset / 2), "right")
+    Ti-atom((x, y + ti-y, z-offset / 2))
 
     // --- Front Plane (z = 0) ---
     Ti-O-bond((x, y, 0), "front")

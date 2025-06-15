@@ -1,9 +1,10 @@
-#import "@preview/cetz:0.3.4": canvas, draw
+#import "@preview/cetz:0.4.0": canvas, draw
 #import draw: line, content, circle, polygon
 
 #set page(width: auto, height: auto, margin: 8pt)
 #set text(weight: "bold")
 
+// TODO replace draw-star with n-star once released https://github.com/cetz-package/cetz/pull/886
 
 // Draw a star directly with lines
 #let draw-star(pos, size: 0.3, fill: red) = {

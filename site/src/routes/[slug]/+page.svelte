@@ -2,10 +2,9 @@
   import { Card, CodeBlock, type Diagram, Tags } from '$lib'
   import { homepage, repository } from '$root/package.json'
   import Icon from '@iconify/svelte'
-  import { PrevNext } from 'svelte-zoo'
+  import { PrevNext } from 'svelte-multiselect'
 
   let { data } = $props()
-
   let { title, description, code, images } = $derived(data.diagram)
   let { creator, creator_url, url, downloads, tags, slug } = $derived(
     data.diagram,
@@ -123,14 +122,15 @@
   current={data.slug}
   style="max-width: 55em; margin: auto"
 >
-  {#snippet children({ item, kind }: { item: Diagram; kind: `next` | `prev` })}
+  {#snippet children({ item, kind })}
+    {@const [slug, diagram] = item as [string, Diagram]}
     <div>
       <h3>
-        <a href={item.slug}>
+        <a href={slug}>
           {@html kind == `next` ? `Next &rarr;` : `&larr; Previous`}
         </a>
       </h3>
-      <Card {item} style="max-width: 250px" format="short" />
+      <Card item={diagram} style="max-width: 250px" format="short" />
     </div>
   {/snippet}
 </PrevNext>

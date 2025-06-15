@@ -6,115 +6,140 @@ import re
 import subprocess
 from glob import glob
 from itertools import zip_longest
+from typing import TypedDict
 
 import yaml
 
 ROOT = os.path.dirname(os.path.dirname(__file__))
 
-with open(f"{ROOT}/site/package.json", mode="r") as file:
+with open(f"{ROOT}/site/package.json") as file:
     site_url = json.load(file)["homepage"]
 
-# Get all YAML files
-yaml_paths = glob(f"{ROOT}/assets/**/*.yml")
-# Also get .tex and .typ paths to check for missing YAML files
-tex_paths = glob(f"{ROOT}/assets/**/*.tex")
-typ_paths = glob(f"{ROOT}/assets/**/*.typ")
 
-# Check that every diagram has a YAML file
-for diagram_path in tex_paths + typ_paths:
-    dir_name = os.path.dirname(diagram_path)
-    yaml_path = f"{dir_name}/{os.path.basename(dir_name)}.yml"
-    if not os.path.isfile(yaml_path):
-        raise FileNotFoundError(f"Missing {yaml_path=} for {diagram_path=}")
+class DiagramInfo(TypedDict):
+    """Structure to hold diagram source path and title."""
 
-# Create a dict mapping directory names to file paths
-# Prefer .typ files over .tex files when both exist
-path_dict: dict[str, str] = {}
-for yaml_path in sorted(yaml_paths):
-    base_name = os.path.basename(os.path.dirname(yaml_path))
+    source_path: str
+    title: str
 
-    # Skip if diagram is marked as hidden in YAML
-    with open(yaml_path, mode="r") as file:
-        metadata = yaml.safe_load(file) or {}
+
+def collect_diagrams() -> list[DiagramInfo]:
+    """Collect all diagram info from YAML files."""
+    yaml_paths = glob(f"{ROOT}/assets/**/*.yml")
+    tex_paths = glob(f"{ROOT}/assets/**/*.tex")
+    typ_paths = glob(f"{ROOT}/assets/**/*.typ")
+
+    # Verify every diagram has a YAML file
+    for path in tex_paths + typ_paths:
+        dir_name = os.path.dirname(path)
+        yaml_path = f"{dir_name}/{os.path.basename(dir_name)}.yml"
+        if not os.path.isfile(yaml_path):
+            raise FileNotFoundError(f"Missing {yaml_path} for {path}")
+
+    diagrams = {}
+    for yaml_path in sorted(yaml_paths):
+        dir_path = os.path.dirname(yaml_path)
+        name = os.path.basename(dir_path)
+
+        with open(yaml_path) as file:
+            metadata = yaml.safe_load(file) or {}
+
         if metadata.get("hide"):
             continue
 
-    # Look for corresponding .typ or .tex file
-    typ_path = f"{os.path.dirname(yaml_path)}/{base_name}.typ"
-    tex_path = f"{os.path.dirname(yaml_path)}/{base_name}.tex"
+        if "title" not in metadata:
+            raise ValueError(f"Missing 'title' in {yaml_path}")
 
-    if os.path.isfile(typ_path):
-        path_dict[base_name] = typ_path
-    elif os.path.isfile(tex_path):
-        path_dict[base_name] = tex_path
+        # Prefer .typ over .tex
+        for ext in (".typ", ".tex"):
+            source_path = f"{dir_path}/{name}{ext}"
+            if os.path.isfile(source_path):
+                diagrams[name] = {
+                    "source_path": source_path,
+                    "title": metadata["title"],
+                }
+                break
 
-# Convert back to sorted list
-unique_paths = sorted(path_dict.values())
-
-
-md_table = f"| {'&emsp;' * 22} | {'&emsp;' * 22} |\n| :---: | :---: |\n"
+    return [diagrams[name] for name in sorted(diagrams)]
 
 
 def get_code_links(fig_name: str) -> str:
-    """Generate markdown for rendering links to LaTeX and/or CeTZ source files as language logo icons."""
-    tex_path = f"assets/{fig_name}/{fig_name}.tex"
-    typ_path = f"assets/{fig_name}/{fig_name}.typ"
-
+    """Generate markdown links to source files as language logo icons."""
     links = []
-    if os.path.isfile(f"{ROOT}/{tex_path}"):
-        links.append(f"[![LaTeX][latex-logo]]({tex_path})")
-    if os.path.isfile(f"{ROOT}/{typ_path}"):
-        links.append(f"[![Typst][typst-logo]]({typ_path})")
+    for ext, logo in [(".tex", "LaTeX"), (".typ", "Typst")]:
+        path = f"assets/{fig_name}/{fig_name}{ext}"
+        if os.path.isfile(f"{ROOT}/{path}"):
+            links.append(f"[![{logo}][{logo.lower()}-logo]]({path})")
 
     if not links:
-        raise ValueError(
-            f"Neither LaTeX nor Typst source code found for {fig_name=}. this should never happen."
-        )
+        raise ValueError(f"No source code found for {fig_name}")
 
     return "&nbsp;" + "&nbsp;".join(links)
 
 
-for path1, path2 in zip_longest(unique_paths[::2], unique_paths[1::2]):
-    dir1, dir2 = map(os.path.dirname, (path1, path2 or ""))
-    fig1, fig2 = map(os.path.basename, (dir1, dir2))
+def generate_table(diagrams: list[DiagramInfo]) -> str:
+    """Generate markdown table from diagram info."""
+    table = f"| {'&emsp;' * 22} | {'&emsp;' * 22} |\n| :---: | :---: |\n"
 
-    # file name row with source code links
-    dir_link1 = f"[`{fig1}`]({site_url}/{fig1}) {get_code_links(fig1)}"
-    dir_link2 = f"[`{fig2}`]({site_url}/{fig2}) {get_code_links(fig2)}" if path2 else ""
-    md_table += f"| {dir_link1} | {dir_link2} |\n"
+    for data1, data2 in zip_longest(diagrams[::2], diagrams[1::2]):
+        # First column
+        name1 = os.path.basename(os.path.dirname(data1["source_path"]))
+        title1 = data1["title"]
+        dir_link1 = f"[{title1}]({site_url}/{name1}) {get_code_links(name1)}"
+        img_link1 = f"![{title1}](assets/{name1}/{name1}.png)"
 
-    # image row
-    img_link1 = f"![`{fig1}.png`](assets/{fig1}/{fig1}.png)"
-    img_link2 = f"![`{fig2}.png`](assets/{fig2}/{fig2}.png)" if path2 else ""
-    md_table += f"| {img_link1} | {img_link2} |\n"
+        # Second column (if exists)
+        dir_link2 = img_link2 = ""
+        if data2:
+            name2 = os.path.basename(os.path.dirname(data2["source_path"]))
+            title2 = data2["title"]
+            dir_link2 = f"[{title2}]({site_url}/{name2}) {get_code_links(name2)}"
+            img_link2 = f"![{title2}](assets/{name2}/{name2}.png)"
 
-with open(f"{ROOT}/readme.md", mode="r") as file:
-    readme = file.read()
+        table += f"| {dir_link1} | {dir_link2} |\n| {img_link1} | {img_link2} |\n"
 
-# insert table markdown between "## Images\n" and "## Scripts\n" headings
-readme = re.sub(
-    r"(?<=<!-- diagram-table -->\n)(.*)(?=## Scripts\n)",
-    f"\n{md_table}\n",
-    readme,
-    flags=re.DOTALL,
-)
+    return table
 
-# update count in "Collection of **110** "
-readme = re.sub(r"(?<=)\d+(?= Scientific Diagrams)", str(len(unique_paths)), readme)
 
-# Count number of Typst and LaTeX diagrams
-n_typst = len(typ_paths)
-n_latex = len(tex_paths)
+def update_readme(table: str, diagram_count: int) -> None:
+    """Update README with new table and counts."""
+    with open(f"{ROOT}/readme.md") as file:
+        readme = file.read()
 
-# update badge counts for Typst and LaTeX
-readme = re.sub(r"\[\!\[(\d+) with Typst\]", f"[![{n_typst} with Typst]", readme)
-readme = re.sub(r"\[\!\[(\d+) with LaTeX\]", f"[![{n_latex} with LaTeX]", readme)
-# update the URL-encoded part
-readme = re.sub(r"badge/\d+%20with-Typst", f"badge/{n_typst}%20with-Typst", readme)
-readme = re.sub(r"badge/\d+%20with-LaTeX", f"badge/{n_latex}%20with-LaTeX", readme)
+    # Insert table
+    readme = re.sub(
+        r"(?<=<!-- diagram-table -->\n)(.*)(?=## Scripts\n)",
+        f"\n{table}\n",
+        readme,
+        flags=re.DOTALL,
+    )
 
-with open(f"{ROOT}/readme.md", mode="w") as file:
-    file.write(readme)
+    # Update diagram count
+    readme = re.sub(
+        r"(?<=Collection of \*\*)\d+(?=\*\* Scientific Diagrams)",
+        str(diagram_count),
+        readme,
+    )
 
-# run pre-commit on readme to format white space in table
-subprocess.run(["pre-commit", "run", "--files", "readme.md"])
+    # Update badge counts
+    n_typst = len(glob(f"{ROOT}/assets/**/*.typ"))
+    n_latex = len(glob(f"{ROOT}/assets/**/*.tex"))
+
+    for count, lang in [(n_typst, "Typst"), (n_latex, "LaTeX")]:
+        readme = re.sub(
+            rf"\[\!\[(\d+) with {lang}\]", f"[![{count} with {lang}]", readme
+        )
+        readme = re.sub(
+            rf"badge/\d+%20with-{lang}", f"badge/{count}%20with-{lang}", readme
+        )
+
+    with open(f"{ROOT}/readme.md", "w") as file:
+        file.write(readme)
+
+    subprocess.run(["pre-commit", "run", "--files", "readme.md"])
+
+
+if __name__ == "__main__":
+    diagrams = collect_diagrams()
+    table = generate_table(diagrams)
+    update_readme(table, len(diagrams))

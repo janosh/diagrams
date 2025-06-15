@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.3.4": draw, canvas
-#import "@preview/cetz-venn:0.1.3": venn3
+#import "@preview/cetz:0.4.0": draw, canvas
+#import "@preview/cetz-venn:0.1.4": venn3
 #import draw: content, circle, scale
 
 #set page(width: auto, height: auto, margin: 8pt)

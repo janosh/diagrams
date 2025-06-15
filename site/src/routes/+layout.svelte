@@ -3,10 +3,9 @@
   import { diagrams } from '$lib'
   import { repository } from '$root/package.json'
   import Icon from '@iconify/svelte'
-  import { CmdPalette } from 'svelte-multiselect'
-  import { GitHubCorner } from 'svelte-zoo'
-  import '../app.css'
   import type { Snippet } from 'svelte'
+  import { CmdPalette, GitHubCorner } from 'svelte-multiselect'
+  import '../app.css'
 
   interface Props {
     children?: Snippet<[]>
@@ -24,8 +23,8 @@
 
 <GitHubCorner
   href={repository}
-  --zoo-gh-corner-bg="var(--text-color)"
-  --zoo-gh-corner-color="var(--body-bg)"
+  --gh-corner-bg="var(--text-color)"
+  --gh-corner-color="var(--body-bg)"
 />
 
 {@render children?.()}

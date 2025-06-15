@@ -22,14 +22,15 @@ repos:
       - id: deno-fmt
         name: Deno format
         entry: deno fmt
-        types: [svelte, javascript, ts]
+        types_or: [file]
         language: system
-        args: [--config, site/deno.json]
+        args: [--config, site/deno.jsonc]
+        exclude: ^readme.md$
       - id: deno-lint
         name: Deno lint
         entry: deno lint
-        args: [--config, site/deno.json]
-        types: [svelte, javascript, ts]
+        types_or: [file]
+        args: [--config, site/deno.jsonc, --permit-no-files, --fix]
         language: system
 
   - repo: https://github.com/codespell-project/codespell
@@ -38,16 +39,16 @@ repos:
       - id: codespell
         stages: [pre-commit, commit-msg]
         exclude_types: [svg]
-        args: [--ignore-words-list, "noe,ket,ba,te,nd", --check-filenames]
+        args: [--ignore-words-list, 'noe,ket,ba,te,nd', --check-filenames]
 
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.44.0
+    rev: v0.45.0
     hooks:
       - id: markdownlint
         # MD013: line too long
         # MD033: no inline HTML
         # MD041: first line in a file should be a top-level heading
-        args: [--disable, MD013, MD033, MD041, "--"]
+        args: [--disable, MD013, MD033, MD041, '--']
 
   - repo: local
     hooks:

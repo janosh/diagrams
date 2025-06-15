@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.3.4": draw, canvas
+#import "@preview/cetz:0.4.0": draw, canvas
 #import draw: line, content, set-style
 
 #let horizontal_dist = 4
