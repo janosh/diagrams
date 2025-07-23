@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.4.0": canvas, draw
+#import "@preview/cetz:0.4.1": canvas, draw
 #import draw: circle, content, line, on-layer
 
 #set page(width: auto, height: auto, margin: 5pt)
@@ -15,19 +15,14 @@
   )
 
   // Gradient overlay for 3D effect
-  circle(
-    pos,
-    radius: radius,
-    stroke: none,
-    fill: gradient.radial(
-      color.lighten(85%),
-      color,
-      color.darken(25%),
-      focal-center: (25%, 20%),
-      focal-radius: 10%,
-      center: (30%, 25%),
-    ),
-  )
+  circle(pos, radius: radius, stroke: none, fill: gradient.radial(
+    color.lighten(85%),
+    color,
+    color.darken(25%),
+    focal-center: (25%, 20%),
+    focal-radius: 10%,
+    center: (30%, 25%),
+  ))
 
   // Add element label
   let text-color = if color == rgb("#333333") { white } else { black }
@@ -161,68 +156,57 @@
   }
 
   // Draw bonds on a background layer (behind atoms)
-  on-layer(
-    -1,
-    {
-      // Main chain
-      let bond-chain = ("H1", "C1", "N1", "C2", "C3", "C4", "O1")
-      for i in range(bond-chain.len() - 1) {
-        let from = bond-chain.at(i)
-        let to = bond-chain.at(i + 1)
+  on-layer(-1, {
+    // Main chain
+    let bond-chain = ("H1", "C1", "N1", "C2", "C3", "C4", "O1")
+    for i in range(bond-chain.len() - 1) {
+      let from = bond-chain.at(i)
+      let to = bond-chain.at(i + 1)
 
-        let from-pos = if from.starts-with("H") {
-          h-positions.at(from)
-        } else {
-          heavy-atoms.at(from)
-        }
-
-        let to-pos = if to.starts-with("H") {
-          h-positions.at(to)
-        } else {
-          heavy-atoms.at(to)
-        }
-
-        line(
-          from-pos,
-          to-pos,
-          stroke: (paint: gray, thickness: 3.5pt),
-        )
+      let from-pos = if from.starts-with("H") {
+        h-positions.at(from)
+      } else {
+        heavy-atoms.at(from)
       }
 
-      // Additional bonds
-      let additional-bonds = (
-        ("H2", "C1"),
-        ("H3", "C1"),
-        ("N1", "H4"),
-        ("C2", "H5"),
-        ("C2", "H6"),
-        ("C3", "H7"),
-        ("C3", "N2"),
-        ("N2", "H8"),
-        ("N2", "H9"),
-        ("C4", "O2"),
-        ("O2", "H10"),
-      )
-
-      for (from, to) in additional-bonds {
-        let from-pos = if from.starts-with("H") {
-          h-positions.at(from)
-        } else {
-          heavy-atoms.at(from)
-        }
-
-        let to-pos = if to.starts-with("H") {
-          h-positions.at(to)
-        } else {
-          heavy-atoms.at(to)
-        }
-
-        line(
-          from-pos,
-          to-pos,
-          stroke: (paint: gray, thickness: 3.5pt),
-        )
+      let to-pos = if to.starts-with("H") {
+        h-positions.at(to)
+      } else {
+        heavy-atoms.at(to)
       }
-    },
-  )
+
+      line(from-pos, to-pos, stroke: (paint: gray, thickness: 3.5pt))
+    }
+
+    // Additional bonds
+    let additional-bonds = (
+      ("H2", "C1"),
+      ("H3", "C1"),
+      ("N1", "H4"),
+      ("C2", "H5"),
+      ("C2", "H6"),
+      ("C3", "H7"),
+      ("C3", "N2"),
+      ("N2", "H8"),
+      ("N2", "H9"),
+      ("C4", "O2"),
+      ("O2", "H10"),
+    )
+
+    for (from, to) in additional-bonds {
+      let from-pos = if from.starts-with("H") {
+        h-positions.at(from)
+      } else {
+        heavy-atoms.at(from)
+      }
+
+      let to-pos = if to.starts-with("H") {
+        h-positions.at(to)
+      } else {
+        heavy-atoms.at(to)
+      }
+
+      line(from-pos, to-pos, stroke: (paint: gray, thickness: 3.5pt))
+    }
+  })
 })

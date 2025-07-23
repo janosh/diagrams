@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.4.0": canvas, draw
+#import "@preview/cetz:0.4.1": canvas, draw
 #import "@preview/cetz-plot:0.1.2": plot
 #import draw: content, line
 
@@ -16,12 +16,10 @@
 #let p2(v) = p1(v) + B2 / calc.pow(v, 3)
 
 #canvas({
-  draw.set-style(
-    axes: (
-      y: (label: (anchor: "north-west", offset: -0.2)),
-      x: (label: (anchor: "south-east", offset: -0.25)),
-    ),
-  )
+  draw.set-style(axes: (
+    y: (label: (anchor: "north-west", offset: -0.2)),
+    x: (label: (anchor: "south-east", offset: -0.25)),
+  ))
 
   plot.plot(
     size: (8, 7),

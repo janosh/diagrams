@@ -1,6 +1,6 @@
-#import "@preview/cetz:0.4.0": canvas, draw
+#import "@preview/cetz:0.4.1": canvas, draw
 #import "@preview/cetz-plot:0.1.2": plot
-#import draw: line, circle, content, group, bezier, translate
+#import draw: bezier, circle, content, group, line, translate
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -71,145 +71,125 @@
 
     group({
       translate((x-mid - width / 2 + s.x, y-mid - height / 2 + s.y))
-      plot.plot(
-        size: (width, height),
-        axis-style: none,
-        {
-          plot.add(
-            style: (stroke: orange + 1pt, fill: orange.lighten(80%)),
-            domain: (-1, 1),
-            samples: 50,
-            x => {
-              let variance = 0.3 + calc.abs(offset) * 0.1
-              let peak = 0.8 + calc.rem(calc.abs(offset), 0.4)
-              peak * calc.exp(-5 * calc.pow(x - mu, 2) / variance)
-            },
-          )
-        },
-      )
+      plot.plot(size: (width, height), axis-style: none, {
+        plot.add(style: (stroke: orange + 1pt, fill: orange.lighten(80%)), domain: (-1, 1), samples: 50, x => {
+          let variance = 0.3 + calc.abs(offset) * 0.1
+          let peak = 0.8 + calc.rem(calc.abs(offset), 0.4)
+          peak * calc.exp(-5 * calc.pow(x - mu, 2) / variance)
+        })
+      })
     })
   }
 
   // Draw regular network
-  group(
-    name: "regular",
-    {
-      // Input layer
-      for ii in range(2) {
-        neuron(
-          (0, (ii + 1) * node-sep + 1),
-          fill: rgb("#90EE90"),
-          label: "ii" + str(ii + 1),
-          name: "ii" + str(ii + 1),
-        )
-      }
-
-      // Hidden layer
-      for ii in range(4) {
-        neuron(
-          (layer-sep, (ii + 1) * node-sep),
-          fill: rgb("#ADD8E6"),
-          label: "h" + str(ii + 1),
-          name: "h" + str(ii + 1),
-        )
-      }
-
-      // Output layer
+  group(name: "regular", {
+    // Input layer
+    for ii in range(2) {
       neuron(
-        (2 * layer-sep, 2.5 * node-sep),
-        fill: rgb("#FFB6C6"),
-        label: "o",
-        name: "o",
+        (0, (ii + 1) * node-sep + 1),
+        fill: rgb("#90EE90"),
+        label: "ii" + str(ii + 1),
+        name: "ii" + str(ii + 1),
       )
+    }
 
-      // Connect layers with weights
-      for ii in range(2) {
-        for jj in range(4) {
-          let start = ("ii" + str(ii + 1))
-          let end = ("h" + str(jj + 1))
-          line(start, end, ..arrow-style)
-          weight-label(
-            (0, (ii + 1) * node-sep + 1),
-            (layer-sep, (jj + 1) * node-sep),
-            ii + 1,
-            jj + 1,
-            offset: if ii == 0 { 1.5 } else { -1 },
-          )
-        }
-      }
+    // Hidden layer
+    for ii in range(4) {
+      neuron(
+        (layer-sep, (ii + 1) * node-sep),
+        fill: rgb("#ADD8E6"),
+        label: "h" + str(ii + 1),
+        name: "h" + str(ii + 1),
+      )
+    }
 
-      for ii in range(4) {
-        let start = ("h" + str(ii + 1))
-        line(start, "o", ..arrow-style)
-        weight-label(
-          (layer-sep, (ii + 1) * node-sep),
-          (2 * layer-sep, 2.5 * node-sep),
-          ii + 1,
-          1,
-        )
+    // Output layer
+    neuron(
+      (2 * layer-sep, 2.5 * node-sep),
+      fill: rgb("#FFB6C6"),
+      label: "o",
+      name: "o",
+    )
+
+    // Connect layers with weights
+    for ii in range(2) {
+      for jj in range(4) {
+        let start = ("ii" + str(ii + 1))
+        let end = ("h" + str(jj + 1))
+        line(start, end, ..arrow-style)
+        weight-label((0, (ii + 1) * node-sep + 1), (layer-sep, (jj + 1) * node-sep), ii + 1, jj + 1, offset: if ii
+          == 0 { 1.5 } else { -1 })
       }
-    },
-  )
+    }
+
+    for ii in range(4) {
+      let start = ("h" + str(ii + 1))
+      line(start, "o", ..arrow-style)
+      weight-label(
+        (layer-sep, (ii + 1) * node-sep),
+        (2 * layer-sep, 2.5 * node-sep),
+        ii + 1,
+        1,
+      )
+    }
+  })
 
   // Draw Bayesian network
-  group(
-    name: "bayes",
-    {
-      // Shift everything right
-      let x-offset = 3 * layer-sep
+  group(name: "bayes", {
+    // Shift everything right
+    let x-offset = 3 * layer-sep
 
-      // Input layer
-      for ii in range(2) {
-        neuron(
-          (x-offset, (ii + 1) * node-sep + 1),
-          fill: rgb("#90EE90"),
-          label: "ii" + str(ii + 1),
-          name: "ii" + str(ii + 1),
-        )
-      }
-
-      // Hidden layer
-      for ii in range(4) {
-        neuron(
-          (x-offset + layer-sep, (ii + 1) * node-sep),
-          fill: rgb("#ADD8E6"),
-          label: "h" + str(ii + 1),
-          name: "h" + str(ii + 1),
-        )
-      }
-
-      // Output layer
+    // Input layer
+    for ii in range(2) {
       neuron(
-        (x-offset + 2 * layer-sep, 2.5 * node-sep),
-        fill: rgb("#FFB6C6"),
-        label: "o",
-        name: "o",
+        (x-offset, (ii + 1) * node-sep + 1),
+        fill: rgb("#90EE90"),
+        label: "ii" + str(ii + 1),
+        name: "ii" + str(ii + 1),
       )
+    }
 
-      // Connect layers with distributions
-      for ii in range(2) {
-        for jj in range(4) {
-          let start = ("ii" + str(ii + 1))
-          let end = ("h" + str(jj + 1))
-          line(start, end, ..arrow-style)
-          gaussian(
-            (x-offset, (ii + 1) * node-sep + 1),
-            (x-offset + layer-sep, (jj + 1) * node-sep),
-            offset: ii - jj,
-            shift: if ii == 0 { 1.5 } else { -1 },
-          )
-        }
-      }
+    // Hidden layer
+    for ii in range(4) {
+      neuron(
+        (x-offset + layer-sep, (ii + 1) * node-sep),
+        fill: rgb("#ADD8E6"),
+        label: "h" + str(ii + 1),
+        name: "h" + str(ii + 1),
+      )
+    }
 
-      for ii in range(4) {
-        let start = ("h" + str(ii + 1))
-        line(start, "o", ..arrow-style)
+    // Output layer
+    neuron(
+      (x-offset + 2 * layer-sep, 2.5 * node-sep),
+      fill: rgb("#FFB6C6"),
+      label: "o",
+      name: "o",
+    )
+
+    // Connect layers with distributions
+    for ii in range(2) {
+      for jj in range(4) {
+        let start = ("ii" + str(ii + 1))
+        let end = ("h" + str(jj + 1))
+        line(start, end, ..arrow-style)
         gaussian(
-          (x-offset + layer-sep, (ii + 1) * node-sep),
-          (x-offset + 2 * layer-sep, 2.5 * node-sep),
-          offset: ii,
+          (x-offset, (ii + 1) * node-sep + 1),
+          (x-offset + layer-sep, (jj + 1) * node-sep),
+          offset: ii - jj,
+          shift: if ii == 0 { 1.5 } else { -1 },
         )
       }
-    },
-  )
+    }
+
+    for ii in range(4) {
+      let start = ("h" + str(ii + 1))
+      line(start, "o", ..arrow-style)
+      gaussian(
+        (x-offset + layer-sep, (ii + 1) * node-sep),
+        (x-offset + 2 * layer-sep, 2.5 * node-sep),
+        offset: ii,
+      )
+    }
+  })
 })

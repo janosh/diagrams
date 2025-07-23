@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.0": canvas, draw
-#import draw: line, content, circle, group, hobby, on-layer
+#import "@preview/cetz:0.4.1": canvas, draw
+#import draw: circle, content, group, hobby, line, on-layer
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -55,10 +55,7 @@
   // Connection points with names
   circle((4.5, y-fake), radius: 0.06, fill: black, name: "dot1")
   circle((4.5, y-real), radius: 0.06, fill: black, name: "dot2")
-  on-layer(
-    1,
-    circle((4.25, 2 * y-real / 3), radius: 0.12, fill: orange, stroke: none, name: "dot3"),
-  )
+  on-layer(1, circle((4.25, 2 * y-real / 3), radius: 0.12, fill: orange, stroke: none, name: "dot3"))
 
   // Draw connecting lines with names
   line("fake", "dot1", ..arrow-style, name: "conn1")

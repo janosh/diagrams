@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.0": canvas, draw
-#import draw: line, content, circle, arc, group, translate
+#import "@preview/cetz:0.4.1": canvas, draw
+#import draw: arc, circle, content, group, line, translate
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -63,12 +63,7 @@
 
       // Cross marker
       cross("loop." + cross-pos, name: "cross")
-      content(
-        "loop.50%",
-        $m_2^2, gamma_2^2$,
-        anchor: "north",
-        padding: (top: 7pt),
-      )
+      content("loop.50%", $m_2^2, gamma_2^2$, anchor: "north", padding: (top: 7pt))
 
       // External lines and vertices
       let ext-len = 2 * radius

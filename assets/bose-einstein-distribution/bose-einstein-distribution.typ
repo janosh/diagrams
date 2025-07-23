@@ -1,6 +1,6 @@
-#import "@preview/cetz:0.4.0": canvas, draw
+#import "@preview/cetz:0.4.1": canvas, draw
 #import "@preview/cetz-plot:0.1.2": plot
-#import draw: content, line, bezier
+#import draw: bezier, content, line
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -13,12 +13,10 @@
 
 #canvas({
   let mark = (end: "stealth", fill: black, scale: 0.7)
-  draw.set-style(
-    axes: (
-      y: (label: (anchor: "north-west", offset: -0.2), mark: mark),
-      x: (label: (anchor: "south-east", offset: -0.15), mark: mark),
-    ),
-  )
+  draw.set-style(axes: (
+    y: (label: (anchor: "north-west", offset: -0.2), mark: mark),
+    x: (label: (anchor: "south-east", offset: -0.15), mark: mark),
+  ))
 
   plot.plot(
     size: (8, 7),
@@ -33,12 +31,7 @@
     {
       // Plot distributions for different temperatures
       for (T, color) in ((0.5, red), (1, orange), (2, blue)) {
-        plot.add(
-          style: (stroke: color + 1.5pt),
-          domain: (0.01, 2),
-          samples: 150,
-          x => n_B(x, T),
-        )
+        plot.add(style: (stroke: color + 1.5pt), domain: (0.01, 2), samples: 150, x => n_B(x, T))
       }
     },
   )

@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.0": canvas, draw, decorations
-#import draw: line, content, circle
+#import "@preview/cetz:0.4.1": canvas, decorations, draw
+#import draw: circle, content, line
 
 #set page(width: auto, height: auto, margin: 5pt)
 
@@ -25,12 +25,7 @@
   let right-point = (xr / 2, 0)
 
   // Draw branch cut line
-  line(
-    left-point,
-    right-point,
-    name: "x-axis",
-    mark: (symbol: "circle", fill: blue, scale: 0.75),
-  )
+  line(left-point, right-point, name: "x-axis", mark: (symbol: "circle", fill: blue, scale: 0.75))
   // Add branch point labels
   content(
     (rel: (0, 0.3), to: "x-axis.start"),

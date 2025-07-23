@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.4.0": canvas, draw
+#import "@preview/cetz:0.4.1": canvas, draw
 #import "@preview/cetz-plot:0.1.2": plot
 
 #set page(width: auto, height: auto, margin: 8pt)
@@ -9,12 +9,10 @@
 #let fermi-dirac(x) = 1 / (calc.exp(x) + 1)
 
 #canvas({
-  draw.set-style(
-    axes: (
-      y: (mark: (end: "stealth", fill: black), label: (anchor: "north-west", offset: -0.2)),
-      x: (mark: (end: "stealth", fill: black), label: (anchor: "south-east", offset: -0.2)),
-    ),
-  )
+  draw.set-style(axes: (
+    y: (mark: (end: "stealth", fill: black), label: (anchor: "north-west", offset: -0.2)),
+    x: (mark: (end: "stealth", fill: black), label: (anchor: "south-east", offset: -0.2)),
+  ))
 
   plot.plot(
     size: (8, 5),

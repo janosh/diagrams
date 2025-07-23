@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.4.0": canvas, draw
+#import "@preview/cetz:0.4.1": canvas, draw
 #import "@preview/cetz-plot:0.1.2": plot
 
 #set page(width: auto, height: auto, margin: 8pt)
@@ -6,12 +6,10 @@
 #let size = (8, 5)
 
 #canvas({
-  draw.set-style(
-    axes: (
-      y: (label: (anchor: "north-west", offset: -0.2), mark: (end: "stealth", fill: black)),
-      x: (label: (anchor: "north", offset: 0.1), mark: (end: "stealth", fill: black)),
-    ),
-  )
+  draw.set-style(axes: (
+    y: (label: (anchor: "north-west", offset: -0.2), mark: (end: "stealth", fill: black)),
+    x: (label: (anchor: "north", offset: 0.1), mark: (end: "stealth", fill: black)),
+  ))
 
   plot.plot(
     size: size,

@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.0": canvas, draw
-#import draw: content, circle, group, rect
+#import "@preview/cetz:0.4.1": canvas, draw
+#import draw: circle, content, group, rect
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -12,19 +12,14 @@
     fill: color,
   )
   // Then draw the gradient overlay for 3D shading effect
-  circle(
-    (),
-    radius: 0.25,
-    stroke: none,
-    fill: gradient.radial(
-      color.lighten(75%),
-      color,
-      color.darken(15%),
-      focal-center: (30%, 25%),
-      focal-radius: 5%,
-      center: (35%, 30%),
-    ),
-  )
+  circle((), radius: 0.25, stroke: none, fill: gradient.radial(
+    color.lighten(75%),
+    color,
+    color.darken(15%),
+    focal-center: (30%, 25%),
+    focal-radius: 5%,
+    center: (35%, 30%),
+  ))
 }
 
 #canvas({

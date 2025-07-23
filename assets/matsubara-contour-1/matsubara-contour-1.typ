@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.0": canvas, draw
-#import draw: line, content, circle, arc, set-style
+#import "@preview/cetz:0.4.1": canvas, draw
+#import draw: arc, circle, content, line, set-style
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -52,12 +52,7 @@
   for n in range(-y-range, y-range + 1) {
     if n != 0 {
       circle((0, n), radius: 0.03, fill: black, name: "freq-" + str(n))
-      content(
-        "freq-" + str(n),
-        $i omega_#text(size: 0.7em)[#n]$,
-        anchor: "west",
-        padding: (x: 3pt),
-      )
+      content("freq-" + str(n), $i omega_#text(size: 0.7em)[#n]$, anchor: "west", padding: (x: 3pt))
     }
   }
 
@@ -90,13 +85,10 @@
   )
 
   // Left vertical line
-  line(
-    (-1, y-range + 0.3),
-    (-1, -y-range - 0.3),
-    stroke: dark-blue,
-    name: "left-line",
-    mark: (end: "stealth", scale: 0.5),
-  )
+  line((-1, y-range + 0.3), (-1, -y-range - 0.3), stroke: dark-blue, name: "left-line", mark: (
+    end: "stealth",
+    scale: 0.5,
+  ))
 
   // Bottom semicircle - positioned to fully enclose the y-axis
   arc(

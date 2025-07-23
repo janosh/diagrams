@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.0": canvas, draw
-#import draw: rect, content, line
+#import "@preview/cetz:0.4.1": canvas, draw
+#import draw: content, line, rect
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -27,18 +27,10 @@
 
     // Draw dimension indicators if colors specified
     if top-color != none {
-      line(
-        (x - 0.02, y + offset),
-        (x + w + 0.02, y + offset),
-        stroke: (paint: top-color, thickness: 2pt),
-      )
+      line((x - 0.02, y + offset), (x + w + 0.02, y + offset), stroke: (paint: top-color, thickness: 2pt))
     }
     if left-color != none {
-      line(
-        (x - offset, y + 0.02),
-        (x - offset, y - h - 0.02),
-        stroke: (paint: left-color, thickness: 2pt),
-      )
+      line((x - offset, y + 0.02), (x - offset, y - h - 0.02), stroke: (paint: left-color, thickness: 2pt))
     }
   }
 

@@ -1,7 +1,7 @@
 
 // adapted from https://github.com/cetz-package/cetz/blob/a082e02a/gallery/waves.typ
-#import "@preview/cetz:0.4.0": canvas, draw, vector, matrix
-#import draw: set-transform, scale, content, line, grid, group, rotate
+#import "@preview/cetz:0.4.1": canvas, draw, matrix, vector
+#import draw: content, grid, group, line, rotate, scale, set-transform
 
 #set page(width: auto, height: auto, margin: .5cm)
 
@@ -18,7 +18,11 @@
   content((0, 3, 0), [$arrow(B)$])
   content((8.7, 0, 0), [$arrow(v)$])
 
-  grid((0, -2), (8, 2), stroke: gray + .5pt)
+  grid(
+    (0, -2),
+    (8, 2),
+    stroke: gray + .5pt,
+  )
 
   // Draw a sine wave on the xy plane
   let wave(amplitude: 1, fill: none, phases: 2, scale: 8, samples: 100) = {

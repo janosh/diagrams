@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.0": canvas, draw
-#import draw: line, content, rect, on-layer
+#import "@preview/cetz:0.4.1": canvas, draw
+#import draw: content, line, on-layer, rect
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -18,17 +18,14 @@
   )
 
   // Enclosure label
-  on-layer(
-    1,
-    content(
-      "enclosure.north",
-      text(weight: "bold", size: 1.2em)[Kohn-Sham method],
-      frame: "rect",
-      stroke: .5pt,
-      fill: white,
-      padding: 3pt,
-    ),
-  )
+  on-layer(1, content(
+    "enclosure.north",
+    text(weight: "bold", size: 1.2em)[Kohn-Sham method],
+    frame: "rect",
+    stroke: .5pt,
+    fill: white,
+    padding: 3pt,
+  ))
 
   let box-style = (
     frame: "rect",
@@ -116,14 +113,10 @@
   line("criterion", "energy", ..arrow-style, name: "converged-yes")
 
   // Yes/No labels
-  content(
-    (rel: (0.1, 0), to: "converged-yes.60%"),
-    [Yes],
-    frame: "rect",
-    stroke: none,
-    anchor: "west",
-    padding: (3pt, 2pt),
-  )
+  content((rel: (0.1, 0), to: "converged-yes.60%"), [Yes], frame: "rect", stroke: none, anchor: "west", padding: (
+    3pt,
+    2pt,
+  ))
 
   // No feedback loop
   line(
@@ -134,11 +127,5 @@
     ..arrow-style,
     name: "converged-no",
   )
-  content(
-    "converged-no.13%",
-    [No],
-    frame: none,
-    anchor: "north-east",
-    padding: (-1pt, 2pt),
-  )
+  content("converged-no.13%", [No], frame: none, anchor: "north-east", padding: (-1pt, 2pt))
 })

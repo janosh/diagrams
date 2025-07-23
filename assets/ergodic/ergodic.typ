@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.0": canvas, draw
-#import draw: line, content, circle, rect, hobby
+#import "@preview/cetz:0.4.1": canvas, draw
+#import draw: circle, content, hobby, line, rect
 
 #set page(width: auto, height: auto, margin: 3pt)
 
@@ -62,11 +62,5 @@
     omega: 0,
     stroke: red,
   )
-  content(
-    (2.5, -1.3),
-    align(
-      center,
-      text(fill: red)[$R$ for\ $omega = 2 in QQ$],
-    ),
-  )
+  content((2.5, -1.3), align(center, text(fill: red)[$R$ for\ $omega = 2 in QQ$]))
 })

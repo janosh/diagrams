@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.0": canvas, draw, decorations
-#import draw: line, content, circle, arc, set-style, bezier
+#import "@preview/cetz:0.4.1": canvas, decorations, draw
+#import draw: arc, bezier, circle, content, line, set-style
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -84,12 +84,9 @@
 
   // Draw the zigzag line as a series of connected lines
   for i in range(segments) {
-    line(
-      points.at(i),
-      points.at(i + 1),
-      stroke: (thickness: 0.8pt),
-      name: if name != none and i == 0 { name } else { none },
-    )
+    line(points.at(i), points.at(i + 1), stroke: (thickness: 0.8pt), name: if name != none and i == 0 { name } else {
+      none
+    })
   }
 }
 
@@ -139,12 +136,7 @@
   for n in range(-y-range, y-range + 1) {
     if n != 0 {
       circle((0, n), radius: small-dot-radius, fill: black, name: "freq-" + str(n))
-      content(
-        "freq-" + str(n),
-        $i omega_#text(size: 0.7em)[#n]$,
-        anchor: "west",
-        padding: (left: 10pt),
-      )
+      content("freq-" + str(n), $i omega_#text(size: 0.7em)[#n]$, anchor: "west", padding: (left: 10pt))
     }
   }
 

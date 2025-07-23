@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.0": canvas, draw
-#import draw: line, content, rect, circle
+#import "@preview/cetz:0.4.1": canvas, draw
+#import draw: circle, content, line, rect
 
 #set page(width: auto, height: auto, margin: 5pt)
 
@@ -28,19 +28,14 @@
   )
 
   // Draw gradient overlay for 3D shading effect
-  circle(
-    pos,
-    radius: radius,
-    stroke: none,
-    fill: gradient.radial(
-      color.lighten(75%),
-      color,
-      color.darken(15%),
-      focal-center: (30%, 25%),
-      focal-radius: 5%,
-      center: (35%, 30%),
-    ),
-  )
+  circle(pos, radius: radius, stroke: none, fill: gradient.radial(
+    color.lighten(75%),
+    color,
+    color.darken(15%),
+    focal-center: (30%, 25%),
+    focal-radius: 5%,
+    center: (35%, 30%),
+  ))
 
   // Draw the element text on top
   content(
@@ -247,7 +242,7 @@
       neuron(
         (x, y),
         fill: fill,
-        text: $#prefix#(i+1)$,
+        text: $#prefix#(i + 1)$,
         name: prefix + "-" + str(i + 1),
       )
     }

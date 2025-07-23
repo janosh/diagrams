@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.0": canvas, draw
-#import draw: line, content, circle, on-layer
+#import "@preview/cetz:0.4.1": canvas, draw
+#import draw: circle, content, line, on-layer
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -64,13 +64,10 @@
     stroke: 1pt,
   )
 
-  on-layer(
-    -1,
-    {
-      line("0,0", "2,1", ..arrow-style)
-      line("0,0", "0,4", ..arrow-style)
-      line("2,1", "2,5")
-      line("0,4", "2,5")
-    },
-  )
+  on-layer(-1, {
+    line("0,0", "2,1", ..arrow-style)
+    line("0,0", "0,4", ..arrow-style)
+    line("2,1", "2,5")
+    line("0,4", "2,5")
+  })
 })

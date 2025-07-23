@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.0": canvas, draw
-#import draw: rect, line, circle, content, hobby, scale, set-origin
+#import "@preview/cetz:0.4.1": canvas, draw
+#import draw: circle, content, hobby, line, rect, scale, set-origin
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -44,13 +44,7 @@
   )
 
   // Add "Free Energy" label
-  content(
-    "y-axis.mid",
-    [Free Energy],
-    angle: 90deg,
-    anchor: "south",
-    padding: (0, 0, 2pt),
-  )
+  content("y-axis.mid", [Free Energy], angle: 90deg, anchor: "south", padding: (0, 0, 2pt))
 
   // Bottom plot: Polarization vs. displacement
   let bottom-origin = (-5, 0)
@@ -100,12 +94,7 @@
     anchor: "south",
     padding: 4pt,
   )
-  content(
-    "x-axis.mid",
-    [Ti Displacement],
-    anchor: "north",
-    padding: (10pt, 0, 0),
-  )
+  content("x-axis.mid", [Ti Displacement], anchor: "north", padding: (10pt, 0, 0))
 
   // Helper function to draw BaTiO3 unit cell
   let atom(pos, radius: 0.20, fill: luma(50), ..args) = {
@@ -116,19 +105,14 @@
       fill: fill,
       ..args,
     )
-    circle(
-      (),
-      radius: radius,
-      stroke: none,
-      fill: gradient.radial(
-        fill.lighten(75%),
-        fill,
-        fill.darken(15%),
-        focal-center: (30%, 25%),
-        focal-radius: 5%,
-        center: (35%, 30%),
-      ),
-    )
+    circle((), radius: radius, stroke: none, fill: gradient.radial(
+      fill.lighten(75%),
+      fill,
+      fill.darken(15%),
+      focal-center: (30%, 25%),
+      focal-radius: 5%,
+      center: (35%, 30%),
+    ))
   }
   let draw-unit-cell(center-x, center-y, ti-y, cell-name) = {
     let (x, y) = (center-x, center-y)

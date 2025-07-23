@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.0": canvas, draw
-#import draw: line, rect, content, bezier, group, anchor
+#import "@preview/cetz:0.4.1": canvas, draw
+#import draw: anchor, bezier, content, group, line, rect
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -23,12 +23,11 @@
   let sign = if is-anode { $+$ } else { $-$ }
 
   // Draw plate with gradient fill
-  rect(
-    (x, 0),
-    (x + plate-width, height),
-    stroke: (paint: color, thickness: .7pt),
-    fill: gradient.linear(fill-base.lighten(50%), fill-base, angle: 90deg),
-  )
+  rect((x, 0), (x + plate-width, height), stroke: (paint: color, thickness: .7pt), fill: gradient.linear(
+    fill-base.lighten(50%),
+    fill-base,
+    angle: 90deg,
+  ))
   // Draw charge label
   content(
     (x + plate-width / 2, height + 0.1),
@@ -44,16 +43,8 @@
 
 // Helper function to draw a dipole
 #let dipole(x, y, ..style) = group({
-  let plus-grad = gradient.linear(
-    angle: 90deg,
-    minus-color.lighten(30%),
-    minus-color.darken(30%),
-  )
-  let minus-grad = gradient.linear(
-    angle: 90deg,
-    plus-color.lighten(30%),
-    plus-color.darken(30%),
-  )
+  let plus-grad = gradient.linear(angle: 90deg, minus-color.lighten(30%), minus-color.darken(30%))
+  let minus-grad = gradient.linear(angle: 90deg, plus-color.lighten(30%), plus-color.darken(30%))
   rect(x, ((x, "|-", y), 50%, y), fill: plus-grad, radius: (west: .5), name: "minus", ..style)
   rect(y, ((x, "-|", y), 50%, x), fill: minus-grad, radius: (east: .5), name: "plus", ..style)
   content("plus", [+])

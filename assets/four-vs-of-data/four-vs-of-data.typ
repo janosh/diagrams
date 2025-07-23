@@ -1,6 +1,6 @@
-#import "@preview/cetz:0.4.0": canvas, draw
+#import "@preview/cetz:0.4.1": canvas, draw
 #import "@preview/cetz-plot:0.1.2": chart
-#import draw: line, content, arc
+#import draw: arc, content, line
 
 #set page(width: auto, height: auto, margin: 8pt)
 

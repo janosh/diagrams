@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.0": canvas, draw
-#import draw: line, content, rect, circle, bezier
+#import "@preview/cetz:0.4.1": canvas, draw
+#import draw: bezier, circle, content, line, rect
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -248,12 +248,7 @@
   // Add dots to indicate continuation at the end of step 4
   for y_pos in (base_y, base_y + vert_spacing, base_y + 2 * vert_spacing, base_y + 3 * vert_spacing) {
     for x_pos in range(3) {
-      circle(
-        (step4_x + 0.65 * step_width + x_pos * 0.25, y_pos),
-        radius: 0.1,
-        stroke: 0.2pt,
-        fill: rgb("#CBD5E0"),
-      )
+      circle((step4_x + 0.65 * step_width + x_pos * 0.25, y_pos), radius: 0.1, stroke: 0.2pt, fill: rgb("#CBD5E0"))
     }
   }
 

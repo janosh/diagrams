@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.0": canvas, draw
-#import draw: line, rect, content, set-style
+#import "@preview/cetz:0.4.1": canvas, draw
+#import draw: content, line, rect, set-style
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -50,14 +50,7 @@
   rect((7, 1), (10, 2), fill: rgb("#90ee90"), name: "drain-n")
   content("drain-n", align(center)[$n$-type\ semiconductor])
 
-  content(
-    "dielectric-box",
-    [dielectric],
-    frame: "rect",
-    padding: 2pt,
-    fill: white,
-    stroke: (thickness: .5pt),
-  )
+  content("dielectric-box", [dielectric], frame: "rect", padding: 2pt, fill: white, stroke: (thickness: .5pt))
 
   // Metal contacts
   rect((4, 3), (7, 3.5), fill: rgb("#e6e6ff"), name: "gate-metal")

@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.4.0": canvas, draw
+#import "@preview/cetz:0.4.1": canvas, draw
 #import "@preview/cetz-plot:0.1.2": plot
 
 #set page(width: auto, height: auto, margin: 8pt)
@@ -39,12 +39,10 @@
 
 #canvas({
   let mark = (end: "stealth", fill: black, scale: 0.7)
-  draw.set-style(
-    axes: (
-      y: (label: (anchor: "south-east", offset: 1.2, angle: 90deg), mark: mark),
-      x: (label: (anchor: "south-east", offset: 1.2), mark: mark),
-    ),
-  )
+  draw.set-style(axes: (
+    y: (label: (anchor: "south-east", offset: 1.2, angle: 90deg), mark: mark),
+    x: (label: (anchor: "south-east", offset: 1.2), mark: mark),
+  ))
 
   plot.plot(
     size: (8, 8),

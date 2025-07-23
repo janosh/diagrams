@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.0": canvas, draw, decorations
-#import draw: line, content, circle
+#import "@preview/cetz:0.4.1": canvas, decorations, draw
+#import draw: circle, content, line
 
 #set page(width: auto, height: auto, margin: 5pt)
 
@@ -21,12 +21,7 @@
     name: "x-axis",
     mark: arrow-style,
   )
-  content(
-    "x-axis.end",
-    $"Re"(omega)$,
-    anchor: "north-east",
-    padding: (top: 5pt),
-  )
+  content("x-axis.end", $"Re"(omega)$, anchor: "north-east", padding: (top: 5pt))
 
   // Imaginary axis
   line(
@@ -35,12 +30,7 @@
     mark: arrow-style,
     name: "y-axis",
   )
-  content(
-    "y-axis.end",
-    $"Im"(omega)$,
-    anchor: "north-west",
-    padding: (left: 5pt),
-  )
+  content("y-axis.end", $"Im"(omega)$, anchor: "north-west", padding: (left: 5pt))
 
   // Matsubara frequencies
   for n in range(-im-range, im-range + 1) {
@@ -51,10 +41,7 @@
       name: "omega" + str(n),
     )
   }
-  content(
-    (-1.1, 2),
-    align(right)[Matsubara\ frequencies],
-  )
+  content((-1.1, 2), align(right)[Matsubara\ frequencies])
 
   // Propagators
   // Advanced propagator (red)

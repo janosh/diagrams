@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.0": canvas, draw
-#import draw: line, content, circle, hobby
+#import "@preview/cetz:0.4.1": canvas, draw
+#import draw: circle, content, hobby, line
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -33,38 +33,19 @@
   line((0, 0), (unit, 0), ..arrow-style)
 
   // Draw dotted line segment
-  hobby(
-    (0.75 * unit, -0.3 * unit),
-    (0.82 * unit, -0.2 * unit),
-    (0.83 * unit, -0.1 * unit),
-    stroke: (dash: "loosely-dotted", thickness: 1.5pt),
-  )
+  hobby((0.75 * unit, -0.3 * unit), (0.82 * unit, -0.2 * unit), (0.83 * unit, -0.1 * unit), stroke: (
+    dash: "loosely-dotted",
+    thickness: 1.5pt,
+  ))
 
   // Draw flow trajectories using hobby curves
-  hobby(
-    ma1,
-    r1,
-    (0, -.8),
-    qea,
-    stroke: (dash: "dashed"),
-  )
+  hobby(ma1, r1, (0, -.8), qea, stroke: (dash: "dashed"))
   content(r1, $R_1$, anchor: "north-west")
 
-  hobby(
-    ma2,
-    r2,
-    (0, -1.7),
-    qea,
-    stroke: (dash: "dashed"),
-  )
+  hobby(ma2, r2, (0, -1.7), qea, stroke: (dash: "dashed"))
   content(r2, $R_2$, anchor: "north-west")
 
-  hobby(
-    ma3,
-    r3,
-    qea,
-    stroke: (dash: "dashed"),
-  )
+  hobby(ma3, r3, qea, stroke: (dash: "dashed"))
   content(r3, $R_3$, anchor: "north-west")
 
   // Draw points and labels

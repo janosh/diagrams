@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.0": canvas, draw
-#import draw: line, content
+#import "@preview/cetz:0.4.1": canvas, draw
+#import draw: content, line
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -14,13 +14,7 @@
   let draw-dotted-triangle(r) = {
     let x = 0.866 * r // sqrt(3)/2 * r
     let y = -0.5 * r
-    line(
-      (0, r),
-      (-x, y),
-      (x, y),
-      (0, r),
-      stroke: (dash: "dotted", paint: gray),
-    )
+    line((0, r), (-x, y), (x, y), (0, r), stroke: (dash: "dotted", paint: gray))
   }
 
   // Draw gray axes
@@ -42,34 +36,13 @@
   // Classical Force Fields (red)
   let cff-acc = (0, 2)
   let cff-color = rgb("#ff0000")
-  line(
-    cff-acc,
-    speed,
-    (0.87, -0.5),
-    cff-acc,
-    stroke: cff-color + .5pt,
-    fill: cff-color.transparentize(90%),
-  )
+  line(cff-acc, speed, (0.87, -0.5), cff-acc, stroke: cff-color + .5pt, fill: cff-color.transparentize(90%))
   // ML Force Fields (blue)
   let mlff-blue = rgb("#5a5adc")
-  line(
-    (0, 3),
-    (-2.598, -1.5),
-    (2.598, -1.5),
-    (0, 3),
-    stroke: mlff-blue + .5pt,
-    fill: mlff-blue.transparentize(85%),
-  )
+  line((0, 3), (-2.598, -1.5), (2.598, -1.5), (0, 3), stroke: mlff-blue + .5pt, fill: mlff-blue.transparentize(85%))
   // DFT (green)
   let dft-green = rgb("#4c9900")
-  line(
-    acc,
-    (-0.866, -0.5),
-    transfer,
-    acc,
-    stroke: dft-green + .5pt,
-    fill: dft-green.transparentize(80%),
-  )
+  line(acc, (-0.866, -0.5), transfer, acc, stroke: dft-green + .5pt, fill: dft-green.transparentize(80%))
 
   // // Add rotated labels
   content(
@@ -77,9 +50,6 @@
     text(fill: cff-color)[Classical Force Fields],
     angle: 48.5deg,
   )
-  content(
-    (0, -1.75),
-    text(fill: mlff-blue)[Foundational ML Force Fields],
-  )
+  content((0, -1.75), text(fill: mlff-blue)[Foundational ML Force Fields])
   content((1.9, 1.2), text(fill: dft-green)[DFT], angle: -60deg)
 })

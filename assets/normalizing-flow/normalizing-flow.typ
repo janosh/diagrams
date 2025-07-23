@@ -1,6 +1,6 @@
-#import "@preview/cetz:0.4.0": canvas, draw
+#import "@preview/cetz:0.4.1": canvas, draw
 #import "@preview/cetz-plot:0.1.2": plot
-#import draw: line, content, circle, group, translate
+#import draw: circle, content, group, line, translate
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -35,15 +35,9 @@
 
   group({
     translate((x - 0.8, y))
-    plot.plot(
-      size: plot-size,
-      axis-style: none,
-      y-min: 0,
-      y-max: 1.5,
-      {
-        plot.add(style: (stroke: blue.darken(20%) + 1.2pt), domain: (-0.8, 0.8), samples: 100, dist-fn)
-      },
-    )
+    plot.plot(size: plot-size, axis-style: none, y-min: 0, y-max: 1.5, {
+      plot.add(style: (stroke: blue.darken(20%) + 1.2pt), domain: (-0.8, 0.8), samples: 100, dist-fn)
+    })
   })
 }
 

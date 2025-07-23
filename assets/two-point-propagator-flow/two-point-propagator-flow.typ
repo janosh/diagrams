@@ -1,6 +1,6 @@
-#import "@preview/cetz:0.4.0": canvas, draw
+#import "@preview/cetz:0.4.1": canvas, draw
 #import "@preview/modpattern:0.1.0": modpattern
-#import draw: line, content, circle, mark
+#import draw: circle, content, line, mark
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -155,12 +155,7 @@
     stroke: .5pt,
     name: "q1-arrow",
   )
-  content(
-    "q1-arrow.mid",
-    $q_1$,
-    anchor: "south",
-    padding: (0, 0, 2pt),
-  )
+  content("q1-arrow.mid", $q_1$, anchor: "south", padding: (0, 0, 2pt))
 
   line(
     (rel: (1.4, 0.15), to: "main-loop"),
@@ -169,12 +164,7 @@
     stroke: .5pt,
     name: "q2-arrow",
   )
-  content(
-    "q2-arrow.mid",
-    $q_2$,
-    anchor: "south",
-    padding: (0, 0, 2pt),
-  )
+  content("q2-arrow.mid", $q_2$, anchor: "south", padding: (0, 0, 2pt))
 
   // Vertex labels with connecting lines relative to vertices
   let label-style = (stroke: gray + 0.3pt)
@@ -231,11 +221,7 @@
   }
 
   // Add regulator cross at bottom
-  cross(
-    (rel: (0, -radius), to: "main-loop"),
-    label: $partial_k R_(k,i j)(p_1,p_2)$,
-    rel-label: (0, -0.5),
-  )
+  cross((rel: (0, -radius), to: "main-loop"), label: $partial_k R_(k,i j)(p_1,p_2)$, rel-label: (0, -0.5))
 
   // Add dressed vertices
   dressed-vertex(
@@ -250,11 +236,7 @@
     rel-label: (-1.2, -0.3),
   )
 
-  dressed-vertex(
-    (rel: (0, radius), to: "main-loop"),
-    label: $G_(k,n k)(p_6,p_3)$,
-    rel-label: (0, 0.3),
-  )
+  dressed-vertex((rel: (0, radius), to: "main-loop"), label: $G_(k,n k)(p_6,p_3)$, rel-label: (0, 0.3))
 
   // External lines and labels
   line(
@@ -299,12 +281,7 @@
     stroke: .5pt,
     name: "q1-arrow",
   )
-  content(
-    "q1-arrow.mid",
-    $q_1$,
-    anchor: "south",
-    padding: (0, 0, 2pt),
-  )
+  content("q1-arrow.mid", $q_1$, anchor: "south", padding: (0, 0, 2pt))
 
   line(
     (rel: (1.6, 0.15), to: "main-loop"),
@@ -313,12 +290,7 @@
     stroke: .5pt,
     name: "q2-arrow",
   )
-  content(
-    "q2-arrow.mid",
-    $q_2$,
-    anchor: "south",
-    padding: (0, 0, 2pt),
-  )
+  content("q2-arrow.mid", $q_2$, anchor: "south", padding: (0, 0, 2pt))
 
   // Vertex labels - Adjust positions to match reference
   let label-style = (stroke: gray + 0.3pt)
@@ -373,24 +345,12 @@
   }
 
   // Add regulator cross at top
-  cross(
-    (rel: (0, radius), to: "main-loop"),
-    label: $partial_k R_(k,i j)(p_1,p_2)$,
-    rel-label: (0, 0.4),
-  )
+  cross((rel: (0, radius), to: "main-loop"), label: $partial_k R_(k,i j)(p_1,p_2)$, rel-label: (0, 0.4))
 
   // Add dressed vertices
-  dressed-vertex(
-    (rel: (-radius, 0), to: "main-loop"),
-    label: $G_(k,j k)(p_2,p_3)$,
-    rel-label: (-1.2, 0),
-  )
+  dressed-vertex((rel: (-radius, 0), to: "main-loop"), label: $G_(k,j k)(p_2,p_3)$, rel-label: (-1.2, 0))
 
-  dressed-vertex(
-    (rel: (radius, 0), to: "main-loop"),
-    label: $G_(k,l i)(p_4,p_1)$,
-    rel-label: (1.2, 0),
-  )
+  dressed-vertex((rel: (radius, 0), to: "main-loop"), label: $G_(k,l i)(p_4,p_1)$, rel-label: (1.2, 0))
 
   // External lines
   line(
@@ -427,12 +387,7 @@
     stroke: .5pt,
     name: "q1-arrow",
   )
-  content(
-    "q1-arrow.mid",
-    $q_1$,
-    anchor: "south",
-    padding: (0, 0, 2pt),
-  )
+  content("q1-arrow.mid", $q_1$, anchor: "south", padding: (0, 0, 2pt))
 
   line(
     (rel: (1.3, -radius + 0.15), to: "main-loop"),
@@ -441,10 +396,5 @@
     stroke: .5pt,
     name: "q2-arrow",
   )
-  content(
-    "q2-arrow.mid",
-    $q_2$,
-    anchor: "south",
-    padding: (0, 0, 2pt),
-  )
+  content("q2-arrow.mid", $q_2$, anchor: "south", padding: (0, 0, 2pt))
 })

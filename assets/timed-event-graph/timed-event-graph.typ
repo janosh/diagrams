@@ -1,71 +1,65 @@
-#import "@preview/cetz:0.4.0"
+#import "@preview/cetz:0.4.1"
 
 #set page(width: auto, height: auto, margin: 8pt)
 
 #let transition(coords, name: none, content: none, color: black) = {
-  cetz.draw.group(
-    name: name,
-    {
-      let top_pos = (rel: (0, 0.5), to: coords)
-      let bottom_pos = (rel: (0, -0.5), to: coords)
+  cetz.draw.group(name: name, {
+    let top_pos = (rel: (0, 0.5), to: coords)
+    let bottom_pos = (rel: (0, -0.5), to: coords)
 
-      cetz.draw.line(top_pos, bottom_pos, stroke: (thickness: 4pt, paint: color))
+    cetz.draw.line(top_pos, bottom_pos, stroke: (thickness: 4pt, paint: color))
 
-      cetz.draw.anchor("default", coords)
-      cetz.draw.anchor("center", coords)
-      cetz.draw.anchor("left", coords)
-      cetz.draw.anchor("right", coords)
-      cetz.draw.anchor("top", top_pos)
-      cetz.draw.anchor("bottom", bottom_pos)
+    cetz.draw.anchor("default", coords)
+    cetz.draw.anchor("center", coords)
+    cetz.draw.anchor("left", coords)
+    cetz.draw.anchor("right", coords)
+    cetz.draw.anchor("top", top_pos)
+    cetz.draw.anchor("bottom", bottom_pos)
 
-      if content != none {
-        cetz.draw.content((rel: (-0, -1.0), to: coords))[
-          #set text(size: 15pt)
-          #content
-        ]
-      }
-    },
-  )
+    if content != none {
+      cetz.draw.content((rel: (-0, -1.0), to: coords))[
+        #set text(size: 15pt)
+        #content
+      ]
+    }
+  })
 }
 
 #let place(coords, name: none, content: none, token: false) = {
-  cetz.draw.group(
-    name: name,
-    {
-      let radius = 0.4
+  cetz.draw.group(name: name, {
+    let radius = 0.4
 
-      cetz.draw.arc(coords, start: 0deg, stop: 360deg, radius: radius)
+    cetz.draw.arc(coords, start: 0deg, stop: 360deg, radius: radius)
 
-      cetz.draw.anchor("default", coords)
-      cetz.draw.anchor("center", coords)
-      cetz.draw.anchor("north", (rel: (0, radius), to: coords))
-      cetz.draw.anchor("south", (rel: (0, -radius), to: coords))
-      cetz.draw.anchor("east", (rel: (radius, 0), to: coords))
-      cetz.draw.anchor("west", (rel: (-radius, 0), to: coords))
-      cetz.draw.anchor("left", (rel: (-2 * radius, 0), to: coords))
-      cetz.draw.anchor("right", (rel: (0, 0), to: coords))
-      let diag = radius * calc.cos(45deg)
-      cetz.draw.anchor("north-east", (rel: (diag, diag), to: coords))
-      cetz.draw.anchor("north-west", (rel: (-diag, diag), to: coords))
-      cetz.draw.anchor("south-east", (rel: (diag, -diag), to: coords))
-      cetz.draw.anchor("south-west", (rel: (-diag, -diag), to: coords))
+    cetz.draw.anchor("default", coords)
+    cetz.draw.anchor("center", coords)
+    cetz.draw.anchor("north", (rel: (0, radius), to: coords))
+    cetz.draw.anchor("south", (rel: (0, -radius), to: coords))
+    cetz.draw.anchor("east", (rel: (radius, 0), to: coords))
+    cetz.draw.anchor("west", (rel: (-radius, 0), to: coords))
+    cetz.draw.anchor("left", (rel: (-2 * radius, 0), to: coords))
+    cetz.draw.anchor("right", (rel: (0, 0), to: coords))
+    let diag = radius * calc.cos(45deg)
+    cetz.draw.anchor("north-east", (rel: (diag, diag), to: coords))
+    cetz.draw.anchor("north-west", (rel: (-diag, diag), to: coords))
+    cetz.draw.anchor("south-east", (rel: (diag, -diag), to: coords))
+    cetz.draw.anchor("south-west", (rel: (-diag, -diag), to: coords))
 
-      if content != none {
-        cetz.draw.arc((rel: (-.1, 0), to: coords), start: 0deg, stop: 360deg, radius: 0.4 - 0.1)
-      }
+    if content != none {
+      cetz.draw.arc((rel: (-.1, 0), to: coords), start: 0deg, stop: 360deg, radius: 0.4 - 0.1)
+    }
 
-      if token {
-        cetz.draw.arc((rel: (-.35, 0), to: coords), start: 0deg, stop: 360deg, radius: 0.4 - 0.35, fill: black)
-      }
+    if token {
+      cetz.draw.arc((rel: (-.35, 0), to: coords), start: 0deg, stop: 360deg, radius: 0.4 - 0.35, fill: black)
+    }
 
-      if content != none {
-        cetz.draw.content((rel: (-0.35, -0.7), to: coords))[
-          #set text(size: 15pt)
-          #content
-        ]
-      }
-    },
-  )
+    if content != none {
+      cetz.draw.content((rel: (-0.35, -0.7), to: coords))[
+        #set text(size: 15pt)
+        #content
+      ]
+    }
+  })
 }
 #let calc_bend_pt(a, b, e) = {
   let mid_pt = (0, 0)

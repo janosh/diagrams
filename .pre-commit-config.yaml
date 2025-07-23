@@ -24,7 +24,7 @@ repos:
         entry: deno fmt
         types_or: [file]
         language: system
-        args: [--config, site/deno.jsonc]
+        args: [--config, site/deno.jsonc, --permit-no-files]
         exclude: ^readme.md$
       - id: deno-lint
         name: Deno lint

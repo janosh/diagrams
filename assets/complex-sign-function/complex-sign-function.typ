@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.0": canvas, draw, vector, matrix
-#import draw: set-transform, scale, content, line, rect, group
+#import "@preview/cetz:0.4.1": canvas, draw, matrix, vector
+#import draw: content, group, line, rect, scale, set-transform
 
 #set page(width: auto, height: auto, margin: 8pt)
 #set text(size: 8pt)
@@ -26,43 +26,16 @@
 
   // Draw the blue quadrants (s = -1)
   group({
-    draw.on-layer(
-      -1,
-      {
-        draw.line(
-          (-1, 0, -1),
-          (0, 0, -1),
-          (0, 1, -1),
-          (-1, 1, -1),
-          fill: rgb(173, 216, 230),
-        )
-        draw.line(
-          (0, -1, -1),
-          (1, -1, -1),
-          (1, 0, -1),
-          (0, 0, -1),
-          fill: rgb(173, 216, 230),
-        )
-      },
-    )
+    draw.on-layer(-1, {
+      draw.line((-1, 0, -1), (0, 0, -1), (0, 1, -1), (-1, 1, -1), fill: rgb(173, 216, 230))
+      draw.line((0, -1, -1), (1, -1, -1), (1, 0, -1), (0, 0, -1), fill: rgb(173, 216, 230))
+    })
   })
 
   // Draw the orange quadrants (s = 1)
   group({
-    draw.line(
-      (0, 0, 1),
-      (1, 0, 1),
-      (1, 1, 1),
-      (0, 1, 1),
-      fill: rgb(255, 165, 0),
-    )
-    draw.line(
-      (-1, -1, 1),
-      (0, -1, 1),
-      (0, 0, 1),
-      (-1, 0, 1),
-      fill: rgb(255, 165, 0),
-    )
+    draw.line((0, 0, 1), (1, 0, 1), (1, 1, 1), (0, 1, 1), fill: rgb(255, 165, 0))
+    draw.line((-1, -1, 1), (0, -1, 1), (0, 0, 1), (-1, 0, 1), fill: rgb(255, 165, 0))
   })
 
   // Draw grid lines

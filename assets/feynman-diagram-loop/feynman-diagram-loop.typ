@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.0": canvas, draw, decorations
-#import draw: line, content, circle, intersections, hide, mark
+#import "@preview/cetz:0.4.1": canvas, decorations, draw
+#import draw: circle, content, hide, intersections, line, mark
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -21,16 +21,10 @@
   )
 
   // Find left and right position on the loop
-  intersections(
-    "loop-points",
-    "loop",
-    hide(
-      line(
-        (rel: (-2 * rad, 0), to: "loop.centroid"),
-        (rel: (+2 * rad, 0), to: "loop.centroid"),
-      ),
-    ),
-  )
+  intersections("loop-points", "loop", hide(line(
+    (rel: (-2 * rad, 0), to: "loop.centroid"),
+    (rel: (+2 * rad, 0), to: "loop.centroid"),
+  )))
 
   // Add vertices
   circle("loop-points.0", radius: 0.075, fill: black, name: "dot")
@@ -47,12 +41,7 @@
   // Draw input line
   line((rel: (-1, 0), to: "dot"), "dot", name: "input", ..arrow-style)
 
-  content(
-    "input.start",
-    $ partial_t (diff V) / (diff chi) = $,
-    anchor: "east",
-    padding: (0, 5pt, 0),
-  )
+  content("input.start", $ partial_t (diff V) / (diff chi) = $, anchor: "east", padding: (0, 5pt, 0))
 
   // Add momentum arrows
   let top-mark = (0, rad - 0.05)

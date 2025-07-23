@@ -1,13 +1,10 @@
-#import "@preview/cetz:0.4.0": canvas, draw
+#import "@preview/cetz:0.4.1": canvas, draw
 #import "@preview/modpattern:0.1.0": modpattern
-#import draw: line, content, rect, on-layer
+#import draw: content, line, on-layer, rect
 
 #set page(width: auto, height: auto, margin: 8pt)
 
-#let hatched = modpattern(
-  (.2cm, .2cm),
-  std.line(start: (0%, 100%), end: (100%, 0%), stroke: 0.5pt),
-)
+#let hatched = modpattern((.2cm, .2cm), std.line(start: (0%, 100%), end: (100%, 0%), stroke: 0.5pt))
 
 #let lennard-jones(x, A, B, alpha) = {
   -A * calc.exp(-alpha * x) + B * calc.exp(-2 * alpha * x)

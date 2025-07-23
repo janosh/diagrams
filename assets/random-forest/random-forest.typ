@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.0": canvas, draw
-#import draw: line, content, circle, rect, group, set-style, on-layer
+#import "@preview/cetz:0.4.1": canvas, draw
+#import draw: circle, content, group, line, on-layer, rect, set-style
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -30,16 +30,14 @@
 
 #canvas({
   // Set global content frame style
-  set-style(
-    content: (
-      frame: "rect",
-      stroke: 0.1pt,
-      fill: white,
-      inset: 3pt,
-      radius: 3pt,
-      padding: (3pt, 5pt, 2pt),
-    ),
-  )
+  set-style(content: (
+    frame: "rect",
+    stroke: 0.1pt,
+    fill: white,
+    inset: 3pt,
+    radius: 3pt,
+    padding: (3pt, 5pt, 2pt),
+  ))
 
   // Helper function for tree nodes
   let tree-node(position, fill: blue.lighten(40%), name: none) = {
@@ -53,199 +51,175 @@
     let node-spacing = 1.0 // Base horizontal spacing between nodes
     let arrow-offset = 0.15 // Offset for red arrows
 
-    group(
-      name: tree-name,
-      {
-        // Root node (level 0)
-        tree-node(
-          (x-position, y-position),
-          name: "root",
-          fill: if "root" in path-nodes { red.lighten(30%) } else { blue.lighten(40%) },
-        )
+    group(name: tree-name, {
+      // Root node (level 0)
+      tree-node((x-position, y-position), name: "root", fill: if "root" in path-nodes { red.lighten(30%) } else {
+        blue.lighten(40%)
+      })
 
-        // Level 1 nodes (2 nodes, evenly spaced)
-        tree-node(
-          (x-position - node-spacing, y-position - level-spacing),
-          name: "left",
-          fill: if "left" in path-nodes { red.lighten(30%) } else { blue.lighten(40%) },
-        )
-        tree-node(
-          (x-position + node-spacing, y-position - level-spacing),
-          name: "right",
-          fill: if "right" in path-nodes { red.lighten(30%) } else { blue.lighten(40%) },
-        )
+      // Level 1 nodes (2 nodes, evenly spaced)
+      tree-node((x-position - node-spacing, y-position - level-spacing), name: "left", fill: if "left" in path-nodes {
+        red.lighten(30%)
+      } else { blue.lighten(40%) })
+      tree-node((x-position + node-spacing, y-position - level-spacing), name: "right", fill: if "right" in path-nodes {
+        red.lighten(30%)
+      } else { blue.lighten(40%) })
 
-        // Connect nodes with black lines
-        line("root", "left", ..line-style)
-        line("root", "right", ..line-style)
+      // Connect nodes with black lines
+      line("root", "left", ..line-style)
+      line("root", "right", ..line-style)
 
-        // Add red arrows for paths
-        if "root" in path-nodes and "left" in path-nodes {
-          line(
-            (x-position - arrow-offset, y-position),
-            (x-position - node-spacing - arrow-offset, y-position - level-spacing),
-            ..red-arrow-style,
-          )
+      // Add red arrows for paths
+      if "root" in path-nodes and "left" in path-nodes {
+        line(
+          (x-position - arrow-offset, y-position),
+          (x-position - node-spacing - arrow-offset, y-position - level-spacing),
+          ..red-arrow-style,
+        )
+      }
+      if "root" in path-nodes and "right" in path-nodes {
+        line(
+          (x-position + arrow-offset, y-position),
+          (x-position + node-spacing + arrow-offset, y-position - level-spacing),
+          ..red-arrow-style,
+        )
+      }
+
+      // Level 2 nodes - different structure for each tree
+      if tree-name == "tree1" {
+        // Tree 1: left node splits into 3, right into 1
+        let left-spacing = node-spacing * 0.67 // Tighter spacing for 3 nodes
+        for (node-idx, offset-factor) in (-1, 0, 1).enumerate() {
+          let child-x = x-position - node-spacing + offset-factor * left-spacing
+          let child-y = y-position - 2 * level-spacing
+          let node-name = "l" + str(node-idx)
+
+          tree-node((child-x, child-y), name: node-name, fill: if node-name in path-nodes { red.lighten(30%) } else {
+            blue.lighten(40%)
+          })
+          // Black line
+          line("left", node-name, ..line-style)
+          // Red arrow if in path
+          if "left" in path-nodes and node-name in path-nodes {
+            // Determine offset direction based on node position
+            let offset-direction = if offset-factor < 0 { -arrow-offset } else { arrow-offset }
+            line(
+              (x-position - node-spacing + offset-direction, y-position - level-spacing),
+              (child-x + offset-direction, child-y),
+              ..red-arrow-style,
+            )
+          }
         }
-        if "root" in path-nodes and "right" in path-nodes {
+        // Right side
+        let right-child-x = x-position + node-spacing
+        let right-child-y = y-position - 2 * level-spacing
+        tree-node((right-child-x, right-child-y), name: "r0", fill: if "r0" in path-nodes { red.lighten(30%) } else {
+          blue.lighten(40%)
+        })
+        line("right", "r0", ..line-style)
+        if "right" in path-nodes and "r0" in path-nodes {
           line(
-            (x-position + arrow-offset, y-position),
             (x-position + node-spacing + arrow-offset, y-position - level-spacing),
+            (right-child-x + arrow-offset, right-child-y),
+            ..red-arrow-style,
+          )
+        }
+      } else if tree-name == "tree2" {
+        // Tree 2: left node splits into 2, right into 2
+        let side-spacing = node-spacing * 0.5 // Half spacing for 2 nodes each side
+        for (node-idx, offset-factor) in (-1, 1).enumerate() {
+          let child-x = x-position - node-spacing + offset-factor * side-spacing
+          let child-y = y-position - 2 * level-spacing
+          let node-name = "l" + str(node-idx)
+
+          tree-node((child-x, child-y), name: node-name, fill: if node-name in path-nodes { red.lighten(30%) } else {
+            blue.lighten(40%)
+          })
+          // Black line
+          line("left", node-name, ..line-style)
+          // Red arrow if in path
+          if "left" in path-nodes and node-name in path-nodes {
+            // Determine offset direction based on node position
+            let offset-direction = if offset-factor < 0 { -arrow-offset } else { arrow-offset }
+            line(
+              (x-position - node-spacing + offset-direction, y-position - level-spacing),
+              (child-x + offset-direction, child-y),
+              ..red-arrow-style,
+            )
+          }
+        }
+        for (node-idx, offset-factor) in (-1, 1).enumerate() {
+          let child-x = x-position + node-spacing + offset-factor * side-spacing
+          let child-y = y-position - 2 * level-spacing
+          let node-name = "r" + str(node-idx)
+
+          tree-node((child-x, child-y), name: node-name, fill: if node-name in path-nodes { red.lighten(30%) } else {
+            blue.lighten(40%)
+          })
+          // Black line
+          line("right", node-name, ..line-style)
+          // Red arrow if in path
+          if "right" in path-nodes and node-name in path-nodes {
+            // Determine offset direction based on node position
+            let offset-direction = if offset-factor < 0 { -arrow-offset } else { arrow-offset }
+            line(
+              (x-position + node-spacing + offset-direction, y-position - level-spacing),
+              (child-x + offset-direction, child-y),
+              ..red-arrow-style,
+            )
+          }
+        }
+      } else {
+        // Tree 3: left node splits into 1, right into 3
+        let left-child-x = x-position - node-spacing
+        let left-child-y = y-position - 2 * level-spacing
+        tree-node((left-child-x, left-child-y), name: "l0", fill: if "l0" in path-nodes { red.lighten(30%) } else {
+          blue.lighten(40%)
+        })
+        line("left", "l0", ..line-style)
+        if "left" in path-nodes and "l0" in path-nodes {
+          line(
+            (x-position - node-spacing - arrow-offset, y-position - level-spacing),
+            (left-child-x - arrow-offset, left-child-y),
             ..red-arrow-style,
           )
         }
 
-        // Level 2 nodes - different structure for each tree
-        if tree-name == "tree1" {
-          // Tree 1: left node splits into 3, right into 1
-          let left-spacing = node-spacing * 0.67 // Tighter spacing for 3 nodes
-          for (node-idx, offset-factor) in (-1, 0, 1).enumerate() {
-            let child-x = x-position - node-spacing + offset-factor * left-spacing
-            let child-y = y-position - 2 * level-spacing
-            let node-name = "l" + str(node-idx)
+        let right-spacing = node-spacing * 0.67 // Tighter spacing for 3 nodes
+        for (node-idx, offset-factor) in (-1, 0, 1).enumerate() {
+          let child-x = x-position + node-spacing + offset-factor * right-spacing
+          let child-y = y-position - 2 * level-spacing
+          let node-name = "r" + str(node-idx)
 
-            tree-node(
-              (child-x, child-y),
-              name: node-name,
-              fill: if node-name in path-nodes { red.lighten(30%) } else { blue.lighten(40%) },
-            )
-            // Black line
-            line("left", node-name, ..line-style)
-            // Red arrow if in path
-            if "left" in path-nodes and node-name in path-nodes {
-              // Determine offset direction based on node position
-              let offset-direction = if offset-factor < 0 { -arrow-offset } else { arrow-offset }
-              line(
-                (x-position - node-spacing + offset-direction, y-position - level-spacing),
-                (child-x + offset-direction, child-y),
-                ..red-arrow-style,
-              )
-            }
-          }
-          // Right side
-          let right-child-x = x-position + node-spacing
-          let right-child-y = y-position - 2 * level-spacing
-          tree-node(
-            (right-child-x, right-child-y),
-            name: "r0",
-            fill: if "r0" in path-nodes { red.lighten(30%) } else { blue.lighten(40%) },
-          )
-          line("right", "r0", ..line-style)
-          if "right" in path-nodes and "r0" in path-nodes {
+          tree-node((child-x, child-y), name: node-name, fill: if node-name in path-nodes { red.lighten(30%) } else {
+            blue.lighten(40%)
+          })
+          // Black line
+          line("right", node-name, ..line-style)
+          // Red arrow if in path
+          if "right" in path-nodes and node-name in path-nodes {
+            // Determine offset direction based on node position
+            let offset-direction = if offset-factor < 0 { -arrow-offset } else { arrow-offset }
             line(
-              (x-position + node-spacing + arrow-offset, y-position - level-spacing),
-              (right-child-x + arrow-offset, right-child-y),
+              (x-position + node-spacing + offset-direction, y-position - level-spacing),
+              (child-x + offset-direction, child-y),
               ..red-arrow-style,
             )
-          }
-        } else if tree-name == "tree2" {
-          // Tree 2: left node splits into 2, right into 2
-          let side-spacing = node-spacing * 0.5 // Half spacing for 2 nodes each side
-          for (node-idx, offset-factor) in (-1, 1).enumerate() {
-            let child-x = x-position - node-spacing + offset-factor * side-spacing
-            let child-y = y-position - 2 * level-spacing
-            let node-name = "l" + str(node-idx)
-
-            tree-node(
-              (child-x, child-y),
-              name: node-name,
-              fill: if node-name in path-nodes { red.lighten(30%) } else { blue.lighten(40%) },
-            )
-            // Black line
-            line("left", node-name, ..line-style)
-            // Red arrow if in path
-            if "left" in path-nodes and node-name in path-nodes {
-              // Determine offset direction based on node position
-              let offset-direction = if offset-factor < 0 { -arrow-offset } else { arrow-offset }
-              line(
-                (x-position - node-spacing + offset-direction, y-position - level-spacing),
-                (child-x + offset-direction, child-y),
-                ..red-arrow-style,
-              )
-            }
-          }
-          for (node-idx, offset-factor) in (-1, 1).enumerate() {
-            let child-x = x-position + node-spacing + offset-factor * side-spacing
-            let child-y = y-position - 2 * level-spacing
-            let node-name = "r" + str(node-idx)
-
-            tree-node(
-              (child-x, child-y),
-              name: node-name,
-              fill: if node-name in path-nodes { red.lighten(30%) } else { blue.lighten(40%) },
-            )
-            // Black line
-            line("right", node-name, ..line-style)
-            // Red arrow if in path
-            if "right" in path-nodes and node-name in path-nodes {
-              // Determine offset direction based on node position
-              let offset-direction = if offset-factor < 0 { -arrow-offset } else { arrow-offset }
-              line(
-                (x-position + node-spacing + offset-direction, y-position - level-spacing),
-                (child-x + offset-direction, child-y),
-                ..red-arrow-style,
-              )
-            }
-          }
-        } else {
-          // Tree 3: left node splits into 1, right into 3
-          let left-child-x = x-position - node-spacing
-          let left-child-y = y-position - 2 * level-spacing
-          tree-node(
-            (left-child-x, left-child-y),
-            name: "l0",
-            fill: if "l0" in path-nodes { red.lighten(30%) } else { blue.lighten(40%) },
-          )
-          line("left", "l0", ..line-style)
-          if "left" in path-nodes and "l0" in path-nodes {
-            line(
-              (x-position - node-spacing - arrow-offset, y-position - level-spacing),
-              (left-child-x - arrow-offset, left-child-y),
-              ..red-arrow-style,
-            )
-          }
-
-          let right-spacing = node-spacing * 0.67 // Tighter spacing for 3 nodes
-          for (node-idx, offset-factor) in (-1, 0, 1).enumerate() {
-            let child-x = x-position + node-spacing + offset-factor * right-spacing
-            let child-y = y-position - 2 * level-spacing
-            let node-name = "r" + str(node-idx)
-
-            tree-node(
-              (child-x, child-y),
-              name: node-name,
-              fill: if node-name in path-nodes { red.lighten(30%) } else { blue.lighten(40%) },
-            )
-            // Black line
-            line("right", node-name, ..line-style)
-            // Red arrow if in path
-            if "right" in path-nodes and node-name in path-nodes {
-              // Determine offset direction based on node position
-              let offset-direction = if offset-factor < 0 { -arrow-offset } else { arrow-offset }
-              line(
-                (x-position + node-spacing + offset-direction, y-position - level-spacing),
-                (child-x + offset-direction, child-y),
-                ..red-arrow-style,
-              )
-            }
           }
         }
+      }
 
-        // Tree box and label (made slightly wider)
-        rect(
-          (x-position - 2.6, y-position - 2.6 * level-spacing),
-          (x-position + 2.6, y-position + 0.5),
-          stroke: 0.3pt,
-          fill: none,
-          radius: 3pt,
-          name: tree-name,
-        )
-        content(
-          (x-position - 1.7, y-position + 0.1),
-          [Tree #if tree-name == "tree3" { $n$ } else { tree-name.last() }],
-        )
-      },
-    )
+      // Tree box and label (made slightly wider)
+      rect(
+        (x-position - 2.6, y-position - 2.6 * level-spacing),
+        (x-position + 2.6, y-position + 0.5),
+        stroke: 0.3pt,
+        fill: none,
+        radius: 3pt,
+        name: tree-name,
+      )
+      content((x-position - 1.7, y-position + 0.1), [Tree #if tree-name == "tree3" { $n$ } else { tree-name.last() }])
+    })
   }
 
   // Draw main nodes

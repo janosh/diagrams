@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.0": canvas, draw
-#import draw: line, content, circle
+#import "@preview/cetz:0.4.1": canvas, draw
+#import draw: circle, content, line
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -35,11 +35,7 @@
   }
 
   // Add dashed diagonal line
-  line(
-    (0, 0),
-    (range, range * xy-ratio),
-    stroke: (dash: "dashed", paint: gray, thickness: .75pt),
-  )
+  line((0, 0), (range, range * xy-ratio), stroke: (dash: "dashed", paint: gray, thickness: .75pt))
 
   // Data points with labels
   let methods = (

@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.0": canvas, draw
-#import draw: line, content, rect, circle, grid
+#import "@preview/cetz:0.4.1": canvas, draw
+#import draw: circle, content, grid, line, rect
 
 #set page(width: auto, height: auto, margin: 5pt)
 
@@ -188,15 +188,7 @@
   }
 
   // Draw target vector
-  create_table(
-    target-x,
-    top_tables_y_offset,
-    target-width,
-    full-data-height,
-    target-color,
-    rgb("#cc9900"),
-    ("Y",),
-  )
+  create_table(target-x, top_tables_y_offset, target-width, full-data-height, target-color, rgb("#cc9900"), ("Y",))
 
   // Add alternating row colors to target
   for i in range(0, 7) {
@@ -288,15 +280,9 @@
   }
 
   // Draw y_test vector
-  create_table(
-    test-x + feature-width + 0.5,
-    test-y,
-    target-width,
-    test-height,
-    test-target-color,
-    rgb("#cc9900"),
-    ("Y",),
-  )
+  create_table(test-x + feature-width + 0.5, test-y, target-width, test-height, test-target-color, rgb("#cc9900"), (
+    "Y",
+  ))
 
   // Add rows to y_test
   for i in range(0, 3) {

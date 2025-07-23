@@ -1,6 +1,6 @@
-#import "@preview/cetz:0.4.0": canvas, draw
+#import "@preview/cetz:0.4.1": canvas, draw
 #import "@preview/cetz-plot:0.1.2": plot
-#import draw: content, line, bezier
+#import draw: bezier, content, line
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -10,12 +10,10 @@
 }
 
 #canvas({
-  draw.set-style(
-    axes: (
-      y: (label: (anchor: "south-west")),
-      x: (label: (anchor: "north-east")),
-    ),
-  )
+  draw.set-style(axes: (
+    y: (label: (anchor: "south-west")),
+    x: (label: (anchor: "north-east")),
+  ))
 
   plot.plot(
     size: (8, 7),
@@ -65,15 +63,10 @@
       plot.add-vline(1.2, style: (stroke: (dash: "dashed", thickness: 0.5pt)))
 
       // Add thermal fluctuation indicators
-      plot.add-hline(
-        1.1,
-        min: 0.8,
-        max: 1.2,
-        style: (
-          stroke: (thickness: 0.5pt),
-          mark: (symbol: "stealth", stroke: 0.5pt, fill: black, scale: .1),
-        ),
-      )
+      plot.add-hline(1.1, min: 0.8, max: 1.2, style: (
+        stroke: (thickness: 0.5pt),
+        mark: (symbol: "stealth", stroke: 0.5pt, fill: black, scale: .1),
+      ))
     },
   )
 

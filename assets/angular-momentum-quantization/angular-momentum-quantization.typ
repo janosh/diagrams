@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.0": canvas, draw
-#import draw: line, content, circle, arc, on-layer
+#import "@preview/cetz:0.4.1": canvas, draw
+#import draw: arc, circle, content, line, on-layer
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -46,18 +46,15 @@
   )
 
   // Draw origin with charge+
-  on-layer(
-    1,
-    content(
-      (0, 0),
-      text(baseline: -0.2pt)[$+$],
-      size: 13pt,
-      frame: "circle",
-      fill: red_color,
-      stroke: none,
-      name: "origin",
-    ),
-  )
+  on-layer(1, content(
+    (0, 0),
+    text(baseline: -0.2pt)[$+$],
+    size: 13pt,
+    frame: "circle",
+    fill: red_color,
+    stroke: none,
+    name: "origin",
+  ))
 
 
   // Draw quantized Lz levels and vectors

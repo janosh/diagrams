@@ -1,15 +1,13 @@
-#import "@preview/cetz:0.4.0": canvas, draw
+#import "@preview/cetz:0.4.1": canvas, draw
 #import "@preview/cetz-plot:0.1.2": plot
 
 #set page(width: auto, height: auto, margin: 5pt)
 
 #canvas({
-  draw.set-style(
-    axes: (
-      y: (mark: (end: "stealth", fill: black), label: (anchor: "north-west", offset: -0.2)),
-      x: (mark: (end: "stealth", fill: black), label: (anchor: "south-east", offset: -0.2)),
-    ),
-  )
+  draw.set-style(axes: (
+    y: (mark: (end: "stealth", fill: black), label: (anchor: "north-west", offset: -0.2)),
+    x: (mark: (end: "stealth", fill: black), label: (anchor: "south-east", offset: -0.2)),
+  ))
 
   plot.plot(
     size: (8, 5),
@@ -24,20 +22,12 @@
     axis-style: "school-book",
     {
       // Main tanh curve
-      plot.add(
-        style: (stroke: blue + 1.5pt),
-        domain: (-2, 2),
-        samples: 100,
-        x => calc.tanh(x),
-      )
+      plot.add(style: (stroke: blue + 1.5pt), domain: (-2, 2), samples: 100, x => calc.tanh(x))
 
       // Dashed line y=x from -1 to 1
-      plot.add(
-        style: (stroke: (dash: "dashed", paint: blue, thickness: 0.5pt)),
-        samples: 2,
-        domain: (-1.4, 1.4),
-        x => x,
-      )
+      plot.add(style: (stroke: (dash: "dashed", paint: blue, thickness: 0.5pt)), samples: 2, domain: (-1.4, 1.4), x => {
+        x
+      })
     },
   )
 })

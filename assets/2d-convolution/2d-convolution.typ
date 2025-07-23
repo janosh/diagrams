@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.0": canvas, draw
-#import draw: line, content, rect, on-layer
+#import "@preview/cetz:0.4.1": canvas, draw
+#import draw: content, line, on-layer, rect
 
 #set page(width: auto, height: auto, margin: 5pt)
 
@@ -105,10 +105,7 @@
   )
   draw-matrix(result-origin, (5, 5), result-values, name: "R")
   // Draw highlighted cell in result matrix
-  on-layer(
-    -1,
-    rect("R-0-3.north-west", "R-0-3.south-east", fill: result-color, stroke: none),
-  )
+  on-layer(-1, rect("R-0-3.north-west", "R-0-3.south-east", fill: result-color, stroke: none))
   content(
     (result-origin.at(0) + 5 * cell-size / 2, 0),
     $bold(I * K)$,

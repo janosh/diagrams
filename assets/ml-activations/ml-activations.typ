@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.4.0": canvas, draw
+#import "@preview/cetz:0.4.1": canvas, draw
 #import "@preview/cetz-plot:0.1.2": plot
 
 #let vector(v) = $bold(#v)$
@@ -12,12 +12,10 @@
 
 #canvas({
   let arrow-style = (end: "stealth", fill: black)
-  draw.set-style(
-    axes: (
-      y: (label: (anchor: "north-west", offset: -0.2), mark: arrow-style),
-      x: (mark: arrow-style),
-    ),
-  )
+  draw.set-style(axes: (
+    y: (label: (anchor: "north-west", offset: -0.2), mark: arrow-style),
+    x: (mark: arrow-style),
+  ))
   plot.plot(
     size: (8, 5),
     y-tick-step: 1,

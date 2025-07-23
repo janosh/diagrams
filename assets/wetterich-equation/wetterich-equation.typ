@@ -1,6 +1,6 @@
-#import "@preview/cetz:0.4.0": canvas, draw
+#import "@preview/cetz:0.4.1": canvas, draw
 #import "@preview/modpattern:0.1.0": modpattern
-#import draw: line, content, circle, mark
+#import draw: circle, content, line, mark
 
 #set page(width: auto, height: auto, margin: 8pt)
 

@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.4.0": canvas, draw
+#import "@preview/cetz:0.4.1": canvas, draw
 #import draw: circle, content
 
 #set page(width: auto, height: auto, margin: 5pt)
@@ -9,19 +9,14 @@
   circle(pos, radius: radius, stroke: none, fill: color)
 
   // Draw gradient overlay for 3D shading effect
-  circle(
-    pos,
-    radius: radius,
-    stroke: none,
-    fill: gradient.radial(
-      color.lighten(75%),
-      color,
-      color.darken(15%),
-      focal-center: (30%, 25%),
-      focal-radius: 5%,
-      center: (35%, 30%),
-    ),
-  )
+  circle(pos, radius: radius, stroke: none, fill: gradient.radial(
+    color.lighten(75%),
+    color,
+    color.darken(15%),
+    focal-center: (30%, 25%),
+    focal-radius: 5%,
+    center: (35%, 30%),
+  ))
 
   // Add element label if provided
   if element != none {
@@ -63,18 +58,12 @@
     for j in range(4) {
       // First set of atoms (equivalent to the first nested loop in LaTeX)
       for k in range(4) {
-        atom(
-          (-i + x-factor * j, y-factor * j + z-spacing * k),
-          pseudo-random-color(i, j, k),
-        )
+        atom((-i + x-factor * j, y-factor * j + z-spacing * k), pseudo-random-color(i, j, k))
       }
 
       // Second set of atoms (equivalent to the second nested loop in LaTeX)
       for k in range(3) {
-        atom(
-          (-i + 0.5 + x-factor * j, y-factor * j + z-spacing * k + 0.65),
-          pseudo-random-color(i, j, k + 10),
-        )
+        atom((-i + 0.5 + x-factor * j, y-factor * j + z-spacing * k + 0.65), pseudo-random-color(i, j, k + 10))
       }
     }
   }

@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.0": canvas, draw
-#import draw: line, content, rect, circle
+#import "@preview/cetz:0.4.1": canvas, draw
+#import draw: circle, content, line, rect
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -35,10 +35,7 @@
         fill: color,
         stroke: rgb("888") + 0.4pt,
       )
-      content(
-        (circle-offset, y + height / 2),
-        align(center, symbol),
-      )
+      content((circle-offset, y + height / 2), align(center, symbol))
     }
   }
 

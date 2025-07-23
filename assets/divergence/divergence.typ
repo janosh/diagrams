@@ -1,15 +1,13 @@
-#import "@preview/cetz:0.4.0": canvas, draw
+#import "@preview/cetz:0.4.1": canvas, draw
 #import "@preview/cetz-plot:0.1.2": plot
 
 #set page(width: auto, height: auto, margin: 8pt)
 
 #canvas({
-  draw.set-style(
-    axes: (
-      y: (mark: (end: "stealth", fill: black, scale: 0.5)),
-      x: (mark: (end: "stealth", fill: black, scale: 0.5)),
-    ),
-  )
+  draw.set-style(axes: (
+    y: (mark: (end: "stealth", fill: black, scale: 0.5)),
+    x: (mark: (end: "stealth", fill: black, scale: 0.5)),
+  ))
 
   plot.plot(
     size: (8, 5),

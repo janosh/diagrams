@@ -1,6 +1,6 @@
-#import "@preview/cetz:0.4.0": draw, canvas
+#import "@preview/cetz:0.4.1": canvas, draw
 #import "@preview/cetz-venn:0.1.4": venn3
-#import draw: content, circle, scale
+#import draw: circle, content, scale
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -29,39 +29,16 @@
   content("venn.c", [Chemical\ $G = mu N$], anchor: "center")
 
   // Add labels for overlapping regions
-  content(
-    "venn.ab",
-    align(center, $U_[mu] =\ T S - P V$),
-    anchor: "center",
-    offset: (0, 0.3),
-  )
+  content("venn.ab", align(center, $U_[mu] =\ T S - P V$), anchor: "center", offset: (0, 0.3))
 
-  content(
-    "venn.abc",
-    text(.8em, align(center, $U = T S -\ P V + mu N$)),
-  )
+  content("venn.abc", text(.8em, align(center, $U = T S -\ P V + mu N$)))
 
-  content(
-    "venn.ac",
-    align(center, $F =\ -P V + mu N$),
-    anchor: "center",
-    offset: (-0.3, -0.3),
-  )
+  content("venn.ac", align(center, $F =\ -P V + mu N$), anchor: "center", offset: (-0.3, -0.3))
 
-  content(
-    "venn.bc",
-    align(center, $H =\ T S + mu N$),
-    anchor: "center",
-    offset: (0.3, -0.3),
-  )
+  content("venn.bc", align(center, $H =\ T S + mu N$), anchor: "center", offset: (0.3, -0.3))
 
   // Add outer circle label
   content((0, 1.6), $G_[mu]$)
   content((0, 1.4), text(.8em)[(Gibbs-Duhem)])
-  circle(
-    (0, 0),
-    radius: 1.75,
-    fill: rgb(70%, 70%, 90%, 20%),
-    stroke: rgb(0%, 0%, 0%),
-  )
+  circle((0, 0), radius: 1.75, fill: rgb(70%, 70%, 90%, 20%), stroke: rgb(0%, 0%, 0%))
 })

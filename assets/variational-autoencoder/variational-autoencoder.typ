@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.0": canvas, draw
-#import draw: line, circle, content, rect
+#import "@preview/cetz:0.4.1": canvas, draw
+#import draw: circle, content, line, rect
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -50,33 +50,18 @@
   // Draw mu nodes
   let mu-x = layer-sep * 3
   for ii in range(3) {
-    circle(
-      (mu-x, 1.5 + ii),
-      radius: 0.4,
-      name: "mu" + str(ii + 1),
-      fill: rgb(100%, 100%, 0%, 20%),
-    )
+    circle((mu-x, 1.5 + ii), radius: 0.4, name: "mu" + str(ii + 1), fill: rgb(100%, 100%, 0%, 20%))
   }
 
   // Draw sigma nodes
   for ii in range(3) {
-    circle(
-      (mu-x, -1.5 - ii),
-      radius: 0.4,
-      name: "sigma" + str(ii + 1),
-      fill: rgb(0%, 0%, 100%, 10%),
-    )
+    circle((mu-x, -1.5 - ii), radius: 0.4, name: "sigma" + str(ii + 1), fill: rgb(0%, 0%, 100%, 10%))
   }
 
   // Draw sample nodes
   let sample-x = mu-x + layer-sep
   for ii in range(3) {
-    circle(
-      (sample-x, ii - 1),
-      radius: 0.4,
-      name: "sample" + str(ii + 1),
-      fill: rgb(0%, 100%, 0%, 10%),
-    )
+    circle((sample-x, ii - 1), radius: 0.4, name: "sample" + str(ii + 1), fill: rgb(0%, 100%, 0%, 10%))
   }
 
   // Draw boxes around mu, sigma, sample nodes

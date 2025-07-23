@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.0": canvas, draw, vector
-#import draw: line, content, rect, circle, intersections
+#import "@preview/cetz:0.4.1": canvas, draw, vector
+#import draw: circle, content, intersections, line, rect
 
 #set page(width: auto, height: auto, margin: 3pt)
 
@@ -88,10 +88,7 @@
     stroke: red + line_thickness,
     name: "arrow-a2x",
   )
-  content(
-    (rel: (-0.5, 0), to: "arrow-a2x.60%"),
-    text(fill: red)[$Delta E_d$],
-  )
+  content((rel: (-0.5, 0), to: "arrow-a2x.60%"), text(fill: red)[$Delta E_d$])
   content(
     (rel: (.2, 0), to: "arrow-a2x.30%"),
     text(fill: red, size: 12pt)[A + AX → A₂X],
@@ -120,12 +117,7 @@
     stroke: rgb("#4d8000") + line_thickness,
     name: "arrow-a2x5",
   )
-  content(
-    "arrow-a2x5.mid",
-    text(fill: rgb("#4d8000"))[$Delta E_d$],
-    anchor: "east",
-    padding: (right: 3pt),
-  )
+  content("arrow-a2x5.mid", text(fill: rgb("#4d8000"))[$Delta E_d$], anchor: "east", padding: (right: 3pt))
   content(
     (rel: (0.1, 0), to: "arrow-a2x5.mid"),
     text(fill: rgb("#4d8000"), size: 10pt)[4/5 AX + 3/5 A₂X₇ → A₂X₅],
@@ -144,10 +136,10 @@
     stroke: (paint: orange, thickness: line_thickness, dash: "dashed"),
     name: "mu-line",
   )
-  content(
-    (rel: (2.4, 0), to: "mu-line.start"),
-    rotate(14deg)[#text(fill: orange, size: 13pt)[$μ_A$ range\ where AX is stable]],
-  )
+  content((rel: (2.4, 0), to: "mu-line.start"), rotate(14deg)[#text(
+      fill: orange,
+      size: 13pt,
+    )[$μ_A$ range\ where AX is stable]])
 
   // Draw orange double arrow
   line(
@@ -160,12 +152,7 @@
 
   // Draw legend
   circle((0.5, 1), radius: point_radius, fill: blue.darken(20%), name: "legend-stable")
-  content(
-    "legend-stable.east",
-    "stable",
-    anchor: "west",
-    padding: (left: 5pt),
-  )
+  content("legend-stable.east", "stable", anchor: "west", padding: (left: 5pt))
   rect(
     (rel: (-0.15, -0.6), to: "legend-stable"),
     (rel: (0.15, -0.3), to: "legend-stable"),
@@ -173,17 +160,9 @@
     stroke: red,
     name: "legend-unstable",
   )
-  content(
-    "legend-unstable.east",
-    "unstable",
-    anchor: "west",
-    padding: (left: 5pt),
-  )
+  content("legend-unstable.east", "unstable", anchor: "west", padding: (left: 5pt))
 
   // Add axis labels
-  content(
-    (rel: (-0.5, 0), to: "y-axis-left.mid"),
-    [#rotate(-90deg)[$Delta E_f$ (energy/atom)]],
-  )
+  content((rel: (-0.5, 0), to: "y-axis-left.mid"), [#rotate(-90deg)[$Delta E_f$ (energy/atom)]])
   content((width / 2, -0.5), $x "in" A_(1-x)X_x$)
 })

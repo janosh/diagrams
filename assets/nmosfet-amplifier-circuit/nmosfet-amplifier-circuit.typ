@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.4.0"
+#import "@preview/cetz:0.4.1"
 #set page(width: auto, height: auto, margin: 8pt)
 
 #let connect-orthogonal(start_anchor, end_anchor, style: "hv", ..styling) = {
@@ -36,18 +36,14 @@
   text_fill: black,
   ..styling,
 ) = {
-  cetz.draw.group(
-    name: name,
-    ..styling,
-    {
-      cetz.draw.set-origin(position)
-      cetz.draw.scale(scale)
-      cetz.draw.rotate(rotate)
-      draw_content_func(..styling)
-      _define_anchors(anchor_definitions)
-      _draw_label(label, label_pos, label_offset, label_anchor, label_size, text_fill: text_fill)
-    },
-  )
+  cetz.draw.group(name: name, ..styling, {
+    cetz.draw.set-origin(position)
+    cetz.draw.scale(scale)
+    cetz.draw.rotate(rotate)
+    draw_content_func(..styling)
+    _define_anchors(anchor_definitions)
+    _draw_label(label, label_pos, label_offset, label_anchor, label_size, text_fill: text_fill)
+  })
 }
 
 #let _transistor(
@@ -84,94 +80,85 @@
   }
   let final_show_gate_bubble = if show_gate_bubble == auto { is_pmos } else { show_gate_bubble }
 
-  cetz.draw.group(
-    name: name,
-    ..styling,
-    {
-      cetz.draw.set-origin(position)
-      cetz.draw.scale(scale)
-      cetz.draw.rotate(rotate)
+  cetz.draw.group(name: name, ..styling, {
+    cetz.draw.set-origin(position)
+    cetz.draw.scale(scale)
+    cetz.draw.rotate(rotate)
 
-      let center_y = height / 2
-      let gate_line_x = gate_pos_factor * width
-      let channel_line_x = channel_pos_factor * width
-      let gate_v_extent = height * gate_v_extent_factor
-      let channel_v_extent = height * channel_v_extent_factor
-      let drain_term_rel = (width, if is_pmos { 0 } else { height })
-      let source_term_rel = (width, if is_pmos { height } else { 0 })
-      let gate_term_rel = (-gate_lead_factor * width, center_y)
-      let bulk_term_rel = (width + bulk_lead_factor * width, center_y)
-      let gate_line_top = (gate_line_x, center_y + gate_v_extent)
-      let gate_line_bottom = (gate_line_x, center_y - gate_v_extent)
-      let gate_conn_pt = (gate_line_x, center_y)
-      let channel_top = (channel_line_x, center_y + channel_v_extent)
-      let channel_bottom = (channel_line_x, center_y - channel_v_extent)
-      let bulk_conn_pt = (channel_line_x, center_y)
-      let horiz_top = (width, center_y + channel_v_extent)
-      let horiz_bottom = (width, center_y - channel_v_extent)
-      let line_thickness = 0.6pt * thick_factor
+    let center_y = height / 2
+    let gate_line_x = gate_pos_factor * width
+    let channel_line_x = channel_pos_factor * width
+    let gate_v_extent = height * gate_v_extent_factor
+    let channel_v_extent = height * channel_v_extent_factor
+    let drain_term_rel = (width, if is_pmos { 0 } else { height })
+    let source_term_rel = (width, if is_pmos { height } else { 0 })
+    let gate_term_rel = (-gate_lead_factor * width, center_y)
+    let bulk_term_rel = (width + bulk_lead_factor * width, center_y)
+    let gate_line_top = (gate_line_x, center_y + gate_v_extent)
+    let gate_line_bottom = (gate_line_x, center_y - gate_v_extent)
+    let gate_conn_pt = (gate_line_x, center_y)
+    let channel_top = (channel_line_x, center_y + channel_v_extent)
+    let channel_bottom = (channel_line_x, center_y - channel_v_extent)
+    let bulk_conn_pt = (channel_line_x, center_y)
+    let horiz_top = (width, center_y + channel_v_extent)
+    let horiz_bottom = (width, center_y - channel_v_extent)
+    let line_thickness = 0.6pt * thick_factor
 
-      _define_anchors((
-        ("G", gate_term_rel),
-        ("D", drain_term_rel),
-        ("S", source_term_rel),
-        ("B", bulk_term_rel),
-        ("center", (width / 2, height / 2)),
-        ("bulk_conn", bulk_conn_pt),
-        ("gate_conn", gate_conn_pt),
-        ("north", (width / 2, height)),
-        ("south", (width / 2, 0)),
-        ("east", (width, height / 2)),
-        ("west", (0, height / 2)),
-        ("north-east", (width, height)),
-        ("south-west", (0, 0)),
-        ("south-east", (width, 0)),
-        ("default", gate_term_rel),
+    _define_anchors((
+      ("G", gate_term_rel),
+      ("D", drain_term_rel),
+      ("S", source_term_rel),
+      ("B", bulk_term_rel),
+      ("center", (width / 2, height / 2)),
+      ("bulk_conn", bulk_conn_pt),
+      ("gate_conn", gate_conn_pt),
+      ("north", (width / 2, height)),
+      ("south", (width / 2, 0)),
+      ("east", (width, height / 2)),
+      ("west", (0, height / 2)),
+      ("north-east", (width, height)),
+      ("south-west", (0, 0)),
+      ("south-east", (width, 0)),
+      ("default", gate_term_rel),
+    ))
+
+    cetz.draw.line(channel_bottom, channel_top, ..styling, thickness: line_thickness)
+    cetz.draw.line(gate_line_bottom, gate_line_top, ..styling, thickness: line_thickness)
+    cetz.draw.line(gate_term_rel, gate_conn_pt, ..styling)
+    cetz.draw.line(bulk_conn_pt, bulk_term_rel, ..styling)
+
+    if is_pmos {
+      cetz.draw.line(drain_term_rel, horiz_bottom, ..styling)
+      cetz.draw.line(horiz_bottom, channel_bottom, ..styling)
+      cetz.draw.line(source_term_rel, horiz_top, ..styling)
+      cetz.draw.line(horiz_top, channel_top, ..styling, mark: (end: "stealth", fill: arrow_fill, scale: arrow_scale))
+      if final_show_gate_bubble {
+        let bubble_radius = height * bubble_radius_factor
+        cetz.draw.circle((rel: (-bubble_radius, 0), to: "gate_conn"), radius: bubble_radius, ..styling, fill: white)
+      }
+    } else {
+      cetz.draw.line(drain_term_rel, horiz_top, ..styling)
+      cetz.draw.line(horiz_top, channel_top, ..styling)
+      cetz.draw.line(horiz_bottom, source_term_rel, ..styling)
+      cetz.draw.line(channel_bottom, horiz_bottom, ..styling, mark: (
+        end: "stealth",
+        fill: arrow_fill,
+        scale: arrow_scale,
       ))
+    }
 
-      cetz.draw.line(channel_bottom, channel_top, ..styling, thickness: line_thickness)
-      cetz.draw.line(gate_line_bottom, gate_line_top, ..styling, thickness: line_thickness)
-      cetz.draw.line(gate_term_rel, gate_conn_pt, ..styling)
-      cetz.draw.line(bulk_conn_pt, bulk_term_rel, ..styling)
-
-      if is_pmos {
-        cetz.draw.line(drain_term_rel, horiz_bottom, ..styling)
-        cetz.draw.line(horiz_bottom, channel_bottom, ..styling)
-        cetz.draw.line(source_term_rel, horiz_top, ..styling)
-        cetz.draw.line(horiz_top, channel_top, ..styling, mark: (end: "stealth", fill: arrow_fill, scale: arrow_scale))
-        if final_show_gate_bubble {
-          let bubble_radius = height * bubble_radius_factor
-          cetz.draw.circle((rel: (-bubble_radius, 0), to: "gate_conn"), radius: bubble_radius, ..styling, fill: white)
-        }
-      } else {
-        cetz.draw.line(drain_term_rel, horiz_top, ..styling)
-        cetz.draw.line(horiz_top, channel_top, ..styling)
-        cetz.draw.line(horiz_bottom, source_term_rel, ..styling)
-        cetz.draw.line(
-          channel_bottom,
-          horiz_bottom,
-          ..styling,
-          mark: (end: "stealth", fill: arrow_fill, scale: arrow_scale),
-        )
-      }
-
-      if show_pin_labels {
-        cetz.draw.content((rel: (-0.05, 0), to: "G"), text(size: pin_label_size, $G$), anchor: "east")
-        cetz.draw.content(
-          (rel: (0.05, 0), to: "S"),
-          text(size: pin_label_size, $S$),
-          anchor: if is_pmos { "west" } else { "south" },
-        )
-        cetz.draw.content(
-          (rel: (0.05, 0), to: "D"),
-          text(size: pin_label_size, $D$),
-          anchor: if is_pmos { "west" } else { "north" },
-        )
-        cetz.draw.content((rel: (0.05, 0), to: "B"), text(size: pin_label_size, $B$), anchor: "west")
-      }
-      _draw_label(label, final_label_pos, label_offset, final_label_anchor, label_size)
-    },
-  )
+    if show_pin_labels {
+      cetz.draw.content((rel: (-0.05, 0), to: "G"), text(size: pin_label_size, $G$), anchor: "east")
+      cetz.draw.content((rel: (0.05, 0), to: "S"), text(size: pin_label_size, $S$), anchor: if is_pmos { "west" } else {
+        "south"
+      })
+      cetz.draw.content((rel: (0.05, 0), to: "D"), text(size: pin_label_size, $D$), anchor: if is_pmos { "west" } else {
+        "north"
+      })
+      cetz.draw.content((rel: (0.05, 0), to: "B"), text(size: pin_label_size, $B$), anchor: "west")
+    }
+    _draw_label(label, final_label_pos, label_offset, final_label_anchor, label_size)
+  })
 }
 
 #let nmos_transistor(..args) = _transistor(is_pmos: false, ..args)
@@ -396,17 +383,12 @@
       let (arrow_start_y, arrow_end_y) = if voltage_arrow_dir == "down" { (arrow_half_len, -arrow_half_len) } else {
         (-arrow_half_len, arrow_half_len)
       }
-      cetz.draw.line(
-        (arrow_x, arrow_start_y),
-        (arrow_x, arrow_end_y),
-        ..styling,
-        mark: (
-          end: "stealth",
-          scale: arrow_scale * 0.4,
-          fill: arrow_fill,
-          stroke: (paint: black, thickness: stroke_thickness),
-        ),
-      )
+      cetz.draw.line((arrow_x, arrow_start_y), (arrow_x, arrow_end_y), ..styling, mark: (
+        end: "stealth",
+        scale: arrow_scale * 0.4,
+        fill: arrow_fill,
+        stroke: (paint: black, thickness: stroke_thickness),
+      ))
       if label != none {
         let (default_anchor, default_offset) = if annotation_label_pos == "left" { ("east", (-0.05, 0)) } else {
           ("west", (0.05, 0))
@@ -575,12 +557,11 @@
     let (arrow_start_y, arrow_end_y) = if arrow_dir == "up" { (-arrow_v_extent, arrow_v_extent) } else {
       (arrow_v_extent, -arrow_v_extent)
     }
-    cetz.draw.line(
-      (0, arrow_start_y),
-      (0, arrow_end_y),
-      ..styling,
-      mark: (end: "stealth", scale: arrow_scale * 0.4, fill: arrow_fill),
-    )
+    cetz.draw.line((0, arrow_start_y), (0, arrow_end_y), ..styling, mark: (
+      end: "stealth",
+      scale: arrow_scale * 0.4,
+      fill: arrow_fill,
+    ))
   }
   let top_lead_y = radius + lead_length
   let bottom_lead_y = -radius - lead_length
