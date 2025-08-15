@@ -1,7 +1,7 @@
 <script lang="ts">
   import { building } from '$app/environment'
   import { goto } from '$app/navigation'
-  import { Card, diagrams } from '$lib'
+  import { DiagramCard, diagrams } from '$lib'
   import { filtered_diagrams, filters } from '$lib/state.svelte'
   import { homepage, repository } from '$root/package.json'
   import Icon from '@iconify/svelte'
@@ -109,7 +109,7 @@
     placeholder="Filter by tag..."
     bind:selected={filters.tags}
   >
-    {#snippet option({ option }: { option: ObjectOption })}
+    {#snippet option({ option, idx }: { option: ObjectOption; idx: number })}
       <span style="display: flex; gap: 5pt; align-items: center">
         {option.label} <span style="flex: 1"></span> {option.count}
       </span>
@@ -134,7 +134,7 @@
   >
     {#each filtered_diagrams() as item, idx (item.slug)}
       <li class:active={active_diagram == idx}>
-        <Card {item} style="break-inside: avoid" />
+        <DiagramCard {item} style="break-inside: avoid; font-size: 14pt" />
       </li>
     {/each}
   </ul>
@@ -156,6 +156,7 @@
     margin-bottom: 1em;
     border-radius: 1ex;
     overflow: hidden;
+    border: 1px solid var(--card-border);
   }
   ul > li.active {
     border: 2px dashed;
@@ -164,9 +165,9 @@
     outline: none;
     padding: 4px 1ex;
     border-radius: 3pt;
-    color: inherit;
-    background: black;
-    border: 0.5px solid gray;
+    color: var(--text-color);
+    background: var(--input-bg);
+    border: 0.5px solid var(--border);
     font-size: 16px;
   }
   input::placeholder {
@@ -179,17 +180,10 @@
     place-items: center;
     gap: 1ex 1em;
     margin: 2em;
-
-    --sms-bg: black;
-    --sms-max-width: 20em;
-    --sms-selected-bg: rgba(255, 255, 255, 0.15);
-    --sms-options-bg: #0f0422;
-    --sms-border: 0.5px solid gray;
-    --sms-li-active-bg: rgba(255, 255, 255, 0.15);
   }
   button {
     padding: 1pt 3pt;
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: var(--nav-bg);
     font-size: inherit;
   }
 </style>

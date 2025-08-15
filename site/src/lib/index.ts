@@ -5,8 +5,8 @@ import remark_parse from 'remark-parse'
 import remark_rehype from 'remark-rehype'
 import { unified } from 'unified'
 
-export { default as Card } from './Card.svelte'
 export { default as CodeBlock } from './CodeBlock.svelte'
+export { default as DiagramCard } from './DiagramCard.svelte'
 export { default as Tags } from './Tags.svelte'
 
 export type Diagram = {

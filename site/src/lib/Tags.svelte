@@ -1,17 +1,14 @@
 <script lang="ts">
   interface Props {
     tags: string[]
-    font_size?: string
-    margin?: string
-    style?: string | null
+    [key: string]: unknown
   }
-
-  let { tags, font_size = `9pt`, margin = `auto`, style = null }: Props = $props()
+  let { tags = [], ...rest }: Props = $props()
 </script>
 
-<p class="tags" style:margin {style}>
-  {#each tags ?? [] as tag}
-    <small style:font-size={font_size} style:line-height={font_size}>{tag}</small>
+<p class="tags" {...rest}>
+  {#each tags as tag}
+    <small>{tag}</small>
   {/each}
 </p>
 
@@ -22,10 +19,18 @@
     place-content: center;
     gap: 4pt;
     padding: 0;
+    margin: 1em;
   }
   p.tags small {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: var(--nav-bg);
+    color: var(--text-secondary);
     padding: 2pt 4pt;
     border-radius: 3pt;
+    line-height: 1;
+    transition: background-color 0.2s ease;
+  }
+  p.tags small:hover {
+    background-color: var(--card-bg);
+    color: var(--text-color);
   }
 </style>

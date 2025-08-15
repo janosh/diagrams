@@ -61,12 +61,12 @@
     position: absolute;
     bottom: calc(100% - 1em);
     left: 1em;
-    background: teal;
+    background: var(--button-bg);
     padding: 2pt 8pt;
     border-radius: 3pt 3pt 0 0;
+    color: var(--dark-text);
   }
   h3 small {
-    color: #fff;
     font-weight: 200;
     padding-left: 6pt;
   }
@@ -79,7 +79,7 @@
   }
   pre {
     padding: 1em;
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--pre-bg);
     overflow-x: scroll;
     font-size: 1.2em;
     border-radius: 3pt;

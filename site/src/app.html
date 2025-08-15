@@ -24,6 +24,20 @@
       href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"
     />
 
+    <!-- Theme switching script -->
+    <script>
+      // Check for saved theme preference or default based on system preference
+      const theme = localStorage.theme ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches
+          ? 'dark'
+          : 'light')
+
+      // Apply theme immediately to prevent flash
+      document.documentElement.style.colorScheme = theme
+
+      localStorage.theme = theme // Store theme preference
+    </script>
+
     %sveltekit.head%
   </head>
 

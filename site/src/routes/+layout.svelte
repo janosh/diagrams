@@ -1,6 +1,7 @@
 <script lang="ts">
   import { goto } from '$app/navigation'
   import { diagrams } from '$lib'
+  import ThemeToggle from '$lib/ThemeToggle.svelte'
   import { repository } from '$root/package.json'
   import Icon from '@iconify/svelte'
   import type { Snippet } from 'svelte'
@@ -19,12 +20,14 @@
   )
 </script>
 
+<ThemeToggle />
+
 <CmdPalette {actions} placeholder="Go to..." />
 
 <GitHubCorner
   href={repository}
   --gh-corner-bg="var(--text-color)"
-  --gh-corner-color="var(--body-bg)"
+  --gh-corner-color="var(--bg)"
 />
 
 {@render children?.()}

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Card, CodeBlock, type Diagram, Tags } from '$lib'
+  import { CodeBlock, type Diagram, DiagramCard, Tags } from '$lib'
   import { homepage, repository } from '$root/package.json'
   import Icon from '@iconify/svelte'
   import { PrevNext } from 'svelte-multiselect'
@@ -63,7 +63,7 @@
 {/if}
 
 <section class="description">
-  <Tags {tags} font_size="11pt" />
+  <Tags {tags} />
 
   {#if description}
     {@html description}
@@ -96,7 +96,7 @@
 </h2>
 {#if code.tex}
   <h3 class="code-title">
-    <Icon icon="file-icons:latex" inline style="color: white" />&nbsp; LaTeX
+    <Icon icon="file-icons:latex" inline style="color: var(--text-color)" />&nbsp; LaTeX
   </h3>
   <CodeBlock
     code={code.tex}
@@ -130,7 +130,11 @@
           {@html kind == `next` ? `Next &rarr;` : `&larr; Previous`}
         </a>
       </h3>
-      <Card item={diagram} style="max-width: 250px" format="short" />
+      <DiagramCard
+        item={diagram}
+        style="max-width: 280px; font-size: 10pt"
+        format="short"
+      />
     </div>
   {/snippet}
 </PrevNext>
@@ -140,7 +144,7 @@
     font-size: 2em;
   }
   :where(h1, h2) {
-    border-bottom: 2px solid orange;
+    border-bottom: 2px solid var(--link-hover);
     max-width: 12em;
     margin: 2em auto 1em;
     padding-bottom: 8pt;
@@ -155,18 +159,18 @@
     text-align: left;
   }
   .diagram {
-    background: #ffffff85;
+    background-color: light-dark(transparent, rgba(255, 255, 255, 0.3));
     padding: 1em;
     box-sizing: border-box;
     max-width: min(850px, 90vw);
     height: auto;
     max-height: 90vh;
-    margin: auto;
+    margin: 2em auto;
     border-radius: 1ex;
     display: block;
   }
   a.large-link {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--nav-bg);
     padding: 4pt 1ex;
     border-radius: 4pt;
     margin: 2pt;
@@ -174,7 +178,7 @@
     font-size: 16pt;
   }
   a.large-link:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--card-bg);
   }
   a.large-link[target='_blank'] {
     display: inline-flex;
