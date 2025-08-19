@@ -27,7 +27,7 @@
 <GitHubCorner
   href={repository}
   --gh-corner-bg="var(--text-color)"
-  --gh-corner-color="var(--bg)"
+  --gh-corner-color="var(--page-bg)"
 />
 
 {@render children?.()}

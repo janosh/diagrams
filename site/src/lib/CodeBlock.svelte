@@ -1,9 +1,8 @@
 <script lang="ts">
-  import Icon from '@iconify/svelte'
   import hljs from 'highlight.js/lib/core'
   import latex from 'highlight.js/lib/languages/latex'
   import 'highlight.js/styles/vs2015.css'
-  import { CopyButton } from 'svelte-multiselect'
+  import { CopyButton, Icon } from 'svelte-multiselect'
 
   hljs.registerLanguage(`latex`, latex)
   // TODO highlight.js does not support Typst
@@ -13,12 +12,11 @@
 
   interface Props {
     code: string
-    github_link: string
+    repo_link: string
     title: string
     tex_file_uri?: string
   }
-
-  let { code, github_link, title, tex_file_uri = `` }: Props = $props()
+  let { code, repo_link, title, tex_file_uri = `` }: Props = $props()
 </script>
 
 <div>
@@ -28,21 +26,19 @@
     </h3>
   {/if}
   <aside>
-    {#if github_link}
-      {@const [link_title, href] = (github_link ?? ``).split(`||`, 2)}
-      <a {href}>
+    {#if repo_link}
+      <a href={repo_link} target="_blank" rel="noreferrer noopener">
         <button>
-          <Icon icon="octicon:mark-github" inline /> {link_title}
+          <Icon icon="GitHub" inline />
         </button>
       </a>
     {/if}
     <!-- https://github.com/typst/webapp-issues/issues/516 tracks Typst web app API for opening code files -->
     {#if tex_file_uri}
       {@const href = `https://overleaf.com/docs?snip_uri=${tex_file_uri}`}
-      <a {href} target="_blank" rel="noreferrer">
+      <a {href} target="_blank" rel="noreferrer noopener">
         <button>
-          <img src="overleaf.svg" alt="Overleaf Logo" height="16" />
-          Open in Overleaf
+          <img src="overleaf.svg" alt="Overleaf Logo" height="16" />Overleaf
         </button>
       </a>
     {/if}
@@ -53,7 +49,7 @@
 
 <style>
   div {
-    max-width: 55em;
+    max-width: 50em;
     margin: 3em auto;
     position: relative;
   }
@@ -64,7 +60,6 @@
     background: var(--button-bg);
     padding: 2pt 8pt;
     border-radius: 3pt 3pt 0 0;
-    color: var(--dark-text);
   }
   h3 small {
     font-weight: 200;
@@ -75,18 +70,20 @@
     top: 1em;
     right: 1em;
     display: flex;
-    gap: 1em;
+    gap: 1ex;
+  }
+  aside a button {
+    height: 100%;
   }
   pre {
     padding: 1em;
     background: var(--pre-bg);
     overflow-x: scroll;
-    font-size: 1.2em;
     border-radius: 3pt;
   }
   button {
     display: inline-flex;
-    gap: 6pt;
-    align-items: center;
+    gap: 3pt;
+    place-items: center;
   }
 </style>

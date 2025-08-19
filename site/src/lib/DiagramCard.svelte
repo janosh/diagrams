@@ -49,11 +49,11 @@
     line-height: 1.2;
   }
   .diagram {
-    background-color: light-dark(transparent, rgba(255, 255, 255, 0.4));
+    background-color: var(--diagram-bg);
     box-sizing: border-box;
     width: calc(100% - 2ex);
     display: block;
-    margin: auto;
+    margin: auto auto 1ex;
     padding: 1ex;
     border-radius: 4pt;
     height: auto;

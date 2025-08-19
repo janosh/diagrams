@@ -4,7 +4,7 @@
 
 # Scientific Diagram Collection
 
-Source code for gallery of Cetz (Typst) and TikZ (LaTeX) diagrams. Built with [SvelteKit](https://kit.svelte.dev).
+Source code for gallery of CeTZ (Typst) and TikZ (LaTeX) diagrams. Built with [SvelteKit](https://kit.svelte.dev).
 
 ## Running this site locally
 

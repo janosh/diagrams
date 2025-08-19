@@ -18,7 +18,7 @@
 
 [janosh.github.io/diagrams](https://janosh.github.io/diagrams) allows searching, sorting, opening in Overleaf and downloading figures (PDF/SVG/PNG) from this collection.
 
-Have a TikZ/Cetz diagram you'd like to share? [Submit a PR](https://github.com/janosh/diagrams/pulls) with a `.tex` or `.typ` and a corresponding metadata `.yml` file in the `assets/` directory and add yourself to the [`citation.cff`](citation.cff) file.
+Have a TikZ/CeTZ diagram you'd like to share? [Submit a PR](https://github.com/janosh/diagrams/pulls) with a `.tex` or `.typ` and a corresponding metadata `.yml` file in the `assets/` directory and add yourself to the [`citation.cff`](citation.cff) file.
 
 <!-- diagram-table -->
 

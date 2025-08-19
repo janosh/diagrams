@@ -101,7 +101,7 @@
   <CodeBlock
     code={code.tex}
     title="{slug}.tex"
-    github_link="GitHub||{repository}/blob/main/assets/{slug}/{slug}.tex"
+    repo_link="{repository}/blob/main/assets/{slug}/{slug}.tex"
     tex_file_uri="{base_uri}.tex"
   />
 {/if}
@@ -113,7 +113,7 @@
   <CodeBlock
     code={code.typst}
     title="{slug}.typ"
-    github_link="GitHub||{repository}/blob/main/assets/{slug}/{slug}.typ"
+    repo_link="{repository}/blob/main/assets/{slug}/{slug}.typ"
   />
 {/if}
 
@@ -171,7 +171,7 @@
   }
   a.large-link {
     background: var(--nav-bg);
-    padding: 4pt 1ex;
+    padding: 0 7pt;
     border-radius: 4pt;
     margin: 2pt;
     transition: color 0.3s, background-color 0.3s;

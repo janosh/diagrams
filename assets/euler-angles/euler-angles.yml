@@ -1,7 +1,8 @@
 title: Euler Angles
 creator: Dorian Depriester
-creator_url: https://blog.dorian-depriester.fr
-url: https://blog.dorian-depriester.fr/latex/tikz/representation-des-angles-deuler-avec-tikz
+creator_url: https://github.com/DorianDepriester
+# previous (now broken) URL: blog.dorian-depriester.fr/latex/tikz/representation-des-angles-deuler-avec-tikz
+url: https://github.com/DorianDepriester/MecaniqueGenerale/blob/59566cc65/Euler.tex
 date: 2020-10-08
 tags:
   - mathematics

@@ -2,51 +2,51 @@
   /* Light theme colors */
   --light-bg: #f8f9fa;
   --light-text: #212529;
-  --light-text-secondary: #6c757d;
+  --light-text-secondary: #565e64;
   --light-link: #0c64e9;
   --light-link-hover: #fd7e14;
   --light-code-bg: rgba(0, 123, 255, 0.1);
-  --light-pre-bg: rgba(0, 0, 0, 0.05);
-  --light-button-bg: #20c997;
+  --light-pre-bg: rgba(0, 0, 0, 0.03);
+  --light-button-bg: #03eaa5;
   --light-button-text: #333;
   --light-border: rgba(0, 0, 0, 0.125);
   --light-highlight: #17a2b8;
   --light-blockquote-bg: rgba(0, 0, 0, 0.05);
-  --light-input-bg: rgba(0, 0, 0, 0.1);
+  --light-input-bg: rgba(0, 0, 0, 0.02);
   --light-table-odd: rgba(0, 0, 0, 0.05);
-  --light-nav-bg: rgba(0, 0, 0, 0.05);
+  --light-nav-bg: rgba(0, 0, 0, 0.03);
   --light-card-bg: rgba(255, 255, 255, 0.8);
   --light-card-border: rgba(0, 0, 0, 0.1);
   --light-shadow: rgba(0, 0, 0, 0.1);
-  --light-selection: rgba(0, 123, 255, 0.2);
+  --light-diagram-bg: rgba(0, 0, 0, 0.03);
   --light-tooltip-bg: var(--light-bg);
   --light-tooltip-text: var(--light-text);
 
   /* Dark theme colors */
   --dark-bg: #090019;
   --dark-text: #eee;
-  --dark-text-secondary: #aaa;
+  --dark-text-secondary: #bfb9b9;
   --dark-link: cornflowerblue;
   --dark-link-hover: orange;
-  --dark-code-bg: rgba(0, 255, 255, 0.1);
+  --dark-code-bg: rgba(255, 255, 255, 0.1);
   --dark-pre-bg: rgba(255, 255, 255, 0.05);
   --dark-button-bg: teal;
   --dark-button-text: #eee;
   --dark-border: rgba(255, 255, 255, 0.125);
   --dark-highlight: mediumaquamarine;
   --dark-blockquote-bg: rgba(255, 255, 255, 0.1);
-  --dark-input-bg: rgba(0, 0, 0, 0.6);
+  --dark-input-bg: rgba(255, 255, 255, 0.1);
   --dark-table-odd: black;
   --dark-nav-bg: rgba(255, 255, 255, 0.1);
   --dark-card-bg: rgb(89, 89, 117);
   --dark-card-border: rgba(255, 255, 255, 0.1);
   --dark-shadow: rgba(0, 0, 0, 0.3);
-  --dark-selection: rgba(0, 255, 255, 0.2);
+  --dark-diagram-bg: rgba(255, 255, 255, 0.3);
   --dark-tooltip-bg: var(--dark-card-bg);
   --dark-tooltip-text: var(--dark-text);
 
   /* Use light-dark() function to switch between themes */
-  --bg: light-dark(var(--light-bg), var(--dark-bg));
+  --page-bg: light-dark(var(--light-bg), var(--dark-bg));
   --text-color: light-dark(var(--light-text), var(--dark-text));
   --text-secondary: light-dark(var(--light-text-secondary), var(--dark-text-secondary));
   --link-color: light-dark(var(--light-link), var(--dark-link));
@@ -64,23 +64,15 @@
   --card-bg: light-dark(var(--light-card-bg), var(--dark-card-bg));
   --card-border: light-dark(var(--light-card-border), var(--dark-card-border));
   --shadow: light-dark(var(--light-shadow), var(--dark-shadow));
-  --selection: light-dark(var(--light-selection), var(--dark-selection));
+  --diagram-bg: light-dark(var(--light-diagram-bg), var(--dark-diagram-bg));
 
   /* Tooltip variables */
   --tooltip-bg: light-dark(var(--light-tooltip-bg), var(--dark-tooltip-bg));
   --tooltip-text-color: light-dark(var(--light-tooltip-text), var(--dark-tooltip-text));
-
-  /* Multiselect variables */
-  --sms-options-bg: light-dark(var(--light-bg), var(--dark-bg));
-  --sms-text-color: light-dark(var(--light-text), var(--dark-text));
-  --sms-li-active-bg: var(--link-color);
-  --sms-border: 0.5px solid var(--border);
-
-  --body-max-width: min(90vw, 1100px);
 }
 
 body {
-  background: var(--bg);
+  background: var(--page-bg);
   padding: 2vw;
   font-family: -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
   color: var(--text-color);
@@ -129,4 +121,19 @@ button.link {
 ::highlight(highlight-match) {
   color: var(--highlight);
   text-decoration: underline;
+}
+
+div.multiselect {
+  --sms-options-bg: var(--page-bg);
+  --sms-bg: var(--input-bg);
+  --sms-text-color: var(--text-color);
+  --sms-li-active-bg: var(--link-color);
+  --sms-border: 0.5px solid var(--border);
+  --sms-min-height: 10pt;
+  --sms-selected-bg: light-dark(var(--light-pre-bg), var(--dark-pre-bg));
+  height: stretch;
+}
+div.multiselect ul.selected li {
+  margin: 1pt !important;
+  line-height: 1 !important;
 }
