@@ -80,7 +80,7 @@
     {diagrams.filter((diagram) => diagram.code.typst).length}
   </button>
   of which in
-  <a href="https://cetz-package.github.io/docs/">Cetz</a>
+  <a href="https://cetz-package.github.io/docs/">CeTZ</a>
   (Typst) and
   <button onclick={() => (filters.tags = [{ label: `tikz`, count: 0 }])}>
     {diagrams.filter((diagram) => diagram.code.tex).length}
