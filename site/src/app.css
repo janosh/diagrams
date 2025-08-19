@@ -2,7 +2,7 @@
   /* Light theme colors */
   --light-bg: #f8f9fa;
   --light-text: #212529;
-  --light-text-secondary: #6c757d;
+  --light-text-secondary: #565e64;
   --light-link: #0c64e9;
   --light-link-hover: #fd7e14;
   --light-code-bg: rgba(0, 123, 255, 0.1);
@@ -12,9 +12,9 @@
   --light-border: rgba(0, 0, 0, 0.125);
   --light-highlight: #17a2b8;
   --light-blockquote-bg: rgba(0, 0, 0, 0.05);
-  --light-input-bg: rgba(0, 0, 0, 0.1);
+  --light-input-bg: rgba(0, 0, 0, 0.02);
   --light-table-odd: rgba(0, 0, 0, 0.05);
-  --light-nav-bg: rgba(0, 0, 0, 0.05);
+  --light-nav-bg: rgba(0, 0, 0, 0.03);
   --light-card-bg: rgba(255, 255, 255, 0.8);
   --light-card-border: rgba(0, 0, 0, 0.1);
   --light-shadow: rgba(0, 0, 0, 0.1);
@@ -69,14 +69,6 @@
   /* Tooltip variables */
   --tooltip-bg: light-dark(var(--light-tooltip-bg), var(--dark-tooltip-bg));
   --tooltip-text-color: light-dark(var(--light-tooltip-text), var(--dark-tooltip-text));
-
-  /* Multiselect variables */
-  --sms-options-bg: light-dark(var(--light-bg), var(--dark-bg));
-  --sms-text-color: light-dark(var(--light-text), var(--dark-text));
-  --sms-li-active-bg: var(--link-color);
-  --sms-border: 0.5px solid var(--border);
-
-  --body-max-width: min(90vw, 1100px);
 }
 
 body {
@@ -129,4 +121,19 @@ button.link {
 ::highlight(highlight-match) {
   color: var(--highlight);
   text-decoration: underline;
+}
+
+div.multiselect {
+  --sms-options-bg: var(--bg);
+  --sms-bg: var(--input-bg);
+  --sms-text-color: var(--text-color);
+  --sms-li-active-bg: var(--link-color);
+  --sms-border: 0.5px solid var(--border);
+  --sms-min-height: 10pt;
+  --sms-selected-bg: light-dark(var(--light-pre-bg), var(--dark-pre-bg));
+  height: stretch;
+}
+div.multiselect ul.selected li {
+  margin: 1pt !important;
+  line-height: 1 !important;
 }

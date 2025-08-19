@@ -1,11 +1,11 @@
 <script lang="ts">
   import { building } from '$app/environment'
   import { goto } from '$app/navigation'
-  import { DiagramCard, diagrams } from '$lib'
+  import { DiagramCard, diagrams, tags } from '$lib'
   import { filtered_diagrams, filters } from '$lib/state.svelte'
   import { homepage, repository } from '$root/package.json'
   import Icon from '@iconify/svelte'
-  import MultiSelect, { type ObjectOption, RadioButtons } from 'svelte-multiselect'
+  import MultiSelect, { type ObjectOption } from 'svelte-multiselect'
   import { highlight_matches } from 'svelte-multiselect/attachments'
 
   let innerWidth: number = $state(0)
@@ -37,21 +37,6 @@
     if (active) active.scrollIntoView()
   }
   let cols = $derived(clamp(Math.floor(innerWidth / 300), 1, 6))
-  let tags = $derived(
-    Object.entries(
-      diagrams
-        ?.flatMap((diagram) => diagram.tags)
-        .reduce(
-          (acc, el) => {
-            acc[el] = (acc[el] ?? 0) + 1
-            return acc
-          },
-          {} as Record<string, number>,
-        ),
-    )
-      .filter(([, count]) => count > 2)
-      .sort(([t1], [t2]) => t1.localeCompare(t2)),
-  )
 </script>
 
 <svelte:head>
@@ -114,10 +99,15 @@
         {option.label} <span style="flex: 1"></span> {option.count}
       </span>
     {/snippet}
+    {#snippet afterInput()}
+      {#if filters.tags?.length > 1}
+        <label style="margin-inline: 2pt">
+          <input type="checkbox" bind:checked={filters.tag_mode} />
+          has {filters.tag_mode ? 'all' : 'any'}
+        </label>
+      {/if}
+    {/snippet}
   </MultiSelect>
-  {#if filters.tags?.length > 1}
-    <RadioButtons bind:selected={filters.tag_mode} options={[`and`, `or`]} />
-  {/if}
 </div>
 
 {#if filters.search?.length || filters.tags?.length}

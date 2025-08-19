@@ -171,7 +171,7 @@
   }
   a.large-link {
     background: var(--nav-bg);
-    padding: 4pt 1ex;
+    padding: 0 7pt;
     border-radius: 4pt;
     margin: 2pt;
     transition: color 0.3s, background-color 0.3s;
