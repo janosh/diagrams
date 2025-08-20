@@ -165,6 +165,7 @@
     max-width: min(850px, 90vw);
     height: auto;
     max-height: 90vh;
+    object-fit: scale-down;
     margin: 2em auto;
     border-radius: 1ex;
     display: block;
