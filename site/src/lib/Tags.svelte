@@ -1,11 +1,13 @@
 <script lang="ts">
+  import type { HTMLAttributes } from 'svelte/elements'
   import { filters } from './state.svelte'
 
   interface Props {
     tags: string[]
+    btn_props?: HTMLAttributes<HTMLButtonElement>
     [key: string]: unknown
   }
-  let { tags = [], ...rest }: Props = $props()
+  let { tags = [], btn_props = {}, ...rest }: Props = $props()
 </script>
 
 <p class="tags" {...rest}>
@@ -20,6 +22,7 @@
           filters.tags = [...filters.tags, { label: tag, count: 0 }]
         }
       }}
+      {...btn_props}
     >
       {tag}
     </button>
@@ -32,7 +35,6 @@
     flex-wrap: wrap;
     place-content: center;
     gap: 4pt;
-    padding: 0;
     margin: 1em;
   }
   p.tags button {
@@ -41,11 +43,5 @@
     color: var(--text-secondary);
     padding: 2pt 4pt;
     border-radius: 3pt;
-    line-height: 1;
-    transition: background-color 0.2s ease;
-  }
-  p.tags button:hover {
-    background-color: var(--card-bg);
-    color: var(--text-color);
   }
 </style>

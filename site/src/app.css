@@ -8,6 +8,7 @@
   --light-code-bg: rgba(0, 123, 255, 0.1);
   --light-pre-bg: rgba(0, 0, 0, 0.03);
   --light-button-bg: #03eaa5;
+  --light-button-bg-hover: #02c78e;
   --light-button-text: #333;
   --light-border: rgba(0, 0, 0, 0.125);
   --light-highlight: #17a2b8;
@@ -31,6 +32,7 @@
   --dark-code-bg: rgba(255, 255, 255, 0.1);
   --dark-pre-bg: rgba(255, 255, 255, 0.05);
   --dark-button-bg: teal;
+  --dark-button-bg-hover: rgb(89, 89, 117);
   --dark-button-text: #eee;
   --dark-border: rgba(255, 255, 255, 0.125);
   --dark-highlight: mediumaquamarine;
@@ -54,6 +56,10 @@
   --code-bg: light-dark(var(--light-code-bg), var(--dark-code-bg));
   --pre-bg: light-dark(var(--light-pre-bg), var(--dark-pre-bg));
   --button-bg: light-dark(var(--light-button-bg), var(--dark-button-bg));
+  --button-bg-hover: light-dark(
+    var(--light-button-bg-hover),
+    var(--dark-button-bg-hover)
+  );
   --button-text: light-dark(var(--light-button-text), var(--dark-button-text));
   --border: light-dark(var(--light-border), var(--dark-border));
   --highlight: light-dark(var(--light-highlight), var(--dark-highlight));
@@ -78,20 +84,16 @@ body {
   color: var(--text-color);
   line-height: 1.6;
 }
-
 :where(h1, h2, h3, h4, p, footer) {
   text-align: center;
 }
-
 a {
   color: var(--link-color);
   text-decoration: none;
 }
-
 a:hover {
   color: var(--link-hover);
 }
-
 /* :where() needed to make less specific to not override svelte-multiselect button CSS */
 :where(button) {
   color: var(--button-text);
@@ -103,13 +105,10 @@ a:hover {
   transition: transform 0.2s, background-color 0.2s;
   cursor: pointer;
 }
-
-button:hover {
-  background: var(--button-bg);
-  transform: scale(1.02);
+:where(button:hover) {
+  background: var(--button-bg-hover);
 }
-
-button.link {
+:where(button.link) {
   background: none;
   border: none;
   color: var(--link-color);
@@ -117,12 +116,10 @@ button.link {
   cursor: pointer;
   padding: 0;
 }
-
 ::highlight(highlight-match) {
   color: var(--highlight);
   text-decoration: underline;
 }
-
 div.multiselect {
   --sms-options-bg: var(--page-bg);
   --sms-bg: var(--input-bg);
