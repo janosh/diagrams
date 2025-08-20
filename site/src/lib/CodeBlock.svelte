@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Iconify from '@iconify/svelte'
   import hljs from 'highlight.js/lib/core'
   import latex from 'highlight.js/lib/languages/latex'
   import 'highlight.js/styles/vs2015.css'
@@ -17,11 +18,16 @@
     tex_file_uri?: string
   }
   let { code, repo_link, title, tex_file_uri = `` }: Props = $props()
+  let ext = $derived(title?.split(`.`).pop() as 'typ' | 'ext')
+  const lang_icon = $derived(
+    { typ: `simple-icons:typst`, tex: `file-icons:latex` }[ext],
+  )
 </script>
 
 <div>
   {#if title}
     <h3>
+      <Iconify icon={lang_icon} inline />&nbsp;
       {title} <small>({code.split(`\n`).length} lines)</small>
     </h3>
   {/if}
@@ -58,8 +64,9 @@
     bottom: calc(100% - 1em);
     left: 1em;
     background: var(--button-bg);
-    padding: 2pt 8pt;
+    padding: 0 8pt;
     border-radius: 3pt 3pt 0 0;
+    font-size: medium;
   }
   h3 small {
     font-weight: 200;

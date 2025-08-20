@@ -63,7 +63,7 @@
 {/if}
 
 <section class="description">
-  <Tags {tags} />
+  <Tags {tags} btn_props={{ style: `cursor: default` }} />
 
   {#if description}
     {@html description}
@@ -95,9 +95,6 @@
   <Icon icon="octicon:code" inline />&nbsp; Code
 </h2>
 {#if code.tex}
-  <h3 class="code-title">
-    <Icon icon="file-icons:latex" inline style="color: var(--text-color)" />&nbsp; LaTeX
-  </h3>
   <CodeBlock
     code={code.tex}
     title="{slug}.tex"
@@ -105,11 +102,7 @@
     tex_file_uri="{base_uri}.tex"
   />
 {/if}
-
 {#if code.typst}
-  <h3 class="code-title">
-    <Icon icon="simple-icons:typst" inline />&nbsp; Typst
-  </h3>
   <CodeBlock
     code={code.typst}
     title="{slug}.typ"
@@ -120,7 +113,7 @@
 <PrevNext
   items={data.diagrams.map((diagram) => [diagram.slug, diagram])}
   current={data.slug}
-  style="max-width: 55em; margin: auto"
+  style="max-width: 50em; margin: auto"
 >
   {#snippet children({ item, kind })}
     {@const [slug, diagram] = item as [string, Diagram]}
@@ -146,7 +139,7 @@
   :where(h1, h2) {
     border-bottom: 2px solid var(--link-hover);
     max-width: 12em;
-    margin: 2em auto 1em;
+    margin: 1em auto;
     padding-bottom: 8pt;
   }
   section {
@@ -189,8 +182,5 @@
     position: absolute;
     top: 2em;
     left: 2em;
-  }
-  .code-title {
-    margin-bottom: -1em;
   }
 </style>

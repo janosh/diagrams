@@ -12,11 +12,7 @@
   let { slug, title, description, tags } = $derived(item)
 </script>
 
-<a
-  href={slug}
-  transition:fade={{ duration: 200 }}
-  {...rest}
->
+<a href={slug} transition:fade={{ duration: 200 }} {...rest}>
   <h2 id={slug}>{title}</h2>
   {#if format === `full`}
     <Tags {tags} style="color: var(--text-color); margin-block: 0 1em" />

@@ -5,5 +5,5 @@ tags:
   - machine learning
   - interdisciplinary
 description: |
-  A pie chart showing the 3 main research areas covered by the diagrams in https://github.com/janosh/diagrams: physics (Ψ), chemistry (ΔG), and machine learning (∑). The symbols represent wave functions, Gibbs free energy, and linear algebra, respectively.
+  A pie chart showing the 3 main research areas covered by the diagrams in <https://github.com/janosh/diagrams>: physics (Ψ), chemistry (ΔG), and machine learning (∑). The symbols represent wave functions, Gibbs free energy, and linear algebra, respectively.
 hide: true
