@@ -1,5 +1,6 @@
 import os
 import re
+import unicodedata
 from collections import Counter
 from difflib import SequenceMatcher
 from glob import glob
@@ -43,7 +44,15 @@ def to_param_case(text: str) -> str:
     """Convert a string to param-case (kebab-case)."""
     # Replace spaces and underscores with hyphens
     text = text.replace(" ", "-").replace("_", "-")
-    # Remove any non-alphanumeric characters except hyphens and plus signs
+
+    # Replace Greek letters with Latin equivalents using unicodedata
+    for idx in range(0x03B1, 0x03C0):  # Greek lowercase letters α-ω
+        char = chr(idx)
+        name = unicodedata.name(char).lower().replace("greek small letter ", "")
+        text = text.replace(char, name)  # Replace lowercase
+        text = text.replace(char.upper(), name.title())  # Replace uppercase
+
+    # Remove any remaining non-alphanumeric characters except hyphens and plus signs
     text = "".join(c.lower() for c in text if c.isalnum() or c == "-" or c == "+")
     # Replace multiple consecutive hyphens with a single hyphen
     while "--" in text:
@@ -108,7 +117,7 @@ def report_similar_tags(yaml_files: list[str]):
             )
 
 
-def check_yaml_titles(yaml_files: list[str]) -> dict[str, str]:
+def check_yaml_titles(yaml_files: list[str]) -> int:
     errors: dict[str, str] = {}
 
     for yaml_file in yaml_files:
