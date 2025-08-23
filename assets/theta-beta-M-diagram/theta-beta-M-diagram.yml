@@ -1,0 +1,11 @@
+title: θ-β-M Diagram
+creator: Philipp Dobler
+creator_url: https://gitlab.com/netzwerk2/
+url: https://gitlab.com/netzwerk2/stosspolare/-/commit/7a78b653d3ce86bf40c7a560379d56e73a381d3f
+date: 2025-08-23
+tags:
+  - gas-dynamics
+  - shock wave
+description: |
+  In supersonic flow shock waves can occur due to small disturbances of the flow.
+  A θ-β-M Diagram shows the relations between the deflection angle θ, the shock angle β and the Mach number M for an oblique shock.
