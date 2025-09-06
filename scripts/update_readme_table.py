@@ -3,7 +3,6 @@
 import json
 import os
 import re
-import subprocess
 from glob import glob
 from itertools import zip_longest
 from typing import TypedDict
@@ -108,9 +107,9 @@ def update_readme(table: str, diagram_count: int) -> None:
 
     # Insert table
     readme = re.sub(
-        r"(?<=<!-- diagram-table -->\n)(.*)(?=## Scripts\n)",
-        f"\n{table}\n",
-        readme,
+        pattern=r"(?<=<!-- diagram-table -->\n)(.*)(?=## Scripts\n)",
+        repl=f"\n{table}\n",
+        string=readme,
         flags=re.DOTALL,
     )
 
@@ -135,8 +134,6 @@ def update_readme(table: str, diagram_count: int) -> None:
 
     with open(f"{ROOT}/readme.md", "w") as file:
         file.write(readme)
-
-    subprocess.run(["pre-commit", "run", "--files", "readme.md"])
 
 
 if __name__ == "__main__":

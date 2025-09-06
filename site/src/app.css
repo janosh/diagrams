@@ -9,7 +9,6 @@
   --light-pre-bg: rgba(0, 0, 0, 0.03);
   --light-button-bg: #03eaa5;
   --light-button-bg-hover: #02c78e;
-  --light-button-text: #333;
   --light-border: rgba(0, 0, 0, 0.125);
   --light-highlight: #17a2b8;
   --light-blockquote-bg: rgba(0, 0, 0, 0.05);
@@ -33,7 +32,6 @@
   --dark-pre-bg: rgba(255, 255, 255, 0.05);
   --dark-button-bg: teal;
   --dark-button-bg-hover: rgb(89, 89, 117);
-  --dark-button-text: #eee;
   --dark-border: rgba(255, 255, 255, 0.125);
   --dark-highlight: mediumaquamarine;
   --dark-blockquote-bg: rgba(255, 255, 255, 0.1);
@@ -60,7 +58,6 @@
     var(--light-button-bg-hover),
     var(--dark-button-bg-hover)
   );
-  --button-text: light-dark(var(--light-button-text), var(--dark-button-text));
   --border: light-dark(var(--light-border), var(--dark-border));
   --highlight: light-dark(var(--light-highlight), var(--dark-highlight));
   --blockquote-bg: light-dark(var(--light-blockquote-bg), var(--dark-blockquote-bg));
@@ -96,7 +93,6 @@ a:hover {
 }
 /* :where() needed to make less specific to not override svelte-multiselect button CSS */
 :where(button) {
-  color: var(--button-text);
   background: var(--button-bg);
   border: none;
   outline: none;

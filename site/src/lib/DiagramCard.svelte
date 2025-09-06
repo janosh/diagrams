@@ -1,12 +1,12 @@
 <script lang="ts">
   import { tooltip } from 'svelte-multiselect/attachments'
+  import type { HTMLAttributes } from 'svelte/elements'
   import { fade } from 'svelte/transition'
   import { type Diagram, Tags } from './index'
 
-  interface Props {
+  interface Props extends HTMLAttributes<HTMLAnchorElement> {
     item: Diagram
     format?: `short` | `full`
-    [key: string]: unknown
   }
   let { item, format = `full`, ...rest }: Props = $props()
   let { slug, title, description, tags } = $derived(item)

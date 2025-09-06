@@ -65,13 +65,16 @@
     {diagrams.filter((diagram) => diagram.code.typst).length}
   </button>
   of which in
-  <a href="https://cetz-package.github.io/docs/">CeTZ</a>
-  (Typst) and
+  <a href="https://cetz-package.github.io/docs/">
+    <Icon icon="simple-icons:typst" inline />CeTZ
+  </a>
+  and
   <button onclick={() => (filters.tags = [{ label: `tikz`, count: 0 }])}>
     {diagrams.filter((diagram) => diagram.code.tex).length}
   </button>
   in
-  <a href="https://tikz.dev">TikZ</a> (LaTeX) diagrams.
+  <a href="https://tikz.dev"><Icon icon="simple-icons:latex" inline />TikZ</a>
+  diagrams.
 </p>
 <p>
   <Icon icon="octicon:law" inline />&nbsp;
@@ -88,6 +91,11 @@
 </p>
 
 <div class="filters">
+  {#if filters.search?.length || filters.tags?.length}
+    <span style="color: var(--text-secondary)">{filtered_diagrams().length} match{
+        filtered_diagrams().length != 1 ? `es` : ``
+      }</span>
+  {/if}
   <input name="Search" bind:value={filters.search} placeholder="Search..." />
   <MultiSelect
     options={tags.map(([label, count]) => ({ label, count }))}
@@ -102,19 +110,14 @@
     {#snippet afterInput()}
       {#if filters.tags?.length > 1}
         <label style="margin-inline: 2pt">
-          <input type="checkbox" bind:checked={filters.tag_mode} />
-          has {filters.tag_mode ? 'all' : 'any'}
+          {#each [`all`, `any`] as value}
+            <input type="radio" bind:group={filters.tag_mode} {value} /> {value}
+          {/each}
         </label>
       {/if}
     {/snippet}
   </MultiSelect>
 </div>
-
-{#if filters.search?.length || filters.tags?.length}
-  <p>
-    {filtered_diagrams().length} match{filtered_diagrams().length != 1 ? `es` : ``}
-  </p>
-{/if}
 
 {#if cols || building}
   <ul
@@ -167,7 +170,6 @@
     display: flex;
     flex-wrap: wrap;
     place-content: center;
-    place-items: center;
     gap: 1ex 1em;
     margin: 2em;
   }

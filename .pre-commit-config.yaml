@@ -60,14 +60,13 @@ repos:
         types: [yaml]
         additional_dependencies: [pyyaml]
 
-      # TODO fix update-readme-table, gets stuck in infinite loop somehow
-      # - id: update-readme-table
-      #   name: Update readme.md table
-      #   entry: python scripts/update_readme_table.py
-      #   language: python
-      #   pass_filenames: false
-      #   types: [file]
-      #   additional_dependencies: [pyyaml]
+      - id: update-readme-table
+        name: Update readme.md table
+        entry: python scripts/update_readme_table.py
+        language: python
+        pass_filenames: false
+        types: [file]
+        additional_dependencies: [pyyaml]
 
       - id: validate-typst
         name: Validate Typst files compile without errors

@@ -19,15 +19,13 @@
   }
   let { code, repo_link, title, tex_file_uri = `` }: Props = $props()
   let ext = $derived(title?.split(`.`).pop() as 'typ' | 'ext')
-  const lang_icon = $derived(
-    { typ: `simple-icons:typst`, tex: `file-icons:latex` }[ext],
-  )
+  const icon = $derived({ typ: `simple-icons:typst`, tex: `file-icons:latex` }[ext])
 </script>
 
 <div>
   {#if title}
     <h3>
-      <Iconify icon={lang_icon} inline />&nbsp;
+      <Iconify {icon} inline />&nbsp;
       {title} <small>({code.split(`\n`).length} lines)</small>
     </h3>
   {/if}
