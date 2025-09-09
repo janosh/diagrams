@@ -1,11 +1,11 @@
-#import "@preview/cetz:0.4.1": canvas, draw
+#import "@preview/cetz:0.4.2": canvas, draw
 #import draw: circle, content, line, n-star, polygon
 
 #set page(width: auto, height: auto, margin: 8pt)
 #set text(weight: "bold")
 
 #let draw-star(pos, size: 0.3, fill: red) = {
-  n-star(pos, 5, radius: (.4 * size, size), fill: fill, stroke: .5pt, show-inner: false)
+  n-star(pos, 5, radius: size, inner-radius: .4 * size, fill: fill, stroke: .5pt, show-inner: false)
 }
 
 // Draw a triangle using polygon function

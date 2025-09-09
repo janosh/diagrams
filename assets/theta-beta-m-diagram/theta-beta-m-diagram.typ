@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.4.1"
+#import "@preview/cetz:0.4.2"
 #import "@preview/epsilon:0.1.0": secant
 #import "@preview/lilaq:0.4.0" as lq
 

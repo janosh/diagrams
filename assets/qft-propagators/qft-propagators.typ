@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.4.1": canvas, decorations, draw
+#import "@preview/cetz:0.4.2": canvas, decorations, draw
 #import draw: circle, content, line
 
 #set page(width: auto, height: auto, margin: 5pt)
@@ -19,7 +19,6 @@
     amplitude: 0.1,
     segment-length: 0.2,
     name: "x-axis",
-    mark: arrow-style,
   )
   content("x-axis.end", $"Re"(omega)$, anchor: "north-east", padding: (top: 5pt))
 

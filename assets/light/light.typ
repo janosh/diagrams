@@ -1,6 +1,6 @@
 
 // adapted from https://github.com/cetz-package/cetz/blob/a082e02a/gallery/waves.typ
-#import "@preview/cetz:0.4.1": canvas, draw, matrix, vector
+#import "@preview/cetz:0.4.2": canvas, draw, matrix, vector
 #import draw: content, grid, group, line, rotate, scale, set-transform
 
 #set page(width: auto, height: auto, margin: .5cm)

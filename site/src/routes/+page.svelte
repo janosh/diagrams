@@ -52,7 +52,7 @@
 <svelte:window bind:innerWidth onkeyup={handle_keyup} />
 
 <h1>
-  {diagrams.length} Scientific Diagrams
+  Scientific Diagrams
 </h1>
 <p>
   About
@@ -61,10 +61,12 @@
     <button onclick={() => (filters.tags = [{ label: tag, count: 0 }])}>
       {tag}
     </button>{/each},<br />
-  <button onclick={() => (filters.tags = [{ label: `cetz`, count: 0 }])}>
+  {diagrams.length} total, <button
+    onclick={() => (filters.tags = [{ label: `cetz`, count: 0 }])}
+  >
     {diagrams.filter((diagram) => diagram.code.typst).length}
   </button>
-  of which in
+  made with
   <a href="https://cetz-package.github.io/docs/">
     <Icon icon="simple-icons:typst" inline />CeTZ
   </a>
@@ -72,9 +74,8 @@
   <button onclick={() => (filters.tags = [{ label: `tikz`, count: 0 }])}>
     {diagrams.filter((diagram) => diagram.code.tex).length}
   </button>
-  in
-  <a href="https://tikz.dev"><Icon icon="simple-icons:latex" inline />TikZ</a>
-  diagrams.
+  made with
+  <a href="https://tikz.dev"><Icon icon="simple-icons:latex" inline />TikZ</a>.
 </p>
 <p>
   <Icon icon="octicon:law" inline />&nbsp;
@@ -82,12 +83,11 @@
   <a href={repository}><Icon icon="octicon:mark-github" inline />&nbsp;Repo</a>
 </p>
 <p style="margin: auto; max-width: 40em">
-  Have a TikZ image you'd like to share with attribution?
+  Have a diagram you'd like to share with attribution?
   <a href="{repository}/pulls">Submit a PR</a> with a <code>.tex</code> or
   <code>.typ</code>
   file and a corresponding metadata <code>.yml</code> file in the <code>assets/</code>
-  directory to add it to this list. Also be sure to add yourself to the
-  <a href="{repository}/blob/main/citation.cff"><code>citation.cff</code></a> file.
+  directory to add it to this list.
 </p>
 
 <div class="filters">

@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.4.1": canvas, draw, vector
+#import "@preview/cetz:0.4.2": canvas, draw, vector
 #import draw: circle, content, intersections, line, rect
 
 #set page(width: auto, height: auto, margin: 3pt)
@@ -137,9 +137,9 @@
     name: "mu-line",
   )
   content((rel: (2.4, 0), to: "mu-line.start"), rotate(14deg)[#text(
-      fill: orange,
-      size: 13pt,
-    )[$μ_A$ range\ where AX is stable]])
+    fill: orange,
+    size: 13pt,
+  )[$μ_A$ range\ where AX is stable]])
 
   // Draw orange double arrow
   line(

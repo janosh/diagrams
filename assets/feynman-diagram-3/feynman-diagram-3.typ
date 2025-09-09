@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.4.1": canvas, draw
+#import "@preview/cetz:0.4.2": canvas, draw
 #import "@preview/modpattern:0.1.0": modpattern
 #import draw: circle, content, line
 

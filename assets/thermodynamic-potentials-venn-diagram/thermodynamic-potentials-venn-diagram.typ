@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.4.1": canvas, draw
+#import "@preview/cetz:0.4.2": canvas, draw
 #import "@preview/cetz-venn:0.1.4": venn3
 #import draw: circle, content, scale
 
