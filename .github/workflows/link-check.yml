@@ -17,4 +17,4 @@ jobs:
         uses: lycheeverse/lychee-action@v2
         with:
           # increase max-redirects needed for some journal links
-          args: --accept 100..=103,200..=299,403,429,500 --max-redirects 10 -- ./**/*.{typ,tex,md,svelte,ts,yml,yaml}
+          args: --accept 100..=103,200..=299,403,429,500 --max-redirects 10 --exclude-all-private --exclude '\$\{.*\}' -- ./**/*.{typ,tex,md,svelte,ts,yml}

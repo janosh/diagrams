@@ -9,7 +9,7 @@
 <h3 align="center">
 
 [![112 with Typst](https://img.shields.io/badge/112%20with-Typst-1f425f.svg?logo=typst)](https://typst.app)
-[![112 with LaTeX](https://img.shields.io/badge/112%20with-LaTeX-1f425f.svg?logo=latex)](https://latex-project.org)
+[![111 with LaTeX](https://img.shields.io/badge/111%20with-LaTeX-1f425f.svg?logo=latex)](https://latex-project.org)
 [![Site](https://github.com/janosh/diagrams/actions/workflows/gh-pages.yml/badge.svg)](https://github.com/janosh/diagrams/actions/workflows/gh-pages.yml)
 [![Pull Requests Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?logo=github)](https://github.com/janosh/diagrams/pulls)
 [![DOI](https://zenodo.org/badge/286220365.svg)](https://zenodo.org/badge/latestdoi/286220365)

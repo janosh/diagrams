@@ -16,4 +16,4 @@ description: |
   - Batch size (number of concurrent relaxations) varies based on memory requirements of individual structures (mainly determined by atom count and density [higher density = more edges in graph representation of structure, often with cubic scaling])
   - Memory scaling can be configured based on `n_atoms` or `n_atoms` × `density` metrics
 
-  For more details, see the [TorchSim InFlightAutoBatcher documentation](https://radical-ai.github.io/torch-sim/reference/torch_sim.autobatching.InFlightAutoBatcher.html)
+  For more details, see the [TorchSim InFlightAutoBatcher documentation](https://torchsim.github.io/torch-sim/reference/torch_sim.autobatching.InFlightAutoBatcher)
