@@ -1,0 +1,19 @@
+title: Sparse Autoencoder
+creator: Sergio Antonio Hernández Peralta
+creator_url: https://github.com/sergioahp
+tags:
+  - machine learning
+  - mechanistic interpretability
+  - neural networks
+  - sparsity
+  - unsupervised learning
+  - autoencoder
+  - feature learning
+description: |
+  Architecture of a sparse autoencoder showing the encoding-decoding process
+  with sparse hidden layer activations. The diagram illustrates how sparsity
+  constraints in the hidden layer (shown in green with varying transparency
+  indicating activation strength) lead to more efficient and interpretable
+  feature representations. Input and output layers are shown in blue, with the
+  sparse hidden layer demonstrating selective activation patterns that encourage
+  the network to learn meaningful, sparse representations of the input data.
