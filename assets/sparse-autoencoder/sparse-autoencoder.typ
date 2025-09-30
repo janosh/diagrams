@@ -3,83 +3,68 @@
 
 #set page(width: auto, height: auto, margin: 8pt)
 
-
 #canvas({
-  import draw: *
+  import draw: circle, line, on-layer
 
-  // Variables for input layer configuration
-  let input-total-length = 20
-  let n-input-neurons = 6
-  let input-spacing = input-total-length / (n-input-neurons - 1)
-  let rng = suiji.gen-rng(43)
-  let (rng, input-activations) = suiji.uniform(rng, size: n-input-neurons)
+  // Layer configuration
+  let (n-input-neurons, n-hidden-neurons) = (6, 12)
+  let (input-len, hidden-len) = (20, 30)
+  let sparsity = 0.3
 
-  // Variables for hidden layer configuration
-  let hidden-total-length = 30
-  let n-hidden-neurons = 12
-  let hidden-spacing = hidden-total-length / (n-hidden-neurons - 1)
+  // Generate activations
+  let input-rng = suiji.gen-rng(43)
+  let (input-rng, input-activations) = suiji.uniform(input-rng, size: n-input-neurons)
 
-  let hidden_rng = suiji.gen-rng(47)
-  let p = 0.3
-  let (hidden_rng, uniform-values) = suiji.uniform(hidden_rng, size: n-hidden-neurons)
-  let (hidden_rng, hidden-activations) = suiji.uniform(hidden_rng, size: n-hidden-neurons)
-  let is-alive = uniform-values.map(x => x < p)
+  let hidden-rng = suiji.gen-rng(47)
+  let (hidden-rng, uniform-values) = suiji.uniform(hidden-rng, size: n-hidden-neurons)
+  let (hidden-rng, hidden-activations) = suiji.uniform(hidden-rng, size: n-hidden-neurons)
+  let is-alive = uniform-values.map(x => x < sparsity)
 
-  let output-total-lenght = input-total-length
-  let n-output-neurons = n-input-neurons
-  let output-spacing = input-spacing
-  let output-activations = input-activations
-
-
-  // Draw input layer neurons
+  // Draw neurons
   on-layer(1, {
-    for i in range(n-input-neurons) {
-      let y-coord = i * input-spacing
+    // Input layer
+    for ii in range(n-input-neurons) {
       circle(
-        (0, y-coord),
+        (0, ii * input-len / (n-input-neurons - 1)),
         radius: 1,
-        fill: blue.transparentize(input-activations.at(1-i) * 100%),
+        fill: blue.transparentize(input-activations.at(1 - ii) * 100%),
         stroke: blue.darken(30%) + 2pt,
-        name: "in-" + str(i),
+        name: "in-" + str(ii),
       )
     }
-    // Draw hidden layer neurons
-    for i in range(n-hidden-neurons) {
-      let y-coord = i * hidden-spacing + (input-total-length - hidden-total-length) / 2
+    // Hidden layer
+    for ii in range(n-hidden-neurons) {
+      let y-offset = (input-len - hidden-len) / 2
       circle(
-        (10, y-coord),
+        (10, ii * hidden-len / (n-hidden-neurons - 1) + y-offset),
         radius: 1,
-        fill: green.transparentize(
-          100%*(1 - (float(is-alive.at(i)) * hidden-activations.at(i)))
-        ),
+        fill: green.transparentize(100% * (1 - float(is-alive.at(ii)) * hidden-activations.at(ii))),
         stroke: green.darken(30%) + 2pt,
-        name: "hidden-" + str(i),
+        name: "hidden-" + str(ii),
       )
     }
-    // Draw output layer neurons
-    for i in range(n-output-neurons) {
-      let y-coord = i * output-spacing
+    // Output layer
+    for ii in range(n-input-neurons) {
       circle(
-        (20, y-coord),
+        (20, ii * input-len / (n-input-neurons - 1)),
         radius: 1,
-        fill: blue.transparentize(output-activations.at(1-i) * 100%),
+        fill: blue.transparentize(input-activations.at(1 - ii) * 100%),
         stroke: blue.darken(30%) + 2pt,
-        name: "out-" + str(i),
+        name: "out-" + str(ii),
       )
     }
   })
 
-  // Draw edges connecting input neurons to hidden neurons
+  // Draw connections
   on-layer(0, {
-    for i in range(n-input-neurons) {
-      for j in range(n-hidden-neurons) {
-        line("in-" + str(i), "hidden-" + str(j), stroke: gray + 1.5pt)
+    for ii in range(n-input-neurons) {
+      for jj in range(n-hidden-neurons) {
+        line("in-" + str(ii), "hidden-" + str(jj), stroke: gray + 1.5pt)
       }
     }
-    // Draw edges connecting hidden neurons to outpu neurons
-    for i in range(n-hidden-neurons) {
-      for j in range(n-output-neurons) {
-        line("hidden-" + str(i), "out-" + str(j), stroke: gray + 1.5pt)
+    for ii in range(n-hidden-neurons) {
+      for jj in range(n-input-neurons) {
+        line("hidden-" + str(ii), "out-" + str(jj), stroke: gray + 1.5pt)
       }
     }
   })
