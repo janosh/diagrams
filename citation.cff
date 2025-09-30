@@ -16,6 +16,9 @@ authors:
     given-names: Clemens
     orcid: https://orcid.org/0009-0004-0335-8144
     affiliation: Practical Robotics Institute Austria
+  - family-names: Hernández Peralta
+    given-names: Sergio Antonio
+    email: sergioahp@proton.me
 license: MIT
 license-url: https://github.com/janosh/diagrams/blob/main/license
 repository-code: https://github.com/janosh/diagrams
