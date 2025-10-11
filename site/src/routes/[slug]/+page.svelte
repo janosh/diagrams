@@ -94,19 +94,19 @@
 <h2>
   <Icon icon="octicon:code" inline />&nbsp; Code
 </h2>
+{#if code.typst}
+  <CodeBlock
+    code={code.typst}
+    title="{slug}.typ"
+    repo_link="{repository}/blob/main/assets/{slug}/{slug}.typ"
+  />
+{/if}
 {#if code.tex}
   <CodeBlock
     code={code.tex}
     title="{slug}.tex"
     repo_link="{repository}/blob/main/assets/{slug}/{slug}.tex"
     tex_file_uri="{base_uri}.tex"
-  />
-{/if}
-{#if code.typst}
-  <CodeBlock
-    code={code.typst}
-    title="{slug}.typ"
-    repo_link="{repository}/blob/main/assets/{slug}/{slug}.typ"
   />
 {/if}
 

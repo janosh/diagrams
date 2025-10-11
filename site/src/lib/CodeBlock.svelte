@@ -1,15 +1,12 @@
 <script lang="ts">
   import Iconify from '@iconify/svelte'
-  import hljs from 'highlight.js/lib/core'
-  import latex from 'highlight.js/lib/languages/latex'
-  import 'highlight.js/styles/vs2015.css'
+  import { createStarryNight } from '@wooorm/starry-night'
+  import grammar_typst from '@wooorm/starry-night/source.typst'
+  import grammar_latex from '@wooorm/starry-night/text.tex.latex'
+  import { toHtml } from 'hast-util-to-html'
   import { CopyButton, Icon } from 'svelte-multiselect'
 
-  hljs.registerLanguage(`latex`, latex)
-  // TODO highlight.js does not support Typst
-  // https://github.com/highlightjs/highlight.js/blob/main/SUPPORTED_LANGUAGES.md
-  // and won't unless someone contributes a grammar
-  // https://highlightjs.readthedocs.io/en/latest/language-requests.html
+  type StarryNight = Awaited<ReturnType<typeof createStarryNight>>
 
   interface Props {
     code: string
@@ -18,8 +15,22 @@
     tex_file_uri?: string
   }
   let { code, repo_link, title, tex_file_uri = `` }: Props = $props()
-  let ext = $derived(title?.split(`.`).pop() as 'typ' | 'ext')
+  let ext = $derived(title?.split(`.`).pop() as 'typ' | 'tex')
   const icon = $derived({ typ: `simple-icons:typst`, tex: `file-icons:latex` }[ext])
+
+  const scope_map = { typ: `source.typst`, tex: `text.tex.latex` } as const
+
+  // Initialize starry-night once at module scope (shared across all component instances)
+  const starry_night = createStarryNight([grammar_latex, grammar_typst])
+
+  let highlighted_code = $state(``)
+
+  $effect(() => {
+    const scope = scope_map[ext] || `text.tex.latex`
+    starry_night.then((sn) => {
+      highlighted_code = toHtml(sn.highlight(code, scope))
+    })
+  })
 </script>
 
 <div>
@@ -42,13 +53,13 @@
       {@const href = `https://overleaf.com/docs?snip_uri=${tex_file_uri}`}
       <a {href} target="_blank" rel="noreferrer noopener">
         <button>
-          <img src="overleaf.svg" alt="Overleaf Logo" height="16" />Overleaf
+          <img src="overleaf.svg" alt="Overleaf Logo" height="16" />
         </button>
       </a>
     {/if}
     <CopyButton content={code} />
   </aside>
-  <pre><code>{@html hljs.highlight(code, { language: `latex` }).value}</code></pre>
+  <pre><code>{@html highlighted_code}</code></pre>
 </div>
 
 <style>

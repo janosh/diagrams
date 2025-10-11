@@ -5,15 +5,28 @@
   let theme: `light` | `dark` = $state(`dark`)
   let next_theme = $derived(({ light: `dark`, dark: `light` } as const)[theme])
 
-  onMount(() => {
-    theme = (localStorage.theme as `light` | `dark`) ||
-      (window.matchMedia(`(prefers-color-scheme: dark)`).matches ? `dark` : `light`)
+  function apply_theme(new_theme: `light` | `dark`) {
+    theme = new_theme
     document.documentElement.style.colorScheme = theme
+    document.documentElement.dataset.theme = theme
+
+    // Update syntax highlighting stylesheets
+    const starry_light = document.getElementById(`starry-light`)
+    const starry_dark = document.getElementById(`starry-dark`)
+    if (starry_light && starry_dark) {
+      starry_light.media = theme === `light` ? `all` : `not all`
+      starry_dark.media = theme === `dark` ? `all` : `not all`
+    }
+  }
+
+  onMount(() => {
+    const media_query = window.matchMedia(`(prefers-color-scheme: dark)`).matches
+    const saved_theme = localStorage.theme || (media_query ? `dark` : `light`)
+    apply_theme(saved_theme)
   })
 
-  function toggle_theme(): void {
-    theme = next_theme
-    document.documentElement.style.colorScheme = theme
+  function toggle_theme() {
+    apply_theme(next_theme)
     localStorage.theme = theme
   }
 </script>
