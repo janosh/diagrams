@@ -2,7 +2,7 @@ import { type Diagram, diagrams } from '$lib'
 
 export const filters = $state<{
   search: string
-  tag_mode: 'all' | 'any'
+  tag_mode: `all` | `any`
   tags: { label: string; count: number }[]
 }>({ search: ``, tag_mode: `all`, tags: [] })
 
