@@ -10,7 +10,7 @@
 </script>
 
 <p class="tags" {...rest}>
-  {#each tags as tag}
+  {#each tags as tag (tag)}
     <button
       onclick={(event) => {
         event.preventDefault()

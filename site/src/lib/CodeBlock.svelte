@@ -6,8 +6,6 @@
   import { toHtml } from 'hast-util-to-html'
   import { CopyButton, Icon } from 'svelte-multiselect'
 
-  type StarryNight = Awaited<ReturnType<typeof createStarryNight>>
-
   interface Props {
     code: string
     repo_link: string
@@ -15,7 +13,7 @@
     tex_file_uri?: string
   }
   let { code, repo_link, title, tex_file_uri = `` }: Props = $props()
-  let ext = $derived(title?.split(`.`).pop() as 'typ' | 'tex')
+  let ext = $derived(title?.split(`.`).pop() as `typ` | `tex`)
   const icon = $derived({ typ: `simple-icons:typst`, tex: `file-icons:latex` }[ext])
 
   const scope_map = { typ: `source.typst`, tex: `text.tex.latex` } as const
@@ -44,7 +42,7 @@
     {#if repo_link}
       <a href={repo_link} target="_blank" rel="noreferrer noopener">
         <button>
-          <Icon icon="GitHub" inline />
+          <Icon icon="GitHub" />
         </button>
       </a>
     {/if}

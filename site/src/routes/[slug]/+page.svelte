@@ -77,7 +77,7 @@
   <Icon icon="octicon:download-16" inline />&nbsp; Download
 </h2>
 <section>
-  {#each labels as [ext, label]}
+  {#each labels as [ext, label] (ext)}
     {#if downloads?.some((filename) => filename.includes(ext))}
       <a
         href="{base_uri}{ext}"

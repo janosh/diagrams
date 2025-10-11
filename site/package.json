@@ -11,12 +11,14 @@
   "devDependencies": {
     "@iconify/svelte": "^5.0.2",
     "@rollup/plugin-yaml": "^4.1.2",
+    "@stylistic/eslint-plugin": "^5.4.0",
     "@sveltejs/adapter-static": "^3.0.10",
     "@sveltejs/enhanced-img": "^0.8.4",
     "@sveltejs/kit": "^2.46.4",
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
     "@types/js-yaml": "^4.0.9",
     "@wooorm/starry-night": "^3.8.0",
+    "eslint-plugin-svelte": "^3.12.4",
     "hast-util-to-html": "^9.0.5",
     "js-yaml": "^4.1.0",
     "rehype-katex": "^7.0.1",
@@ -29,6 +31,7 @@
     "svelte-multiselect": "11.2.4",
     "svelte-preprocess": "^6.0.3",
     "svelte2tsx": "^0.7.45",
+    "typescript-eslint": "^8.46.0",
     "unified": "^11.0.5",
     "vite": "^7.1.9"
   }

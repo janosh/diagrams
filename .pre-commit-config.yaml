@@ -1,7 +1,3 @@
-ci:
-  autoupdate_schedule: quarterly
-  skip: [validate-typst, deno-fmt, deno-lint]
-
 default_install_hook_types: [pre-commit, commit-msg]
 
 repos:
@@ -32,6 +28,21 @@ repos:
         types_or: [file]
         args: [--config, site/deno.jsonc, --permit-no-files, --fix]
         language: system
+
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v9.36.0
+    hooks:
+      - id: eslint
+        types: [file]
+        args: [--fix, --config, site/eslint.config.js]
+        files: \.(js|ts|svelte)$
+        additional_dependencies:
+          - eslint
+          - eslint-plugin-svelte
+          - svelte
+          - typescript
+          - typescript-eslint
+          - '@stylistic/eslint-plugin'
 
   - repo: https://github.com/codespell-project/codespell
     rev: v2.4.1

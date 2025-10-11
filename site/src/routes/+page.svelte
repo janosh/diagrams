@@ -56,7 +56,7 @@
 </h1>
 <p>
   About
-  {#each [`physics`, `chemistry`, `machine learning`] as tag, idx}
+  {#each [`physics`, `chemistry`, `machine learning`] as tag, idx (tag)}
     {#if idx > 0},{/if}
     <button onclick={() => (filters.tags = [{ label: tag, count: 0 }])}>
       {tag}
@@ -102,7 +102,7 @@
     placeholder="Filter by tag..."
     bind:selected={filters.tags}
   >
-    {#snippet option({ option, idx }: { option: ObjectOption; idx: number })}
+    {#snippet option({ option }: { option: ObjectOption; idx: number })}
       <span style="display: flex; gap: 5pt; align-items: center">
         {option.label} <span style="flex: 1"></span> {option.count}
       </span>
@@ -110,7 +110,7 @@
     {#snippet afterInput()}
       {#if filters.tags?.length > 1}
         <label style="margin-inline: 2pt">
-          {#each [`all`, `any`] as value}
+          {#each [`all`, `any`] as value (value)}
             <input type="radio" bind:group={filters.tag_mode} {value} /> {value}
           {/each}
         </label>

@@ -32,7 +32,7 @@
 </script>
 
 <button onclick={toggle_theme} title="Switch to {next_theme} theme">
-  <Icon icon={{ dark: 'ph:sun-bold', light: 'ph:moon-bold' }[theme]} />
+  <Icon icon={{ dark: `ph:sun-bold`, light: `ph:moon-bold` }[theme]} />
 </button>
 
 <style>
