@@ -23,7 +23,7 @@
   {#if online === false}
     Looks like you're offline. If you think your connection is fine, check the
     <a href="https://githubstatus.com">GitHub status page</a>
-    as this site is hosted by &thinsp;<Icon icon="GitHub" inline />&thinsp; GitHub Pages.
+    as this site is hosted by &thinsp;<Icon icon="GitHub" />&thinsp; GitHub Pages.
   {/if}
 
   <p>
