@@ -18,6 +18,9 @@ jobs:
         with:
           deno-version: 2.3.7
 
+      - name: Install Typst
+        uses: typst-community/setup-typst@v4
+
       - name: Run prek
         uses: j178/prek-action@v1
         env:

@@ -79,7 +79,7 @@ repos:
         types: [file]
         additional_dependencies: [pyyaml]
 
-      - id: validate-typst
+      - id: typst
         name: Validate Typst files compile without errors
         language: system
         # xargs exit 255 to fail on first compile error https://stackoverflow.com/a/26485626/4034025
