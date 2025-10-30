@@ -8,10 +8,7 @@
   import { CmdPalette, GitHubCorner } from 'svelte-multiselect'
   import '../app.css'
 
-  interface Props {
-    children?: Snippet<[]>
-  }
-  let { children }: Props = $props()
+  let { children }: { children?: Snippet<[]> } = $props()
 
   let actions = $derived(
     diagrams.map(({ title, slug }) => {

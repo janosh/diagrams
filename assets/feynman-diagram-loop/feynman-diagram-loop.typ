@@ -3,7 +3,7 @@
 
 #set page(width: auto, height: auto, margin: 8pt)
 
-#let equation = $partial_t (diff V) / (diff chi) =$
+#let equation = $partial_t (partial V) / (partial chi) =$
 #let rad = 0.8
 #canvas({
   // Define styles
@@ -30,7 +30,7 @@
   circle("loop-points.0", radius: 0.075, fill: black, name: "dot")
   content(
     "loop-points.1",
-    text(size: 10pt)[$times.circle$],
+    text(size: 10pt)[$times.o$],
     name: "regulator",
     fill: white,
     frame: "circle",
@@ -41,7 +41,7 @@
   // Draw input line
   line((rel: (-1, 0), to: "dot"), "dot", name: "input", ..arrow-style)
 
-  content("input.start", $ partial_t (diff V) / (diff chi) = $, anchor: "east", padding: (0, 5pt, 0))
+  content("input.start", $ partial_t (partial V) / (partial chi) = $, anchor: "east", padding: (0, 5pt, 0))
 
   // Add momentum arrows
   let top-mark = (0, rad - 0.05)

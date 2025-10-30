@@ -1,6 +1,5 @@
 #import "@preview/cetz:0.4.2": canvas, draw
-#import "@preview/modpattern:0.1.0": modpattern
-#import draw: circle, content, line
+#import draw: circle, content
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -9,11 +8,10 @@
 #let vertex-rad = 0.25 * radius
 
 // Create hatched pattern for vertices
-#let hatched = modpattern(
-  (.1cm, .1cm),
-  std.line(start: (0%, 100%), end: (100%, 0%), stroke: 0.5pt),
-  background: white,
-)
+#let hatched = tiling(size: (.1cm, .1cm))[
+  #place(rect(width: 100%, height: 100%, fill: white, stroke: none))
+  #place(line(start: (0%, 100%), end: (100%, 0%), stroke: 0.4pt))
+]
 
 // Helper function for dressed vertices
 #let dressed-vertex(pos, label: none, rel-label: none, name: none, ..rest) = {
@@ -30,8 +28,8 @@
   circle((0, 0), radius: radius, stroke: 1pt, name: "loop")
 
   // External lines
-  line((-2 * radius, 0), (-radius, 0), stroke: 1pt, name: "left-external")
-  line((radius, 0), (2 * radius, 0), stroke: 1pt, name: "right-external")
+  draw.line((-2 * radius, 0), (-radius, 0), stroke: 1pt, name: "left-external")
+  draw.line((radius, 0), (2 * radius, 0), stroke: 1pt, name: "right-external")
 
   // Vertices with labels
   dressed-vertex(
@@ -57,7 +55,7 @@
   circle((5 * radius, 0), radius: radius, stroke: 1pt, name: "loop2")
 
   // External line
-  line((5 * radius - 2 * radius, -radius), (5 * radius + 2 * radius, -radius), stroke: 1pt, name: "external2")
+  draw.line((5 * radius - 2 * radius, -radius), (5 * radius + 2 * radius, -radius), stroke: 1pt, name: "external2")
 
   // Four-vertex with label
   dressed-vertex(

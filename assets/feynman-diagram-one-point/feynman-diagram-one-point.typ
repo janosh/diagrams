@@ -1,6 +1,5 @@
 #import "@preview/cetz:0.4.2": canvas, draw
-#import "@preview/modpattern:0.1.0": modpattern
-#import draw: circle, content, line, mark
+#import draw: circle, content, mark
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -15,15 +14,14 @@
   stroke: (thickness: 0.75pt),
 )
 #let label-style = (stroke: gray + 0.3pt)
-#let hatched = modpattern(
-  (.1cm, .1cm),
-  std.line(start: (0%, 100%), end: (100%, 0%), stroke: 0.5pt),
-  background: white,
-)
+#let hatched = tiling(size: (.1cm, .1cm))[
+  #place(rect(width: 100%, height: 100%, fill: white, stroke: none))
+  #place(line(start: (0%, 100%), end: (100%, 0%), stroke: 0.4pt))
+]
 
 // Helper functions
 #let cross(pos, label: none, rel-label: (6pt, 0), name: none, ..rest) = {
-  let txt = text(size: 16pt, baseline: -0.25pt)[$times.circle$]
+  let txt = text(size: 16pt, baseline: -0.25pt)[$times.o$]
   content(pos, txt, stroke: none, fill: white, frame: "circle", padding: -2.7pt, name: name, ..rest)
   if label != none {
     content((rel: rel-label, to: pos), $#label$, anchor: "west")
@@ -75,23 +73,23 @@
   dressed-vertex(
     (0, radius),
     label: $G_(k,j k)(p_2,p_3)$,
-    rel-label: (0, 0.3),
+    rel-label: (0, 0.5),
     name: "vertex-top",
   )
 
   dressed-vertex(
     (0, -radius),
     label: $G_(k,l i)(p_4,p_1)$,
-    rel-label: (0, -0.3),
+    rel-label: (0, -0.5),
     name: "vertex-bottom",
   )
 
   // External line
-  line((-2.5 * radius, 0), (-radius, 0), stroke: 1pt, name: "external")
+  draw.line((-2.5 * radius, 0), (-radius, 0), stroke: 1pt, name: "external")
   content((rel: (-0.6 * radius, -0.3), to: "external"), $phi_a$)
 
   // External momentum arrow
-  line(
+  draw.line(
     (-2.3 * radius, 0.15),
     (-1.5 * radius, 0.15),
     ..arrow-style,
@@ -105,7 +103,7 @@
     $Gamma_(k,a k l)^((3))(q,p_3,-p_4)$,
     name: "gamma-label",
   )
-  line(
+  draw.line(
     "gamma-label",
     (-radius, 0),
     ..label-style,

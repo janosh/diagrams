@@ -101,8 +101,8 @@
   // Operation circles
   for line-name in ("line-d-plus-1", "lineD") {
     for (op, (color, label, pos)) in (
-      "odot": (orange, $dot.circle$, "40%"),
-      "oplus": (teal, $plus.circle$, "70%"),
+      "odot": (orange, $dot.o$, "40%"),
+      "oplus": (teal, $plus.o$, "70%"),
     ).pairs() {
       content(
         line-name + "." + pos,

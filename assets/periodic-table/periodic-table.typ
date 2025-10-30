@@ -41,10 +41,10 @@
     (11, 22.990, "Na", "Sodium", colors.alkali-metal),
     (12, 24.305, "Mg", "Magnesium", colors.alkaline-earth),
     ..range(10).map(idx => none),
-    (13, 26.982, "Al", "Aluminium", colors.metal),
+    (13, 26.982, "Al", "Aluminum", colors.metal),
     (14, 28.086, "Si", "Silicon", colors.metalloid),
     (15, 30.974, "P", "Phosphorus", colors.nonmetal),
-    (16, 32.065, "S", "Sulphur", colors.nonmetal),
+    (16, 32.065, "S", "Sulfur", colors.nonmetal),
     (17, 35.453, "Cl", "Chlorine", colors.halogen),
     (18, 39.948, "Ar", "Argon", colors.noble-gas),
   ),
@@ -92,7 +92,7 @@
   ),
   // Period 6
   (
-    (55, 132.91, "Cs", "Caesium", colors.alkali-metal),
+    (55, 132.91, "Cs", "Cesium", colors.alkali-metal),
     (56, 137.33, "Ba", "Barium", colors.alkaline-earth),
     ("57-71", "", text("La-Lu", size: 28pt), "Lanthanide", colors.lanthanide),
     (72, 178.49, "Hf", "Hafnium", colors.metal),

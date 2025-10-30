@@ -1,0 +1,8 @@
+[tool.typos.default]
+locale = "en-us"
+extend-ignore-words-re = [
+  "\\b(Noe)\\b", # Names
+  "\\b[Bb]a\\b", # Chemical element: Barium
+  "\\b[Nn]d\\b", # Chemical element: Neodymium
+  "\\bket\\b",   # Physics: bra-ket notation
+]

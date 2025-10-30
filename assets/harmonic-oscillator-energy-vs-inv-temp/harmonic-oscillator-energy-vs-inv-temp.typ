@@ -18,7 +18,7 @@
     y-min: 0,
     y-max: 2.3,
     x-label: $beta$,
-    y-label: $angle.l E angle.r \/ planck.reduce omega$,
+    y-label: $chevron.l E chevron.r \/ planck omega$,
     x-tick-step: 2,
     y-tick-step: 0.5,
     axis-style: "left",

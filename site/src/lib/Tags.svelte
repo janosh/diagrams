@@ -2,11 +2,10 @@
   import type { HTMLAttributes } from 'svelte/elements'
   import { filters } from './state.svelte'
 
-  interface Props extends HTMLAttributes<HTMLParagraphElement> {
+  let { tags = [], btn_props = {}, ...rest }: HTMLAttributes<HTMLParagraphElement> & {
     tags: string[]
     btn_props?: HTMLAttributes<HTMLButtonElement>
-  }
-  let { tags = [], btn_props = {}, ...rest }: Props = $props()
+  } = $props()
 </script>
 
 <p class="tags" {...rest}>

@@ -17,7 +17,7 @@
   plot.plot(
     size: (8, 5),
     x-label: $beta (epsilon - mu)$,
-    y-label: $angle.l n angle.r$,
+    y-label: $chevron.l n chevron.r$,
     x-min: -7,
     x-max: 7,
     y-min: 0,

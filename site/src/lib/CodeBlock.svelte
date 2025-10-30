@@ -5,14 +5,15 @@
   import grammar_latex from '@wooorm/starry-night/text.tex.latex'
   import { toHtml } from 'hast-util-to-html'
   import { CopyButton, Icon } from 'svelte-multiselect'
+  import type { HTMLAttributes } from 'svelte/elements'
 
-  interface Props {
+  let { code, repo_link, title, tex_file_uri = ``, ...rest }: {
     code: string
     repo_link: string
     title: string
     tex_file_uri?: string
-  }
-  let { code, repo_link, title, tex_file_uri = `` }: Props = $props()
+  } & HTMLAttributes<HTMLDivElement> = $props()
+
   let ext = $derived(title?.split(`.`).pop() as `typ` | `tex`)
   const icon = $derived({ typ: `simple-icons:typst`, tex: `file-icons:latex` }[ext])
 
@@ -31,7 +32,7 @@
   })
 </script>
 
-<div>
+<div {...rest}>
   {#if title}
     <h3>
       <Iconify {icon} inline />&nbsp;

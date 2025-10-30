@@ -38,7 +38,7 @@
   ) // teal!50
   content(
     (3 * node-sep, 0),
-    text(size: 1.8em)[$plus.circle$],
+    text(size: 1.8em)[$plus.o$],
     name: "add",
   )
   content((rel: (0, -0.3), to: "add.south"), "add")

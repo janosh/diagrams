@@ -4,11 +4,10 @@
   import { fade } from 'svelte/transition'
   import { type Diagram, Tags } from './index'
 
-  interface Props extends HTMLAttributes<HTMLAnchorElement> {
+  let { item, format = `full`, ...rest }: HTMLAttributes<HTMLAnchorElement> & {
     item: Diagram
     format?: `short` | `full`
-  }
-  let { item, format = `full`, ...rest }: Props = $props()
+  } = $props()
   let { slug, title, description, tags } = $derived(item)
 </script>
 

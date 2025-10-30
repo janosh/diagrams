@@ -24,7 +24,6 @@
         "no-const-assign",
         "no-eval",
         "no-explicit-any",
-        "no-inferrable-types",
         "no-non-null-asserted-optional-chain",
         "no-non-null-assertion",
         "no-self-compare",
