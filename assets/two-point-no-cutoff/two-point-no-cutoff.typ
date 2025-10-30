@@ -1,6 +1,5 @@
 #import "@preview/cetz:0.4.2": canvas, draw
-#import "@preview/modpattern:0.1.0": modpattern
-#import draw: circle, content, line, mark
+#import draw: circle, content, mark
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -10,11 +9,10 @@
 #let small-rad = 0.15 * radius
 
 // Create hatched pattern for vertices
-#let hatched = modpattern(
-  (.1cm, .1cm),
-  std.line(start: (0%, 100%), end: (100%, 0%), stroke: 0.5pt),
-  background: white,
-)
+#let hatched = tiling(size: (.1cm, .1cm))[
+  #place(rect(width: 100%, height: 100%, fill: white, stroke: none))
+  #place(line(start: (0%, 100%), end: (100%, 0%), stroke: 0.4pt))
+]
 
 // Helper function for dressed vertices
 #let dressed-vertex(pos, label: none, rel-label: (0, 0), name: none, radius: small-rad, ..rest) = {
@@ -70,8 +68,8 @@
   )
 
   // External lines
-  line((-2 * radius, 0), (-radius, 0), stroke: 1pt, name: "left-external")
-  line((radius, 0), (2 * radius, 0), stroke: 1pt, name: "right-external")
+  draw.line((-2 * radius, 0), (-radius, 0), stroke: 1pt, name: "left-external")
+  draw.line((radius, 0), (2 * radius, 0), stroke: 1pt, name: "right-external")
 
   // External line labels
   content("left-external.start", $phi_a$, anchor: "east", padding: 0.1)
@@ -82,7 +80,7 @@
     mark: (end: "stealth", fill: black, scale: .5),
     stroke: (thickness: 0.75pt),
   )
-  line(
+  draw.line(
     (-1.9 * radius, 0.15),
     (-1.3 * radius, 0.15),
     ..arrow-style,
@@ -90,7 +88,7 @@
   )
   content((rel: (0, 0.3), to: "q1-arrow.mid"), $q_1$)
 
-  line(
+  draw.line(
     (1.3 * radius, 0.15),
     (1.9 * radius, 0.15),
     ..arrow-style,
@@ -105,7 +103,7 @@
     $Gamma_(k,a j k)^((3))(q_1,p_2,-p_3)$,
     name: "left-gamma",
   )
-  line(
+  draw.line(
     "left-gamma",
     (-radius, 0),
     ..label-style,
@@ -116,7 +114,7 @@
     $Gamma_(k,b l i)^((3))(-q_2,-p_1,p_4)$,
     name: "right-gamma",
   )
-  line(
+  draw.line(
     "right-gamma",
     (radius, 0),
     ..label-style,
@@ -174,7 +172,7 @@
   )
 
   // External line
-  line((-2 * radius, -radius), (2 * radius, -radius), stroke: 1pt, name: "external")
+  draw.line((-2 * radius, -radius), (2 * radius, -radius), stroke: 1pt, name: "external")
 
   // External line labels
   content((rel: (-0.1, 0), to: "external.start"), $phi_a$, anchor: "east")
@@ -185,7 +183,7 @@
     mark: (end: "stealth", fill: black, scale: .5),
     stroke: (thickness: 0.75pt),
   )
-  line(
+  draw.line(
     (-1.9 * radius, -radius + 0.15),
     (-1.3 * radius, -radius + 0.15),
     ..arrow-style,
@@ -193,7 +191,7 @@
   )
   content((rel: (0, 0.3), to: "q1-arrow.mid"), $q_1$)
 
-  line(
+  draw.line(
     (1.3 * radius, -radius + 0.15),
     (1.9 * radius, -radius + 0.15),
     ..arrow-style,

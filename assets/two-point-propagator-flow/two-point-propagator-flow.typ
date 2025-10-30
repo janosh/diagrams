@@ -1,6 +1,5 @@
 #import "@preview/cetz:0.4.2": canvas, draw
-#import "@preview/modpattern:0.1.0": modpattern
-#import draw: circle, content, line, mark
+#import draw: circle, content, mark
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -12,15 +11,14 @@
   mark: (end: "barbed", fill: black, scale: .5, width: .25, length: .2, angle: 60deg),
   stroke: (thickness: 0.75pt),
 )
-#let hatched = modpattern(
-  (.1cm, .1cm),
-  std.line(start: (0%, 100%), end: (100%, 0%), stroke: 0.5pt),
-  background: white,
-)
+#let hatched = tiling(size: (.1cm, .1cm))[
+  #place(rect(width: 100%, height: 100%, fill: white, stroke: none))
+  #place(line(start: (0%, 100%), end: (100%, 0%), stroke: 0.4pt))
+]
 
 // Helper functions
 #let cross(pos, label: none, rel-label: (0, 5pt), name: none, ..rest) = {
-  let txt = text(size: 16pt)[$times.circle$]
+  let txt = text(size: 16pt)[$times.o$]
   content(pos, txt, stroke: none, fill: white, frame: "circle", padding: -2.5pt, name: name, ..rest)
   if label != none {
     content((rel: rel-label, to: pos), $#label$)
@@ -110,13 +108,13 @@
   )
 
   // External lines with names
-  line(
+  draw.line(
     (rel: (-radius, 0), to: "main-loop"),
     (rel: (-2 * radius, 0), to: "main-loop"),
     stroke: 1pt,
     name: "left-external",
   )
-  line(
+  draw.line(
     (rel: (radius, 0), to: "main-loop"),
     (rel: (2 * radius, 0), to: "main-loop"),
     stroke: 1pt,
@@ -148,7 +146,7 @@
   )
 
   // External momentum arrows relative to their lines
-  line(
+  draw.line(
     (rel: (-2.3, 0.15), to: "main-loop"),
     (rel: (-1.4, 0.15), to: "main-loop"),
     ..arrow-style,
@@ -157,7 +155,7 @@
   )
   content("q1-arrow.mid", $q_1$, anchor: "south", padding: (0, 0, 2pt))
 
-  line(
+  draw.line(
     (rel: (1.4, 0.15), to: "main-loop"),
     (rel: (2.3, 0.15), to: "main-loop"),
     ..arrow-style,
@@ -173,7 +171,7 @@
     $Gamma_(k,a k l)^((3))(q_1,p_3,-p_4)$,
     name: "left-gamma",
   )
-  line(
+  draw.line(
     "left-gamma",
     (rel: (-radius, 0), to: "main-loop"),
     ..label-style,
@@ -185,7 +183,7 @@
     $Gamma_(k,b m n)^((3))(-q_2,p_5,-p_6)$,
     name: "right-gamma",
   )
-  line(
+  draw.line(
     "right-gamma",
     (rel: (radius, 0), to: "main-loop"),
     ..label-style,
@@ -239,13 +237,13 @@
   dressed-vertex((rel: (0, radius), to: "main-loop"), label: $G_(k,n k)(p_6,p_3)$, rel-label: (0, 0.3))
 
   // External lines and labels
-  line(
+  draw.line(
     (rel: (-radius, 0), to: "main-loop"),
     (rel: (-2 * radius, 0), to: "main-loop"),
     stroke: 1pt,
     name: "left-external",
   )
-  line(
+  draw.line(
     (rel: (radius, 0), to: "main-loop"),
     (rel: (2 * radius, 0), to: "main-loop"),
     stroke: 1pt,
@@ -274,7 +272,7 @@
     $phi_b$,
   )
 
-  line(
+  draw.line(
     (rel: (-2.4, 0.15), to: "main-loop"),
     (rel: (-1.6, 0.15), to: "main-loop"),
     ..arrow-style,
@@ -283,7 +281,7 @@
   )
   content("q1-arrow.mid", $q_1$, anchor: "south", padding: (0, 0, 2pt))
 
-  line(
+  draw.line(
     (rel: (1.6, 0.15), to: "main-loop"),
     (rel: (2.4, 0.15), to: "main-loop"),
     ..arrow-style,
@@ -299,7 +297,7 @@
     $Gamma_(k,a k l)^((3))(q_1,p_3,-p_4)$,
     name: "left-gamma",
   )
-  line(
+  draw.line(
     "left-gamma",
     "vertex-left-external",
     ..label-style,
@@ -310,7 +308,7 @@
     $Gamma_(k,b m n)^((3))(-q_2,p_5,-p_6)$,
     name: "right-gamma",
   )
-  line(
+  draw.line(
     "right-gamma",
     "vertex-right-external",
     ..label-style,
@@ -353,7 +351,7 @@
   dressed-vertex((rel: (radius, 0), to: "main-loop"), label: $G_(k,l i)(p_4,p_1)$, rel-label: (1.2, 0))
 
   // External lines
-  line(
+  draw.line(
     (rel: (-2.2 * radius, -radius), to: "main-loop"),
     (rel: (2.2 * radius, -radius), to: "main-loop"),
     stroke: 1pt,
@@ -380,7 +378,7 @@
     $phi_b$,
   )
 
-  line(
+  draw.line(
     (rel: (-2.3, -radius + 0.15), to: "main-loop"),
     (rel: (-1.3, -radius + 0.15), to: "main-loop"),
     ..arrow-style,
@@ -389,7 +387,7 @@
   )
   content("q1-arrow.mid", $q_1$, anchor: "south", padding: (0, 0, 2pt))
 
-  line(
+  draw.line(
     (rel: (1.3, -radius + 0.15), to: "main-loop"),
     (rel: (2.3, -radius + 0.15), to: "main-loop"),
     ..arrow-style,

@@ -1,4 +1,4 @@
-#import "@preview/plotsy-3d:0.1.0": plot-3d-surface
+#import "@preview/plotsy-3d:0.2.1": plot-3d-surface
 
 #set page(width: auto, height: auto)
 

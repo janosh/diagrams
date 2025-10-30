@@ -71,8 +71,8 @@
     content(..cell(width - i - 1, -1), intensity)
   }
 
-  // axis labelling arrows
-  let labelled-arrow(start, end, name, label, dir: ltr, align: top) = {
+  // axis labeling arrows
+  let labeled-arrow(start, end, name, label, dir: ltr, align: top) = {
     assert(dir in (ltr, rtl))
     assert(align in (top, bottom))
     line(start, end, name: name, stroke: gray, mark: (end: ">", fill: gray))
@@ -86,8 +86,8 @@
   }
 
   let arrow-inset = 0.3
-  labelled-arrow((-1, arrow-inset), (-1, height - arrow-inset), "probability1", probability, dir: ltr, align: top)
-  labelled-arrow(
+  labeled-arrow((-1, arrow-inset), (-1, height - arrow-inset), "probability1", probability, dir: ltr, align: top)
+  labeled-arrow(
     (width + 1, arrow-inset),
     (width + 1, height - arrow-inset),
     "probability2",
@@ -96,8 +96,8 @@
     align: top,
   )
 
-  labelled-arrow((arrow-inset, -1), (width / 2 - arrow-inset, -1), "neg-impact", neg-impact, dir: ltr, align: bottom)
-  labelled-arrow(
+  labeled-arrow((arrow-inset, -1), (width / 2 - arrow-inset, -1), "neg-impact", neg-impact, dir: ltr, align: bottom)
+  labeled-arrow(
     (width - arrow-inset, -1),
     (width / 2 + arrow-inset, -1),
     "pos-impact",

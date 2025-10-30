@@ -15,7 +15,7 @@
     x-max: 11,
     y-min: 0,
     x-label: $omega = sqrt(k/m)$,
-    y-label: $angle.l E angle.r \/ k_"B" T$,
+    y-label: $chevron.l E chevron.r \/ k_"B" T$,
     x-tick-step: 2,
     y-tick-step: 2,
     axis-style: "left",

@@ -63,7 +63,7 @@
   // Hamiltonian box
   content(
     (rel: (0, -1.25), to: "potential.south"),
-    [$hat(H)_"KS"=-frac(planck.reduce^2, 2m)arrow(nabla)^2 + v_("ext,s") (arrow(r))$],
+    [$hat(H)_"KS"=-frac(planck^2, 2m)arrow(nabla)^2 + v_("ext,s") (arrow(r))$],
     ..box-style,
     name: "hamiltonian",
   )

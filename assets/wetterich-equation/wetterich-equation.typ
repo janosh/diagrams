@@ -1,6 +1,5 @@
 #import "@preview/cetz:0.4.2": canvas, draw
-#import "@preview/modpattern:0.1.0": modpattern
-#import draw: circle, content, line, mark
+#import draw: circle, content, mark
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -10,15 +9,14 @@
 #let small-rad = 0.15 * radius // \srad
 
 // Create hatched pattern for vertices
-#let hatched = modpattern(
-  (.1cm, .1cm),
-  std.line(start: (0%, 100%), end: (100%, 0%), stroke: 0.5pt),
-  background: white,
-)
+#let hatched = tiling(size: (.1cm, .1cm))[
+  #place(rect(width: 100%, height: 100%, fill: white, stroke: none))
+  #place(line(start: (0%, 100%), end: (100%, 0%), stroke: 0.4pt))
+]
 
 // Helper functions
 #let cross(pos, label: none, rel-label: (0, 0), name: none, ..rest) = {
-  let txt = text(size: 16pt, baseline: -0.2pt)[$times.circle$]
+  let txt = text(size: 16pt, baseline: -0.2pt)[$times.o$]
   content(pos, txt, stroke: none, fill: white, frame: "circle", padding: -2.75pt, name: name)
   if label != none {
     let label-pos = if rel-label != none { (rel: rel-label, to: pos) } else { pos }

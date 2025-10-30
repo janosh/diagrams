@@ -27,7 +27,7 @@
   // Draw vertex with cross
   content(
     (0, 0),
-    text(size: 16pt, baseline: -0.3pt)[$times.circle$],
+    text(size: 16pt, baseline: -0.3pt)[$times.o$],
     stroke: none,
     fill: white,
     frame: "circle",

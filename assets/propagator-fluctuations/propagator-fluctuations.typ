@@ -1,15 +1,12 @@
 #import "@preview/cetz:0.4.2": canvas, draw
-#import "@preview/modpattern:0.1.0": modpattern
-#import draw: circle, content, group, line, rect
+#import draw: circle, content, group
 
 #set page(width: auto, height: auto, margin: 8pt)
 
-// TODO fix hatches rendering as black fill https://github.com/cetz-package/cetz/issues/805#issuecomment-2629554884
-#let hatched = modpattern(
-  (.1cm, .1cm),
-  std.line(start: (0%, 100%), end: (100%, 0%), stroke: 0.5pt),
-  background: white,
-)
+#let hatched = tiling(size: (.1cm, .1cm))[
+  #place(rect(width: 100%, height: 100%, fill: white, stroke: none))
+  #place(line(start: (0%, 100%), end: (100%, 0%), stroke: 0.4pt))
+]
 
 #canvas({
   // Define styles and constants
@@ -21,7 +18,7 @@
   // Helper function for cross markers
   let cross(pos, label: none, label-offset: 2, rel-label: (0, -0.5)) = {
     let rad = cross-radius
-    content(pos, text(size: 16pt)[$times.circle$], stroke: none, fill: white, frame: "circle", padding: -2.5pt)
+    content(pos, text(size: 16pt)[$times.o$], stroke: none, fill: white, frame: "circle", padding: -2.5pt)
     if label != none {
       content((rel: rel-label, to: pos), eval(label, mode: "math"))
     }
@@ -42,8 +39,8 @@
     circle((0, 0), radius: unit, stroke: 1pt)
 
     // External lines
-    line((-ext-len, 0), (-unit, 0), stroke: 1pt)
-    line((unit, 0), (ext-len, 0), stroke: 1pt)
+    draw.line((-ext-len, 0), (-unit, 0), stroke: 1pt)
+    draw.line((unit, 0), (ext-len, 0), stroke: 1pt)
 
     // Cross marker
     cross((0, unit), label: "partial_k R_k")
@@ -62,8 +59,8 @@
     circle((offset.at(0), 0), radius: unit, stroke: 1pt)
 
     // External lines
-    line((-ext-len + offset.at(0), 0), (-unit + offset.at(0), 0), stroke: 1pt)
-    line((unit + offset.at(0), 0), (ext-len + offset.at(0), 0), stroke: 1pt)
+    draw.line((-ext-len + offset.at(0), 0), (-unit + offset.at(0), 0), stroke: 1pt)
+    draw.line((unit + offset.at(0), 0), (ext-len + offset.at(0), 0), stroke: 1pt)
 
     // Cross marker
     cross((offset.at(0), -unit), label: "partial_k R_k", rel-label: (0, 0.5))
@@ -82,7 +79,7 @@
     circle((offset.at(0), 0), radius: unit, stroke: 1pt)
 
     // External line
-    line(
+    draw.line(
       (-ext-len + offset.at(0), -unit),
       (ext-len + offset.at(0), -unit),
       stroke: 1pt,

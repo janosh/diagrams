@@ -16,7 +16,7 @@
   let cross(pos, name: none) = {
     content(
       pos,
-      text(size: 16pt, baseline: -0.5pt)[$times.circle$],
+      text(size: 16pt, baseline: -0.5pt)[$times.o$],
       stroke: none,
       fill: white,
       frame: "circle",
