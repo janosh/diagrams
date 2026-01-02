@@ -80,22 +80,31 @@ def generate_table(diagrams: list[DiagramInfo]) -> str:
     """Generate markdown table from diagram info."""
     table = f"| {'&emsp;' * 22} | {'&emsp;' * 22} |\n| :---: | :---: |\n"
 
-    for data1, data2 in zip_longest(diagrams[::2], diagrams[1::2]):
+    pairs = list(zip_longest(diagrams[::2], diagrams[1::2]))
+    for idx, (left_diagram, right_diagram) in enumerate(pairs):
         # First column
-        name1 = os.path.basename(os.path.dirname(data1["source_path"]))
-        title1 = data1["title"]
+        name1 = os.path.basename(os.path.dirname(left_diagram["source_path"]))
+        title1 = left_diagram["title"]
         dir_link1 = f"[{title1}]({site_url}/{name1}) {get_code_links(name1)}"
         img_link1 = f"![{title1}](assets/{name1}/{name1}.png)"
 
         # Second column (if exists)
-        dir_link2 = img_link2 = ""
-        if data2:
-            name2 = os.path.basename(os.path.dirname(data2["source_path"]))
-            title2 = data2["title"]
+        if right_diagram:
+            name2 = os.path.basename(os.path.dirname(right_diagram["source_path"]))
+            title2 = right_diagram["title"]
             dir_link2 = f"[{title2}]({site_url}/{name2}) {get_code_links(name2)}"
             img_link2 = f"![{title2}](assets/{name2}/{name2}.png)"
+        else:
+            dir_link2 = img_link2 = ""
+            # Add markdownlint disable comment for last row with empty cell
+            if idx == len(pairs) - 1:
+                table += "<!-- markdownlint-disable MD060 -->\n"
 
         table += f"| {dir_link1} | {dir_link2} |\n| {img_link1} | {img_link2} |\n"
+
+        # Close markdownlint disable comment for last row with empty cell
+        if right_diagram is None and idx == len(pairs) - 1:
+            table += "<!-- markdownlint-enable MD060 -->\n"
 
     return table
 

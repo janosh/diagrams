@@ -1,8 +1,10 @@
 [tool.typos.default]
 locale = "en-us"
 extend-ignore-words-re = [
-  "\\b(Noe)\\b", # Names
-  "\\b[Bb]a\\b", # Chemical element: Barium
-  "\\b[Nn]d\\b", # Chemical element: Neodymium
-  "\\bket\\b",   # Physics: bra-ket notation
+  "\\b[Nn]oe\\b", # Names: Frank Noe
+  "\\b[Bb]a\\b",  # Chemical element: Barium
+  "\\b[Nn]d\\b",  # Chemical element: Neodymium
+  "\\b[Tt]e\\b",  # Chemical element: Tellurium
+  "\\bket\\b",    # Physics: bra-ket notation
+  "\\bPN\\b",     # Acronym: PNG (in context of file formats)
 ]

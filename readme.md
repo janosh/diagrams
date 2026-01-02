@@ -8,7 +8,7 @@
 
 <h3 align="center">
 
-[![113 with Typst](https://img.shields.io/badge/113%20with-Typst-1f425f.svg?logo=typst)](https://typst.app)
+[![116 with Typst](https://img.shields.io/badge/116%20with-Typst-1f425f.svg?logo=typst)](https://typst.app)
 [![111 with LaTeX](https://img.shields.io/badge/111%20with-LaTeX-1f425f.svg?logo=latex)](https://latex-project.org)
 [![Site](https://github.com/janosh/diagrams/actions/workflows/gh-pages.yml/badge.svg)](https://github.com/janosh/diagrams/actions/workflows/gh-pages.yml)
 [![Pull Requests Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?logo=github)](https://github.com/janosh/diagrams/pulls)
@@ -84,7 +84,7 @@ Have a TikZ/CeTZ diagram you'd like to share? [Submit a PR](https://github.com/j
 | ![Jensens Inequality](assets/jensens-inequality/jensens-inequality.png) | ![k-Nearest Neighbors](assets/k-nearest-neighbors/k-nearest-neighbors.png) |
 | [k-Space](https://janosh.github.io/diagrams/k-space) &nbsp;[![LaTeX][latex-logo]](assets/k-space/k-space.tex)&nbsp;[![Typst][typst-logo]](assets/k-space/k-space.typ) | [Kohn Sham Cycle](https://janosh.github.io/diagrams/kohn-sham-cycle) &nbsp;[![LaTeX][latex-logo]](assets/kohn-sham-cycle/kohn-sham-cycle.tex)&nbsp;[![Typst][typst-logo]](assets/kohn-sham-cycle/kohn-sham-cycle.typ) |
 | ![k-Space](assets/k-space/k-space.png) | ![Kohn Sham Cycle](assets/kohn-sham-cycle/kohn-sham-cycle.png) |
-| [Light](https://janosh.github.io/diagrams/light) &nbsp;[![Typst][typst-logo]](assets/light/light.typ) | [M-Theory](https://janosh.github.io/diagrams/m-theory) &nbsp;[![LaTeX][latex-logo]](assets/m-theory/m-theory.tex) |
+| [Light](https://janosh.github.io/diagrams/light) &nbsp;[![Typst][typst-logo]](assets/light/light.typ) | [M-Theory](https://janosh.github.io/diagrams/m-theory) &nbsp;[![LaTeX][latex-logo]](assets/m-theory/m-theory.tex)&nbsp;[![Typst][typst-logo]](assets/m-theory/m-theory.typ) |
 | ![Light](assets/light/light.png) | ![M-Theory](assets/m-theory/m-theory.png) |
 | [MADE](https://janosh.github.io/diagrams/made) &nbsp;[![LaTeX][latex-logo]](assets/made/made.tex)&nbsp;[![Typst][typst-logo]](assets/made/made.typ) | [Masked Autoregressive Flow](https://janosh.github.io/diagrams/masked-autoregressive-flow) &nbsp;[![LaTeX][latex-logo]](assets/masked-autoregressive-flow/masked-autoregressive-flow.tex)&nbsp;[![Typst][typst-logo]](assets/masked-autoregressive-flow/masked-autoregressive-flow.typ) |
 | ![MADE](assets/made/made.png) | ![Masked Autoregressive Flow](assets/masked-autoregressive-flow/masked-autoregressive-flow.png) |
@@ -122,7 +122,7 @@ Have a TikZ/CeTZ diagram you'd like to share? [Submit a PR](https://github.com/j
 | ![Regular vs Bayes NN](assets/regular-vs-bayes-nn/regular-vs-bayes-nn.png) | ![RG Flow in Theory Space](assets/rg-flow-in-theory-space/rg-flow-in-theory-space.png) |
 | [Risk-Opportunity Matrix](https://janosh.github.io/diagrams/risk-opportunity-matrix) &nbsp;[![Typst][typst-logo]](assets/risk-opportunity-matrix/risk-opportunity-matrix.typ) | [RNVP Affine Coupling Layer](https://janosh.github.io/diagrams/rnvp-affine-coupling-layer) &nbsp;[![LaTeX][latex-logo]](assets/rnvp-affine-coupling-layer/rnvp-affine-coupling-layer.tex)&nbsp;[![Typst][typst-logo]](assets/rnvp-affine-coupling-layer/rnvp-affine-coupling-layer.typ) |
 | ![Risk-Opportunity Matrix](assets/risk-opportunity-matrix/risk-opportunity-matrix.png) | ![RNVP Affine Coupling Layer](assets/rnvp-affine-coupling-layer/rnvp-affine-coupling-layer.png) |
-| [ROC Curve](https://janosh.github.io/diagrams/roc-curve) &nbsp;[![Typst][typst-logo]](assets/roc-curve/roc-curve.typ) | [Roost Update](https://janosh.github.io/diagrams/roost-update) &nbsp;[![LaTeX][latex-logo]](assets/roost-update/roost-update.tex) |
+| [ROC Curve](https://janosh.github.io/diagrams/roc-curve) &nbsp;[![Typst][typst-logo]](assets/roc-curve/roc-curve.typ) | [Roost Update](https://janosh.github.io/diagrams/roost-update) &nbsp;[![LaTeX][latex-logo]](assets/roost-update/roost-update.tex)&nbsp;[![Typst][typst-logo]](assets/roost-update/roost-update.typ) |
 | ![ROC Curve](assets/roc-curve/roc-curve.png) | ![Roost Update](assets/roost-update/roost-update.png) |
 | [Sabatier Principle](https://janosh.github.io/diagrams/sabatier-principle) &nbsp;[![LaTeX][latex-logo]](assets/sabatier-principle/sabatier-principle.tex)&nbsp;[![Typst][typst-logo]](assets/sabatier-principle/sabatier-principle.typ) | [Saddle Point](https://janosh.github.io/diagrams/saddle-point) &nbsp;[![LaTeX][latex-logo]](assets/saddle-point/saddle-point.tex)&nbsp;[![Typst][typst-logo]](assets/saddle-point/saddle-point.typ) |
 | ![Sabatier Principle](assets/sabatier-principle/sabatier-principle.png) | ![Saddle Point](assets/saddle-point/saddle-point.png) |
@@ -152,8 +152,10 @@ Have a TikZ/CeTZ diagram you'd like to share? [Submit a PR](https://github.com/j
 | ![Unregularized Propagator Diagrams](assets/unregularized-propagator-diagrams/unregularized-propagator-diagrams.png) | ![Variational Autoencoder](assets/variational-autoencoder/variational-autoencoder.png) |
 | [Wetterich Equation](https://janosh.github.io/diagrams/wetterich-equation) &nbsp;[![LaTeX][latex-logo]](assets/wetterich-equation/wetterich-equation.tex)&nbsp;[![Typst][typst-logo]](assets/wetterich-equation/wetterich-equation.typ) | [Wyckoff Positions](https://janosh.github.io/diagrams/wyckoff-positions) &nbsp;[![LaTeX][latex-logo]](assets/wyckoff-positions/wyckoff-positions.tex)&nbsp;[![Typst][typst-logo]](assets/wyckoff-positions/wyckoff-positions.typ) |
 | ![Wetterich Equation](assets/wetterich-equation/wetterich-equation.png) | ![Wyckoff Positions](assets/wyckoff-positions/wyckoff-positions.png) |
+<!-- markdownlint-disable MD060 -->
 | [zT vs n](https://janosh.github.io/diagrams/zt-vs-n) &nbsp;[![LaTeX][latex-logo]](assets/zt-vs-n/zt-vs-n.tex)&nbsp;[![Typst][typst-logo]](assets/zt-vs-n/zt-vs-n.typ) |  |
 | ![zT vs n](assets/zt-vs-n/zt-vs-n.png) |  |
+<!-- markdownlint-enable MD060 -->
 
 ## Scripts
 
