@@ -5,6 +5,6 @@ tags:
   - cetz
 description: |
   Diagram of a homology group $H_r$ of a chain complex.
-  The boundary operator $partial_r$ maps $r$-chains to $(r-1)$-chains, and its kernel is the group of $r$-cycles $Z_r$.
+  The boundary operator $\partial_r$ maps $r$-chains to $(r-1)$-chains, and its kernel is the group of $r$-cycles $Z_r$.
   The image of $\partial_{r+1}$ is the group of $r$-boundaries $B_r$.
   The homology group $H_r$ is defined as the quotient group $Z_r / B_r$.
