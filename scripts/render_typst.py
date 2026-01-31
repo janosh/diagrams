@@ -6,7 +6,7 @@ sys.path.append(os.path.dirname(__file__))
 
 from convert_assets import pdf_to_svg_png_compressed
 
-# Get name of directory containing the Typst file.
+# Get name of the Typst file path.
 input_file = sys.argv[1]
 
 # Get base path of Typst file, i.e. path without extension.
