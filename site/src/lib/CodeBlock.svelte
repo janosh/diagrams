@@ -52,7 +52,7 @@
       {@const href = `https://overleaf.com/docs?snip_uri=${tex_file_uri}`}
       <a {href} target="_blank" rel="noreferrer noopener">
         <button>
-          <img src="overleaf.svg" alt="Overleaf Logo" height="16" />
+          <img src="/overleaf.svg" alt="Overleaf Logo" height="16" />
         </button>
       </a>
     {/if}

@@ -12,10 +12,6 @@ export default {
       handleHttpError: `warn`,
     },
 
-    files: {
-      assets: `../assets`,
-    },
-
     alias: {
       $root: `.`,
       $assets: `../assets`,
