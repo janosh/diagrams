@@ -30,7 +30,7 @@ repos:
         language: system
 
   - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v10.0.0-rc.2
+    rev: v10.0.1
     hooks:
       - id: eslint
         types: [file]
@@ -90,7 +90,7 @@ repos:
         types: [file]
 
   - repo: https://github.com/crate-ci/typos
-    rev: v1.42.3
+    rev: v1.43.5
     hooks:
       - id: typos
         types: [text]

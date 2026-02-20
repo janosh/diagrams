@@ -24,9 +24,7 @@
     axis-style: "left",
     name: "bose-plot",
     {
-      // Define constants
       let (ek, mu) = (1, 0)
-
       // Add the Bose fluctuation curve
       plot.add(
         style: (stroke: blue + 1.5pt),
@@ -57,9 +55,7 @@
     axis-style: "left",
     name: "fermi-plot",
     {
-      // Define constants
       let (ek, mu) = (1, 0)
-
       // Add the Fermi fluctuation curve
       plot.add(
         style: (stroke: blue + 1.5pt),

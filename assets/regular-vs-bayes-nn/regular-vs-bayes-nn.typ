@@ -29,7 +29,7 @@
     let dy = end.at(1) - start.at(1)
     let len = calc.sqrt(dx * dx + dy * dy)
     // Return shift vector components
-    return (
+    (
       x: dist * dx / len,
       y: dist * dy / len,
     )

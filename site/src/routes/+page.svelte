@@ -101,6 +101,7 @@
     options={tags.map(([label, count]) => ({ label, count }))}
     placeholder="Filter by tag..."
     bind:selected={filters.tags}
+    style="max-width: 34rem"
   >
     {#snippet option({ option }: { option: ObjectOption; idx: number })}
       <span style="display: flex; gap: 5pt; align-items: center">
@@ -170,6 +171,7 @@
     display: flex;
     flex-wrap: wrap;
     place-content: center;
+    place-items: center;
     gap: 1ex 1em;
     margin: 2em;
   }
