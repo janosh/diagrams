@@ -4,6 +4,12 @@
 #set page(width: auto, height: auto, margin: 8pt)
 
 // ROC curve functions for different classifiers
+#let clamp_unit_interval(x, interior_value) = {
+  if x <= 0 { return 0 }
+  if x >= 1 { return 1 }
+  interior_value
+}
+
 #let perfect_classifier(x) = {
   if x == 0 { return 0 }
   if x == 1 { return 1 }
@@ -11,29 +17,10 @@
   return 0
 }
 
-#let excellent_classifier(x) = {
-  if x <= 0 { return 0 }
-  if x >= 1 { return 1 }
-  return calc.pow(x, 0.15)
-}
-
-#let good_classifier(x) = {
-  if x <= 0 { return 0 }
-  if x >= 1 { return 1 }
-  return calc.pow(x, 0.3)
-}
-
-#let fair_classifier(x) = {
-  if x <= 0 { return 0 }
-  if x >= 1 { return 1 }
-  return calc.pow(x, 0.6)
-}
-
-#let poor_classifier(x) = {
-  if x <= 0 { return 0 }
-  if x >= 1 { return 1 }
-  return 0.2 * x + 0.8 * x * x
-}
+#let excellent_classifier(x) = clamp_unit_interval(x, calc.pow(x, 0.15))
+#let good_classifier(x) = clamp_unit_interval(x, calc.pow(x, 0.3))
+#let fair_classifier(x) = clamp_unit_interval(x, calc.pow(x, 0.6))
+#let poor_classifier(x) = clamp_unit_interval(x, 0.2 * x + 0.8 * x * x)
 
 #let random_classifier(x) = x
 

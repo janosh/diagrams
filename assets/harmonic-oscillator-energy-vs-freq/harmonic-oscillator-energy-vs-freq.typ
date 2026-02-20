@@ -20,20 +20,17 @@
     y-tick-step: 2,
     axis-style: "left",
     {
-      // Define constants from original
-      let h = 1
-      let b = 1
+      let (hbar, beta) = (1, 1)
 
       // Add the energy expectation value curve
       plot.add(
         style: (stroke: blue + 1.5pt),
         domain: (0.01, 11), // Avoid x=0 due to division
         samples: 200, // More samples for smoother curve
-        x => {
+        omega => {
           // E = (1/2)hω(1 + 4/(exp(βhω) - 1))
-          let hw = h * x
-          let exp_term = calc.exp(b * hw)
-          (1 / 2) * hw * (1 + 4 / (exp_term - 1))
+          let exp_term = calc.exp(beta * hbar * omega)
+          (1 / 2) * hbar * omega * (1 + 4 / (exp_term - 1))
         },
       )
     },
