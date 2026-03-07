@@ -4,4 +4,4 @@ tags:
   - physics
   - statistical physics
 description: |
-  $x \ln(x)$ is convex and $x - 1$ is its tangent, so $x \ln(x) \geq x - 1 \enskip \forall x$.
+  $x$ and $-x\log(x)$ are concave functions. Since $\ln(p)$ decomposes into sums of these two components, it too must be concave. Any extremum of a concave function is a maximum. This fact is used in statistical physics to find the equilibrium distribution of many-particle systems. See problem 2 on this [exercise sheet](https://janosh.dev/_app/immutable/assets/sol-06.RXJ4ap4j.pdf).
