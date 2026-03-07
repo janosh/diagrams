@@ -5,4 +5,4 @@ tags:
   - probability
   - statistics
 description: |
-  Simple 2d example illustrating the role of the Jacobian determinant in the change of variables formula. Inspired by Ari Seff in <https://youtu.be/i7LjDvsLWCg?t=250>.
+  Architecture of a normalizing flow coupling layer showing forward and inverse passes. The input is split into two parts: one passes through unchanged while the other is transformed by a learned function conditioned on the first part. Inspired by Ari Seff in <https://youtu.be/i7LjDvsLWCg?t=250>.

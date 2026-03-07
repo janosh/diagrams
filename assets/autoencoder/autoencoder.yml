@@ -3,4 +3,4 @@ tags:
   - machine learning
   - neural networks
 description: |
-  Variational autoencoder architecture. Made with <https://github.com/battlesnake/neural>.
+  Autoencoder architecture with symmetric encoder-decoder layers. Made with <https://github.com/battlesnake/neural>.

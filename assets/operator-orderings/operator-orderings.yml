@@ -7,4 +7,4 @@ tags:
   - time ordering
   - propagators
 description: >-
-  Visualization of different operator orderings in quantum field theory: time-ordered, retarded, advanced, and symmetric Green's functions. The diagram shows how these orderings relate to different boundary conditions  to illustrate the connection between causality and propagator types.
+  Visualization of the six possible orderings of four spacetime points $y_1, y_2, y_3, y_4$ on the real line, relevant to the different time-ordering prescriptions in quantum field theory.

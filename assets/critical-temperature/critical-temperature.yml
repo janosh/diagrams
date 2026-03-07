@@ -7,4 +7,4 @@ tags:
   - critical-temperature
   - statistical physics
 
-description: A plot illustrating the temperature-dependent phase transitions of a material as a function of the critical temperature ($T_c$). The blue curve represents the low-temperature phase, the red curve represents the high-temperature phase, and the orange curve shows the critical mass ($m_c$) as a function of temperature. This visualization helps to understand the behavior of materials as they undergo phase transitions due to changes in temperature.
+description: A plot illustrating a temperature-dependent phase transition as a function of the critical temperature ($T_c$). The orange curve shows the order parameter ($m_c$) as a function of temperature, which vanishes continuously at $T_c$. The blue and red curves represent the mathematical components of the order parameter expression near the transition.
