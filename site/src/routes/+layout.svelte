@@ -1,11 +1,10 @@
 <script lang="ts">
   import { goto } from '$app/navigation'
   import { diagrams } from '$lib'
-  import ThemeToggle from '$lib/ThemeToggle.svelte'
   import { repository } from '$root/package.json'
   import Icon from '@iconify/svelte'
   import type { Snippet } from 'svelte'
-  import { CmdPalette, GitHubCorner } from 'svelte-multiselect'
+  import { CmdPalette, GitHubCorner, ThemeToggle } from 'svelte-multiselect'
   import '../app.css'
 
   let { children }: { children?: Snippet<[]> } = $props()
@@ -16,8 +15,6 @@
     }),
   )
 </script>
-
-<ThemeToggle />
 
 <CmdPalette {actions} placeholder="Go to..." />
 
@@ -36,4 +33,6 @@
   &ensp;-&ensp;
   <Icon icon="octicon:quote" inline />
   <a href="{repository}/#--how-to-cite">How to cite</a>
+  &ensp;-&ensp;
+  <ThemeToggle tooltip={false} style="transform: scale(1.1)" />
 </footer>

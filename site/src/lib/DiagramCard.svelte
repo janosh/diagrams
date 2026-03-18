@@ -16,12 +16,14 @@
   {#if format === `full`}
     <Tags {tags} style="color: var(--text-color); margin-block: 0 1em" />
   {/if}
-  <enhanced:img
-    src={item.images.sd}
-    alt={title}
-    class="diagram"
-    {@attach tooltip({ content: description })}
-  />
+  {#if item.images.sd}
+    <enhanced:img
+      src={item.images.sd}
+      alt={title}
+      class="diagram"
+      {@attach tooltip({ content: description })}
+    />
+  {/if}
 </a>
 
 <style>

@@ -20,3 +20,6 @@ jobs:
       - name: Lint and format check
         run: npx vp check
         working-directory: site
+      - name: Svelte type check
+        run: npx svelte-kit sync && npx svelte-check-rs --threshold error
+        working-directory: site

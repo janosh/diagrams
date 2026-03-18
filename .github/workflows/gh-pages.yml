@@ -20,6 +20,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - uses: actions/cache@v4
+        with:
+          path: site/node_modules/.cache/imagetools
+          key: imagetools-${{ hashFiles('assets/**/*.png') }}
+          restore-keys: imagetools-
       - run: npm install
         working-directory: site
       - run: npx vp build

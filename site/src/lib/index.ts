@@ -42,20 +42,18 @@ const yaml_data = import.meta.glob<YamlMetadata>(`$assets/**/*.yml`, {
   eager: true,
   import: `default`,
 })
-const code_files = import.meta.glob<string>([`$assets/**/*.tex`, `$assets/**/*.typ`], {
-  eager: true,
-  query: `?raw`,
-  import: `default`,
-})
-const asset_files = import.meta.glob<string>(
-  [`$assets/**/*.png`, `$assets/**/*.pdf`, `$assets/**/*.svg`],
-  { eager: true, query: `?url`, import: `default` },
+// rolldown doesn't unwrap `import: 'default'` for query imports, so access .default at usage
+const code_files = import.meta.glob<{ default: string }>(
+  [`$assets/**/*.tex`, `$assets/**/*.typ`],
+  { eager: true, query: `?raw` },
 )
-// enhanced images return complex objects, typed as string per Diagram type TODO
-const image_files = import.meta.glob<string>(`$assets/**/*.png`, {
+const asset_files = import.meta.glob<{ default: string }>(
+  [`$assets/**/*.png`, `$assets/**/*.pdf`, `$assets/**/*.svg`],
+  { eager: true, query: `?url` },
+)
+const image_files = import.meta.glob<{ default: string }>(`$assets/**/*.png`, {
   eager: true,
   query: { enhanced: true },
-  import: `default`,
 })
 
 // Process YAML files to create figure data
@@ -68,7 +66,10 @@ export const diagrams = Object.entries(yaml_data)
     // Check if .tex or .typ file exists and get its content
     const tex_path = `${figure_basename}.tex`
     const typ_path = `${figure_basename}.typ`
-    const code = { tex: code_files[tex_path], typst: code_files[typ_path] }
+    const code = {
+      tex: code_files[tex_path]?.default,
+      typst: code_files[typ_path]?.default,
+    }
 
     const tags = [
       ...new Set([
@@ -83,15 +84,15 @@ export const diagrams = Object.entries(yaml_data)
       : metadata.description
 
     const downloads = [
-      asset_files[`${figure_basename}-hd.png`],
-      asset_files[`${figure_basename}.png`],
-      asset_files[`${figure_basename}.pdf`],
-      asset_files[`${figure_basename}.svg`],
+      asset_files[`${figure_basename}-hd.png`]?.default,
+      asset_files[`${figure_basename}.png`]?.default,
+      asset_files[`${figure_basename}.pdf`]?.default,
+      asset_files[`${figure_basename}.svg`]?.default,
     ].filter(Boolean)
 
     const images = {
-      hd: image_files[`${figure_basename}-hd.png`],
-      sd: image_files[`${figure_basename}.png`],
+      hd: image_files[`${figure_basename}-hd.png`]?.default,
+      sd: image_files[`${figure_basename}.png`]?.default,
     }
 
     return Object.assign({}, metadata, {

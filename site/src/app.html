@@ -23,39 +23,18 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"
     />
-    <!-- syntax highlighting - light theme -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@wooorm/starry-night@3/style/light.css"
-      media="(prefers-color-scheme: light)"
-      id="starry-light"
-    />
-    <!-- syntax highlighting - dark theme -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@wooorm/starry-night@3/style/dark.css"
-      media="(prefers-color-scheme: dark)"
-      id="starry-dark"
-    />
-
-    <!-- Theme switching script -->
+    <!-- Theme switching script (prevent flash before Svelte hydrates) -->
     <script>
-      const media_query = window.matchMedia('(prefers-color-scheme: dark)')
-      const theme = localStorage.theme || (media_query.matches ? 'dark' : 'light')
-
-      // Apply theme immediately to prevent flash
+      const media_query = globalThis.matchMedia('(prefers-color-scheme: dark)')
+      const saved = localStorage.theme
+      const theme =
+        saved === 'light' || saved === 'dark'
+          ? saved
+          : media_query.matches
+            ? 'dark'
+            : 'light'
       document.documentElement.style.colorScheme = theme
       document.documentElement.dataset.theme = theme
-
-      // Update syntax highlighting stylesheets
-      const starry_light = document.getElementById('starry-light')
-      const starry_dark = document.getElementById('starry-dark')
-      if (starry_light && starry_dark) {
-        starry_light.media = theme === 'light' ? 'all' : 'not all'
-        starry_dark.media = theme === 'dark' ? 'all' : 'not all'
-      }
-
-      localStorage.theme = theme
     </script>
 
     %sveltekit.head%
