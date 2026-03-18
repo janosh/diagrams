@@ -9,6 +9,13 @@ export { default as CodeBlock } from './CodeBlock.svelte'
 export { default as DiagramCard } from './DiagramCard.svelte'
 export { default as Tags } from './Tags.svelte'
 
+const md_processor = unified()
+  .use(remark_parse)
+  .use(remark_math)
+  .use(remark_rehype)
+  .use(rehype_katex)
+  .use(rehype_stringify)
+
 export type Diagram = {
   slug: string
   downloads: string[]
@@ -31,20 +38,21 @@ export type YamlMetadata = {
 }
 
 // Load all YAML files from assets directory
-const yaml_data = import.meta.glob(`$assets/**/*.yml`, {
+const yaml_data = import.meta.glob<YamlMetadata>(`$assets/**/*.yml`, {
   eager: true,
   import: `default`,
-}) as Record<string, YamlMetadata>
-const code_files = import.meta.glob([`$assets/**/*.tex`, `$assets/**/*.typ`], {
+})
+const code_files = import.meta.glob<string>([`$assets/**/*.tex`, `$assets/**/*.typ`], {
   eager: true,
   query: `?raw`,
   import: `default`,
 })
-const asset_files = import.meta.glob(
+const asset_files = import.meta.glob<string>(
   [`$assets/**/*.png`, `$assets/**/*.pdf`, `$assets/**/*.svg`],
   { eager: true, query: `?url`, import: `default` },
 )
-const image_files = import.meta.glob(`$assets/**/*.png`, {
+// enhanced images return complex objects, typed as string per Diagram type TODO
+const image_files = import.meta.glob<string>(`$assets/**/*.png`, {
   eager: true,
   query: { enhanced: true },
   import: `default`,
@@ -53,8 +61,8 @@ const image_files = import.meta.glob(`$assets/**/*.png`, {
 // Process YAML files to create figure data
 export const diagrams = Object.entries(yaml_data)
   .filter(([_path, metadata]) => !metadata.hide)
-  .map(([path, metadata]) => {
-    const slug = path.split(`/`)[2] // get directory name
+  .map(([path, metadata]): Diagram => {
+    const slug = path.split(`/`)[2] ?? ``
     const figure_basename = `../assets/${slug}/${slug}`
 
     // Check if .tex or .typ file exists and get its content
@@ -62,29 +70,17 @@ export const diagrams = Object.entries(yaml_data)
     const typ_path = `${figure_basename}.typ`
     const code = { tex: code_files[tex_path], typst: code_files[typ_path] }
 
-    let { tags = [] } = metadata
-    // Add typst and cetz tags if applicable
-    if (typ_path in code_files) {
-      tags = [...new Set([...tags, `cetz`])]
-    }
-    if (tex_path in code_files) {
-      tags = [...new Set([...tags, `tikz`])]
-    }
+    const tags = [
+      ...new Set([
+        ...(metadata.tags ?? []),
+        ...(typ_path in code_files ? [`cetz`] : []),
+        ...(tex_path in code_files ? [`tikz`] : []),
+      ]),
+    ]
 
-    // Create new metadata object with updated tags
-    metadata.tags = tags
-
-    // Process description with remark/rehype if needed
-    if (metadata.description) {
-      metadata.description = unified()
-        .use(remark_parse)
-        .use(remark_math)
-        .use(remark_rehype)
-        .use(rehype_katex)
-        .use(rehype_stringify)
-        .processSync(metadata.description)
-        .toString()
-    }
+    const description = metadata.description
+      ? md_processor.processSync(metadata.description).toString()
+      : metadata.description
 
     const downloads = [
       asset_files[`${figure_basename}-hd.png`],
@@ -98,12 +94,19 @@ export const diagrams = Object.entries(yaml_data)
       sd: image_files[`${figure_basename}.png`],
     }
 
-    return { ...metadata, slug, code, downloads, images }
-  }) as Diagram[]
+    return Object.assign({}, metadata, {
+      slug,
+      code,
+      tags,
+      description,
+      downloads,
+      images,
+    })
+  })
 
 export const tags = Object.entries(
   diagrams
-    ?.flatMap((diagram) => diagram.tags)
+    .flatMap((diagram) => diagram.tags)
     .reduce(
       (acc, el) => {
         acc[el] = (acc[el] ?? 0) + 1
@@ -113,4 +116,4 @@ export const tags = Object.entries(
     ),
 )
   .filter(([, count]) => count > 2)
-  .sort(([t1], [t2]) => t1.localeCompare(t2))
+  .toSorted(([t1], [t2]) => t1.localeCompare(t2))

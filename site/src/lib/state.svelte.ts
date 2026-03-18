@@ -9,9 +9,9 @@ export const filters = $state<{
 export const filtered_diagrams = () =>
   diagrams
     .filter((file: Diagram) => {
-      const searchTerms = filters.search?.toLowerCase().split(` `)
-      const matches_search = searchTerms?.every((term) =>
-        JSON.stringify(file).toLowerCase().includes(term)
+      const search_terms = filters.search.toLowerCase().split(` `)
+      const matches_search = search_terms.every((term) =>
+        JSON.stringify(file).toLowerCase().includes(term),
       )
 
       let matches_tags = true
@@ -20,10 +20,8 @@ export const filtered_diagrams = () =>
           matches_tags = filters.tags.every((tag) => file.tags.includes(tag.label))
         } else if (filters.tag_mode === `any`) {
           matches_tags = filters.tags.some((tag) => file.tags.includes(tag.label))
-        } else throw new Error(`Invalid tag mode: ${filters.tag_mode}`)
+        } else throw new Error(`Invalid tag mode: ${String(filters.tag_mode)}`)
       }
       return matches_search && matches_tags
     })
-    .sort((d1: Diagram, d2: Diagram) => {
-      return d1.title.localeCompare(d2.title)
-    })
+    .sort((d1, d2) => d1.title.localeCompare(d2.title))

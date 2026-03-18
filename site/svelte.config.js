@@ -10,6 +10,7 @@ export default {
 
     prerender: {
       handleHttpError: `warn`,
+      handleUnseenRoutes: `ignore`,
     },
 
     alias: {

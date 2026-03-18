@@ -15,34 +15,17 @@ repos:
 
   - repo: local
     hooks:
-      - id: deno-fmt
-        name: Deno format
-        entry: deno fmt
-        types_or: [file]
+      - id: vp-fmt
+        name: Format (oxfmt)
+        entry: bash -c 'cd site && vp fmt --write'
         language: system
-        args: [--config, site/deno.jsonc, --permit-no-files]
+        pass_filenames: false
         exclude: ^readme.md$
-      - id: deno-lint
-        name: Deno lint
-        entry: deno lint
-        types_or: [file]
-        args: [--config, site/deno.jsonc, --permit-no-files, --fix]
+      - id: vp-lint
+        name: Lint (oxlint)
+        entry: bash -c 'cd site && vp lint --fix'
         language: system
-
-  - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v10.0.3
-    hooks:
-      - id: eslint
-        types: [file]
-        args: [--fix, --config, site/eslint.config.js]
-        files: \.(js|ts|svelte)$
-        additional_dependencies:
-          - eslint
-          - eslint-plugin-svelte
-          - svelte
-          - typescript
-          - typescript-eslint
-          - '@stylistic/eslint-plugin'
+        pass_filenames: false
 
   - repo: https://github.com/codespell-project/codespell
     rev: v2.4.2
