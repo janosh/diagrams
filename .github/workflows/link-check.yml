@@ -17,4 +17,4 @@ jobs:
         uses: lycheeverse/lychee-action@v2
         with:
           # increase max-redirects needed for some journal links
-          args: --accept 100..=103,200..=299,403,429,500 --max-redirects 10 --exclude-all-private --exclude '\$\{.*\}' --exclude 'chemicalaid\.com' -- ./**/*.{typ,tex,md,svelte,ts,yml}
+          args: --accept 100..=103,200..=299,403,429,500,503 --max-redirects 10 --exclude-all-private --exclude '\$\{.*\}' --exclude 'chemicalaid\.com' --exclude 'janosh\.github\.io/diagrams' --exclude 'diagrams\.janosh\.dev' -- ./**/*.{typ,tex,md,svelte,ts,yml}

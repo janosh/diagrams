@@ -1,3 +1,17 @@
+/* starry-night syntax highlighting (GitHub-style, light/dark auto-switch) */
+@import '@wooorm/starry-night/style/both';
+/* Ensure starry-night token colors follow explicit theme toggle, not only OS preference. */
+html[data-theme='dark'] {
+  --color-prettylights-syntax-comment: #9198a1;
+  --color-prettylights-syntax-constant: #79c0ff;
+  --color-prettylights-syntax-entity: #d2a8ff;
+  --color-prettylights-syntax-entity-tag: #7ee787;
+  --color-prettylights-syntax-keyword: #ff7b72;
+  --color-prettylights-syntax-storage-modifier-import: #f0f6fc;
+  --color-prettylights-syntax-string: #a5d6ff;
+  --color-prettylights-syntax-variable: #ffa657;
+}
+
 :root {
   /* Light theme colors */
   --light-bg: #f8f9fa;
@@ -80,6 +94,9 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
   color: var(--text-color);
   line-height: 1.6;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
 }
 :where(h1, h2, h3, h4, p, footer) {
   text-align: center;
