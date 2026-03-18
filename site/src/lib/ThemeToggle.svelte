@@ -20,7 +20,7 @@
   }
 
   onMount(() => {
-    const media_query = window.matchMedia(`(prefers-color-scheme: dark)`).matches
+    const media_query = globalThis.matchMedia(`(prefers-color-scheme: dark)`).matches
     const saved_theme = localStorage.theme || (media_query ? `dark` : `light`)
     apply_theme(saved_theme)
   })

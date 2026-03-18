@@ -20,15 +20,15 @@
   // development server fetches files from local folder (specified by svelte.config.js kit.files.assets)
   // production server fetches files from GitHub (so we don't need to re-upload with every build)
   const raw_repo_url =
-    `https://github.com/janosh/diagrams/raw/refs/heads/main/assets/`
+    `https://github.com/janosh/diagrams/raw/refs/heads/main/assets`
   let base_uri = $derived(`${raw_repo_url}/${slug}/${slug}`)
 
   $effect(() => {
     if (downloads?.length < 2) {
-      throw `unexpectedly low number of assets for download`
+      throw new Error(`unexpectedly low number of assets for download`)
     }
   })
-  let plain_description = $derived(description?.replace(/<[^>]*>/g, ``))
+  let plain_description = $derived(description?.replaceAll(/<[^>]*>/g, ``))
 </script>
 
 <svelte:head>
