@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: bezier, circle, content, line, set-style
 
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #let (V, p) = (9, 6)
 #set-style(line: (mark: (scale: .5)))

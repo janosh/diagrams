@@ -8,7 +8,7 @@
 #let z_domain = (0.0, 3.0)
 #let surface_subdivisions = 96
 #let axis_tick_values = (-10, -5, 0, 5, 10)
-#let z_tick_values = (0, 1, 2, 3)
+#let z_tick_values = (1, 2, 3) // omit 0: it coincides with the Im=10 tick at the shared corner
 #let tick_font_size = 26pt
 #let axis_label_font_size = 36pt
 #let peak_overlay_threshold = 1.6
@@ -40,7 +40,7 @@
 #canvas({
   import draw: content, grid, line, set-style, set-transform
 
-  let view_transform = matrix.transform-rotate-dir((-2.25, 1.75, 4), (0, -1, 0))
+  let view_transform = matrix.transform-rotate-dir((2.25, 1.75, -4), (0, 1, 0))
   let base_transform = matrix.mul-mat(view_transform, matrix.transform-scale((0.95, 0.95, 6.0)))
 
   let (x_min, x_max) = x_domain

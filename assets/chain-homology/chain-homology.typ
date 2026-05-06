@@ -2,7 +2,7 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: bezier, circle, content, line
 
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #let dr = 0.1
 
@@ -41,7 +41,7 @@
 
   // Image
   bezier((0, 3), (x, 1), (0.5 * x, 3), (0.5 * x, 1), stroke: (dash: "dashed"))
-  bezier((x, 3), (2* x, 1), (1.5 * x, 3), (1.5 * x, 1), stroke: (dash: "dashed"))
+  bezier((x, 3), (2 * x, 1), (1.5 * x, 3), (1.5 * x, 1), stroke: (dash: "dashed"))
 
   // Boundary operators
   line((1, -0.5), (x - 1, -0.5), mark: (end: "straight"), name: "arrow1")

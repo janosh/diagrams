@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: bezier, content, line
 
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 // Functions for the branch cuts - adjusted to better match the original
 // Increased vertical scaling to spread the curves further apart

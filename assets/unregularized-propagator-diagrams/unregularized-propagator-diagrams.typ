@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content
 
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 // Define styles and constants
 #let radius = 1 // \radius in original

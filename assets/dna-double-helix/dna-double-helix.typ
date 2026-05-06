@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: line
 
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #let pure-red = rgb(255, 0, 0)
 #let pure-blue = rgb(0, 0, 255)

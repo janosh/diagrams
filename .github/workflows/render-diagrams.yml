@@ -13,7 +13,7 @@ jobs:
     if: github.repository_owner == 'janosh' && github.event.pull_request.head.repo.fork == false
     steps:
       - name: Check out repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           # get full history to include BASE_REF commit where PR branched off
           fetch-depth: 0
@@ -46,7 +46,7 @@ jobs:
 
       - name: Install Typst
         if: steps.diff.outputs.typst-files != ''
-        uses: typst-community/setup-typst@v3
+        uses: typst-community/setup-typst@v5
 
       - name: Run render_(typst|tikz).py on changed TeX files
         if: steps.diff.outputs.tex-files != ''

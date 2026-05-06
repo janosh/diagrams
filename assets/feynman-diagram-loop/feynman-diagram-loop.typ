@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, decorations, draw
 #import draw: circle, content, line, mark
 
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #let rad = 0.8
 #canvas({
@@ -19,16 +19,14 @@
     ..arrow-style,
   )
 
-  // Find left and right position on the loop
-  intersections("loop-points", "loop", hide(line(
-    (rel: (-2 * rad, 0), to: "loop.centroid"),
-    (rel: (+2 * rad, 0), to: "loop.centroid"),
-  )))
+  // Left and right points on the loop (circle centered at origin with given radius)
+  let loop-left = (-rad, 0)
+  let loop-right = (rad, 0)
 
   // Add vertices
-  circle("loop-points.0", radius: 0.075, fill: black, name: "dot")
+  circle(loop-left, radius: 0.075, fill: black, name: "dot")
   content(
-    "loop-points.1",
+    loop-right,
     text(size: 10pt)[$times.o$],
     name: "regulator",
     fill: white,

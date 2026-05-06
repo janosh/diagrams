@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas
 #import "@preview/cetz-plot:0.1.4": chart
 
-#set page(width: auto, height: auto, margin: 0pt)
+#set page(width: auto, height: auto, margin: 0pt, fill: none)
 
 #canvas({
   // Data for pie chart (equal thirds)

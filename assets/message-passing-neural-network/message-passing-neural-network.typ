@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: bezier, circle, content, line, rect
 
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #let echo-blue = rgb("#0099cc")
 #let olive-green = rgb(0, 153, 0)

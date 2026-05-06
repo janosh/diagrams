@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: bezier, circle, content, line, rect, set-style
 
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #canvas({
   set-style(
@@ -9,17 +9,14 @@
     mark: (offset: 0.05),
   )
 
-  // Define spacing constants
-  let node-spacing = 2
-  let layer-spacing = 2
-  let vertical-spacing = 1.3
+  let spacing = (node: 2, layer: 2, vertical: 1.0)
 
   // Input nodes
   let y1 = 6
-  let y_dots_1 = y1 - vertical-spacing
-  let yj = y_dots_1 - vertical-spacing
-  let y_dots_2 = yj - vertical-spacing
-  let yn = y_dots_2 - vertical-spacing
+  let y_dots_1 = y1 - spacing.vertical
+  let yj = y_dots_1 - spacing.vertical
+  let y_dots_2 = yj - spacing.vertical
+  let yn = y_dots_2 - spacing.vertical
   let arrow_style = (end: "stealth", fill: black, scale: 0.7)
 
   // First column (input vectors)
@@ -30,25 +27,25 @@
   content((0, yn), $arrow(e)_n$, name: "arrown", padding: 2pt)
 
   // Second column (attention nodes)
-  let x2 = layer-spacing
+  let x2 = spacing.layer
   content((x2, y1), $a_phi$, frame: "rect", stroke: 1pt, padding: (3pt, 4pt), name: "attn1")
   content((x2, yj), $a_phi$, frame: "rect", stroke: 1pt, padding: (3pt, 4pt), name: "attnj")
   content((x2, yn), $a_phi$, frame: "rect", stroke: 1pt, padding: (3pt, 4pt), name: "attnn")
 
   // Third column (alpha values)
-  let x3 = x2 + layer-spacing
+  let x3 = x2 + spacing.layer
   content((x3, y1), text(fill: rgb(0, 0, 0, 20%))[$alpha_(1j)$], name: "alpha1j", padding: 3pt)
   content((x3, yj), $alpha_(j j)$, name: "alphajj", padding: 3pt)
   content((x3, yn), text(fill: rgb(0, 0, 0, 60%))[$alpha_(n j)$], name: "alphanj", padding: 3pt)
 
   // Fourth column (multiplication nodes)
-  let x4 = x3 + layer-spacing
+  let x4 = x3 + spacing.layer
   content((x4, y1), name: "times1", $times$, frame: "circle", padding: 3pt, stroke: .7pt)
   content((x4, yj), name: "timesj", $times$, frame: "circle", padding: 3pt, stroke: .7pt)
   content((x4, yn), name: "timesn", $times$, frame: "circle", padding: 3pt, stroke: .7pt)
 
   // Fifth column (sum node)
-  let x5 = x4 + layer-spacing
+  let x5 = x4 + spacing.layer
   content((x5, yj), $Sigma$, frame: "rect", stroke: .7pt, padding: 4pt, name: "sum")
 
   // Output node
@@ -87,9 +84,9 @@
       end,
       (
         (v1, v2) => {
-          let (x1, y1, ..) = v1
-          let (x2, y2, ..) = v2
-          ((x1 + x2) / 2, (y1 + y2) / 2 - 2)
+          let (x1, y1, z1, ..) = v1
+          let (x2, y2, z2, ..) = v2
+          ((x1 + x2) / 2, (y1 + y2) / 2 - 2, (z1 + z2) / 2)
         },
         start,
         end,

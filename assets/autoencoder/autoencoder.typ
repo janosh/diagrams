@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: content, line
 
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #let neuron(pos, fill: white, text: none) = {
   draw.content(pos, text, frame: "circle", fill: fill, stroke: 0.5pt, padding: 1pt)
@@ -45,15 +45,11 @@
 
   // Draw all layers
   for (x, count, fill, prefix, sup, y-offset) in layers {
+    // eval prefix as math so the base renders in italic math font (e.g. x, h, hat(x))
+    let base = eval(prefix, mode: "math")
     for idx in range(count) {
       let y-pos = y-offset - idx * 0.8
-      let label = if sup != none {
-        $prefix^sup_idx$
-      } else if prefix == "hat(x)" {
-        $hat(x)_idx$
-      } else {
-        $prefix_idx$
-      }
+      let label = if sup != none { $base^sup_idx$ } else { $base_idx$ }
       neuron((x, y-pos), fill: fill, text: label)
     }
   }

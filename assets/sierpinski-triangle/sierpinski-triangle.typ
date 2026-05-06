@@ -1,6 +1,6 @@
 #import "@preview/fractusist:0.3.0": lsystem, lsystem-use
 
-#set page(width: auto, height: auto, margin: 0pt)
+#set page(width: auto, height: auto, margin: 0pt, fill: none)
 #set text(fill: white, size: 6pt)
 
 // Sierpiński triangle with Au(100) surface background

@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, decorations, draw
 #import draw: content, line
 
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 #set text(size: 14pt)
 
 #let arrow-style = (mark: (end: "stealth", fill: black, scale: .75), stroke: 1pt)

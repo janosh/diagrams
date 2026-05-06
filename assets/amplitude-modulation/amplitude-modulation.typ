@@ -2,7 +2,7 @@
 #import "@preview/cetz-plot:0.1.4": plot
 #import draw: content, group, line, translate
 
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #let domain-x(x) = 11 * calc.pi * x
 #let msg(x) = 2.5 + 2 * calc.sin(.5 * domain-x(x))

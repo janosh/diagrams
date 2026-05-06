@@ -108,13 +108,10 @@ export const diagrams = Object.entries(yaml_data)
 export const tags = Object.entries(
   diagrams
     .flatMap((diagram) => diagram.tags)
-    .reduce(
-      (acc, el) => {
-        acc[el] = (acc[el] ?? 0) + 1
-        return acc
-      },
-      {} as Record<string, number>,
-    ),
+    .reduce<Record<string, number>>((acc, el) => {
+      acc[el] = (acc[el] ?? 0) + 1
+      return acc
+    }, {}),
 )
   .filter(([, count]) => count > 2)
   .toSorted(([t1], [t2]) => t1.localeCompare(t2))

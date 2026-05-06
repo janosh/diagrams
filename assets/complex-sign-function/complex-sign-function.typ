@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, draw, matrix, vector
 #import draw: content, group, line, rect, scale, set-transform
 
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 #set text(size: 8pt)
 
 #canvas({

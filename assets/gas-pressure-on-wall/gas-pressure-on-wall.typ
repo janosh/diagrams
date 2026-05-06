@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: content, on-layer
 
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #let hatched = tiling(size: (.2cm, .2cm))[
   #place(rect(width: 100%, height: 100%, fill: white, stroke: none))

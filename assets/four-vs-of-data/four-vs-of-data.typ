@@ -2,7 +2,7 @@
 #import "@preview/cetz-plot:0.1.4": chart
 #import draw: arc, content, line
 
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #canvas({
   let radius = 3

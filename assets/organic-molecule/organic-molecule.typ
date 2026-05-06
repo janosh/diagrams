@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content, line, on-layer
 
-#set page(width: auto, height: auto, margin: 5pt)
+#set page(width: auto, height: auto, margin: 5pt, fill: none)
 
 // Atom with 3D shading effect
 #let atom(pos, color, element, radius: 0.3, name: none) = {
@@ -155,58 +155,18 @@
     atom(pos, hydrogen-color, "H", radius: h-radius, name: name)
   }
 
-  // Draw bonds on a background layer (behind atoms)
+  // bonds on a background layer (behind atoms); resolve H vs heavy-atom lookups
+  let pos-of(name) = if name.starts-with("H") { h-positions.at(name) } else { heavy-atoms.at(name) }
+  let chain = ("H1", "C1", "N1", "C2", "C3", "C4", "O1")
+  let bonds = ()
+  for i in range(chain.len() - 1) { bonds.push((chain.at(i), chain.at(i + 1))) }
+  bonds += (
+    ("H2", "C1"), ("H3", "C1"), ("N1", "H4"), ("C2", "H5"), ("C2", "H6"),
+    ("C3", "H7"), ("C3", "N2"), ("N2", "H8"), ("N2", "H9"), ("C4", "O2"), ("O2", "H10"),
+  )
   on-layer(-1, {
-    // Main chain
-    let bond-chain = ("H1", "C1", "N1", "C2", "C3", "C4", "O1")
-    for i in range(bond-chain.len() - 1) {
-      let from = bond-chain.at(i)
-      let to = bond-chain.at(i + 1)
-
-      let from-pos = if from.starts-with("H") {
-        h-positions.at(from)
-      } else {
-        heavy-atoms.at(from)
-      }
-
-      let to-pos = if to.starts-with("H") {
-        h-positions.at(to)
-      } else {
-        heavy-atoms.at(to)
-      }
-
-      line(from-pos, to-pos, stroke: (paint: gray, thickness: 3.5pt))
-    }
-
-    // Additional bonds
-    let additional-bonds = (
-      ("H2", "C1"),
-      ("H3", "C1"),
-      ("N1", "H4"),
-      ("C2", "H5"),
-      ("C2", "H6"),
-      ("C3", "H7"),
-      ("C3", "N2"),
-      ("N2", "H8"),
-      ("N2", "H9"),
-      ("C4", "O2"),
-      ("O2", "H10"),
-    )
-
-    for (from, to) in additional-bonds {
-      let from-pos = if from.starts-with("H") {
-        h-positions.at(from)
-      } else {
-        heavy-atoms.at(from)
-      }
-
-      let to-pos = if to.starts-with("H") {
-        h-positions.at(to)
-      } else {
-        heavy-atoms.at(to)
-      }
-
-      line(from-pos, to-pos, stroke: (paint: gray, thickness: 3.5pt))
+    for (from, to) in bonds {
+      line(pos-of(from), pos-of(to), stroke: (paint: gray, thickness: 3.5pt))
     }
   })
 })

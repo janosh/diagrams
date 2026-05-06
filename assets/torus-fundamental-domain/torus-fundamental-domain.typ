@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: arc, content, line, rect
 
-#set page(width: auto, height: auto, margin: 1pt)
+#set page(width: auto, height: auto, margin: 1pt, fill: none)
 
 #let (xmin, xmax) = (-1, 1)
 #let (ymin, ymax) = (-0.5, 2.4)

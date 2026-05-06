@@ -1,6 +1,6 @@
 #import "@preview/plotsy-3d:0.2.1": plot-3d-surface
 
-#set page(width: auto, height: auto)
+#set page(width: auto, height: auto, fill: none)
 
 #let saddle_func(x, y) = x * x - y * y
 

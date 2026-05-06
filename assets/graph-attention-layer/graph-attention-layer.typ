@@ -2,7 +2,7 @@
 #import decorations: wave, zigzag
 #import draw: bezier, circle, content, line
 
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #let mauve = rgb(148, 0, 209)
 #let green2 = rgb(0, 153, 0)

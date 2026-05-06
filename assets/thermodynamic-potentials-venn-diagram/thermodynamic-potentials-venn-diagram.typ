@@ -1,25 +1,34 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: arc-through, circle, content, merge-path, rect, rotate, scale, scope
 
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #canvas({
   // Scale up the diagram
   scale(2.5)
 
   // Create Venn diagram with three overlapping circles
-  venn3(
-    name: "venn",
-    a-fill: blue.transparentize(40%), // Mechanical (blue)
-    b-fill: red.transparentize(40%), // Thermal (red)
-    c-fill: green.transparentize(40%), // Chemical (green)
-    ab-fill: purple.transparentize(40%), // Overlap
-    bc-fill: yellow.transparentize(40%), // Overlap
-    ac-fill: teal.transparentize(40%), // Overlap
-    abc-fill: gray.transparentize(70%), // Center
+  let mechanical-center = (-0.65, 0.375)
+  let thermal-center = (0.65, 0.375)
+  let chemical-center = (0, -0.75)
+
+  let ab-outer = (0, 1.135)
+  let ab-inner = (0, -0.385)
+  let ac-outer = (-0.983, -0.568)
+  let ac-inner = (0.334, 0.193)
+  let bc-inner = (-0.334, 0.193)
+
+  let fills = (
+    a: blue.transparentize(40%), // Mechanical (blue)
+    b: red.transparentize(40%), // Thermal (red)
+    c: green.transparentize(40%), // Chemical (green)
+    ab: purple.transparentize(40%), // Overlap
+    bc: yellow.transparentize(40%), // Overlap
+    ac: teal.transparentize(40%), // Overlap
+    abc: gray.transparentize(70%), // Center
   )
 
-  rect((-2.428, 2.153), (2.428, -2.528), fill: white, stroke: auto)
+  rect((-2.428, 2.153), (2.428, -2.528), fill: none, stroke: auto)
 
   for (region, angle) in (("ab", 0deg), ("ac", 120deg), ("bc", 240deg)) {
     scope({
@@ -65,21 +74,21 @@
   }
 
   // Add outer labels for main potentials
-  content("venn.a", [Mechanical\ $F_[mu] = -P V$], anchor: "center", name: "mechanical")
-  content("mechanical.south", text(.8em)[(Grand\ potential)], anchor: "north", padding: (top: 4pt))
+  content((-0.992, 0.573), [Mechanical\ $F_[mu] = -P V$], anchor: "center")
+  content((-0.95, 0.28), text(.8em)[(Grand potential)], anchor: "center")
 
-  content("venn.b", [Thermal\ $H_[mu] = T S$], anchor: "center")
+  content((0.992, 0.573), [Thermal\ $H_[mu] = T S$], anchor: "center")
 
-  content("venn.c", [Chemical\ $G = mu N$], anchor: "center")
+  content((0, -1.146), [Chemical\ $G = mu N$], anchor: "center")
 
   // Add labels for overlapping regions
-  content("venn.ab", align(center, $U_[mu] =\ T S - P V$), anchor: "center", offset: (0, 0.3))
+  content((0, 0.523), align(center, $U_[mu] =\ T S - P V$), anchor: "center")
 
-  content("venn.abc", text(.8em, align(center, $U = T S -\ P V + mu N$)))
+  content((0, 0), text(.8em, align(center, $U = T S -\ P V + mu N$)))
 
-  content("venn.ac", align(center, $F =\ -P V + mu N$), anchor: "center", offset: (-0.3, -0.3))
+  content((-0.496, -0.336), align(center, $F =\ -P V + mu N$), anchor: "center")
 
-  content("venn.bc", align(center, $H =\ T S + mu N$), anchor: "center", offset: (0.3, -0.3))
+  content((0.496, -0.336), align(center, $H =\ T S + mu N$), anchor: "center")
 
   // Add outer circle label
   content((0, 1.6), $G_[mu]$)

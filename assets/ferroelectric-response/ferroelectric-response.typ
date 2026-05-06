@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content, hobby, line, rect, scale, set-origin
 
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #canvas({
   let arrow-style = (mark: (end: "stealth", fill: black, scale: .75))

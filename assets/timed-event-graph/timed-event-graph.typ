@@ -1,6 +1,6 @@
 #import "@preview/cetz:0.5.2"
 
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #let transition(coords, name: none, content: none, color: black) = {
   cetz.draw.group(name: name, {
@@ -62,11 +62,12 @@
   })
 }
 #let calc_bend_pt(a, b, e) = {
-  let mid_pt = (0, 0)
+  let mid_pt = (0, 0, 0)
   mid_pt.at(0) = (a.at(0) + b.at(0)) / 2
   mid_pt.at(1) = (a.at(1) + b.at(1)) / 2
+  mid_pt.at(2) = (a.at(2) + b.at(2)) / 2
 
-  let orth_vec = (0, 0)
+  let orth_vec = (0, 0, 0)
   orth_vec.at(0) = a.at(1) - b.at(1)
   orth_vec.at(1) = b.at(0) - a.at(0)
 

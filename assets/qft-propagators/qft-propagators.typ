@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, decorations, draw
 #import draw: circle, content, line
 
-#set page(width: auto, height: auto, margin: 5pt)
+#set page(width: auto, height: auto, margin: 5pt, fill: none)
 
 #let re-range = 5
 #let im-range = 4

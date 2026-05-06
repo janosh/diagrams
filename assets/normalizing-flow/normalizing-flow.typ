@@ -2,7 +2,7 @@
 #import "@preview/cetz-plot:0.1.4": plot
 #import draw: circle, content, group, line, translate
 
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 // Helper functions for probability distributions
 #let gaussian(x, mu: 0, sigma: 0.2) = (

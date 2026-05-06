@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: content, line, on-layer, rect
 
-#set page(width: auto, height: auto, margin: 5pt)
+#set page(width: auto, height: auto, margin: 5pt, fill: none)
 
 #canvas({
   let cell-size = 0.6
@@ -45,6 +45,8 @@
     }
   }
 
+  let cell-anchor(matrix_name, ii, jj, anchor) = matrix_name + "-" + str(ii) + "-" + str(jj) + "." + anchor
+
   // Draw input matrix I
   let input-origin = (0, 4)
   let input-values = (
@@ -82,7 +84,12 @@
     name: "K",
   )
   // Fill kernel matrix background
-  rect("K-0-0.north-west", "K-2-2.south-east", fill: kernel-color, stroke: none)
+  rect(
+    cell-anchor("K", 0, 0, "north-west"),
+    cell-anchor("K", 2, 2, "south-east"),
+    fill: kernel-color,
+    stroke: none,
+  )
   // Redraw matrix on top of background
   draw-matrix(kernel-origin, (3, 3), kernel-values, name: "K")
   content(
@@ -105,7 +112,12 @@
   )
   draw-matrix(result-origin, (5, 5), result-values, name: "R")
   // Draw highlighted cell in result matrix
-  on-layer(-1, rect("R-0-3.north-west", "R-0-3.south-east", fill: result-color, stroke: none))
+  on-layer(-1, rect(
+    cell-anchor("R", 0, 3, "north-west"),
+    cell-anchor("R", 0, 3, "south-east"),
+    fill: result-color,
+    stroke: none,
+  ))
   content(
     (result-origin.at(0) + 5 * cell-size / 2, 0),
     $bold(I * K)$,
@@ -114,18 +126,18 @@
 
   // Draw connection lines
   let dash-style = (stroke: (dash: "dashed", paint: rgb(150, 220, 200)))
-  line("I-0-5.north-east", "K-0-0.north-west", ..dash-style)
-  line("I-2-5.south-east", "K-2-0.south-west", ..dash-style)
+  line(cell-anchor("I", 0, 5, "north-east"), cell-anchor("K", 0, 0, "north-west"), ..dash-style)
+  line(cell-anchor("I", 2, 5, "south-east"), cell-anchor("K", 2, 0, "south-west"), ..dash-style)
 
   let result-style = (stroke: (dash: "dashed", paint: rgb(150, 150, 220)))
-  line("K-0-2.north-east", "R-0-3.north-west", ..result-style)
-  line("K-2-2.south-east", "R-0-3.south-west", ..result-style)
+  line(cell-anchor("K", 0, 2, "north-east"), cell-anchor("R", 0, 3, "north-west"), ..result-style)
+  line(cell-anchor("K", 2, 2, "south-east"), cell-anchor("R", 0, 3, "south-west"), ..result-style)
 
   // Add small multiplication symbols in highlighted region
   for ii in range(3) {
     for jj in (3, 4, 5) {
       content(
-        ("I-" + str(ii) + "-" + str(jj) + ".south-west"),
+        cell-anchor("I", ii, jj, "south-west"),
         text(size: 6pt)[×#calc.rem(ii + jj, 2)],
         anchor: "south-west",
         padding: 1pt,

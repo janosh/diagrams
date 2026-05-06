@@ -1,17 +1,15 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content, line
 
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #canvas({
-  let node-sep = 1.5 // Horizontal separation between nodes
-  let level-sep = 1.5 // Vertical separation between levels
-  let node-radius = 0.35
+  let layout = (node: 1.5, level: 1.5, radius: 0.35)
   let arrow-style = (mark: (end: "stealth", fill: black, scale: 0.2, offset: 0.03))
 
   // Helper to draw a node with label
   let draw-node(pos, label, name: none) = {
-    circle(pos, radius: node-radius, name: name)
+    circle(pos, radius: layout.radius, name: name)
     content(pos, $#label$)
   }
 
@@ -30,16 +28,16 @@
   draw-node((0, 0), $P_0$, name: "p0")
 
   // Level 1
-  draw-node((-node-sep, -level-sep), $P_1$, name: "p1")
-  draw-node((node-sep, -level-sep), $P_2$, name: "p2")
+  draw-node((-layout.node, -layout.level), $P_1$, name: "p1")
+  draw-node((layout.node, -layout.level), $P_2$, name: "p2")
 
   // Level 2
-  draw-node((0, -2 * level-sep), $P_3$, name: "p3")
-  draw-node((2 * node-sep, -2 * level-sep), $P_4$, name: "p4")
+  draw-node((0, -2 * layout.level), $P_3$, name: "p3")
+  draw-node((2 * layout.node, -2 * layout.level), $P_4$, name: "p4")
 
   // Level 3
-  draw-node((-node-sep, -3 * level-sep), $P_5$, name: "p5")
-  draw-node((node-sep, -3 * level-sep), $P_6$, name: "p6")
+  draw-node((-layout.node, -3 * layout.level), $P_5$, name: "p5")
+  draw-node((layout.node, -3 * layout.level), $P_6$, name: "p6")
 
   // Draw edges
   line("p0", "p1", ..arrow-style, name: "p0-p1")

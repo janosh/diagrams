@@ -6,9 +6,8 @@ export const load: PageServerLoad = ({ params }) => {
   const { slug } = params
   const diagrams = filtered_diagrams()
 
-  const idx = diagrams?.findIndex((itm) => itm.slug === slug)
-  if (idx === -1) throw error(404, `Page '${slug}' not found`)
-  const diagram = diagrams[idx] // figure to display on the rendered page
+  const diagram = diagrams.find((itm) => itm.slug === slug)
+  if (!diagram) error(404, `Page '${slug}' not found`)
 
   // diagrams passed as well for rendering links to next/previous diagrams
   return { diagram, diagrams, slug }

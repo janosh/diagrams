@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: content, line, rect
 
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #canvas({
   let arrow-style = (mark: (end: "stealth", fill: black, scale: 0.5))
@@ -31,7 +31,7 @@
     // Add plot label
     content(
       (origin.at(0) - plot-size / 2, origin.at(1) + plot-size / 2),
-      text(size: 1.2em)[$#label$],
+      text(size: 1.2em)[#eval(label, mode: "math")],
       anchor: "south-west",
       name: label + "-title",
     )

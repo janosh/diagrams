@@ -147,7 +147,7 @@
 }
 
 // === Output ===
-#set page(width: auto, height: auto, margin: if show-grid { 12pt } else { 8pt })
+#set page(width: auto, height: auto, margin: if show-grid { 12pt } else { 8pt }, fill: none)
 
 #if show-grid {
   grid(

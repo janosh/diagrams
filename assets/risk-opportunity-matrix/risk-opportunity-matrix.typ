@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2"
 #import cetz.draw: content, line, rect
 
-#set page(width: auto, height: auto, margin: 4mm)
+#set page(width: auto, height: auto, margin: 4mm, fill: none)
 #set text(0.8em)
 // #set text(lang: "de")
 

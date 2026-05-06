@@ -1,14 +1,14 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: content, hobby, line, on-layer, rect
 
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #canvas({
   // Define styles and constants
-  let node-width = 1
-  let node-height = 0.45
-  let horiz-sep = 1.2
-  let vert-sep = 4
+  let layout = (
+    node: (width: 1, height: 0.45),
+    spacing: (x: 1.2, y: 4),
+  )
   let arrow-style = (end: "stealth", fill: black, scale: .5)
   let (orange, blue, teal) = (rgb("#e8c268"), rgb("#63a7e390"), rgb("#008080"))
   let input-style = (paint: red, thickness: 1pt)
@@ -17,7 +17,7 @@
   let box(pos, label, fill: none, name: none, input: false) = {
     rect(
       pos,
-      (rel: (node-width, node-height)),
+      (rel: (layout.node.width, layout.node.height)),
       fill: fill,
       stroke: if input { input-style } else { (thickness: 0.3pt) },
       name: name,
@@ -31,12 +31,12 @@
   }
 
   // Create nodes in both rows
-  for (y, prefix, colors) in ((0, "x", (blue, rgb(0%, 100%, 0%, 20%))), (-vert-sep, "z", (blue, orange))) {
+  for (y, prefix, colors) in ((0, "x", (blue, rgb(0%, 100%, 0%, 20%))), (-layout.spacing.y, "z", (blue, orange))) {
     // Left group (indices 1, 2, d)
     for (i, x) in ((1, 0), (2, 1), ("d", 3)) {
       box(
-        (x * horiz-sep, y),
-        $#prefix#sub(str(i))$,
+        (x * layout.spacing.x, y),
+        $#eval(prefix, mode: "math")#sub(str(i))$,
         fill: colors.at(0),
         name: prefix + str(i),
         input: prefix == "x",
@@ -47,8 +47,8 @@
     // Right group (indices d+1, D)
     for (ii, x-pos) in (("d+1", 5), ("D", 7)) {
       box(
-        (x-pos * horiz-sep, y),
-        $#prefix#sub(str(ii))$,
+        (x-pos * layout.spacing.x, y),
+        $#eval(prefix, mode: "math")#sub(str(ii))$,
         fill: colors.at(1),
         name: prefix + (if ii == "d+1" { "d-plus-1" } else { ii }),
         input: prefix == "z" and ii == "d+1",
@@ -62,7 +62,7 @@
 
   // Function circles and triangles
   for (label, color, pos, rel-pos) in (
-    ("t", teal, (4.3 * horiz-sep, 0.4 * -vert-sep), none),
+    ("t", teal, (4.3 * layout.spacing.x, 0.4 * -layout.spacing.y), none),
     ("s", orange, none, (-.6, -.75)),
   ) {
     on-layer(

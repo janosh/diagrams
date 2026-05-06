@@ -3,7 +3,7 @@
 #import "@preview/cetz:0.5.2": canvas, draw, matrix, vector
 #import draw: content, grid, group, line, rotate, scale, set-transform
 
-#set page(width: auto, height: auto, margin: .5cm)
+#set page(width: auto, height: auto, margin: .5cm, fill: none)
 
 #canvas({
   // Set up the transformation matrix

@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: bezier, circle, content, line
 
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #canvas({
   let r = .42
@@ -16,7 +16,7 @@
     d6: (3 * dx, 0),
   )
   for (idx, (name, pos)) in nodes.pairs().enumerate() {
-    circle(pos, radius: r, fill: white, stroke: 1.1pt, name: name)
+    circle(pos, radius: r, fill: white.transparentize(40%), stroke: 1.1pt, name: name)
     content(name, $d_#idx$)
   }
 

@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.5.2": canvas, draw, matrix
-#import draw: content, line, rotate, scale, set-style, set-transform
+#import "@preview/cetz:0.5.2": canvas, draw
+#import draw: content, line, scale, set-style, set-transform
 
 #set page(width: auto, height: auto, margin: 4pt, fill: none)
 #set text(size: 17pt, fill: black)
@@ -16,17 +16,23 @@
 #let torus_pt(u_deg, v_deg) = {
   let (u, v) = (u_deg * 1deg, v_deg * 1deg)
   let rad = major_r + minor_r * calc.cos(u)
-  (rad * calc.cos(v), rad * calc.sin(v), minor_r * calc.sin(u))
+  (rad * calc.cos(v), rad * calc.sin(v), -(minor_r * calc.sin(u)))
 }
 
 #canvas({
-  set-transform(matrix.transform-rotate-dir((2.7, 1, -2), (0, 1, 0.5)))
-  scale(x: 0.34, y: 0.30, z: 0.34)
-  rotate(z: 146deg)
+  // pgfplots default 3D view (azimuth 25 deg, elevation 30 deg) to match the original:
+  // screen_x = -x sin(az) + y cos(az); screen_y = -(x cos(az) + y sin(az)) sin(el) + z cos(el)
+  set-transform((
+    (0.4226, -0.9063, 0, 0),
+    (-0.4532, -0.2113, 0.8660, 0),
+    (0, 0, 1, 0),
+    (0, 0, 0, 1),
+  ))
+  scale(0.34)
 
   // Build depth-sorted surface quads.
   let (quads, u_step, v_step) = ((), 360.0 / 48, v_max / 44)
-  let weights = (-1.2, -0.2, -1)
+  let weights = (-0.785, -0.366, -0.5) // = -(camera direction) for the az=25, el=30 view
   for u_idx in range(48) {
     for v_idx in range(44) {
       let (u, v) = (u_idx * u_step, v_idx * v_step)
@@ -40,9 +46,10 @@
     }
   }
 
-  // x/y axes first (torus body occludes them).
+  // x/y axes and the lower z-axis first, so the torus body occludes them.
   line((-axis_len, 0, 0), (axis_len, 0, 0), stroke: ax_stroke)
   line((0, axis_len, 0), (0, -axis_len, 0), stroke: ax_stroke)
+  line((0, 0, -10), (0, 0, 0), stroke: ax_stroke)
 
   // Torus surface (painter's algorithm: far quads first).
   set-style(stroke: rgb("#9a9a9a") + 0.22pt, fill: rgb("#f0f0f0"))
@@ -50,8 +57,8 @@
     line(quad.p1, quad.p2, quad.p3, quad.p4, close: true)
   }
 
-  // z-axis on top, then front-facing axis tips with arrowheads.
-  line((0, 0, 10), (0, 0, -10), stroke: ax_stroke, mark: arrow, name: "z")
+  // upper z-axis on top (its lower half is drawn earlier, behind the torus), then axis tips.
+  line((0, 0, 0), (0, 0, 10), stroke: ax_stroke, mark: arrow, name: "z")
   content("z.end", $z$, anchor: "south", padding: 2pt)
   line((outer_rim, 0, 0), (axis_len, 0, 0), stroke: ax_stroke, mark: arrow, name: "x")
   content("x.end", $x$, anchor: "west", padding: 2pt)
@@ -66,6 +73,11 @@
 
   // r (red): minor radius pointing diagonally upward.
   let stretch = 1 + minor_r * 0.5 / major_r
-  line((rx, ry, 0), (rx * stretch, ry * stretch, -minor_r * 0.87), stroke: (paint: red, thickness: rad_stroke), name: "r")
+  line(
+    (rx, ry, 0),
+    (rx * stretch, ry * stretch, minor_r * 0.87),
+    stroke: (paint: red, thickness: rad_stroke),
+    name: "r",
+  )
   content("r.mid", text(fill: red)[$r$], anchor: "south-east", padding: 2pt)
 })

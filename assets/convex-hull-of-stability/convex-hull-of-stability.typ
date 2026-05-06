@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, draw, vector
 #import draw: circle, content, intersections, line, rect
 
-#set page(width: auto, height: auto, margin: 3pt)
+#set page(width: auto, height: auto, margin: 3pt, fill: none)
 
 #canvas({
   // Diagram dimensions and styles
@@ -154,13 +154,13 @@
   circle((0.5, 1), radius: point_radius, fill: blue.darken(20%), name: "legend-stable")
   content("legend-stable.east", "stable", anchor: "west", padding: (left: 5pt))
   rect(
-    (rel: (-0.15, -0.6), to: "legend-stable"),
-    (rel: (0.15, -0.3), to: "legend-stable"),
+    (0.5 - 0.15, 1 - 0.6),
+    (0.5 + 0.15, 1 - 0.3),
     fill: red,
     stroke: red,
     name: "legend-unstable",
   )
-  content("legend-unstable.east", "unstable", anchor: "west", padding: (left: 5pt))
+  content((0.5 + 0.15, 1 - 0.45), "unstable", anchor: "west", padding: (left: 5pt))
 
   // Add axis labels
   content((rel: (-0.5, 0), to: "y-axis-left.mid"), [#rotate(-90deg)[$Delta E_f$ (energy/atom)]])

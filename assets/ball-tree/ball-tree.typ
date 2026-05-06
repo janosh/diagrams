@@ -1,14 +1,12 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content, line
 
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 #set text(size: 10pt) // Set default text size
 
 #canvas({
   // Styles
-  let node-radius = 0.25
-  let node-sep-x = 1.2 // Horizontal separation for tree
-  let node-sep-y = 1.2 // Vertical separation for tree
+  let node-layout = (radius: 0.25, sep: (x: 1.2, y: 1.2))
   let tree-color = rgb("#6495ED") // Cornflower blue for tree nodes
   let leaf-color = rgb("#FF6347") // Tomato red for leaf nodes
   let arrow-style = (mark: (end: "stealth", fill: black, scale: 0.3), stroke: 0.6pt)
@@ -114,7 +112,7 @@
 
   // Helper to draw tree nodes
   let draw_tree_node(pos, label, name) = {
-    circle(pos, radius: node-radius, fill: node_colors.at(label), stroke: 0.5pt, name: name)
+    circle(pos, radius: node-layout.radius, fill: node_colors.at(label), stroke: 0.5pt, name: name)
     content(pos, $#label$)
   }
 
@@ -122,9 +120,9 @@
   draw_tree_node((tree_offset.at(0) + 0, tree_offset.at(1) + 0), "a", "node-a")
 
   // Level 1
-  draw_tree_node((tree_offset.at(0) - 1.5 * node-sep-x, tree_offset.at(1) - node-sep-y), "b", "node-b")
-  draw_tree_node((tree_offset.at(0) + 2.0 * node-sep-x, tree_offset.at(1) - node-sep-y), "c", "node-c")
-  draw_tree_node((tree_offset.at(0) + 0, tree_offset.at(1) - node-sep-y * 1.5), "j", "node-j")
+  draw_tree_node((tree_offset.at(0) - 1.5 * node-layout.sep.x, tree_offset.at(1) - node-layout.sep.y), "b", "node-b")
+  draw_tree_node((tree_offset.at(0) + 2.0 * node-layout.sep.x, tree_offset.at(1) - node-layout.sep.y), "c", "node-c")
+  draw_tree_node((tree_offset.at(0) + 0, tree_offset.at(1) - node-layout.sep.y * 1.5), "j", "node-j")
 
   // Level 2
   draw_tree_node(

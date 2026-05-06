@@ -1,6 +1,6 @@
 #import "@preview/cetz:0.5.2": canvas, decorations, draw
 
-#set page(width: auto, height: auto, margin: 10pt)
+#set page(width: auto, height: auto, margin: 10pt, fill: none)
 #set text(size: 14pt)
 
 #canvas(length: 1cm, {
@@ -40,8 +40,8 @@
 
   // Braces on edges
   let brace = (stroke: (thickness: 1.3pt, paint: black), fill: none, amplitude: 0.35, flip: false)
-  cetz.decorations.flat-brace((rt.at(0) - 2.65, rt.at(1) + 1.15), (rt.at(0) - 0.15, rt.at(1) + 0.35), ..brace)
-  cetz.decorations.flat-brace((rt.at(0) - 0.15, rt.at(1) - 0.35), (rt.at(0) - 2.65, rt.at(1) - 1.15), ..brace)
+  decorations.flat-brace((rt.at(0) - 2.65, rt.at(1) + 1.15), (rt.at(0) - 0.15, rt.at(1) + 0.35), ..brace)
+  decorations.flat-brace((rt.at(0) - 0.15, rt.at(1) - 0.35), (rt.at(0) - 2.65, rt.at(1) - 1.15), ..brace)
 
   // Message nodes: (y, color, label, attention_label, sign for curve direction)
   let msg_nodes = (

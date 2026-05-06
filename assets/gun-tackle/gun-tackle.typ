@@ -3,7 +3,7 @@
 #import cetz.draw: on-layer, line, content
 #import pull-eh: wind, ccw, cw
 
-#set page(width: auto, height: auto, margin: 5mm)
+#set page(width: auto, height: auto, margin: 5mm, fill: none)
 #set text(0.9em)
 
 #let block(coord, (w, h), ..args) = {

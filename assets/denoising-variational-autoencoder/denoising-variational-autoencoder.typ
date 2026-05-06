@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, decorations, draw
 #import draw: anchor, circle, content, line, rect
 
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #canvas({
   let green = rgb("#009900")

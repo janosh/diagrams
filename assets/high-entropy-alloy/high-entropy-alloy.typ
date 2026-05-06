@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content
 
-#set page(width: auto, height: auto, margin: 5pt)
+#set page(width: auto, height: auto, margin: 5pt, fill: none)
 
 // Define the atom function with nice 3D shading
 #let atom(pos, color, radius: 0.3, element: none, name: none) = {

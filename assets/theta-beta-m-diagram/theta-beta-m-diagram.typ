@@ -257,7 +257,7 @@
   // Geometry drawing
   let geometry-drawing = cetz.canvas(
     length: 3cm,
-    background: white,
+    background: none,
     stroke: (thickness: 0.5pt, paint: black),
     padding: 0.2cm,
     {
@@ -345,7 +345,7 @@
     shock-angle-plots + (solution-border-plot, mach-1-plot, drawing-plot) + legend-plots + label-plots
   )
 
-  set page(margin: 1cm)
+  set page(margin: 1cm, fill: none)
   set text(font: "New Computer Modern")
   set align(center)
 

@@ -5,6 +5,7 @@
   import Icon from '@iconify/svelte'
   import type { Snippet } from 'svelte'
   import { CmdPalette, GitHubCorner, ThemeToggle } from 'svelte-multiselect'
+  // oxlint-disable-next-line import/no-unassigned-import -- global app styles
   import '../app.css'
 
   let { children }: { children?: Snippet<[]> } = $props()

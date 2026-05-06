@@ -16,11 +16,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: site/node_modules/.cache/imagetools
           key: imagetools-${{ hashFiles('assets/**/*.png') }}
@@ -32,7 +32,7 @@ jobs:
         working-directory: site
       - run: pnpm exec vp build
         working-directory: site
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: site/build
 
@@ -45,4 +45,4 @@ jobs:
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - id: deploy
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

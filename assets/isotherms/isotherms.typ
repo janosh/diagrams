@@ -2,7 +2,7 @@
 #import "@preview/cetz-plot:0.1.4": plot
 #import draw: content, line
 
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 // Constants
 #let gas_constant = 8.31 // Gas constant

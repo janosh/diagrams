@@ -1,12 +1,11 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: content, line, rect
 
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #canvas({
   // Define spacing variables
-  let h-sep = 1.2 // horizontal separation between elements
-  let v-sep = 0.8 // vertical separation between elements
+  let spacing = (horizontal: 1.2, vertical: 0.8)
 
   // Helper function for drawing a matrix with colored dimension indicators
   let matrix(
@@ -23,7 +22,8 @@
 
     // Draw matrix rectangle
     rect(pos, (x + w, y - h), ..style, name: label)
-    content(label, $#label$)
+    // eval label as math so matrix names render italic (matching the formula below)
+    content(label, eval(label, mode: "math"))
 
     // Draw dimension indicators if colors specified
     if top-color != none {
@@ -101,7 +101,7 @@
 
   // Operation nodes with consistent spacing
   content(
-    (h-sep + 0.4, 0),
+    (spacing.horizontal + 0.4, 0),
     $dot.op^top$,
     frame: "rect",
     stroke: rgb(50%, 50%, 50%) + .75pt,
@@ -111,7 +111,7 @@
   )
 
   content(
-    (2 * h-sep + 0.6, 0),
+    (2 * spacing.horizontal + 0.6, 0),
     [softmax],
     frame: "rect",
     stroke: rgb(50%, 50%, 50%) + .75pt,
@@ -121,7 +121,7 @@
   )
 
   matrix(
-    (3 * h-sep + 0.7, 0.9),
+    (3 * spacing.horizontal + 0.7, 0.9),
     (0.8, 1.8),
     "A",
     top-color: rgb("#FF0000"),
@@ -130,7 +130,7 @@
   )
 
   content(
-    (4 * h-sep + 1, 0),
+    (4 * spacing.horizontal + 1, 0),
     $dot.op$,
     frame: "rect",
     stroke: rgb(50%, 50%, 50%),
@@ -140,7 +140,7 @@
   )
 
   matrix(
-    (5 * h-sep + 0.7, 0.9),
+    (5 * spacing.horizontal + 0.7, 0.9),
     (1.0, 1.8),
     "Y",
     top-color: rgb("#FFA500"),

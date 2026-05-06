@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import "@preview/cetz-plot:0.1.4": plot
 
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #canvas({
   draw.set-style(axes: (
@@ -11,14 +11,17 @@
 
   plot.plot(
     size: (12, 8),
-    x-label: [Carrier concentration $n$ ($"cm"^(-3)$)],
+    name: "plot",
+    // x-label placed manually below (school-book style otherwise pins it to the axis tip)
+    x-label: none,
     y-label: $z T$,
     y-min: 0,
     x-mode: "log",
     x-tick-step: 1,
-    x-grid: true,
+    x-minor-tick-step: 1, // log minor ticks at 2..9 within each decade
+    x-grid: "both",
     y-grid: true,
-    // x-format: "sci",
+    x-format: x => $10^#calc.round(calc.log(x, base: 10))$,
     axis-style: "left",
     legend: "inner-north-east",
     {
@@ -207,5 +210,12 @@
         label: $S^2 sigma$,
       )
     },
+  )
+
+  // x-axis label centered below the axis, clear of the tick labels
+  draw.content(
+    (rel: (0, -0.4), to: "plot.south"),
+    [Carrier concentration $n$ ($"cm"^(-3)$)],
+    anchor: "north",
   )
 })

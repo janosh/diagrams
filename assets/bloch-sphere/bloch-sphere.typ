@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2": angle, canvas, draw
 #import draw: circle, content, line
 
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #canvas({
   // Helper coordinates
@@ -12,6 +12,7 @@
 
   // Bloch vector
   line((0, 0), vec-a, mark: (start: "circle", end: "circle", fill: black, scale: .5, anchor: "center"))
+  content((rel: (0.08, 0.08), to: vec-a), $arrow(a)$, anchor: "south-west")
 
   // Dashed line forming angle
   line((0, 0), phi-point, style: "dashed")

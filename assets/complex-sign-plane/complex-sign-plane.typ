@@ -3,7 +3,7 @@
 #let size = 8
 #let gap = 0.15 // gap between squares
 #let axes-extend = 0.3
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #canvas({
   // Draw axes

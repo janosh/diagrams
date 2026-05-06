@@ -1,12 +1,10 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content, line, polygon
 
-#set page(width: auto, height: auto, margin: 8pt)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 
-// polygons added in https://github.com/cetz-package/cetz/pull/777. once released, use them to turn rect into diamonds. can't get rotate(z: 45deg) to work for unknown reasons
 #canvas({
-  let node-sep = 2.5 // Horizontal separation between nodes
-  let vert-sep = 2.5 // Vertical separation between rows
+  let spacing = (node: 2.5, row: 2.5)
 
   // Node styles
   let arrow-style = (
@@ -16,9 +14,11 @@
 
   // Helper to draw diamond node with its label
   let diamond(pos, name, label, fill: none) = {
-    rect(
-      (pos.at(0) - 0.5, pos.at(1) - 0.5),
-      (pos.at(0) + 0.5, pos.at(1) + 0.5),
+    polygon(
+      pos,
+      4,
+      radius: 0.7,
+      angle: 90deg,
       stroke: 0.7pt,
       fill: fill,
       name: name,
@@ -35,16 +35,16 @@
   // Forward pass (left side)
   // First row
   let z1-pos = (0, 0)
-  let eq1-pos = (node-sep, 0)
-  let x1-pos = (2 * node-sep, 0)
+  let eq1-pos = (spacing.node, 0)
+  let x1-pos = (2 * spacing.node, 0)
 
   // Second row
-  let z2-pos = (0, -vert-sep)
-  let g1-pos = (node-sep, -vert-sep)
-  let x2-pos = (2 * node-sep, -vert-sep)
+  let z2-pos = (0, -spacing.row)
+  let g1-pos = (spacing.node, -spacing.row)
+  let x2-pos = (2 * spacing.node, -spacing.row)
 
   // Middle node
-  let m1-pos = (node-sep / 2, -vert-sep / 2)
+  let m1-pos = (spacing.node / 2, -spacing.row / 2)
 
   // Draw forward pass nodes
   diamond(z1-pos, "z1", $arrow(z)_(1:d)$, fill: rgb("#cce5ff"))
@@ -71,20 +71,20 @@
   )
 
   // Inverse pass (right side)
-  let right-x = 5 * node-sep
+  let right-x = 5 * spacing.node
 
   // First row
   let z1r-pos = (right-x, 0)
-  let eq2-pos = (right-x + node-sep, 0)
-  let x1r-pos = (right-x + 2 * node-sep, 0)
+  let eq2-pos = (right-x + spacing.node, 0)
+  let x1r-pos = (right-x + 2 * spacing.node, 0)
 
   // Second row
-  let z2r-pos = (right-x, -vert-sep)
-  let g2-pos = (right-x + node-sep, -vert-sep)
-  let x2r-pos = (right-x + 2 * node-sep, -vert-sep)
+  let z2r-pos = (right-x, -spacing.row)
+  let g2-pos = (right-x + spacing.node, -spacing.row)
+  let x2r-pos = (right-x + 2 * spacing.node, -spacing.row)
 
   // Middle node
-  let m2-pos = (right-x + 1.5 * node-sep, -vert-sep / 2)
+  let m2-pos = (right-x + 1.5 * spacing.node, -spacing.row / 2)
 
   // Draw inverse pass nodes
   diamond(z1r-pos, "z1r", $arrow(z)_(1:d)$, fill: rgb("#cce5ff"))
