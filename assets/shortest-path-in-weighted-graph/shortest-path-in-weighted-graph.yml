@@ -1,0 +1,13 @@
+title: Shortest Path in Weighted Graph
+creator: Petar Veličković
+creator_url: http://petar-v.com
+url: https://github.com/PetarV-/TikZ/tree/86aee049f5355d77c598b936399e42caf8941e60/Shortest%20path%20problem
+source: |
+  Linear programming and the Simplex algorithm, [mgcsweek v2.0](http://www.csnedelja.mg.edu.rs)
+date: 2026-05-27
+tags:
+  - graph theory
+  - optimization
+  - algorithms
+description: |
+  A weighted directed graph with the minimum-cost path from source to target highlighted in red.

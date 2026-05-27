@@ -52,9 +52,10 @@
       (x1, y1),
       (x2, y2),
       stroke: blue,
+      name: if ii == 67 { "blue-curve-label-pos" } else { none },
     )
   }
-  content((4.2, -0.6), text(fill: blue)[$1 / alpha << ell$], name: "alpha-label")
+  content((rel: (0, -.45), to: "blue-curve-label-pos.mid"), text(fill: blue)[$1 / alpha << ell$])
 
   // Second curve (orange)
   let (A2, B2, alpha2) = (15, 120, 3)
@@ -68,8 +69,8 @@
       (x1, y1),
       (x2, y2),
       stroke: orange,
-      name: "orange-line-" + str(ii),
+      name: if ii == 67 { "orange-curve-label-pos" } else { none },
     )
   }
-  content((4.2, 0.4), text(fill: orange)[$1 / alpha << ell$], name: "alpha-label")
+  content((rel: (0, .4), to: "orange-curve-label-pos.mid"), text(fill: orange)[$1 / alpha << ell$])
 })

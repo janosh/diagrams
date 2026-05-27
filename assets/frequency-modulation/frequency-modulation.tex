@@ -1,0 +1,24 @@
+\documentclass[tikz]{standalone}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\usetikzlibrary{arrows.meta}
+
+\newcommand{\wave}[7]{%
+  \draw[->] (0,#1) -- (7.8,#1) node[right] {$t$};
+  \draw[->] (0,#1-.95) -- (0,#1+1.15);
+  \node[anchor=north west,#5] at (.14,#1+.9) {#2};
+  \begin{scope}[shift={(0,#1-.65)}]
+    \begin{axis}[width=7.25cm,height=1.6cm,axis lines=none,ymin=#6,ymax=#7]
+      \addplot[#3,thick,domain=0:1,samples=300] {#4};
+    \end{axis}
+  \end{scope}
+}
+
+\begin{document}
+\begin{tikzpicture}[>=Stealth]
+  \wave{4.6}{$x(t)$}{black}{.75+.6*sin(deg(2*pi*x))}{black}{-.15}{1.55}
+  \wave{2.05}{carrier wave}{blue}{sin(deg(40*pi*x))}{blue}{-1.35}{1.35}
+  \wave{-.6}{FM wave}{green!55!black}{sin(deg(34*pi*x + 4.2*sin(deg(2*pi*x))))}{green!55!black}{-1.35}{1.35}
+\end{tikzpicture}
+\end{document}

@@ -31,8 +31,8 @@
   content((rel: (0.1, 0), to: "y-axis.95%"), text(weight: "bold")[reaction rate], anchor: "west")
 
   // Add region labels
-  content((2.5, 1), [limited by\ desorption\ of product])
-  content((6, 1), [limited by\ activation\ of reactant])
+  content((rel: (0, 1), to: "x-axis.37%"), [limited by\ desorption\ of product])
+  content((rel: (0, 1), to: "x-axis.77%"), [limited by\ activation\ of reactant])
 
   // Draw Sabatier optimum label
   let ellipse-center = (4.5, 4.2)

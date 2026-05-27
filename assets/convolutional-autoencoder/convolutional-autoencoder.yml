@@ -1,0 +1,13 @@
+title: Convolutional Autoencoder
+creator: Petar Veličković
+creator_url: http://petar-v.com
+url: https://github.com/PetarV-/TikZ/tree/86aee049f5355d77c598b936399e42caf8941e60/Convolutional%20autoencoder
+source: |
+  Unsupervised methods: Diving deep into autoencoders, *Introduction to Deep Learning (COMPGI23), University College London*
+date: 2026-05-27
+tags:
+  - machine learning
+  - neural networks
+  - computer vision
+description: |
+  A convolutional autoencoder compresses image-like feature maps to a compact latent representation and decodes them back to a reconstruction.

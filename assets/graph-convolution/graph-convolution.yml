@@ -1,0 +1,13 @@
+title: Graph Convolution
+creator: Petar Veličković
+creator_url: http://petar-v.com
+url: https://github.com/PetarV-/TikZ/tree/86aee049f5355d77c598b936399e42caf8941e60/Graph%20convolution
+source: |
+  [Graph Attention Networks](http://petar-v.com/GAT/) blog post
+date: 2026-05-27
+tags:
+  - machine learning
+  - neural networks
+  - graph neural networks
+description: |
+  A graph convolution updates a target node by aggregating its neighbor features and applying a shared learnable transformation.

@@ -1,0 +1,13 @@
+title: Semi-supervised Learning
+creator: Petar Veličković
+creator_url: http://petar-v.com
+url: https://github.com/PetarV-/TikZ/tree/86aee049f5355d77c598b936399e42caf8941e60/Semi-supervised%20learning
+source: |
+  Unsupervised methods: Diving deep into autoencoders, *Introduction to Deep Learning (COMPGI23), University College London*
+date: 2026-05-27
+tags:
+  - machine learning
+  - semi-supervised learning
+  - classification
+description: |
+  Unlabeled samples can reveal data density and shift the decision boundary away from high-density regions between labeled classes.

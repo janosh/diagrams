@@ -21,7 +21,7 @@
       src={item.images.sd}
       alt={title}
       class="diagram"
-      {@attach tooltip({ content: description })}
+      {@attach tooltip({ content: description ?? undefined, allow_html: true })}
     />
   {/if}
 </a>

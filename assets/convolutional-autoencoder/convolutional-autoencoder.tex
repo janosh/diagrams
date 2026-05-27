@@ -1,0 +1,26 @@
+\documentclass[tikz]{standalone}
+\usetikzlibrary{arrows.meta}
+
+\newcommand{\feat}[8]{%
+  \foreach \k in {0,...,#5}
+    \draw[fill=#7,draw=black!65] (#1+.12*\k,#2+.10*\k) rectangle ++(#3,#4);
+  \node[below] (#8) at (#1+#3/2+.06*#5,#2-.25) {#6};
+}
+
+\begin{document}
+\begin{tikzpicture}[>=Stealth,font=\small]
+  \foreach \x/\y/\w/\h/\d/\txt/\clr/\id in {
+    0/0/1.3/1.3/0/input/yellow!45/input,
+    2/.18/1.05/1.05/2/conv/blue!12/conv1,
+    3.9/.38/.75/.75/4/pool/green!14/pool,
+    5.6/.55/.45/.45/6/latent/purple!12/latent,
+    7.4/.38/.75/.75/4/upconv/green!14/up,
+    9.2/.18/1.05/1.05/2/conv/blue!12/conv2,
+    11.1/0/1.3/1.3/0/reconstruction/yellow!45/out}
+    \feat{\x}{\y}{\w}{\h}{\d}{\txt}{\clr}{\id}
+  \foreach \a/\b in {input/conv1,conv1/pool,pool/latent,latent/up,up/conv2,conv2/out}
+    \draw[->] (\a.east) -- (\b.west);
+  \node at (3.1,2.05) {encoder};
+  \node at (9.4,2.05) {decoder};
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,15 @@
+title: Cartesian vs Polar Coordinates
+creator: Petar Veličković
+creator_url: http://petar-v.com
+url: https://github.com/PetarV-/TikZ/tree/86aee049f5355d77c598b936399e42caf8941e60/Coordinate%20systems
+source: |
+  IQ sampling and FM demodulation using MATLAB, [mgcsweek v2.0](http://www.csnedelja.mg.edu.rs)
+date: 2026-05-27
+tags:
+  - mathematics
+  - geometry
+  - coordinate systems
+description: |
+  Cartesian and polar coordinates for the same point, with the radial projection identities highlighted.
+
+  See also [Euler Angles](../euler-angles).

@@ -1,0 +1,13 @@
+title: Supervised Learning Setup
+creator: Petar Veličković
+creator_url: http://petar-v.com
+url: https://github.com/PetarV-/TikZ/tree/86aee049f5355d77c598b936399e42caf8941e60/Supervised%20learning%20setup
+source: |
+  Multiplex network inference, mgcsweek v2.0
+date: 2026-05-27
+tags:
+  - machine learning
+  - supervised learning
+  - algorithms
+description: |
+  A supervised learning setup where training data produces a labelling function that maps unseen data to labels.

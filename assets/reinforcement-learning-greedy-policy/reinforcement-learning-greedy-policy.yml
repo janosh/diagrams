@@ -1,0 +1,13 @@
+title: Reinforcement Learning Greedy Policy
+creator: Petar Veličković
+creator_url: http://petar-v.com
+url: https://github.com/PetarV-/TikZ/tree/86aee049f5355d77c598b936399e42caf8941e60/Reinforcement%20learning%20greedy%20policy
+source: |
+  [Reinforcement Learning](http://csnedelja.mg.edu.rs/static/resources/v4.0/sre1_ucenje_pv.pdf), [mgcsweek4](http://www.csnedelja.mg.edu.rs)
+date: 2026-05-27
+tags:
+  - machine learning
+  - reinforcement learning
+  - decision making
+description: |
+  A grid-world policy that greedily selects the locally best action under estimated state values, steering toward the goal while avoiding a penalty state.

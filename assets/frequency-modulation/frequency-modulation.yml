@@ -1,0 +1,13 @@
+title: Frequency Modulation
+creator: Petar Veličković
+creator_url: http://petar-v.com
+url: https://github.com/PetarV-/TikZ/tree/86aee049f5355d77c598b936399e42caf8941e60/Frequency%20modulation
+source: |
+  IQ sampling and FM demodulation using MATLAB, [mgcsweek v2.0](http://www.csnedelja.mg.edu.rs)
+date: 2026-05-27
+tags:
+  - signal processing
+  - communications
+  - modulation
+description: |
+  Frequency modulation encodes a message by varying the instantaneous phase, and therefore frequency, of a carrier wave.

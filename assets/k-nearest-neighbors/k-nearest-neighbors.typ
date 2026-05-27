@@ -86,10 +86,10 @@
   content((rel: (0, -0.3), to: "k7-circle.south"), $k = 7$, anchor: "north")
 
   // Add class labels in the upper right corner
-  content((5.4, 4.8), text(fill: red, size: 12pt)[Class A])
-  content((5.4, 4.3), text(fill: green, size: 12pt)[Class B])
+  content((rel: (-.6, 4.8), to: "x-axis.end"), text(fill: red, size: 12pt)[Class A], name: "class-a-label")
+  content((rel: (0, -.5), to: "class-a-label"), text(fill: green, size: 12pt)[Class B])
 
   // Add arrow pointing to the new example
-  content((4, 5.5), [New example\ to classify], name: "new-example-label")
+  content((rel: (1, 3), to: "new-example"), [New example\ to classify], name: "new-example-label")
   line("new-example-label", "new-example.north", stroke: 0.6pt, mark: (end: "stealth", fill: black, offset: 0.05))
 })

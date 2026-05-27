@@ -3,9 +3,9 @@
 import json
 import os
 import re
+from dataclasses import dataclass
 from glob import glob
 from itertools import zip_longest
-from typing import TypedDict
 
 import yaml
 
@@ -15,28 +15,26 @@ with open(f"{ROOT}/site/package.json") as file:
     site_url = json.load(file)["homepage"]
 
 
-class DiagramInfo(TypedDict):
-    """Structure to hold diagram source path and title."""
+@dataclass(frozen=True)
+class DiagramInfo:
+    """Diagram name and display title."""
 
-    source_path: str
+    name: str
     title: str
 
 
 def collect_diagrams() -> list[DiagramInfo]:
-    """Collect all diagram info from YAML files."""
-    yaml_paths = glob(f"{ROOT}/assets/**/*.yml")
-    tex_paths = glob(f"{ROOT}/assets/**/*.tex")
-    typ_paths = glob(f"{ROOT}/assets/**/*.typ")
-
-    # Verify every diagram has a YAML file
-    for path in tex_paths + typ_paths:
-        dir_name = os.path.dirname(path)
+    """Collect visible diagram metadata with matching source files."""
+    for source_path in glob(f"{ROOT}/assets/**/*.tex") + glob(
+        f"{ROOT}/assets/**/*.typ"
+    ):
+        dir_name = os.path.dirname(source_path)
         yaml_path = f"{dir_name}/{os.path.basename(dir_name)}.yml"
         if not os.path.isfile(yaml_path):
-            raise FileNotFoundError(f"Missing {yaml_path} for {path}")
+            raise FileNotFoundError(f"Missing {yaml_path} for {source_path}")
 
-    diagrams = {}
-    for yaml_path in sorted(yaml_paths):
+    diagrams: list[DiagramInfo] = []
+    for yaml_path in sorted(glob(f"{ROOT}/assets/**/*.yml")):
         dir_path = os.path.dirname(yaml_path)
         name = os.path.basename(dir_path)
 
@@ -49,23 +47,16 @@ def collect_diagrams() -> list[DiagramInfo]:
         if "title" not in metadata:
             raise ValueError(f"Missing 'title' in {yaml_path}")
 
-        # Prefer .typ over .tex
-        for ext in (".typ", ".tex"):
-            source_path = f"{dir_path}/{name}{ext}"
-            if os.path.isfile(source_path):
-                diagrams[name] = {
-                    "source_path": source_path,
-                    "title": metadata["title"],
-                }
-                break
+        if any(os.path.isfile(f"{dir_path}/{name}{ext}") for ext in (".typ", ".tex")):
+            diagrams.append(DiagramInfo(name=name, title=metadata["title"]))
 
-    return [diagrams[name] for name in sorted(diagrams)]
+    return sorted(diagrams, key=lambda diagram: diagram.name)
 
 
 def get_code_links(fig_name: str) -> str:
     """Generate markdown links to source files as language logo icons."""
-    links = []
-    for ext, logo in [(".tex", "LaTeX"), (".typ", "Typst")]:
+    links: list[str] = []
+    for ext, logo in ((".tex", "LaTeX"), (".typ", "Typst")):
         path = f"assets/{fig_name}/{fig_name}{ext}"
         if os.path.isfile(f"{ROOT}/{path}"):
             links.append(f"[![{logo}][{logo.lower()}-logo]]({path})")
@@ -76,45 +67,40 @@ def get_code_links(fig_name: str) -> str:
     return "&nbsp;" + "&nbsp;".join(links)
 
 
+def table_cell(diagram: DiagramInfo | None) -> tuple[str, str]:
+    """Build the title and image markdown for one diagram table cell."""
+    if diagram is None:
+        return "", ""
+    name = diagram.name
+    title = diagram.title
+    return (
+        f"[{title}]({site_url}/{name}) {get_code_links(name)}",
+        f"![{title}](assets/{name}/{name}.png)",
+    )
+
+
 def generate_table(diagrams: list[DiagramInfo]) -> str:
-    """Generate markdown table from diagram info."""
+    """Generate a two-column markdown table from diagram info."""
     table = f"| {'&emsp;' * 22} | {'&emsp;' * 22} |\n| :---: | :---: |\n"
 
-    pairs = list(zip_longest(diagrams[::2], diagrams[1::2]))
-    for idx, (left_diagram, right_diagram) in enumerate(pairs):
-        # First column
-        name1 = os.path.basename(os.path.dirname(left_diagram["source_path"]))
-        title1 = left_diagram["title"]
-        dir_link1 = f"[{title1}]({site_url}/{name1}) {get_code_links(name1)}"
-        img_link1 = f"![{title1}](assets/{name1}/{name1}.png)"
+    for left_diagram, right_diagram in zip_longest(diagrams[::2], diagrams[1::2]):
+        dir_link1, img_link1 = table_cell(left_diagram)
+        dir_link2, img_link2 = table_cell(right_diagram)
 
-        # Second column (if exists)
-        if right_diagram:
-            name2 = os.path.basename(os.path.dirname(right_diagram["source_path"]))
-            title2 = right_diagram["title"]
-            dir_link2 = f"[{title2}]({site_url}/{name2}) {get_code_links(name2)}"
-            img_link2 = f"![{title2}](assets/{name2}/{name2}.png)"
-        else:
-            dir_link2 = img_link2 = ""
-            # Add markdownlint disable comment for last row with empty cell
-            if idx == len(pairs) - 1:
-                table += "<!-- markdownlint-disable MD060 -->\n"
-
+        if right_diagram is None:
+            table += "<!-- markdownlint-disable MD060 -->\n"
         table += f"| {dir_link1} | {dir_link2} |\n| {img_link1} | {img_link2} |\n"
-
-        # Close markdownlint disable comment for last row with empty cell
-        if right_diagram is None and idx == len(pairs) - 1:
+        if right_diagram is None:
             table += "<!-- markdownlint-enable MD060 -->\n"
 
     return table
 
 
 def update_readme(table: str, diagram_count: int) -> None:
-    """Update README with new table and counts."""
+    """Update README diagram table, heading count, and language badges."""
     with open(f"{ROOT}/readme.md") as file:
         readme = file.read()
 
-    # Insert table
     readme = re.sub(
         pattern=r"(?<=<!-- diagram-table -->\n)(.*)(?=## Scripts\n)",
         repl=f"\n{table}\n",
@@ -122,18 +108,16 @@ def update_readme(table: str, diagram_count: int) -> None:
         flags=re.DOTALL,
     )
 
-    # Update diagram count
-    readme = re.sub(
+    for pattern in (
         r"(?<=Collection of \*\*)\d+(?=\*\* Scientific Diagrams)",
-        str(diagram_count),
-        readme,
-    )
+        r"(?<=\n  )\d+(?= Scientific Diagrams\n</h1>)",
+    ):
+        readme = re.sub(pattern, str(diagram_count), readme)
 
-    # Update badge counts
-    n_typst = len(glob(f"{ROOT}/assets/**/*.typ"))
-    n_latex = len(glob(f"{ROOT}/assets/**/*.tex"))
-
-    for count, lang in [(n_typst, "Typst"), (n_latex, "LaTeX")]:
+    for count, lang in (
+        (len(glob(f"{ROOT}/assets/**/*.typ")), "Typst"),
+        (len(glob(f"{ROOT}/assets/**/*.tex")), "LaTeX"),
+    ):
         readme = re.sub(
             rf"\[\!\[(\d+) with {lang}\]", f"[![{count} with {lang}]", readme
         )
@@ -147,5 +131,4 @@ def update_readme(table: str, diagram_count: int) -> None:
 
 if __name__ == "__main__":
     diagrams = collect_diagrams()
-    table = generate_table(diagrams)
-    update_readme(table, len(diagrams))
+    update_readme(generate_table(diagrams), len(diagrams))

@@ -3,7 +3,6 @@
 
 #set page(width: auto, height: auto, margin: 8pt)
 
-#let equation = $partial_t (partial V) / (partial chi) =$
 #let rad = 0.8
 #canvas({
   // Define styles

@@ -80,11 +80,11 @@
   line((0, ymin), (0, ymax), ..arrow-style, name: "y-axis")
 
   // Draw tick marks with labels
-  line((-0.5, -0.02), (-0.5, 0.02), name: "x-tick")
-  content((-0.5, -0.1), $-1 / 2$, anchor: "north")
+  line((-0.5, -0.02), (-0.5, 0.02), name: "x-minus-tick")
+  content((rel: (0, -0.08), to: "x-minus-tick.mid"), $-1 / 2$, anchor: "north")
 
-  line((0.5, -0.02), (0.5, 0.02), name: "x-tick")
-  content((0.5, -0.1), $1 / 2$, anchor: "north")
+  line((0.5, -0.02), (0.5, 0.02), name: "x-plus-tick")
+  content((rel: (0, -0.08), to: "x-plus-tick.mid"), $1 / 2$, anchor: "north")
 
   line((-0.02, 1), (0.02, 1), name: "i-tick", stroke: (thickness: 0.6pt))
   content("i-tick", $i$, anchor: "north-west", padding: 1pt)

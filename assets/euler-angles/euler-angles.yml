@@ -11,3 +11,5 @@ tags:
   - coordinates
 description: |
   Named after the mathematician Leonhard Euler, the 3 Euler angles describe arbitrary orientations in 3d w.r.t. to some coordinate system. They can also represent the orientation of a frame of reference in physics or of a general basis in 3d linear algebra.
+
+  See also [Cartesian vs Polar Coordinates](../cartesian-vs-polar-coordinates).
