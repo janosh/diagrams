@@ -14,12 +14,11 @@ jobs:
       - uses: typst-community/setup-typst@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
-      - run: npm install
+          node-version: 24
+      - name: Install site dependencies
+        # pinned pnpm via corepack; --ignore-scripts skips sharp's build script
+        # (it ships prebuilt @img binaries) so pnpm doesn't fail on it
+        run: corepack enable && pnpm install --ignore-scripts
         working-directory: site
-      - name: Lint and format check
-        run: npx vp check
-        working-directory: site
-      - name: Svelte type check
-        run: npx svelte-kit sync && npx svelte-check-rs --threshold error
-        working-directory: site
+      - name: Run prek
+        uses: j178/prek-action@v2

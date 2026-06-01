@@ -1,5 +1,4 @@
-#import "@preview/cetz:0.4.2": canvas, draw
-#import "@preview/cetz:0.4.2"
+#import "@preview/cetz:0.5.2": canvas, decorations, draw
 
 #set page(width: auto, height: auto, margin: 10pt)
 #set text(size: 14pt)

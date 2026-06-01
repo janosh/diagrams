@@ -1,6 +1,5 @@
-#import "@preview/cetz:0.4.2": canvas, draw
-#import "@preview/cetz-venn:0.1.4": venn3
-#import draw: circle, content, scale
+#import "@preview/cetz:0.5.2": canvas, draw
+#import draw: arc-through, circle, content, merge-path, rect, rotate, scale, scope
 
 #set page(width: auto, height: auto, margin: 8pt)
 
@@ -19,6 +18,51 @@
     ac-fill: teal.transparentize(40%), // Overlap
     abc-fill: gray.transparentize(70%), // Center
   )
+
+  rect((-2.428, 2.153), (2.428, -2.528), fill: white, stroke: auto)
+
+  for (region, angle) in (("ab", 0deg), ("ac", 120deg), ("bc", 240deg)) {
+    scope({
+      rotate(angle)
+      merge-path(
+        {
+          arc-through(bc-inner, (rel: (-1, 0), to: thermal-center), ab-outer)
+          arc-through((), (rel: (+1, 0), to: mechanical-center), ac-inner)
+          arc-through((), (rel: (0, +1), to: chemical-center), bc-inner)
+        },
+        fill: fills.at(region),
+        stroke: none,
+        close: true,
+      )
+    })
+  }
+
+  merge-path(
+    {
+      arc-through(ab-inner, (rel: (0.866, -0.5), to: mechanical-center), ac-inner)
+      arc-through((), (rel: (0, 1), to: chemical-center), bc-inner)
+      arc-through((), (rel: (-0.866, -0.5), to: thermal-center), ab-inner)
+    },
+    fill: fills.abc,
+    stroke: auto,
+    close: true,
+  )
+
+  for (region, angle) in (("a", 0deg), ("c", 120deg), ("b", 240deg)) {
+    scope({
+      rotate(angle)
+      merge-path(
+        {
+          arc-through(ab-outer, (rel: (-1, 0), to: mechanical-center), ac-outer)
+          arc-through((), (rel: (-0.5, 0.866), to: chemical-center), bc-inner)
+          arc-through((), (rel: (-1, 0), to: thermal-center), ab-outer)
+        },
+        fill: fills.at(region),
+        stroke: auto,
+        close: true,
+      )
+    })
+  }
 
   // Add outer labels for main potentials
   content("venn.a", [Mechanical\ $F_[mu] = -P V$], anchor: "center", name: "mechanical")

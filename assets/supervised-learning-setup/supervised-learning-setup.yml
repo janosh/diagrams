@@ -10,4 +10,4 @@ tags:
   - supervised learning
   - algorithms
 description: |
-  A supervised learning setup where training data produces a labelling function that maps unseen data to labels.
+  A supervised learning setup where training data produces a labeling function that maps unseen data to labels.

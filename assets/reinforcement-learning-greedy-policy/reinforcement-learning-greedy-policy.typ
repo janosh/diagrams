@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.1": canvas, decorations, draw
+#import "@preview/cetz:0.5.2": canvas, decorations, draw
 #import draw: bezier, content, line, rect
 
 #set page(width: auto, height: auto, margin: 8pt)
@@ -61,9 +61,36 @@
   }
 
   state(x0, 0, $[0.12, bold(0.64), 0.07, 0.17]$, [up], $r_0 = 0$, $cal(R)(s_0, "↑")$, (0, 0), -.35, (1.18, 1.24))
-  state(x1, 1, $[0.03, 0.24, bold(0.47), 0.26]$, [right], $r_1 = 0$, $cal(R)(s_1, "→")$, (0, panel-w - marker-w), .35, (1.18, 1.24))
-  state(x2, 2, $[bold(0.82), 0.04, 0.08, 0.06]$, [pick up], $r_2 = 2$, $cal(R)(s_2, "⋆")$, (panel-w - marker-w, panel-w - marker-w), -.65, (panel-w - marker-w / 2, panel-w - marker-w / 2))
+  state(
+    x1,
+    1,
+    $[0.03, 0.24, bold(0.47), 0.26]$,
+    [right],
+    $r_1 = 0$,
+    $cal(R)(s_1, "→")$,
+    (0, panel-w - marker-w),
+    .35,
+    (1.18, 1.24),
+  )
+  state(
+    x2,
+    2,
+    $[bold(0.82), 0.04, 0.08, 0.06]$,
+    [pick up],
+    $r_2 = 2$,
+    $cal(R)(s_2, "⋆")$,
+    (panel-w - marker-w, panel-w - marker-w),
+    -.65,
+    (panel-w - marker-w / 2, panel-w - marker-w / 2),
+  )
 
   transition((1.35, 1.10), west-rim(x1), (3.65, 1.10), (3.55, -3.0), (x1 - .25, -3.18), $cal(T)(s_0, "↑")$)
-  transition((x1 + 1.35, 1.10), west-rim(x2), (x1 + 3.65, 1.10), (x1 + 3.55, -3.0), (x2 - .25, -3.18), $cal(T)(s_1, "→")$)
+  transition(
+    (x1 + 1.35, 1.10),
+    west-rim(x2),
+    (x1 + 3.65, 1.10),
+    (x1 + 3.55, -3.0),
+    (x2 - .25, -3.18),
+    $cal(T)(s_1, "→")$,
+  )
 })

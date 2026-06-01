@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.4.2": canvas, draw
+#import "@preview/cetz:0.5.2": canvas, draw
 #import draw: arc, bezier, content, merge-path, on-layer, set-style
 
 #set page(width: auto, height: auto, margin: 10pt, fill: none)

@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.1": canvas, draw
+#import "@preview/cetz:0.5.2": canvas, draw
 #import draw: content, line, rect
 
 #set page(width: auto, height: auto, margin: 8pt)
@@ -28,8 +28,22 @@
   let right-rim(x, w) = (x + w, arrow-y)
   let left-rim(x, d) = (x - d, arrow-y)
 
-  rect((-1.0, -1.15), (13.85, 2.8), stroke: (paint: black, dash: "dashed", thickness: .8pt), fill: green.transparentize(88%), radius: .08, name: "encoder-bg")
-  rect((11.7, -1.075), (20.6, 2.725), stroke: (paint: black, dash: "dashed", thickness: .8pt), fill: red.transparentize(88%), radius: .08, name: "decoder-bg")
+  rect(
+    (-1.0, -1.15),
+    (13.85, 2.8),
+    stroke: (paint: black, dash: "dashed", thickness: .8pt),
+    fill: green.transparentize(88%),
+    radius: .08,
+    name: "encoder-bg",
+  )
+  rect(
+    (11.7, -1.075),
+    (20.6, 2.725),
+    stroke: (paint: black, dash: "dashed", thickness: .8pt),
+    fill: red.transparentize(88%),
+    radius: .08,
+    name: "decoder-bg",
+  )
   content((rel: (0, -.13), to: "encoder-bg.south"), [encoder], anchor: "north")
   content((rel: (0, -.13), to: "decoder-bg.south"), [decoder], anchor: "north")
 
@@ -59,6 +73,8 @@
     let edge = from-name + "-" + to-name
     line(a, b, ..arr, name: edge)
     content((rel: (0, .22), to: edge + ".mid"), text(size: 7pt)[#top], fill: white, padding: .5pt)
-    if bottom != none { content((rel: (0, -.22), to: edge + ".mid"), text(size: 7pt)[#bottom], fill: white, padding: .5pt) }
+    if bottom != none {
+      content((rel: (0, -.22), to: edge + ".mid"), text(size: 7pt)[#bottom], fill: white, padding: .5pt)
+    }
   }
 })

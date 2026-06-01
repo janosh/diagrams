@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.4.2": canvas, draw
+#import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content, line
 
 #set page(width: auto, height: auto, margin: 8pt)
@@ -127,14 +127,38 @@
   draw_tree_node((tree_offset.at(0) + 0, tree_offset.at(1) - node-sep-y * 1.5), "j", "node-j")
 
   // Level 2
-  draw_tree_node((tree_offset.at(0) - 2.0 * node-sep-x, tree_offset.at(1) - 2 * node-sep-y), "f", "node-f")
-  draw_tree_node((tree_offset.at(0) - 1.0 * node-sep-x, tree_offset.at(1) - 2 * node-sep-y), "d", "node-d")
-  draw_tree_node((tree_offset.at(0) + 1.0 * node-sep-x, tree_offset.at(1) - 2 * node-sep-y), "g", "node-g")
-  draw_tree_node((tree_offset.at(0) + 2.0 * node-sep-x, tree_offset.at(1) - 2 * node-sep-y), "e", "node-e")
-  draw_tree_node((tree_offset.at(0) + 3.0 * node-sep-x, tree_offset.at(1) - 2 * node-sep-y), "i", "node-i")
+  draw_tree_node(
+    (tree_offset.at(0) - 2.0 * node-layout.sep.x, tree_offset.at(1) - 2 * node-layout.sep.y),
+    "f",
+    "node-f",
+  )
+  draw_tree_node(
+    (tree_offset.at(0) - 1.0 * node-layout.sep.x, tree_offset.at(1) - 2 * node-layout.sep.y),
+    "d",
+    "node-d",
+  )
+  draw_tree_node(
+    (tree_offset.at(0) + 1.0 * node-layout.sep.x, tree_offset.at(1) - 2 * node-layout.sep.y),
+    "g",
+    "node-g",
+  )
+  draw_tree_node(
+    (tree_offset.at(0) + 2.0 * node-layout.sep.x, tree_offset.at(1) - 2 * node-layout.sep.y),
+    "e",
+    "node-e",
+  )
+  draw_tree_node(
+    (tree_offset.at(0) + 3.0 * node-layout.sep.x, tree_offset.at(1) - 2 * node-layout.sep.y),
+    "i",
+    "node-i",
+  )
 
   // Level 3
-  draw_tree_node((tree_offset.at(0) + 1.0 * node-sep-x, tree_offset.at(1) - 3 * node-sep-y), "h", "node-h")
+  draw_tree_node(
+    (tree_offset.at(0) + 1.0 * node-layout.sep.x, tree_offset.at(1) - 3 * node-layout.sep.y),
+    "h",
+    "node-h",
+  )
 
   // Draw Tree Edges
   line("node-a", "node-b", ..tree-line-style)

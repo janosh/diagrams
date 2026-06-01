@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.2": canvas, draw
-#import "@preview/cetz-plot:0.1.3": plot
+#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz-plot:0.1.4": plot
 #import draw: bezier, circle, content, group, line, translate
 
 #set page(width: auto, height: auto, margin: 8pt)
@@ -117,8 +117,13 @@
         let start = ("ii" + str(ii + 1))
         let end = ("h" + str(jj + 1))
         line(start, end, ..arrow-style)
-        weight-label((0, (ii + 1) * node-sep + 1), (layer-sep, (jj + 1) * node-sep), ii + 1, jj + 1, offset: if ii
-          == 0 { 1.5 } else { -1 })
+        weight-label(
+          (0, (ii + 1) * spacing.node + 1),
+          (spacing.layer, (jj + 1) * spacing.node),
+          ii + 1,
+          jj + 1,
+          offset: if ii == 0 { 1.5 } else { -1 },
+        )
       }
     }
 

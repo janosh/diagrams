@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.4.2": canvas, decorations, draw
+#import "@preview/cetz:0.5.2": canvas, decorations, draw
 #import draw: circle, content, line, on-layer, rect
 
 #set page(width: 12cm, height: 9cm, margin: 4pt, fill: none)

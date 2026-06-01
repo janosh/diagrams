@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.1": canvas, draw
+#import "@preview/cetz:0.5.2": canvas, draw
 #import draw: bezier, circle, content, line
 
 #set page(width: auto, height: auto, margin: 8pt)
@@ -31,7 +31,11 @@
     content((-1.25, (y + ctrl-y) / 2 + .12), text(size: 8pt)[#weight], anchor: "south")
   }
   content((rel: (0, .53), to: "xn"), $dots.v$)
-  line((rel: (0, -.43), to: "perceptron"), (rel: (0, .43), to: "perceptron"), stroke: (dash: "dashed", paint: black, thickness: .5pt))
+  line(
+    (rel: (0, -.43), to: "perceptron"),
+    (rel: (0, .43), to: "perceptron"),
+    stroke: (dash: "dashed", paint: black, thickness: .5pt),
+  )
   line("perceptron.east", (rel: (3.5, 0), to: "perceptron.east"), ..arrow, name: "perceptron-out")
   content((rel: (0, .42), to: "perceptron-out.mid"), $sigma(w_0 + sum_(i=1)^n w_i x_i)$, fill: white, padding: 1pt)
 
@@ -62,6 +66,14 @@
   content((rel: (0, 1.55), to: "i1.north"), align(center)[Input\ layer])
   content((rel: (0, .8), to: "h1.north"), align(center)[Hidden\ layer])
   content((rel: (0, 1.55), to: "o1.north"), align(center)[Output\ layer])
-  line((rel: (.12, .43), to: "perceptron"), (rel: (0, .16), to: "h5"), stroke: (paint: luma(45%), dash: "dashed", thickness: 1pt))
-  line((rel: (.12, -.43), to: "perceptron"), (rel: (0, -.16), to: "h5"), stroke: (paint: luma(45%), dash: "dashed", thickness: 1pt))
+  line(
+    (rel: (.12, .43), to: "perceptron"),
+    (rel: (0, .16), to: "h5"),
+    stroke: (paint: luma(45%), dash: "dashed", thickness: 1pt),
+  )
+  line(
+    (rel: (.12, -.43), to: "perceptron"),
+    (rel: (0, -.16), to: "h5"),
+    stroke: (paint: luma(45%), dash: "dashed", thickness: 1pt),
+  )
 })

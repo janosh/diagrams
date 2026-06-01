@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.2": canvas, decorations, draw
-#import draw: circle, content, hide, intersections, line, mark
+#import "@preview/cetz:0.5.2": canvas, decorations, draw
+#import draw: circle, content, line, mark
 
 #set page(width: auto, height: auto, margin: 8pt)
 

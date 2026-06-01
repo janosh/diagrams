@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.2": canvas
-#import "@preview/cetz-plot:0.1.3": chart
+#import "@preview/cetz:0.5.2": canvas
+#import "@preview/cetz-plot:0.1.4": chart
 
 #set page(width: auto, height: auto, margin: 0pt)
 

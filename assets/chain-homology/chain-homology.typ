@@ -1,6 +1,6 @@
 // Ref. https://normaldeviate.wordpress.com/2012/07/01/topological-data-analysis/
-#import "@preview/cetz:0.4.2": canvas, draw
-#import draw: circle, content, line, bezier
+#import "@preview/cetz:0.5.2": canvas, draw
+#import draw: bezier, circle, content, line
 
 #set page(width: auto, height: auto, margin: 8pt)
 

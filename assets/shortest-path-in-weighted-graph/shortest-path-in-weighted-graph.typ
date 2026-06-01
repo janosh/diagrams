@@ -1,11 +1,18 @@
-#import "@preview/cetz:0.5.1": canvas, draw
+#import "@preview/cetz:0.5.2": canvas, draw
 #import draw: bezier, circle, content, line
 
 #set page(width: auto, height: auto, margin: 8pt)
 
 #canvas({
   let nodes = (
-    s: (0, 0), a: (2, 2), b: (2, 0), c: (2, -2), d: (4, 2), e: (4, 0), f: (4, -2), t: (6, 0),
+    s: (0, 0),
+    a: (2, 2),
+    b: (2, 0),
+    c: (2, -2),
+    d: (4, 2),
+    e: (4, 0),
+    f: (4, -2),
+    t: (6, 0),
   )
   let edge-color(shortest) = if shortest { red } else { black }
   let arrow(color) = (mark: (end: "stealth", fill: color, scale: .55), stroke: color + .75pt)
@@ -23,8 +30,14 @@
   }
 
   for (name, fill) in (
-    ("s", red.lighten(50%)), ("a", white), ("b", white), ("c", white),
-    ("d", white), ("e", white), ("f", white), ("t", blue.lighten(50%)),
+    ("s", red.lighten(50%)),
+    ("a", white),
+    ("b", white),
+    ("c", white),
+    ("d", white),
+    ("e", white),
+    ("f", white),
+    ("t", blue.lighten(50%)),
   ) { vertex(name, fill: fill) }
 
   straight("s", "a", "6", (-.25, .2))
@@ -38,8 +51,22 @@
   straight("f", "e", "2", (-.32, 0), shortest: true)
   straight("f", "t", "5", (.25, -.2))
 
-  bezier((rel: (.28, .05), to: "b"), (rel: (-.28, .05), to: "e"), (rel: (.7, .28), to: "b"), (rel: (-.7, .28), to: "e"), ..arrow(black), name: "b-e")
+  bezier(
+    (rel: (.28, .05), to: "b"),
+    (rel: (-.28, .05), to: "e"),
+    (rel: (.7, .28), to: "b"),
+    (rel: (-.7, .28), to: "e"),
+    ..arrow(black),
+    name: "b-e",
+  )
   label((rel: (0, .23), to: "b-e.mid"), "4", black)
-  bezier((rel: (-.28, -.05), to: "e"), (rel: (.28, -.05), to: "b"), (rel: (-.7, -.28), to: "e"), (rel: (.7, -.28), to: "b"), ..arrow(black), name: "e-b")
+  bezier(
+    (rel: (-.28, -.05), to: "e"),
+    (rel: (.28, -.05), to: "b"),
+    (rel: (-.7, -.28), to: "e"),
+    (rel: (.7, -.28), to: "b"),
+    ..arrow(black),
+    name: "e-b",
+  )
   label((rel: (0, -.23), to: "e-b.mid"), "-2", black)
 })

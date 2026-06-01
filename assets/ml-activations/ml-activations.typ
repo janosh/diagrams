@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.4.2": canvas, draw
-#import "@preview/cetz-plot:0.1.3": plot
+#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz-plot:0.1.4": plot
 
 #let vector(v) = $bold(#v)$
 #set page(width: auto, height: auto, margin: 8pt)

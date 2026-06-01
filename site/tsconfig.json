@@ -1,3 +1,7 @@
 {
-  "extends": "./.svelte-kit/tsconfig.json"
+  "extends": "./.svelte-kit/tsconfig.json",
+  "compilerOptions": {
+    // skip type-checking dependency .d.ts files (vite-plus pulls in vitest types we don't install)
+    "skipLibCheck": true
+  }
 }

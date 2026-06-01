@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.1": canvas, draw
+#import "@preview/cetz:0.5.2": canvas, draw
 #import draw: bezier, circle, content, line
 
 #set page(width: auto, height: auto, margin: 8pt)
@@ -6,9 +6,27 @@
 #canvas({
   let green = rgb("#009900")
   let base = (
-    a: (0, 2), b: (2, 1), c: (4, 1), d: (0, 0), e: (3, 0), f: (2, -1), g: (4, -1),
+    a: (0, 2),
+    b: (2, 1),
+    c: (4, 1),
+    d: (0, 0),
+    e: (3, 0),
+    f: (2, -1),
+    g: (4, -1),
   )
-  let edge-set = (("b", "a"), ("c", "b"), ("d", "a"), ("d", "b"), ("e", "b"), ("e", "c"), ("e", "d"), ("f", "d"), ("f", "e"), ("g", "e"), ("g", "f"))
+  let edge-set = (
+    ("b", "a"),
+    ("c", "b"),
+    ("d", "a"),
+    ("d", "b"),
+    ("e", "b"),
+    ("e", "c"),
+    ("e", "d"),
+    ("f", "d"),
+    ("f", "e"),
+    ("g", "e"),
+    ("g", "f"),
+  )
   let selected = (("b", "c"), ("d", "b"), ("a", "b"), ("b", "e"))
   let node-radius = .32
 

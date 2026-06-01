@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.1": canvas, decorations, draw
+#import "@preview/cetz:0.5.2": canvas, decorations, draw
 #import draw: anchor, circle, content, line, rect
 
 #set page(width: auto, height: auto, margin: 8pt)
@@ -43,7 +43,12 @@
       trimmed-end.at(0) - delta-x / length * straight-length,
       trimmed-end.at(1) - delta-y / length * straight-length,
     )
-    decorations.wave(line(at(trimmed-start), at(wave-end)), amplitude: amplitude, segments: segments, stroke: edge-stroke)
+    decorations.wave(
+      line(at(trimmed-start), at(wave-end)),
+      amplitude: amplitude,
+      segments: segments,
+      stroke: edge-stroke,
+    )
     line(at(wave-end), at(trimmed-end), ..arr)
   }
   let node(point, fill: white, label: none, stroke: .8pt) = {
