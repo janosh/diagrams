@@ -1,0 +1,13 @@
+title: Long Short-Term Memory
+creator: Petar Veličković
+creator_url: http://petar-v.com
+url: https://github.com/PetarV-/TikZ/tree/86aee049f5355d77c598b936399e42caf8941e60/Long%20short-term%20memory
+source: |
+  Lectures on recurrent neural networks
+date: 2026-06-10
+tags:
+  - machine learning
+  - neural networks
+  - recurrent networks
+description: |
+  An LSTM block gates new features through input, forget, and output gates that control reads from and writes to the memory cell carrying the cell state between time steps.

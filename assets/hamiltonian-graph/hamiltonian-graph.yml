@@ -1,0 +1,13 @@
+title: Hamiltonian Graph
+creator: Petar Veličković
+creator_url: http://petar-v.com
+url: https://github.com/PetarV-/TikZ/tree/86aee049f5355d77c598b936399e42caf8941e60/Hamiltonian%20graph
+source: |
+  Slides for the Bioinformatics lecture course at the University of Cambridge
+date: 2026-06-10
+tags:
+  - graph theory
+  - bioinformatics
+  - genome assembly
+description: |
+  The red cycle is a Hamiltonian path visiting every k-mer node exactly once, used to reconstruct a genome from overlapping reads.

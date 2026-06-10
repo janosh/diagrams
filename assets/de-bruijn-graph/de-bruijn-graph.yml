@@ -1,0 +1,13 @@
+title: De Bruijn Graph
+creator: Petar Veličković
+creator_url: http://petar-v.com
+url: https://github.com/PetarV-/TikZ/tree/86aee049f5355d77c598b936399e42caf8941e60/de%20Bruijn%20graph
+source: |
+  Lectures on bioinformatics algorithms
+date: 2026-06-10
+tags:
+  - computer science
+  - bioinformatics
+  - graph theory
+description: |
+  A de Bruijn graph for genome assembly links k-mer prefixes and suffixes as nodes with reads as edges; the dashed red Eulerian tour visits every edge once to reconstruct the sequence.

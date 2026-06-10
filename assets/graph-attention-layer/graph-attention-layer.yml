@@ -1,0 +1,14 @@
+title: Graph Attention Layer
+creator: Petar Veličković
+creator_url: http://petar-v.com
+url: https://github.com/PetarV-/TikZ/tree/86aee049f5355d77c598b936399e42caf8941e60/GAT%20layer
+source: |
+  [Graph Attention Networks](https://arxiv.org/abs/1710.10903), ICLR 2018
+date: 2026-06-10
+tags:
+  - machine learning
+  - neural networks
+  - graph neural networks
+  - attention
+description: |
+  A multi-head graph attention layer aggregates neighbor features with attention coefficients per head (drawn as wavy, straight, and zigzag arrows) before concatenating or averaging the head outputs.

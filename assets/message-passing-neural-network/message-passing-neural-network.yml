@@ -1,0 +1,13 @@
+title: Message Passing Neural Network
+creator: Petar Veličković
+creator_url: http://petar-v.com
+url: https://github.com/PetarV-/TikZ/tree/86aee049f5355d77c598b936399e42caf8941e60/Message%20passing%20neural%20network
+source: |
+  Lectures on graph representation learning
+date: 2026-06-10
+tags:
+  - machine learning
+  - neural networks
+  - graph neural networks
+description: |
+  A message passing neural network computes edge messages with an edge function from pairs of node features, then updates each node by aggregating incoming messages through a vertex function.

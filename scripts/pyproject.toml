@@ -7,4 +7,5 @@ extend-ignore-words-re = [
   "\\b[Tt]e\\b",  # Chemical element: Tellurium
   "\\bket\\b",    # Physics: bra-ket notation
   "\\bPN\\b",     # Acronym: PNG (in context of file formats)
+  "\\bBA\\b",     # Math: $G_{BA}$ generator subscript in cyclegan
 ]

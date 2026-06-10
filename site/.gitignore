@@ -1,6 +1,0 @@
-# dependencies
-node_modules
-
-# production build
-.svelte-kit
-build

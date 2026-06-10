@@ -1,0 +1,13 @@
+title: Maximum Flow Problem
+creator: Petar Veličković
+creator_url: http://petar-v.com
+url: https://github.com/PetarV-/TikZ/tree/86aee049f5355d77c598b936399e42caf8941e60/Maximum%20flow%20problem
+source: |
+  Slides for the Algorithms lecture course at the University of Cambridge
+date: 2026-06-10
+tags:
+  - graph theory
+  - algorithms
+  - network flow
+description: |
+  A flow network with edge labels showing flow over capacity, illustrating a maximum flow of 19 from source s to sink t.

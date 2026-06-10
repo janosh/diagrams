@@ -2,3 +2,10 @@ __latexindent_temp.tex
 *.pyc
 .DS_Store
 package-lock.json
+
+# site dependencies
+node_modules
+
+# site production build
+.svelte-kit
+build

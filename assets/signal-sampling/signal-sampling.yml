@@ -1,0 +1,13 @@
+title: Signal Sampling
+creator: Petar Veličković
+creator_url: http://petar-v.com
+url: https://github.com/PetarV-/TikZ/tree/86aee049f5355d77c598b936399e42caf8941e60/Sampling
+source: |
+  IQ sampling and FM demodulation using MATLAB, [mgcsweek v2.0](http://www.csnedelja.mg.edu.rs)
+date: 2026-06-10
+tags:
+  - signal processing
+  - sampling
+  - digital signal processing
+description: |
+  Sampling discretizes a continuous-time signal by recording its amplitude at regular intervals spaced by the inverse sampling frequency.

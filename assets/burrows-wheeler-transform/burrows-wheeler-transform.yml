@@ -1,0 +1,13 @@
+title: Burrows-Wheeler Transform
+creator: Petar Veličković
+creator_url: http://petar-v.com
+url: https://github.com/PetarV-/TikZ/tree/86aee049f5355d77c598b936399e42caf8941e60/BWT
+source: |
+  Lectures on bioinformatics algorithms
+date: 2026-06-10
+tags:
+  - computer science
+  - bioinformatics
+  - string algorithms
+description: |
+  The Burrows-Wheeler transform lists all cyclic rotations of a string, sorts them lexicographically, and reads off the last column together with the row index of the original string.

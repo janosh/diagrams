@@ -1,0 +1,13 @@
+title: DNA Double Helix
+creator: Petar Veličković
+creator_url: http://petar-v.com
+url: https://github.com/PetarV-/TikZ/tree/86aee049f5355d77c598b936399e42caf8941e60/DNA
+source: |
+  Lectures on bioinformatics algorithms
+date: 2026-06-10
+tags:
+  - biology
+  - bioinformatics
+  - genetics
+description: |
+  Schematic DNA double helix drawn as a two-strand braid with hydrogen-bonded base pairs shown as dotted rungs between the antiparallel backbones.

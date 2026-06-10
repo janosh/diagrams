@@ -1,0 +1,13 @@
+title: Web Graph
+creator: Petar Veličković
+creator_url: http://petar-v.com
+url: https://github.com/PetarV-/TikZ/tree/86aee049f5355d77c598b936399e42caf8941e60/Web%20graph
+source: |
+  Slides for the Information Retrieval lecture course at the University of Cambridge
+date: 2026-06-10
+tags:
+  - graph theory
+  - information retrieval
+  - pagerank
+description: |
+  A directed web graph whose nodes are documents and edges are hyperlinks, including self-links, the structure underlying the PageRank algorithm.
