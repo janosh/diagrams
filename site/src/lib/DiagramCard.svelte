@@ -4,7 +4,11 @@
   import { fade } from 'svelte/transition'
   import { type Diagram, Tags } from './index'
 
-  let { item, format = `full`, ...rest }: HTMLAttributes<HTMLAnchorElement> & {
+  let {
+    item,
+    format = `full`,
+    ...rest
+  }: HTMLAttributes<HTMLAnchorElement> & {
     item: Diagram
     format?: `short` | `full`
   } = $props()

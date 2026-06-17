@@ -1,3 +1,4 @@
+import { building } from '$app/environment'
 import rehype_katex from 'rehype-katex'
 import rehype_stringify from 'rehype-stringify'
 import remark_math from 'remark-math'
@@ -89,21 +90,27 @@ export const diagrams = Object.entries(yaml_data)
       asset_files[`${figure_basename}.pdf`]?.default,
       asset_files[`${figure_basename}.svg`]?.default,
     ].filter(Boolean)
+    // build-time data-quality signal (building guard keeps it out of the client bundle)
+    if (building && downloads.length < 2) {
+      console.warn(`Diagram '${slug}' has only ${downloads.length} download asset(s)`)
+    }
 
     const images = {
       hd: image_files[`${figure_basename}-hd.png`]?.default,
       sd: image_files[`${figure_basename}.png`]?.default,
     }
-
-    return Object.assign({}, metadata, {
-      slug,
-      code,
-      tags,
-      description,
-      downloads,
-      images,
-    })
+    return { ...metadata, slug, code, tags, description, downloads, images }
   })
+
+// title-sorted view of diagrams; stable order for prev/next nav, the home grid and
+// the prerendered server load (avoids coupling those to the client filter state). Fixed
+// `en` collator so build (Node) and client agree, avoiding a hydration reorder
+const diagram_collator = new Intl.Collator(`en`, { numeric: true })
+export const sorted_diagrams = [...diagrams].sort(
+  (d1, d2) =>
+    diagram_collator.compare(d1.title, d2.title) ||
+    diagram_collator.compare(d1.slug, d2.slug),
+)
 
 export const tags = Object.entries(
   diagrams

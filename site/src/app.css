@@ -135,17 +135,3 @@ a:hover {
   color: var(--highlight);
   text-decoration: underline;
 }
-div.multiselect {
-  --sms-options-bg: var(--page-bg);
-  --sms-bg: var(--input-bg);
-  --sms-text-color: var(--text-color);
-  --sms-li-active-bg: var(--link-color);
-  --sms-border: 0.5px solid var(--border);
-  --sms-min-height: 10pt;
-  --sms-selected-bg: light-dark(var(--light-pre-bg), var(--dark-pre-bg));
-  height: stretch;
-}
-div.multiselect ul.selected li {
-  margin: 1pt !important;
-  line-height: 1 !important;
-}

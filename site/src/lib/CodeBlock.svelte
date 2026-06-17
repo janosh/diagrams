@@ -7,7 +7,13 @@
   import { CopyButton, Icon } from 'svelte-multiselect'
   import type { HTMLAttributes } from 'svelte/elements'
 
-  let { code, repo_link, title, tex_file_uri = ``, ...rest }: {
+  let {
+    code,
+    repo_link,
+    title,
+    tex_file_uri = ``,
+    ...rest
+  }: {
     code: string
     repo_link: string
     title: string

@@ -1,14 +1,13 @@
 <script lang="ts">
   import { CodeBlock, type Diagram, DiagramCard, Tags } from '$lib'
+  import { filters } from '$lib/state.svelte'
   import { homepage, repository } from '$root/package.json'
   import Icon from '@iconify/svelte'
   import { PrevNext } from 'svelte-multiselect'
 
   let { data } = $props()
-  let { title, description, code, images } = $derived(data.diagram)
-  let { creator, creator_url, url, downloads, tags, slug } = $derived(
-    data.diagram,
-  )
+  let { title, description, code, images, tags, slug } = $derived(data.diagram)
+  let { creator, creator_url, url, downloads } = $derived(data.diagram)
   const labels = [
     [`.png`, `PNG`],
     [`-hd.png`, `PNG (HD)`],
@@ -19,16 +18,15 @@
 
   // development server fetches files from local folder (specified by svelte.config.js kit.files.assets)
   // production server fetches files from GitHub (so we don't need to re-upload with every build)
-  const raw_repo_url =
-    `https://github.com/janosh/diagrams/raw/refs/heads/main/assets`
+  const raw_repo_url = `https://github.com/janosh/diagrams/raw/refs/heads/main/assets`
   let base_uri = $derived(`${raw_repo_url}/${slug}/${slug}`)
 
-  $effect(() => {
-    if (downloads?.length < 2) {
-      throw new Error(`unexpectedly low number of assets for download`)
-    }
-  })
   let plain_description = $derived(description?.replaceAll(/<[^>]*>/g, ``))
+
+  // prev/next walks the active home-page filter; fall back to all diagrams when the current
+  // one isn't in the filtered set (direct navigation, or the filter excludes it)
+  let in_filtered = $derived(filters.filtered.some((diagram) => diagram.slug === slug))
+  let nav_diagrams = $derived(in_filtered ? filters.filtered : data.diagrams)
 </script>
 
 <svelte:head>
@@ -53,7 +51,7 @@
       Creator: {#if creator_url}
         <a href={creator_url}>{creator}</a>
       {:else}
-        Creator: {creator}
+        {creator}
       {/if}
     {/if}
     {#if url}
@@ -79,12 +77,7 @@
 <section>
   {#each labels as [ext, label] (ext)}
     {#if downloads?.some((filename) => filename.includes(ext))}
-      <a
-        href="{base_uri}{ext}"
-        target="_blank"
-        rel="noreferrer"
-        class="large-link"
-      >
+      <a href="{base_uri}{ext}" target="_blank" rel="noreferrer" class="large-link">
         {label}
       </a>
     {/if}
@@ -95,23 +88,21 @@
   <Icon icon="octicon:code" inline />&nbsp; Code
 </h2>
 {#if code.typst}
-  <CodeBlock
-    code={code.typst}
-    title="{slug}.typ"
-    repo_link="{repository}/blob/main/assets/{slug}/{slug}.typ"
-  />
+  {@const repo_link = `${repository}/blob/main/assets/${slug}/${slug}.typ`}
+  <CodeBlock code={code.typst} title="{slug}.typ" {repo_link} />
 {/if}
 {#if code.tex}
+  {@const repo_link = `${repository}/blob/main/assets/${slug}/${slug}.tex`}
   <CodeBlock
     code={code.tex}
     title="{slug}.tex"
-    repo_link="{repository}/blob/main/assets/{slug}/{slug}.tex"
+    {repo_link}
     tex_file_uri="{base_uri}.tex"
   />
 {/if}
 
 <PrevNext
-  items={data.diagrams.map((diagram) => [diagram.slug, diagram])}
+  items={nav_diagrams.map((diagram) => [diagram.slug, diagram])}
   current={data.slug}
   style="max-width: 50em; margin: auto"
 >
@@ -168,7 +159,9 @@
     padding: 0 7pt;
     border-radius: 4pt;
     margin: 2pt;
-    transition: color 0.3s, background-color 0.3s;
+    transition:
+      color 0.3s,
+      background-color 0.3s;
     font-size: 16pt;
   }
   a.large-link:hover {

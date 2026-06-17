@@ -28,12 +28,12 @@
 {@render children?.()}
 
 <footer style="margin: 6em 0 3em">
-  &copy; Janosh Riebesell 2021 &ensp;-&ensp;
+  &copy; Janosh Riebesell 2021 &ensp;&mdash;&ensp;
   <Icon icon="octicon:law" inline />
   <a href="{repository}/blob/main/license">MIT License</a>
-  &ensp;-&ensp;
+  &ensp;&mdash;&ensp;
   <Icon icon="octicon:quote" inline />
   <a href="{repository}/#--how-to-cite">How to cite</a>
-  &ensp;-&ensp;
-  <ThemeToggle tooltip={false} style="transform: scale(1.1)" />
+  &ensp;&mdash;&ensp;
+  <ThemeToggle tooltip={false} style="transform: scale(1.5); vertical-align: middle;" />
 </footer>

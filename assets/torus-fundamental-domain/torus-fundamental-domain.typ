@@ -13,7 +13,7 @@
 )
 #set text(size: 8pt)
 
-// TODO this figure needs revisiting to get the gray-shaded areas right without overlaying white fills once CaTZ implements path clipping
+// TODO this figure needs revisiting to get the gray-shaded areas right without overlaying white fills once CetZ implements path clipping
 // https://github.com/cetz-package/cetz/discussions/813#discussioncomment-12218646
 #canvas({
   draw.set-style(stroke: (thickness: 0.4pt))

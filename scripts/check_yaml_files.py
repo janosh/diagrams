@@ -25,85 +25,86 @@ EXPANSIONS: Final[dict[str, str]] = {
 }
 
 
-def expand_folder_name(name: str) -> list[str]:
+def load_yaml(yaml_file: str) -> dict:
+    """Parse a YAML file into a dict, annotating any error with the file path."""
+    try:
+        with open(yaml_file) as file:
+            return yaml.safe_load(file) or {}
+    except Exception as exc:
+        exc.add_note(f"{yaml_file=}")
+        raise
+
+
+def expand_folder_name(name: str) -> set[str]:
     """Generate all possible expansions of a folder name."""
     result = {name}
-
-    # For each abbreviation, try replacing it in all current results
     for abbrev, expansion in EXPANSIONS.items():
-        current_results = result.copy()
-        for current in current_results:
+        for current in result.copy():
             if abbrev in current:
-                expanded = current.replace(abbrev, expansion)
-                result.add(expanded)
+                result.add(current.replace(abbrev, expansion))
+    return result
 
-    return list(result)
+
+def _greek_to_latin() -> dict[int, str]:
+    """Map Greek letters (lower + upper) to Latin names, e.g. θ -> theta."""
+    mapping: dict[int, str] = {}
+    for code in range(0x03B1, 0x03CA):  # Greek lowercase letters α-ω
+        char = chr(code)
+        # last word handles multi-word names like "FINAL SIGMA" (ς) -> "sigma"
+        words = unicodedata.name(char).removeprefix("GREEK SMALL LETTER ").split()
+        latin = words[-1].lower()
+        mapping[code] = latin
+        mapping[ord(char.upper())] = latin.title()
+    return mapping
+
+
+GREEK_TO_LATIN: Final[dict[int, str]] = _greek_to_latin()
 
 
 def to_param_case(text: str) -> str:
     """Convert a string to param-case (kebab-case)."""
-    # Replace spaces and underscores with hyphens
-    text = text.replace(" ", "-").replace("_", "-")
-
-    # Replace Greek letters with Latin equivalents using unicodedata
-    for idx in range(0x03B1, 0x03C0):  # Greek lowercase letters α-ω
-        char = chr(idx)
-        name = unicodedata.name(char).lower().replace("greek small letter ", "")
-        text = text.replace(char, name)  # Replace lowercase
-        text = text.replace(char.upper(), name.title())  # Replace uppercase
-
-    # Remove any remaining non-alphanumeric characters except hyphens and plus signs
-    text = "".join(c.lower() for c in text if c.isalnum() or c == "-" or c == "+")
-    # Replace multiple consecutive hyphens with a single hyphen
-    while "--" in text:
-        text = text.replace("--", "-")
-    # Remove leading/trailing hyphens
-    return text.strip("-")
+    # transliterate Greek, then keep only alnum/hyphen/plus, collapse and trim hyphens
+    text = text.replace(" ", "-").replace("_", "-").translate(GREEK_TO_LATIN)
+    text = "".join(char.lower() for char in text if char.isalnum() or char in "-+")
+    return re.sub(r"-{2,}", "-", text).strip("-")
 
 
 def find_similar_tags(
     tags: list[str], threshold: float = 0.85
 ) -> list[tuple[str, str, float]]:
     """Find pairs of tags that are very similar to each other."""
-    similar_pairs = []
-    for i, tag1 in enumerate(tags):
-        for tag2 in tags[i + 1 :]:
-            similarity = SequenceMatcher(None, tag1, tag2).ratio()
-            if similarity >= threshold:
-                similar_pairs.append((tag1, tag2, similarity))
-    return sorted(similar_pairs, key=lambda x: x[2], reverse=True)
+    pairs = [
+        (tag1, tag2, ratio)
+        for idx, tag1 in enumerate(tags)
+        for tag2 in tags[idx + 1 :]
+        if (ratio := SequenceMatcher(None, tag1, tag2).ratio()) >= threshold
+    ]
+    return sorted(pairs, key=lambda pair: pair[2], reverse=True)
 
 
-def report_similar_tags(yaml_files: list[str]):
+def report_similar_tags(yaml_files: list[str]) -> None:
     """Find minor variations of tags and suggest renaming them for cross-file consistency."""
-    tag_counter = Counter()
+    tag_counts: Counter[str] = Counter()
 
     print("\nAnalyzing tags across YAML files...")
     print(f"Found {len(yaml_files)} YAML files")
 
     for yaml_file in yaml_files:
-        try:
-            with open(yaml_file) as file:
-                data = yaml.safe_load(file)
-                if data and "tags" in data:
-                    tags = data["tags"]
-                    if isinstance(tags, list):
-                        tag_counter.update(tags)
-        except Exception as exc:
-            exc.add_note(f"{yaml_file=}")
-            raise
+        tags = load_yaml(yaml_file).get("tags")
+        if isinstance(tags, list):
+            tag_counts.update(tags)
 
     # Print tag statistics
     n_tags_to_print = 20
     print(f"\nTop {n_tags_to_print} tags by usage:")
     print("-" * 40)
-    for tag, count in sorted(tag_counter.items(), key=lambda x: (-x[1], x[0]))[
+    for tag, count in sorted(tag_counts.items(), key=lambda x: (-x[1], x[0]))[
         :n_tags_to_print
     ]:
         print(f"{tag:25} {count:5d}")
 
     # Find similar tags
-    all_tags = list(tag_counter)
+    all_tags = list(tag_counts)
     similar_tags = find_similar_tags(all_tags)
 
     if similar_tags:
@@ -111,8 +112,8 @@ def report_similar_tags(yaml_files: list[str]):
         print("-" * 40)
         for tag1, tag2, similarity in similar_tags:
             print(
-                f"{tag1:25} {tag_counter[tag1]:<3d} ↔ "
-                f"{tag2:25} {tag_counter[tag2]:<3d} "
+                f"{tag1:25} {tag_counts[tag1]:<3d} ↔ "
+                f"{tag2:25} {tag_counts[tag2]:<3d} "
                 f"({similarity:.3f})"
             )
 
@@ -125,27 +126,16 @@ def check_yaml_titles(yaml_files: list[str]) -> int:
         if file_name in IGNORE_SET:
             continue
 
-        if not os.path.exists(yaml_file):
-            errors[yaml_file] = "Missing YAML file"
-            continue
-
-        with open(yaml_file) as file:
-            data = yaml.safe_load(file)
-
+        data = load_yaml(yaml_file)
         if "title" not in data:
             errors[yaml_file] = "Missing title"
             continue
 
         title = data["title"]
         param_title = to_param_case(title)
-        folder_name = file_name
 
-        # Get all possible expansions for both the folder name and param-cased title
-        folder_expansions = expand_folder_name(folder_name)
-        title_expansions = expand_folder_name(param_title)
-
-        # Check if there's any overlap between the two sets of expansions
-        if not (set(folder_expansions) & set(title_expansions)):
+        # pass if any folder-name expansion matches an expansion of the param-cased title
+        if not (expand_folder_name(file_name) & expand_folder_name(param_title)):
             errors[yaml_file] = (
                 f"should match YAML {title=} after param-casing: {param_title!r}"
             )
@@ -179,7 +169,7 @@ def remove_duplicate_tags(yaml_files: list[str]) -> list[str]:
 
             # Check if there were any duplicates
             if len(unique_tags) < len(original_tags):
-                files_changed += [yaml_file]
+                files_changed.append(yaml_file)
                 removed_count = len(original_tags) - len(unique_tags)
                 duplicates = [
                     tag for tag in original_tags if original_tags.count(tag) > 1
@@ -216,14 +206,9 @@ def check_missing_descriptions(yaml_files: list[str]) -> list[str]:
     missing_desc: list[str] = []
 
     for yaml_file in yaml_files:
-        try:
-            with open(yaml_file) as file:
-                data = yaml.safe_load(file)
-                if data and data.get("description") is None:
-                    missing_desc += [yaml_file]
-        except Exception as exc:
-            exc.add_note(f"{yaml_file=}")
-            raise
+        data = load_yaml(yaml_file)
+        if data and data.get("description") is None:
+            missing_desc.append(yaml_file)
 
     if missing_desc:
         print(f"\n {len(missing_desc)} files with missing descriptions:")
@@ -241,7 +226,7 @@ if __name__ == "__main__":
     errors = check_yaml_titles(yaml_files)
     report_similar_tags(yaml_files)
     remove_duplicate_tags(yaml_files)
-    missing = check_missing_descriptions(yaml_files)  # Add description check
+    missing = check_missing_descriptions(yaml_files)
     # TODO remove missing allowance once all diagrams have descriptions
     raise_missing = len(missing) > 10
     raise SystemExit(errors or raise_missing)  # Exit with error if any checks fail

@@ -1,9 +1,9 @@
-import { config } from "@janosh/vite-config";
-import yaml from "@rollup/plugin-yaml";
-import { enhancedImages } from "@sveltejs/enhanced-img";
-import { sveltekit } from "@sveltejs/kit/vite";
-import { readFileSync } from "node:fs";
-import { defineConfig } from "vite-plus";
+import { config } from '@janosh/vite-config'
+import yaml from '@rollup/plugin-yaml'
+import { enhancedImages } from '@sveltejs/enhanced-img'
+import { sveltekit } from '@sveltejs/kit/vite'
+import { readFileSync } from 'node:fs'
+import { defineConfig } from 'vite-plus'
 
 export default defineConfig({
   ...config, // shared lint/fmt/build from @janosh/vite-config (dotfiles)
@@ -13,9 +13,10 @@ export default defineConfig({
       name: `raw-text-loader`,
       enforce: `pre`,
       load(id) {
-        const clean_id = id.split(`?`)[0];
+        const clean_id = id.split(`?`)[0]
         if (clean_id.endsWith(`.tex`) || clean_id.endsWith(`.typ`))
-          return `export default ${JSON.stringify(readFileSync(clean_id, `utf-8`))}`;
+          return `export default ${JSON.stringify(readFileSync(clean_id, `utf-8`))}`
+        return null
       },
     },
     enhancedImages(),
@@ -31,4 +32,4 @@ export default defineConfig({
   preview: {
     port: 3000,
   },
-});
+})

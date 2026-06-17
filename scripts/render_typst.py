@@ -39,4 +39,5 @@ input_file = sys.argv[1]
 render_typst(input_file)
 
 print("\nUpdate readme table listing all figures in assets/")
-subprocess.run(["python", "scripts/update_readme_table.py"])
+# best-effort post-step (assets are already written); don't fail the render if it errors
+subprocess.run([sys.executable, f"{os.path.dirname(__file__)}/update_readme_table.py"])

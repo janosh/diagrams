@@ -10,6 +10,7 @@ def compress_png(png_path: str) -> None:
         return
 
     if shutil.which("pngquant"):
+        # no check=True: --skip-if-larger exits non-zero when it keeps the original
         subprocess.run(
             ["pngquant", "32", "--skip-if-larger", "--ext", ".png", "--force", png_path]
         )
@@ -28,7 +29,10 @@ def pdf_to_svg_png_compressed(pdf_path: str) -> str:
     print("Converting PDF to SVG and compressing")
     if not shutil.which("pdf2svg"):
         print("pdf2svg not found, skipping SVG generation")
-    elif subprocess.run(["pdf2svg", f"{base_path}.pdf", f"{base_path}.svg"]).returncode != 0:
+    elif (
+        subprocess.run(["pdf2svg", f"{base_path}.pdf", f"{base_path}.svg"]).returncode
+        != 0
+    ):
         print("pdf2svg failed, skipping SVG generation")
     elif os.stat(f"{base_path}.svg").st_size > 500_000:
         os.remove(f"{base_path}.svg")
@@ -37,15 +41,22 @@ def pdf_to_svg_png_compressed(pdf_path: str) -> str:
 
     # https://stackoverflow.com/q/52998331
     if os.getenv("CI") == "true":
+        xml_uri = "/etc/ImageMagick-6/policy.xml"
         subprocess.run(
-            ["sudo", "sed", "-i", "/disable ghostscript format types/,+6d",
-             "/etc/ImageMagick-6/policy.xml"]
+            ["sudo", "sed", "-i", "/disable ghostscript format types/,+6d", xml_uri]
         )
 
     magick_cmd = "magick" if shutil.which("magick") else "convert"
     print(f"\n--- {magick_cmd}: convert PDF to PNG ---")
-    subprocess.run([magick_cmd, "-density", "200", f"{base_path}.pdf", f"{base_path}.png"])
-    subprocess.run([magick_cmd, "-density", "400", f"{base_path}.pdf", f"{base_path}-hd.png"])
+    # check=True: these PNGs are the assets the site renders, so fail loudly if missing
+    subprocess.run(
+        [magick_cmd, "-density", "200", f"{base_path}.pdf", f"{base_path}.png"],
+        check=True,
+    )
+    subprocess.run(
+        [magick_cmd, "-density", "400", f"{base_path}.pdf", f"{base_path}-hd.png"],
+        check=True,
+    )
 
     print("\n--- compress PNGs ---")
     compress_png(f"{base_path}.png")

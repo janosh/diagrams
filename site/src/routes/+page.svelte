@@ -1,10 +1,12 @@
 <script lang="ts">
   import { building } from '$app/environment'
   import { goto } from '$app/navigation'
+  import { page } from '$app/state'
   import { DiagramCard, diagrams, tags } from '$lib'
-  import { filtered_diagrams, filters } from '$lib/state.svelte'
+  import { filters } from '$lib/state.svelte'
   import { homepage, repository } from '$root/package.json'
   import Icon from '@iconify/svelte'
+  import { tick } from 'svelte'
   import MultiSelect, { type ObjectOption } from 'svelte-multiselect'
   import { highlight_matches } from 'svelte-multiselect/attachments'
 
@@ -13,28 +15,67 @@
   const clamp = (num: number, min: number, max: number) =>
     Math.min(Math.max(num, min), max)
 
-  const meta_description =
-    `${diagrams.length} Diagrams on Physics, Chemistry, Computer Science, and Machine Learning`
+  const meta_description = `${diagrams.length} Diagrams on Physics, Chemistry, Computer Science, and Machine Learning`
 
-  let active_diagram = $state(-1)
+  const update_tag_query = (label?: string) => {
+    const url = new URL(page.url)
+    if (label) {
+      url.searchParams.set(`tag`, label)
+    } else {
+      url.searchParams.delete(`tag`)
+    }
+    goto(url, { keepFocus: true, noScroll: true, replaceState: true })
+  }
 
-  function handle_keyup(event: KeyboardEvent) {
-    if (event.key === `Enter` && active_diagram >= 0) {
-      const site = diagrams[active_diagram]
-      goto(site.slug)
+  let tag_query = $state<string | null>(null)
+  $effect(() => {
+    const label = page.url.searchParams.get(`tag`)
+    if (label === tag_query) return
+    tag_query = label
+    filters.tags = label ? [{ label, count: 0 }] : []
+  })
+
+  // replace the tag filter with a single tag (count is display-only, unused by filtering)
+  const filter_by_tag = (label: string) => {
+    filters.tags = [{ label, count: 0 }]
+    update_tag_query(label)
+  }
+
+  const clear_filters = () => {
+    filters.search = ``
+    filters.tag_mode = `all`
+    filters.tags = []
+    update_tag_query()
+  }
+
+  // track the active card by slug (not index) so the highlight follows the diagram
+  // across filter changes instead of pointing at a stale position
+  let active_slug = $state<string>()
+
+  async function handle_keyup(event: KeyboardEvent) {
+    // filters.filtered is the shared, title-sorted view shown in the grid, so keyboard
+    // nav stays in sync with what's on screen
+    const shown = filters.filtered
+    const count = shown.length
+    if (count === 0) return
+    // current is -1 when nothing is selected or the selection was filtered out
+    const current = shown.findIndex((diagram) => diagram.slug === active_slug)
+    if (event.key === `Enter`) {
+      if (current !== -1) goto(shown[current].slug) // ignore Enter on an off-screen selection
+      return
     }
     const to = {
-      // wrap around
-      ArrowLeft: (active_diagram - 1 + diagrams.length) % diagrams.length,
-      ArrowRight: (active_diagram + 1) % diagrams.length,
+      // wrap around; from no selection ArrowRight starts at first, ArrowLeft at last
+      ArrowLeft: current === -1 ? count - 1 : (current - 1 + count) % count,
+      ArrowRight: current === -1 ? 0 : (current + 1) % count,
       Escape: -1,
     }[event.key]
     // if not arrow or escape key, return early for browser default behavior
     if (to === undefined) return
-    if (to >= 0) active_diagram = to
-    // keep active_idx in viewport
-    const active = document.querySelector(`ul > li.active`)
-    if (active) active.scrollIntoView()
+    active_slug = to >= 0 ? shown[to].slug : undefined // Escape (-1) clears the selection
+    // wait for the active class to apply before scrolling the selected card into view
+    await tick()
+    document.querySelector(`ul > li.active`)?.scrollIntoView({ block: `nearest` })
   }
   let cols = $derived(clamp(Math.floor(innerWidth / 300), 1, 6))
 </script>
@@ -51,19 +92,16 @@
 
 <svelte:window bind:innerWidth onkeyup={handle_keyup} />
 
-<h1>
-  Scientific Diagrams
-</h1>
+<h1>Scientific Diagrams</h1>
 <p>
   About
   {#each [`physics`, `chemistry`, `machine learning`] as tag, idx (tag)}
     {#if idx > 0},{/if}
-    <button onclick={() => (filters.tags = [{ label: tag, count: 0 }])}>
+    <button onclick={() => filter_by_tag(tag)}>
       {tag}
     </button>{/each},<br />
-  {diagrams.length} total, <button
-    onclick={() => (filters.tags = [{ label: `cetz`, count: 0 }])}
-  >
+  <button onclick={clear_filters}>{diagrams.length} total</button>,
+  <button onclick={() => filter_by_tag(`cetz`)}>
     {diagrams.filter((diagram) => diagram.code.typst).length}
   </button>
   made with
@@ -71,7 +109,7 @@
     <Icon icon="simple-icons:typst" inline />CeTZ
   </a>
   and
-  <button onclick={() => (filters.tags = [{ label: `tikz`, count: 0 }])}>
+  <button onclick={() => filter_by_tag(`tikz`)}>
     {diagrams.filter((diagram) => diagram.code.tex).length}
   </button>
   made with
@@ -92,9 +130,9 @@
 
 <div class="filters">
   {#if filters.search?.length || filters.tags?.length}
-    <span style="color: var(--text-secondary)">{filtered_diagrams().length} match{
-        filtered_diagrams().length != 1 ? `es` : ``
-      }</span>
+    <span style="color: var(--text-secondary)">
+      {filters.filtered.length} match{filters.filtered.length != 1 ? `es` : ``}
+    </span>
   {/if}
   <input name="Search" bind:value={filters.search} placeholder="Search..." />
   <MultiSelect
@@ -105,7 +143,8 @@
   >
     {#snippet option({ option }: { option: ObjectOption; idx: number })}
       <span style="display: flex; gap: 5pt; align-items: center">
-        {option.label} <span style="flex: 1"></span> {option.count}
+        {option.label} <span style="flex: 1"></span>
+        {option.count}
       </span>
     {/snippet}
     {#snippet afterInput()}
@@ -126,8 +165,8 @@
     style="column-gap: 1em"
     {@attach highlight_matches({ query: filters.search, css_class: `highlight-match` })}
   >
-    {#each filtered_diagrams() as item, idx (item.slug)}
-      <li class:active={active_diagram == idx}>
+    {#each filters.filtered as item (item.slug)}
+      <li class:active={item.slug === active_slug}>
         <DiagramCard {item} style="break-inside: avoid; font-size: 14pt" />
       </li>
     {/each}
