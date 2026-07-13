@@ -7,7 +7,7 @@ sys.path.append(os.path.dirname(__file__))
 
 from convert_assets import compress_png
 
-ROOT = os.path.dirname(os.path.dirname(__file__))
+ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
 
 def render_typst(input_file: str) -> None:

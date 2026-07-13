@@ -2,7 +2,6 @@ __latexindent_temp.tex
 *.pyc
 .DS_Store
 package-lock.json
-.idea/
 
 # site dependencies
 node_modules
