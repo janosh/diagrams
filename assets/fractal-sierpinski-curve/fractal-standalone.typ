@@ -1,18 +1,18 @@
 // Fractal drawer for janosh/diagrams — page setup belongs in <slug>.typ.
-// Style aligned with https://github.com/janosh/diagrams (CeTZ, auto page, 10pt text).
+// Style matches typical CeTZ assets: transparent page, black strokes, math labels.
 
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: line, rect, circle
 
 // --- palette (shared across all contribution diagrams) ---
-#let _stroke = rgb("#1f3a5f") + 0.7pt
-#let _carpet-fill = rgb("#2d3436")
-#let _cantor-fill = rgb("#4a6fa5")
-#let _point-fill = rgb("#3d7ea6").lighten(18%)
-#let _title-size = 12pt
-#let _label-size = 9pt
+// Prefer black geometry like Feynman / contour diagrams; colored fills like ball-tree.
+#let _stroke = black + 0.55pt
+#let _carpet-fill = black
+#let _cantor-fill = blue.lighten(25%)
+#let _point-fill = blue.darken(5%)
+#let _label-size = 10pt
 #let _panel-size-default = 4.2cm
-#let _gutter-default = 10pt
+#let _gutter-default = 12pt
 
 // --- L-system engine ---
 #let _expand(axiom, rules, order) = {
@@ -205,7 +205,7 @@
   })
 }
 
-#let _draw-rects-canvas(rects, fill, stroke: _stroke, padding: 0.5, max-size: _panel-size-default) = {
+#let _draw-rects-canvas(rects, fill, stroke: none, padding: 0.5, max-size: _panel-size-default) = {
   let b = _bounds-rects(rects)
   let w = b.x-max - b.x-min + 2 * padding
   let h = b.y-max - b.y-min + 2 * padding
@@ -229,7 +229,8 @@
   let h = b.y-max - b.y-min + 2 * padding
   let unit = max-size / calc.max(w, h, 1.0)
   let n = calc.max(points.len(), 1)
-  let radius = calc.max(0.022, 0.11 / calc.sqrt(n))
+  // Keep points readable on dense stages while matching typical CeTZ dot diagrams.
+  let radius = calc.max(0.045, 0.18 / calc.sqrt(n))
   canvas(length: unit, {
     for p in points {
       let (x, y) = p
@@ -253,8 +254,10 @@
 }
 
 #let _order-label(order) = {
+  // Math labels match the rest of the collection (no prose "order N", no in-figure title —
+  // the site/README already show YAML `title`).
   align(center)[
-    #text(size: _label-size, fill: luma(100))[order #order]
+    #text(size: _label-size)[$n = #order$]
   ]
 }
 
@@ -264,15 +267,15 @@
   draw-stage: order => none,
   panel-size: _panel-size-default,
   gutter: _gutter-default,
-  label-gap: 5pt,
+  label-gap: 6pt,
 ) = {
   let n = stages.len()
   let plot-cells = stages.map(order => _plot-slot(draw-stage(order), panel-size))
   let label-cells = stages.map(order => _order-label(order))
 
+  // Title arg kept for API compatibility with presets; not drawn (avoids duplicating site H1/H2).
+  let _ = title
   box(width: n * panel-size + calc.max(0, n - 1) * gutter)[
-    #align(center)[#text(size: _title-size, weight: "bold")[#title]]
-    #v(8pt)
     #grid(
       columns: n,
       column-gutter: gutter,
@@ -310,7 +313,7 @@
   kind: "carpet",
   stages: (2, 3, 4),
   fill: _carpet-fill,
-  stroke: _stroke,
+  stroke: none,
   panel-size: _panel-size-default,
 ) = {
   standalone-stages(
