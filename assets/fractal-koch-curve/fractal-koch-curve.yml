@@ -1,0 +1,25 @@
+title: Fractal Koch Curve
+creator: Luis Enrique Cepeda Alvarado
+creator_url: https://orcid.org/0009-0007-6029-4783
+description: |
+  The Koch curve is a classic fractal obtained by the L-system rule
+  `F → F+F--F+F` on a hexagonal turtle grid (60° turns). Each panel shows a
+  different iteration depth (orders 2, 3, and 4), illustrating how segment
+  replacement increases total path length without covering area.
+
+tags:
+  - fractal
+  - l-system
+  - koch curve
+  - fractal dimension
+  - mathematics
+  - visualization
+
+references:
+  - ventrella_family_2019:
+      title: "The Family Tree of Fractal Curves: A Taxonomy of Plane-Filling Curves Using Complex Integer Lattices"
+      authors: Jeffrey Ventrella
+      year: 2019
+      publisher: Eyebrain Books
+      isbn: "978-0-9830546-3-4"
+      page: 154

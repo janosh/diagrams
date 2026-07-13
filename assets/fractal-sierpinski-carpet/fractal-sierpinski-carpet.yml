@@ -1,0 +1,18 @@
+title: Fractal Sierpinski Carpet
+creator: Luis Enrique Cepeda Alvarado
+creator_url: https://orcid.org/0009-0007-6029-4783
+description: |
+  The Sierpiński carpet is a self-similar subset of the unit square formed by
+  recursively removing the central third of a 3×3 grid and repeating on the eight
+  remaining squares. Panels show orders 2, 3, and 4 of this subdivision, with
+  filled tiles indicating the remaining set at each stage.
+
+tags:
+  - fractal
+  - sierpinski carpet
+  - recursive subdivision
+  - self-similarity
+  - mathematics
+  - visualization
+
+references: []

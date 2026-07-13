@@ -1,0 +1,31 @@
+title: Fractal Eisenstein
+creator: Luis Enrique Cepeda Alvarado
+creator_url: https://orcid.org/0009-0007-6029-4783
+description: |
+  A fractal defined on the Eisenstein integer lattice built by translating scaled
+  copies of a four-point seed at the vertices {0, 1, ω, ω²} with ω = exp(2πi/3).
+  At each stage p, every current site is replicated at offsets Δ_p r_p v for seed
+  vertices v, where Δ_p = 2^(p-1) and r_p = exp((p-1)πi/3). A final rotation
+  centers the pattern. This is a complex integer lattice structure that can be
+  labeled as a space-filling fractal rather than a curve.
+
+tags:
+  - fractal
+  - eisenstein integers
+  - hexagonal lattice
+  - complex multiplication
+  - antenna arrays
+  - mathematics
+  - visualization
+
+references:
+  - cepeda_thinned_2025:
+      title: Thinned Eisenstein Fractal Antenna Array Using Multi-Objective Optimization for Wideband Performance
+      authors: L. E. Cepeda
+      year: 2025
+      publisher: Applied Sciences
+      doi: 10.3390/app15105584
+      page: 5584
+      volume: 15
+      issue: 10
+      url: https://doi.org/10.3390/app15105584

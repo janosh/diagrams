@@ -1,0 +1,26 @@
+title: Fractal Gosper Curve
+creator: Luis Enrique Cepeda Alvarado
+creator_url: https://orcid.org/0009-0007-6029-4783
+description: |
+  The Gosper curve (flowsnake) is a space-filling fractal on a hexagonal grid
+  defined by the L-system `A → A-B--B+A++AA+B-`, `B → +A-BB--B-A++A+B`. The
+  three panels show orders 1, 2, and 3, where each stage multiplies the
+  complexity of the underlying hexagonal refinement.
+
+tags:
+  - fractal
+  - l-system
+  - gosper curve
+  - flowsnake
+  - hexagonal lattice
+  - mathematics
+  - visualization
+
+references:
+  - ventrella_family_2019:
+      title: "The Family Tree of Fractal Curves: A Taxonomy of Plane-Filling Curves Using Complex Integer Lattices"
+      authors: Jeffrey Ventrella
+      year: 2019
+      publisher: Eyebrain Books
+      isbn: "978-0-9830546-3-4"
+      page: 154

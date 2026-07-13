@@ -1,5 +1,5 @@
 <h1 align="center">
-  154 Scientific Diagrams
+  160 Scientific Diagrams
 </h1>
 
 <h4 align="center">
@@ -8,7 +8,7 @@
 
 <h3 align="center">
 
-[![146 with Typst](https://img.shields.io/badge/146%20with-Typst-1f425f.svg?logo=typst)](https://diagrams.janosh.dev?tag=cetz)
+[![152 with Typst](https://img.shields.io/badge/152%20with-Typst-1f425f.svg?logo=typst)](https://diagrams.janosh.dev?tag=cetz)
 [![134 with LaTeX](https://img.shields.io/badge/134%20with-LaTeX-1f425f.svg?logo=latex)](https://diagrams.janosh.dev?tag=tikz)
 [![Site](https://github.com/janosh/diagrams/actions/workflows/gh-pages.yml/badge.svg)](https://github.com/janosh/diagrams/actions/workflows/gh-pages.yml)
 [![Pull Requests Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?logo=github)](https://github.com/janosh/diagrams/pulls)
@@ -74,8 +74,14 @@ Have a TikZ/CeTZ diagram you'd like to share? [Submit a PR](https://github.com/j
 | ![Feynman Diagram Loops](assets/feynman-diagram-loops/feynman-diagram-loops.png) | ![Feynman Diagram One Point](assets/feynman-diagram-one-point/feynman-diagram-one-point.png) |
 | [Feynman Diagram Propagator Loop](https://janosh.github.io/diagrams/feynman-diagram-propagator-loop) &nbsp;[![LaTeX][latex-logo]](assets/feynman-diagram-propagator-loop/feynman-diagram-propagator-loop.tex)&nbsp;[![Typst][typst-logo]](assets/feynman-diagram-propagator-loop/feynman-diagram-propagator-loop.typ) | [Feynman Diagrams Loop Regulator](https://janosh.github.io/diagrams/feynman-diagrams-loop-regulator) &nbsp;[![LaTeX][latex-logo]](assets/feynman-diagrams-loop-regulator/feynman-diagrams-loop-regulator.tex)&nbsp;[![Typst][typst-logo]](assets/feynman-diagrams-loop-regulator/feynman-diagrams-loop-regulator.typ) |
 | ![Feynman Diagram Propagator Loop](assets/feynman-diagram-propagator-loop/feynman-diagram-propagator-loop.png) | ![Feynman Diagrams Loop Regulator](assets/feynman-diagrams-loop-regulator/feynman-diagrams-loop-regulator.png) |
-| [Four Vs of Data](https://janosh.github.io/diagrams/four-vs-of-data) &nbsp;[![LaTeX][latex-logo]](assets/four-vs-of-data/four-vs-of-data.tex)&nbsp;[![Typst][typst-logo]](assets/four-vs-of-data/four-vs-of-data.typ) | [Frequency Modulation](https://janosh.github.io/diagrams/frequency-modulation) &nbsp;[![LaTeX][latex-logo]](assets/frequency-modulation/frequency-modulation.tex)&nbsp;[![Typst][typst-logo]](assets/frequency-modulation/frequency-modulation.typ) |
-| ![Four Vs of Data](assets/four-vs-of-data/four-vs-of-data.png) | ![Frequency Modulation](assets/frequency-modulation/frequency-modulation.png) |
+| [Four Vs of Data](https://janosh.github.io/diagrams/four-vs-of-data) &nbsp;[![LaTeX][latex-logo]](assets/four-vs-of-data/four-vs-of-data.tex)&nbsp;[![Typst][typst-logo]](assets/four-vs-of-data/four-vs-of-data.typ) | [Fractal Dragon Curve](https://janosh.github.io/diagrams/fractal-dragon-curve) &nbsp;[![Typst][typst-logo]](assets/fractal-dragon-curve/fractal-dragon-curve.typ) |
+| ![Four Vs of Data](assets/four-vs-of-data/four-vs-of-data.png) | ![Fractal Dragon Curve](assets/fractal-dragon-curve/fractal-dragon-curve.png) |
+| [Fractal Eisenstein](https://janosh.github.io/diagrams/fractal-eisenstein) &nbsp;[![Typst][typst-logo]](assets/fractal-eisenstein/fractal-eisenstein.typ) | [Fractal Gosper Curve](https://janosh.github.io/diagrams/fractal-gosper-curve) &nbsp;[![Typst][typst-logo]](assets/fractal-gosper-curve/fractal-gosper-curve.typ) |
+| ![Fractal Eisenstein](assets/fractal-eisenstein/fractal-eisenstein.png) | ![Fractal Gosper Curve](assets/fractal-gosper-curve/fractal-gosper-curve.png) |
+| [Fractal Koch Curve](https://janosh.github.io/diagrams/fractal-koch-curve) &nbsp;[![Typst][typst-logo]](assets/fractal-koch-curve/fractal-koch-curve.typ) | [Fractal Sierpinski Carpet](https://janosh.github.io/diagrams/fractal-sierpinski-carpet) &nbsp;[![Typst][typst-logo]](assets/fractal-sierpinski-carpet/fractal-sierpinski-carpet.typ) |
+| ![Fractal Koch Curve](assets/fractal-koch-curve/fractal-koch-curve.png) | ![Fractal Sierpinski Carpet](assets/fractal-sierpinski-carpet/fractal-sierpinski-carpet.png) |
+| [Fractal Sierpinski Curve](https://janosh.github.io/diagrams/fractal-sierpinski-curve) &nbsp;[![Typst][typst-logo]](assets/fractal-sierpinski-curve/fractal-sierpinski-curve.typ) | [Frequency Modulation](https://janosh.github.io/diagrams/frequency-modulation) &nbsp;[![LaTeX][latex-logo]](assets/frequency-modulation/frequency-modulation.tex)&nbsp;[![Typst][typst-logo]](assets/frequency-modulation/frequency-modulation.typ) |
+| ![Fractal Sierpinski Curve](assets/fractal-sierpinski-curve/fractal-sierpinski-curve.png) | ![Frequency Modulation](assets/frequency-modulation/frequency-modulation.png) |
 | [Gas Pressure on Wall](https://janosh.github.io/diagrams/gas-pressure-on-wall) &nbsp;[![LaTeX][latex-logo]](assets/gas-pressure-on-wall/gas-pressure-on-wall.tex)&nbsp;[![Typst][typst-logo]](assets/gas-pressure-on-wall/gas-pressure-on-wall.typ) | [Generative Adversarial Network](https://janosh.github.io/diagrams/generative-adversarial-network) &nbsp;[![LaTeX][latex-logo]](assets/generative-adversarial-network/generative-adversarial-network.tex)&nbsp;[![Typst][typst-logo]](assets/generative-adversarial-network/generative-adversarial-network.typ) |
 | ![Gas Pressure on Wall](assets/gas-pressure-on-wall/gas-pressure-on-wall.png) | ![Generative Adversarial Network](assets/generative-adversarial-network/generative-adversarial-network.png) |
 | [Geometric Bayes](https://janosh.github.io/diagrams/geometric-bayes) &nbsp;[![LaTeX][latex-logo]](assets/geometric-bayes/geometric-bayes.tex)&nbsp;[![Typst][typst-logo]](assets/geometric-bayes/geometric-bayes.typ) | [GNN Node Aggregation](https://janosh.github.io/diagrams/gnn-node-aggregation) &nbsp;[![Typst][typst-logo]](assets/gnn-node-aggregation/gnn-node-aggregation.typ) |

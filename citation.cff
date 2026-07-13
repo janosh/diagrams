@@ -19,6 +19,10 @@ authors:
   - family-names: Hernández Peralta
     given-names: Sergio Antonio
     email: sergioahp@proton.me
+  - family-names: Cepeda Alvarado
+    given-names: Luis Enrique
+    email: cepedale98@gmail.com
+    orcid: https://orcid.org/0009-0007-6029-4783
 license: MIT
 license-url: https://github.com/janosh/diagrams/blob/main/license
 repository-code: https://github.com/janosh/diagrams
