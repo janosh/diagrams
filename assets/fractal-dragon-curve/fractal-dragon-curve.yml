@@ -6,7 +6,7 @@ description: |
   Lindenmayer system with axiom `FX` and rules `X → X+YF+`, `Y → -FX-Y`. A
   turtle on a square grid draws a segment for each `F` and turns on `+` / `-`.
 
-  The figure shows three iteration orders (4, 8, and 12) of the same grammar.
+  The figure shows three iteration orders (5, 9, and 13) of the same grammar.
 
 tags:
   - fractal
@@ -19,10 +19,10 @@ tags:
 
 references:
   - ventrella_family_2019:
-      title: "The Family Tree of Fractal Curves: A Taxonomy of Plane-Filling Curves Using Complex Integer Lattices"
+      title: 'The Family Tree of Fractal Curves: A Taxonomy of Plane-Filling Curves Using Complex Integer Lattices'
       authors: Jeffrey Ventrella
       year: 2019
       publisher: Eyebrain Books
-      isbn: "978-0-9830546-3-4"
+      isbn: '978-0-9830546-3-4'
       page: 154
-      url: http://www.fractalcurves.com/familytree/
+      url: https://fractalcurves.com/familytree/

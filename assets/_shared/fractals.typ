@@ -6,13 +6,15 @@
 
 // --- palette (shared across all contribution diagrams) ---
 // Prefer black geometry like Feynman / contour diagrams; colored fills like ball-tree.
-#let _stroke = black + 0.55pt
+#let _stroke-paint = black
+#let _stroke-thin = 0.45pt
+#let _stroke-thick = 0.75pt
 #let _carpet-fill = black
 #let _cantor-fill = blue.lighten(25%)
 #let _point-fill = blue.darken(5%)
 #let _label-size = 10pt
-#let _panel-size-default = 4.2cm
-#let _gutter-default = 12pt
+#let _panel-size-default = 4.5cm
+#let _gutter-default = 14pt
 
 // --- L-system engine ---
 #let _expand(axiom, rules, order) = {
@@ -56,6 +58,15 @@
   segments
 }
 
+// Density-aware stroke: early L-system stages read thicker; dense stages stay fine.
+#let _curve-stroke(segment-count) = {
+  let thickness = calc.max(
+    _stroke-thin,
+    calc.min(_stroke-thick, 3.2pt / calc.sqrt(calc.max(segment-count, 1))),
+  )
+  (paint: _stroke-paint, thickness: thickness, join: "round", cap: "round")
+}
+
 // --- Eisenstein fractal (ports generateEisensteinFractal.m) ---
 #let _complex-add(left, right) = (left.at(0) + right.at(0), left.at(1) + right.at(1))
 #let _complex-multiply(left, right) = (
@@ -73,9 +84,11 @@
   _complex-multiply(_omega, _omega),
 )
 
-#let _eisenstein-positions(stage, center: (0.0, 0.0)) = {
+#let _eisenstein-positions(stage) = {
+  // Stage 1 is the seed vertices (paper §2.1). The final -r_p display rotation
+  // only applies after iterative growth (stage >= 2).
   if stage <= 1 {
-    return _eisenstein-vertices.map(vertex => _complex-add(vertex, center))
+    return _eisenstein-vertices
   }
   let positions = _eisenstein-vertices
   let last-rotation = _complex-from-angle(0.0)
@@ -93,7 +106,7 @@
     positions = next-positions
   }
   let negative-rotation = _complex-scale(-1.0, last-rotation)
-  positions.map(point => _complex-add(_complex-multiply(negative-rotation, point), center))
+  positions.map(point => _complex-multiply(negative-rotation, point))
 }
 
 // --- recursive carpet / cantor ---
@@ -147,7 +160,8 @@
   canvas(length: unit-length, render(shift))
 }
 
-#let _draw-segments-canvas(segments, stroke: _stroke, max-size: _panel-size-default) = {
+#let _draw-segments-canvas(segments, max-size: _panel-size-default) = {
+  let stroke = _curve-stroke(segments.len())
   _fit-canvas(segments, 0, max-size, shift => {
     for (x0, y0, x1, y1) in segments {
       line(shift((x0, y0)), shift((x1, y1)), stroke: stroke)
@@ -155,7 +169,9 @@
   })
 }
 
-#let _draw-rectangles-canvas(rectangles, fill, stroke: none, max-size: _panel-size-default) = {
+#let _draw-rectangles-canvas(rectangles, fill, stroke: auto, max-size: _panel-size-default) = {
+  // Stroking with the fill color closes antialiasing seams between adjacent unit cells.
+  let stroke = if stroke == auto { fill + 0.3pt } else { stroke }
   _fit-canvas(rectangles, 0, max-size, shift => {
     for (x0, y0, x1, y1) in rectangles {
       rect(shift((x0, y0)), shift((x1, y1)), stroke: stroke, fill: fill)
@@ -164,8 +180,14 @@
 }
 
 #let _draw-points-canvas(points, fill: _point-fill, max-size: _panel-size-default) = {
-  // Keep points readable on dense stages while matching typical CeTZ dot diagrams.
-  let radius = calc.max(0.045, 0.18 / calc.sqrt(calc.max(points.len(), 1)))
+  let bounds = _bounds(points)
+  let span = calc.max(bounds.x-max - bounds.x-min, bounds.y-max - bounds.y-min, 1.0)
+  // Taper dots as stages get denser, but never below ~1pt wide on the page
+  // (0.055 canvas units shrink to a fraction of a pixel at dense stages).
+  let radius = calc.max(
+    0.32 / calc.sqrt(calc.max(points.len(), 1)),
+    0.5pt / (max-size / span),
+  )
   _fit-canvas(points, radius, max-size, shift => {
     for point in points {
       circle(shift(point), radius: radius, fill: fill, stroke: none)
@@ -181,15 +203,14 @@
   gutter: _gutter-default,
   label-gap: 6pt,
 ) = {
-  // Math labels match the rest of the collection (no prose "order N", no in-figure title —
-  // the site/README already show YAML `title`).
+  // Fixed width, natural height: wide curves (Koch) and near-square sets (carpet)
+  // both fill the panel without forced letterboxing.
   grid(
     columns: stages.len(),
     column-gutter: gutter,
     row-gutter: label-gap,
     ..stages.map(order => box(
       width: panel-size,
-      height: panel-size,
       align(center + horizon, draw-stage(order)),
     )),
     ..stages.map(order => align(center, text(size: _label-size)[$n = #order$])),
@@ -204,7 +225,7 @@
     rules: ("X": "X+YF+", "Y": "-FX-Y"),
     draw-symbols: "F",
     turtle: "rect",
-    stages: (4, 8, 12),
+    stages: (5, 9, 13),
   ),
   koch: (
     kind: "lsystem",
@@ -220,7 +241,8 @@
     rules: ("A": "B-A-B", "B": "A+B+A"),
     draw-symbols: "AB",
     turtle: "hex",
-    stages: (3, 5, 6),
+    // Even orders share orientation; odd orders flip the triangle.
+    stages: (2, 4, 6),
   ),
   gosper: (
     kind: "lsystem",
