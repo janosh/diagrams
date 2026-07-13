@@ -23,11 +23,19 @@ class DiagramInfo:
     title: str
 
 
+def get_diagram_sources(extension: str) -> list[str]:
+    """Return source files named after their parent diagram folder."""
+    return [
+        source_path
+        for source_path in glob(f"{ROOT}/assets/**/*{extension}")
+        if os.path.basename(source_path)
+        == f"{os.path.basename(os.path.dirname(source_path))}{extension}"
+    ]
+
+
 def collect_diagrams() -> list[DiagramInfo]:
     """Collect visible diagram metadata with matching source files."""
-    for source_path in glob(f"{ROOT}/assets/**/*.tex") + glob(
-        f"{ROOT}/assets/**/*.typ"
-    ):
+    for source_path in get_diagram_sources(".tex") + get_diagram_sources(".typ"):
         dir_name = os.path.dirname(source_path)
         yaml_path = f"{dir_name}/{os.path.basename(dir_name)}.yml"
         if not os.path.isfile(yaml_path):
@@ -114,10 +122,11 @@ def update_readme(table: str, diagram_count: int) -> None:
     ):
         readme = re.sub(pattern, str(diagram_count), readme)
 
-    for count, lang in (
-        (len(glob(f"{ROOT}/assets/**/*.typ")), "Typst"),
-        (len(glob(f"{ROOT}/assets/**/*.tex")), "LaTeX"),
+    for extension, lang in (
+        (".typ", "Typst"),
+        (".tex", "LaTeX"),
     ):
+        count = len(get_diagram_sources(extension))
         readme = re.sub(
             rf"\[\!\[(\d+) with {lang}\]", f"[![{count} with {lang}]", readme
         )

@@ -8,7 +8,7 @@
 
 <h3 align="center">
 
-[![160 with Typst](https://img.shields.io/badge/160%20with-Typst-1f425f.svg?logo=typst)](https://diagrams.janosh.dev?tag=cetz)
+[![153 with Typst](https://img.shields.io/badge/153%20with-Typst-1f425f.svg?logo=typst)](https://diagrams.janosh.dev?tag=cetz)
 [![134 with LaTeX](https://img.shields.io/badge/134%20with-LaTeX-1f425f.svg?logo=latex)](https://diagrams.janosh.dev?tag=tikz)
 [![Site](https://github.com/janosh/diagrams/actions/workflows/gh-pages.yml/badge.svg)](https://github.com/janosh/diagrams/actions/workflows/gh-pages.yml)
 [![Pull Requests Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?logo=github)](https://github.com/janosh/diagrams/pulls)

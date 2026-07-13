@@ -358,7 +358,7 @@
     title: "Koch Curve",
     kind: "lsystem",
     axiom: "F",
-    rules: ("F": "-F++F-F"),
+    rules: ("F": "F+F--F+F"),
     draw-symbols: "F",
     turtle: "hex",
     stages: (2, 3, 4),

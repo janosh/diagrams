@@ -78,7 +78,7 @@ repos:
         # xargs exit 255 to fail on first compile error https://stackoverflow.com/a/26485626/4034025
         # bash for-loop adapted from https://github.com/pre-commit/pre-commit/issues/394#issuecomment-588562966
         # typst check command tracked in https://github.com/typst/typst/issues/3792
-        entry: bash -c 'for x in "$@"; do typst compile "$x" - > /dev/null || exit 255; done' --
+        entry: bash -c 'for x in "$@"; do typst compile --root . "$x" - > /dev/null || exit 255; done' --
         files: \.typ$
         types: [file]
 

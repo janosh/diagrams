@@ -3,7 +3,7 @@ creator: Luis Enrique Cepeda Alvarado
 creator_url: https://orcid.org/0009-0007-6029-4783
 description: |
   The Koch curve is a classic fractal obtained by the L-system rule
-  `F → -F++F-F` on a hexagonal turtle grid (60° turns). Each panel shows a
+  `F → F+F--F+F` on a hexagonal turtle grid (60° turns). Each panel shows a
   different iteration depth (orders 2, 3, and 4), illustrating how segment
   replacement increases total path length without covering area.
 
@@ -23,4 +23,4 @@ references:
       publisher: Eyebrain Books
       isbn: "978-0-9830546-3-4"
       page: 154
-      url: http://www.fractalcurves.com/familytree/
+      url: https://www.fractalcurves.com/familytree/
