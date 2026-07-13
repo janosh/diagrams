@@ -10,7 +10,6 @@
 #let _stroke-thin = 0.45pt
 #let _stroke-thick = 0.75pt
 #let _carpet-fill = black
-#let _cantor-fill = blue.lighten(25%)
 #let _point-fill = blue.darken(5%)
 #let _label-size = 10pt
 #let _panel-size-default = 4.5cm
@@ -109,7 +108,7 @@
   positions.map(point => _complex-multiply(negative-rotation, point))
 }
 
-// --- recursive carpet / cantor ---
+// --- recursive carpet ---
 // Subdivide a square into 3×3 cells, drop cells failing `keep`, recurse until unit cells.
 #let _grid-rectangles(size, origin-x, origin-y, rectangles, keep) = {
   if size <= 1 { return rectangles }
@@ -256,12 +255,6 @@
     kind: "grid",
     keep: (column, row) => not (column == 1 and row == 1), // punch out center cell
     fill: _carpet-fill,
-    stages: (2, 3, 4),
-  ),
-  cantor: (
-    kind: "grid",
-    keep: (column, row) => column != 1 and row != 1, // keep only corner cells
-    fill: _cantor-fill,
     stages: (2, 3, 4),
   ),
   eisenstein: (kind: "eisenstein", stages: (2, 3, 4)),
