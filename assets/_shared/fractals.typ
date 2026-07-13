@@ -280,8 +280,10 @@
       let rectangles = _grid-rectangles(calc.pow(3, order), 0.0, 0.0, (), preset.keep)
       _draw-rectangles-canvas(rectangles, preset.fill, max-size: panel-size)
     }
-  } else {
+  } else if preset.kind == "eisenstein" {
     stage => _draw-points-canvas(_eisenstein-positions(stage), max-size: panel-size)
+  } else {
+    panic("unknown fractal preset kind: " + repr(preset.kind))
   }
   standalone-stages(
     stages: preset.stages,
