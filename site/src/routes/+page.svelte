@@ -139,7 +139,7 @@
     options={tags.map(([label, count]) => ({ label, count }))}
     placeholder="Filter by tag..."
     bind:selected={filters.tags}
-    style="max-width: 34rem"
+    style="max-width: 34rem; --sms-bg: var(--input-bg); --sms-options-bg: var(--input-bg)"
   >
     {#snippet option({ option }: { option: ObjectOption; idx: number })}
       <span style="display: flex; gap: 5pt; align-items: center">

@@ -50,6 +50,34 @@
     mach-shock(M-normal-shock, beta, theta)
   }
 
+  /// Shock angle that maximizes deflection for Mach $M$.
+  let max-shock-angle(M) = golden-section-search(b => shock-polar(M, b), 0, rad(90))
+
+  /// Densify samples near $theta = 0$ (same pattern as the original double loops).
+  let densify-near-zero(max-angle) = (
+    lq
+      .linspace(0, max-angle, num: 128)
+      .enumerate()
+      .map(((i, t)) => {
+        if i == 1 { lq.linspace(0, t, num: 10) } else { (t,) }
+      })
+      .flatten()
+  )
+
+  /// Residual for finding the $hat(M) = 1$ locus at fixed upstream Mach.
+  let mach-1-residual(M, shock-angle) = {
+    shock-mach(M, shock-angle, shock-polar(M, shock-angle).rad()) - 1
+  }
+
+  /// Plot $(theta(beta), beta)$ from $(M, beta)$ sample pairs.
+  let polar-curve-plot(data, ..plot-args) = lq.plot(
+    data.map(((M, b)) => shock-polar(M, b).deg()),
+    data.map(((_, b)) => deg(b)),
+    color: black,
+    mark: none,
+    ..plot-args,
+  )
+
   // Can't start at 0, because there's a division by tan(shock-angle) = 0.
   let shock-angles = lq.linspace(1e-9, 90, num: 256)
   // float.inf doesn't produce the correct result.
@@ -127,19 +155,12 @@
   )
 
   // Calculate maximum deflection angle for M = infinity
-  let max-deflection-angle = shock-polar(infinity, golden-section-search(
-    b => shock-polar(infinity, b),
-    0,
-    rad(90),
-  )).rad()
+  let max-deflection-angle = shock-polar(infinity, max-shock-angle(infinity)).rad()
 
   // Helper function to find Mach number for given deflection angle
   let find-mach-for-deflection(deflection-angle) = {
     let M = secant(
-      M => {
-        let shock-angle = golden-section-search(b => shock-polar(M, b), 0, rad(90))
-        shock-polar(M, shock-angle).rad() - deflection-angle
-      },
+      M => shock-polar(M, max-shock-angle(M)).rad() - deflection-angle,
       rad(60),
       rad(70),
     )
@@ -148,54 +169,26 @@
   }
 
   // Generate solution border data
-  let solution-border-data = (
-    lq
-      .linspace(0, max-deflection-angle, num: 128)
-      .enumerate()
-      .map(((i, t)) => {
-        if i == 1 { lq.linspace(0, t, num: 10) } else { (t,) }
-      })
-      .flatten()
-      .map(deflection-angle => {
-        let M = find-mach-for-deflection(deflection-angle)
-        let maximum-shock-angle = golden-section-search(b => shock-polar(M, b), 0, rad(90))
-        (M, maximum-shock-angle)
-      })
-  )
+  let solution-border-data = densify-near-zero(max-deflection-angle).map(deflection-angle => {
+    let M = find-mach-for-deflection(deflection-angle)
+    (M, max-shock-angle(M))
+  })
 
-  let solution-border-plot = lq.plot(
-    solution-border-data.map(((M, b)) => shock-polar(M, b).deg()),
-    solution-border-data.map(((_, b)) => deg(b)),
-    color: black,
-    mark: none,
-  )
+  let solution-border-plot = polar-curve-plot(solution-border-data)
 
   // Generate Mach 1 line data
-  let mach-1-data = (
-    lq
-      .linspace(0, max-deflection-angle, num: 128)
-      .enumerate()
-      .map(((i, t)) => {
-        if i == 1 { lq.linspace(0, t, num: 10) } else { (t,) }
-      })
-      .flatten()
-      .map(deflection-angle => {
-        let M = find-mach-for-deflection(deflection-angle)
-        let mach-1-root(shock-angle) = {
-          shock-mach(M, shock-angle, shock-polar(M, shock-angle).rad()) - 1
-        }
-        let shock-angle = secant(mach-1-root, rad(60), rad(70), tolerance: 1e-6)
-        (M, shock-angle)
-      })
-  )
+  let mach-1-data = densify-near-zero(max-deflection-angle).map(deflection-angle => {
+    let M = find-mach-for-deflection(deflection-angle)
+    let shock-angle = secant(
+      shock-angle => mach-1-residual(M, shock-angle),
+      rad(60),
+      rad(70),
+      tolerance: 1e-6,
+    )
+    (M, shock-angle)
+  })
 
-  let mach-1-plot = lq.plot(
-    mach-1-data.map(((M, b)) => shock-polar(M, b).deg()),
-    mach-1-data.map(((_, b)) => deg(b)),
-    color: black,
-    stroke: (dash: "dash-dotted"),
-    mark: none,
-  )
+  let mach-1-plot = polar-curve-plot(mach-1-data, stroke: (dash: "dash-dotted"))
 
   let label-text-size = 9pt
   let custom-label-placements = (
@@ -210,7 +203,7 @@
   let label-plots = (
     mach-numbers
       .map(M => {
-        let maximum-shock-angle = golden-section-search(b => shock-polar(M, b), 0, rad(90))
+        let maximum-shock-angle = max-shock-angle(M)
         let deflection-angle = shock-polar(M, maximum-shock-angle).deg()
         let align = if M in highlighted-mach-numbers { top + left } else { bottom + left }
         let label = if M == infinity { $#sym.infinity$ } else { [#M] }
@@ -237,12 +230,9 @@
       })
       .flatten()
       // hat(M) = 1 label
-      + (63,).map(shock-angle => {
+      + (63,).map(_ => {
         let M = 1.4
-        let mach-1-root(shock-angle) = {
-          shock-mach(M, shock-angle, shock-polar(M, shock-angle).rad()) - 1
-        }
-        let shock-angle = deg(secant(mach-1-root, rad(60), rad(70)))
+        let shock-angle = deg(secant(shock-angle => mach-1-residual(M, shock-angle), rad(60), rad(70)))
         let deflection-angle = shock-polar(M, rad(shock-angle)).deg()
 
         lq.place(

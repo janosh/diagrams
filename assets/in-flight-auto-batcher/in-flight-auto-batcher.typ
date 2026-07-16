@@ -35,8 +35,8 @@
 
   // solid arrow for a structure continuing into the next step
   let continuing(from, to, color, name) = bezier(
-    (rel: (0, 0), to: from),
-    (rel: (0, 0), to: to),
+    from,
+    to,
     (rel: (0.5, 0), to: from),
     (rel: (-0.5, 0), to: to),
     stroke: color + 0.8pt,
@@ -46,8 +46,8 @@
 
   // dotted arrow for allocation from / convergence to a pool
   let dotted_arrow(from, to, ctrl_from, ctrl_to, color, mark_pos, name) = bezier(
-    (rel: (0, 0), to: from),
-    (rel: (0, 0), to: to),
+    from,
+    to,
     (rel: ctrl_from, to: from),
     (rel: ctrl_to, to: to),
     stroke: (dash: "dotted", paint: color),
@@ -61,25 +61,17 @@
     name: "title",
   )
 
-  content(
-    (plot_size / 3 - 1, title_height - 1.2),
-    text(size: 14pt)[Initial Structure Pool],
+  let pool_label(pos, label, fill, name, padding) = content(
+    pos,
+    text(size: 14pt)[#label],
     frame: "rect",
-    padding: (7pt, 9pt, 8pt),
+    padding: padding,
     stroke: none,
-    fill: rgb(230, 255, 230),
-    name: "initial-pool",
+    fill: fill,
+    name: name,
   )
-
-  content(
-    (2 * plot_size / 3 + 1, title_height - 1.2),
-    text(size: 14pt)[Converged Structure Pool],
-    frame: "rect",
-    padding: (7pt, 9pt, 4pt),
-    stroke: none,
-    fill: rgb(255, 230, 230),
-    name: "relaxed-pool",
-  )
+  pool_label((plot_size / 3 - 1, title_height - 1.2), [Initial Structure Pool], rgb(230, 255, 230), "initial-pool", (7pt, 9pt, 8pt))
+  pool_label((2 * plot_size / 3 + 1, title_height - 1.2), [Converged Structure Pool], rgb(255, 230, 230), "relaxed-pool", (7pt, 9pt, 4pt))
 
   line((0, 0), (plot_size, 0), ..arrow_style, name: "x-axis")
   line((0, 0), (0, plot_height), ..arrow_style, name: "y-axis")
@@ -139,27 +131,29 @@
 
   let base_y = y_offset + 0.8
 
-  // Step 1: initial batch
-  draw_structure(step1_x, base_y, structure_colors.at(0), "1", 50, converged: true)
-  draw_structure(step1_x, base_y + vert_spacing, structure_colors.at(1), "2", 45)
-  draw_structure(step1_x, base_y + 2 * vert_spacing, structure_colors.at(2), "3", 55)
-
-  // Step 2: 1 converged -> 4 allocated, 5 added
-  draw_structure(step2_x, base_y, structure_colors.at(3), "4", 40, converged: true)
-  draw_structure(step2_x, base_y + vert_spacing, structure_colors.at(1), "2", 45, name_suffix: "-2", converged: true)
-  draw_structure(step2_x, base_y + 2 * vert_spacing, structure_colors.at(2), "3", 55, name_suffix: "-2")
-  draw_structure(step2_x, base_y + 3 * vert_spacing, structure_colors.at(4), "5", 20, converged: true)
-
-  // Step 3: 2, 4, 5 converged; 3 continues, 6 and 7 added
-  draw_structure(step3_x, base_y, structure_colors.at(2), "3", 50, name_suffix: "-3", converged: true)
-  draw_structure(step3_x, base_y + vert_spacing, structure_colors.at(5), "6", 60)
-  draw_structure(step3_x, base_y + 2 * vert_spacing, structure_colors.at(6), "7", 35)
-
-  // Step 4: 3 converged; 6, 7 continue, 8 and 9 added
-  draw_structure(step4_x, base_y, structure_colors.at(5), "6", 60, name_suffix: "-2")
-  draw_structure(step4_x, base_y + vert_spacing, structure_colors.at(6), "7", 35, name_suffix: "-2", converged: true)
-  draw_structure(step4_x, base_y + 2 * vert_spacing, structure_colors.at(7), "8", 45)
-  draw_structure(step4_x, base_y + 3 * vert_spacing, structure_colors.at(8), "9", 30)
+  // (step_x, row, color_idx, label, atoms, name_suffix, converged)
+  let structures = (
+    (step1_x, 0, 0, "1", 50, "", true),
+    (step1_x, 1, 1, "2", 45, "", false),
+    (step1_x, 2, 2, "3", 55, "", false),
+    (step2_x, 0, 3, "4", 40, "", true),
+    (step2_x, 1, 1, "2", 45, "-2", true),
+    (step2_x, 2, 2, "3", 55, "-2", false),
+    (step2_x, 3, 4, "5", 20, "", true),
+    (step3_x, 0, 2, "3", 50, "-3", true),
+    (step3_x, 1, 5, "6", 60, "", false),
+    (step3_x, 2, 6, "7", 35, "", false),
+    (step4_x, 0, 5, "6", 60, "-2", false),
+    (step4_x, 1, 6, "7", 35, "-2", true),
+    (step4_x, 2, 7, "8", 45, "", false),
+    (step4_x, 3, 8, "9", 30, "", false),
+  )
+  for (sx, row, color_idx, label, atoms, suffix, converged) in structures {
+    draw_structure(
+      sx, base_y + row * vert_spacing, structure_colors.at(color_idx), label, atoms,
+      name_suffix: suffix, converged: converged,
+    )
+  }
 
   // continuation dots after step 4
   for y_pos in (base_y, base_y + vert_spacing, base_y + 2 * vert_spacing, base_y + 3 * vert_spacing) {
@@ -169,26 +163,30 @@
   }
 
   // === Transition arrows ===
-  // continuing structures
-  continuing("struct-2.east", "struct-2-2.west", structure_colors.at(1), "s2-continuing")
-  continuing("struct-3.east", "struct-3-2.west", structure_colors.at(2), "s3-continuing")
-  continuing("struct-3-2.east", "struct-3-3.west", structure_colors.at(2), "s3-continuing-2")
-  continuing("struct-6.east", "struct-6-2.west", structure_colors.at(5), "s6-continuing")
-  continuing("struct-7.east", "struct-7-2.west", structure_colors.at(6), "s7-continuing")
+  for (from, to, color_idx, name) in (
+    ("struct-2.east", "struct-2-2.west", 1, "s2-continuing"),
+    ("struct-3.east", "struct-3-2.west", 2, "s3-continuing"),
+    ("struct-3-2.east", "struct-3-3.west", 2, "s3-continuing-2"),
+    ("struct-6.east", "struct-6-2.west", 5, "s6-continuing"),
+    ("struct-7.east", "struct-7-2.west", 6, "s7-continuing"),
+  ) {
+    continuing(from, to, structure_colors.at(color_idx), name)
+  }
 
-  // converged -> relaxed pool
-  dotted_arrow("struct-1.north-east", "relaxed-pool.south", (0, 0.5), (-0.25, -0.5), structure_colors.at(0), 30%, "s1-converged")
-  dotted_arrow("struct-2-2.north-east", "relaxed-pool.south", (0, 0.5), (0, -0.5), structure_colors.at(1), 50%, "s2-converged")
-  dotted_arrow("struct-4.north-east", "relaxed-pool.south", (0, 0.5), (0.25, -0.5), structure_colors.at(3), 50%, "s4-converged")
-  dotted_arrow("struct-5.north-east", "relaxed-pool.south", (0, 0.5), (0.5, -0.5), structure_colors.at(4), 50%, "s5-converged")
-  dotted_arrow("struct-3-3.north-east", "relaxed-pool.south", (0, 0.5), (0.25, -5), structure_colors.at(2), 50%, "s3-converged")
-  dotted_arrow("struct-7-2.north-east", "relaxed-pool.south", (0, 0.5), (0.75, -0.5), structure_colors.at(6), 25%, "s7-2-converged")
-
-  // new allocations from initial pool
-  dotted_arrow("initial-pool.south", "struct-4.north-west", (-0.5, -5), (0, 0.5), rgb("#9F7AEA"), 50%, "s4-new")
-  dotted_arrow("initial-pool.south", "struct-5.north-east", (0.15, -0.5), (0, 0.5), rgb("#F56565"), 50%, "s5-new")
-  dotted_arrow("initial-pool.south", "struct-6.north-west", (-0.15, -0.5), (0, 0.5), rgb("#ED64A6"), 20%, "s6-new")
-  dotted_arrow("initial-pool.south", "struct-7.north-west", (-0.3, -0.5), (0, 0.5), rgb("#ECC94B"), 20%, "s7-new")
-  dotted_arrow("initial-pool.south", "struct-8.north-west", (-0.4, -0.5), (0, 0.5), rgb("#81E6D9"), 50%, "s8-new")
-  dotted_arrow("initial-pool.south", "struct-9.north-west", (-0.25, -0.5), (0, 0.5), rgb("#9F7AEA"), 50%, "s9-new")
+  for (from, to, ctrl_from, ctrl_to, color, mark_pos, name) in (
+    ("struct-1.north-east", "relaxed-pool.south", (0, 0.5), (-0.25, -0.5), structure_colors.at(0), 30%, "s1-converged"),
+    ("struct-2-2.north-east", "relaxed-pool.south", (0, 0.5), (0, -0.5), structure_colors.at(1), 50%, "s2-converged"),
+    ("struct-4.north-east", "relaxed-pool.south", (0, 0.5), (0.25, -0.5), structure_colors.at(3), 50%, "s4-converged"),
+    ("struct-5.north-east", "relaxed-pool.south", (0, 0.5), (0.5, -0.5), structure_colors.at(4), 50%, "s5-converged"),
+    ("struct-3-3.north-east", "relaxed-pool.south", (0, 0.5), (0.25, -5), structure_colors.at(2), 50%, "s3-converged"),
+    ("struct-7-2.north-east", "relaxed-pool.south", (0, 0.5), (0.75, -0.5), structure_colors.at(6), 25%, "s7-2-converged"),
+    ("initial-pool.south", "struct-4.north-west", (-0.5, -5), (0, 0.5), rgb("#9F7AEA"), 50%, "s4-new"),
+    ("initial-pool.south", "struct-5.north-east", (0.15, -0.5), (0, 0.5), rgb("#F56565"), 50%, "s5-new"),
+    ("initial-pool.south", "struct-6.north-west", (-0.15, -0.5), (0, 0.5), rgb("#ED64A6"), 20%, "s6-new"),
+    ("initial-pool.south", "struct-7.north-west", (-0.3, -0.5), (0, 0.5), rgb("#ECC94B"), 20%, "s7-new"),
+    ("initial-pool.south", "struct-8.north-west", (-0.4, -0.5), (0, 0.5), rgb("#81E6D9"), 50%, "s8-new"),
+    ("initial-pool.south", "struct-9.north-west", (-0.25, -0.5), (0, 0.5), rgb("#9F7AEA"), 50%, "s9-new"),
+  ) {
+    dotted_arrow(from, to, ctrl_from, ctrl_to, color, mark_pos, name)
+  }
 })

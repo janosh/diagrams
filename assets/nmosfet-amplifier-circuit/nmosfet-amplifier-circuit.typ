@@ -21,6 +21,20 @@
   for (name, pos) in anchors { cetz.draw.anchor(name, pos) }
 }
 
+/// Shared L/R two-terminal compass anchors used by resistor and capacitor.
+#let _lr_anchors(lead_start_x, lead_end_x, hh) = (
+  ("L", (lead_start_x, 0)),
+  ("R", (lead_end_x, 0)),
+  ("center", (0, 0)),
+  ("north", (0, hh)),
+  ("south", (0, -hh)),
+  ("east", (lead_end_x, 0)),
+  ("west", (lead_start_x, 0)),
+  ("T", (0, hh)),
+  ("B", (0, -hh)),
+  ("default", (lead_start_x, 0)),
+)
+
 #let _base_component(
   position,
   name,
@@ -200,14 +214,14 @@
   lead_extension: 0.3,
   ..styling,
 ) = {
+  let hw = width / 2
+  let hh = height / 2
+  let lead_start_x = -hw - lead_extension
+  let lead_end_x = hw + lead_extension
+  let zig_start_x = -hw
+  let num_segments = zigs * 2
+  let seg_h = width / num_segments
   let draw_func(..styling) = {
-    let hw = width / 2
-    let hh = height / 2
-    let lead_start_x = -hw - lead_extension
-    let lead_end_x = hw + lead_extension
-    let zig_start_x = -hw
-    let num_segments = zigs * 2
-    let seg_h = width / num_segments
     let sgn = 1
     cetz.draw.line(
       (lead_start_x, 0),
@@ -222,29 +236,13 @@
       ..styling,
     )
   }
-  let hw = width / 2
-  let hh = height / 2
-  let lead_start_x = -hw - lead_extension
-  let lead_end_x = hw + lead_extension
-  let anchors = (
-    ("L", (lead_start_x, 0)),
-    ("R", (lead_end_x, 0)),
-    ("center", (0, 0)),
-    ("north", (0, hh)),
-    ("south", (0, -hh)),
-    ("east", (lead_end_x, 0)),
-    ("west", (lead_start_x, 0)),
-    ("T", (0, hh)),
-    ("B", (0, -hh)),
-    ("default", (lead_start_x, 0)),
-  )
   _base_component(
     position,
     name,
     scale: scale,
     rotate: rotate,
     draw_func,
-    anchors,
+    _lr_anchors(lead_start_x, lead_end_x, hh),
     label: label,
     label_pos: label_pos,
     label_anchor: label_anchor,
@@ -269,41 +267,25 @@
   lead_extension: 0.5,
   ..styling,
 ) = {
+  let hg = plate_gap / 2
+  let hh = plate_height / 2
+  let lead_start_x = -hg - lead_extension
+  let lead_end_x = hg + lead_extension
+  let plate_left_x = -hg
+  let plate_right_x = hg
   let draw_func(..styling) = {
-    let hg = plate_gap / 2
-    let hh = plate_height / 2
-    let lead_start_x = -hg - lead_extension
-    let lead_end_x = hg + lead_extension
-    let plate_left_x = -hg
-    let plate_right_x = hg
     cetz.draw.line((lead_start_x, 0), (plate_left_x, 0), ..styling)
     cetz.draw.line((plate_left_x, -hh), (plate_left_x, hh), ..styling)
     cetz.draw.line((plate_right_x, hh), (plate_right_x, -hh), ..styling)
     cetz.draw.line((plate_right_x, 0), (lead_end_x, 0), ..styling)
   }
-  let hg = plate_gap / 2
-  let hh = plate_height / 2
-  let lead_start_x = -hg - lead_extension
-  let lead_end_x = hg + lead_extension
-  let anchors = (
-    ("L", (lead_start_x, 0)),
-    ("R", (lead_end_x, 0)),
-    ("center", (0, 0)),
-    ("north", (0, hh)),
-    ("south", (0, -hh)),
-    ("east", (lead_end_x, 0)),
-    ("west", (lead_start_x, 0)),
-    ("T", (0, hh)),
-    ("B", (0, -hh)),
-    ("default", (lead_start_x, 0)),
-  )
   _base_component(
     position,
     name,
     scale: scale,
     rotate: rotate,
     draw_func,
-    anchors,
+    _lr_anchors(lead_start_x, lead_end_x, hh),
     label: label,
     label_pos: label_pos,
     label_anchor: label_anchor,
@@ -558,14 +540,18 @@
   }
 
   // Connections
-  connect-orthogonal("Vin.T", "R1.L", style: "hv", ..default_stroke)
-  connect-orthogonal("Vin.B", "GND_Vin.T", style: "hv", ..default_stroke)
-  connect-orthogonal("R1.R", "M1.G", style: "hv", ..default_stroke)
-  connect-orthogonal("M1.D", "Vdd.B", style: "hv", ..default_stroke)
-  connect-orthogonal("M1.B", "GND_M1B.T", style: "hv", ..default_stroke)
-  connect-orthogonal("M1.S", "R2.R", style: "hv", ..default_stroke)
-  connect-orthogonal("GND_R2.T", "R2.L", style: "hv", ..default_stroke)
-  connect-orthogonal("GND_CL.T", "CL.L", style: "hv", ..default_stroke)
-  connect-orthogonal("CL.R", "M1.S", style: "hv", ..default_stroke)
-  connect-orthogonal("VoutNode", "M1.S", style: "hv", ..default_stroke)
+  for (start, end) in (
+    ("Vin.T", "R1.L"),
+    ("Vin.B", "GND_Vin.T"),
+    ("R1.R", "M1.G"),
+    ("M1.D", "Vdd.B"),
+    ("M1.B", "GND_M1B.T"),
+    ("M1.S", "R2.R"),
+    ("GND_R2.T", "R2.L"),
+    ("GND_CL.T", "CL.L"),
+    ("CL.R", "M1.S"),
+    ("VoutNode", "M1.S"),
+  ) {
+    connect-orthogonal(start, end, style: "hv", ..default_stroke)
+  }
 })

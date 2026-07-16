@@ -69,7 +69,7 @@
 
 <style>
   div {
-    max-width: 50em;
+    max-width: var(--content-max-width);
     margin: 3em auto;
     position: relative;
   }

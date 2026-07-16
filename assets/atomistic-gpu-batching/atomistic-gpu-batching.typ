@@ -8,9 +8,7 @@
   let plot_width = 24
   let timeline_width = 16
   let time_tick_spacing = 1.0
-  let step_width = time_tick_spacing
-  let step_gap = 0.1
-  let cell = step_width - step_gap
+  let cell = time_tick_spacing - 0.1
   let box_width_factor = 0.9
   let rect_height = 0.3
   let border_radius = 0.05
@@ -41,7 +39,7 @@
     dark_green.darken(10%), dark_orange.darken(10%), dark_red.darken(10%),
     dark_blue.darken(20%), dark_green.darken(20%),
   )
-  let struct_labels = ("S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S10")
+  let struct_labels = range(1, 11).map(n => "S" + str(n))
 
   // === Helpers ===
   let draw_sim_block(x_pos, y_pos, width, color, label, task_label: "", opacity: 100%) = {
@@ -70,8 +68,7 @@
   }
 
   let draw_util_bar(x_pos, y_pos, percentage, label, is_bad: false) = {
-    let width = 2.8
-    let height = 0.4
+    let (width, height) = (2.8, 0.4)
     rect(
       (x_pos, y_pos - height / 2),
       (x_pos + width, y_pos + height / 2),
@@ -99,24 +96,16 @@
 
   // one GPU grid slot: filled box with label when color != none, else a dotted idle placeholder
   let draw_cell(x_start, y, w, name, color: none, label: none) = {
-    if color == none {
-      rect(
-        (x_start, y - rect_height / 2),
-        (x_start + w, y + rect_height / 2),
-        fill: light_red.transparentize(90%),
-        stroke: (dash: "dotted", paint: light_red.transparentize(30%)),
-        radius: border_radius,
-        name: name + "-empty",
-      )
-    } else {
-      rect(
-        (x_start, y - rect_height / 2),
-        (x_start + w, y + rect_height / 2),
-        fill: color,
-        stroke: color.darken(20%),
-        radius: border_radius,
-        name: name,
-      )
+    let empty = color == none
+    rect(
+      (x_start, y - rect_height / 2),
+      (x_start + w, y + rect_height / 2),
+      fill: if empty { light_red.transparentize(90%) } else { color },
+      stroke: if empty { (dash: "dotted", paint: light_red.transparentize(30%)) } else { color.darken(20%) },
+      radius: border_radius,
+      name: if empty { name + "-empty" } else { name },
+    )
+    if not empty {
       content((x_start + w / 2, y), text(size: 7pt)[#label], anchor: "center", name: name + "-label")
     }
   }
@@ -236,9 +225,9 @@
     draw_sim_block(x_pos, binning_cpu_y, 1.3, cpu_light_gray, "binning-op-" + str(idx), task_label: label)
   }
 
-  // each bin: (start_step, is_second_bin, per-step 5-slot activity matrix; 1 = active, 0 = finished)
+  // each bin: (start_step, label_offset, per-step 5-slot activity; 1 = active, 0 = finished)
   let bins = (
-    (0, false, (
+    (0, 0, (
       (1, 1, 1, 1, 1),
       (1, 1, 1, 1, 1),
       (0, 1, 1, 1, 1),
@@ -246,7 +235,7 @@
       (0, 0, 0, 1, 0),
       (0, 0, 0, 1, 0),
     )),
-    (6, true, (
+    (6, 5, (
       (1, 1, 1, 1, 1),
       (1, 1, 1, 1, 1),
       (0, 1, 0, 1, 1),
@@ -256,28 +245,25 @@
     )),
   )
 
-  for (start_step, is_second_bin, patterns) in bins {
+  for (bin_idx, (start_step, label_offset, patterns)) in bins.enumerate() {
+    let box_width = cell * box_width_factor
     for step in range(patterns.len()) {
-      let box_width = cell * box_width_factor
       let box_x_start = 5.0 + (start_step + step) * cell + (cell - box_width) / 2
+      let active = patterns.at(step)
 
       for slot in range(5) {
         let block_y = binning_gpu_y - 0.3 + slot * (rect_height + gap)
         let name = "binning-block-" + str(start_step) + "-" + str(step) + "-" + str(slot)
-        if patterns.at(step).at(slot) == 1 {
-          let label = if is_second_bin { "S" + str(slot + 6) } else { struct_labels.at(slot) }
-          draw_cell(box_x_start, block_y, box_width, name, color: struct_colors.at(slot), label: label)
-        } else {
-          draw_cell(box_x_start, block_y, box_width, name)
-        }
+        let on = active.at(slot) == 1
+        draw_cell(box_x_start, block_y, box_width, name, color: if on { struct_colors.at(slot) }, label: if on { struct_labels.at(slot + label_offset) })
       }
 
       if step == patterns.len() - 1 {
         content(
           (box_x_start - 0.25, binning_gpu_y - 0.45),
-          text(size: 8pt, fill: dark_gray, style: "italic")[Batch #if is_second_bin [2] else [1] Complete],
+          text(size: 8pt, fill: dark_gray, style: "italic")[Batch #(bin_idx + 1) Complete],
           anchor: "center",
-          name: "batch-" + str(if is_second_bin { 2 } else { 1 }) + "-complete-label",
+          name: "batch-" + str(bin_idx + 1) + "-complete-label",
         )
       }
     }
@@ -317,36 +303,33 @@
   )
 
   for step in range(structures_by_step.len()) {
-    let box_width = cell * box_width_factor * 0.7
-    let box_x_start = 5.0 + step * cell + (cell - box_width) * 0.1
-    draw_sim_block(box_x_start, inflight_cpu_y, box_width, cpu_light_gray, "inflight-prep-" + str(step), task_label: "Prep")
-  }
+    let prep_width = cell * box_width_factor * 0.7
+    let prep_x = 5.0 + step * cell + (cell - prep_width) * 0.1
+    draw_sim_block(prep_x, inflight_cpu_y, prep_width, cpu_light_gray, "inflight-prep-" + str(step), task_label: "Prep")
 
-  for step in range(structures_by_step.len()) {
     let box_width = cell * box_width_factor
     let box_x_start = 5.0 + step * cell + (cell - box_width) / 2
+    let structures = structures_by_step.at(step)
 
     for slot in range(5) {
-      let struct_idx = structures_by_step.at(step).at(slot)
+      let struct_idx = structures.at(slot)
       let block_y = inflight_gpu_y - 0.3 + slot * (rect_height + gap)
       let name = "inflight-block-" + str(step) + "-" + str(slot)
 
-      if struct_idx == -1 {
-        draw_cell(box_x_start, block_y, box_width, name)
-      } else {
-        draw_cell(box_x_start, block_y, box_width, name, color: struct_colors.at(struct_idx), label: struct_labels.at(struct_idx))
-
-        // dotted indicator when this slot's structure changed from the previous step
-        let prev_structures = structures_by_step.at(step - 1)
-        if step > 0 and slot < prev_structures.len() and prev_structures.at(slot) != struct_idx {
-          line(
-            (rel: (0, 0), to: name + ".south-west"),
-            (rel: (-0.25, -0.3), to: name + ".south-west"),
-            stroke: (dash: "dotted", paint: dark_green),
-            mark: (start: "stealth", fill: dark_green, scale: 0.3),
-            name: name + "-swap-indicator",
-          )
-        }
+      draw_cell(
+        box_x_start, block_y, box_width, name,
+        color: if struct_idx != -1 { struct_colors.at(struct_idx) },
+        label: if struct_idx != -1 { struct_labels.at(struct_idx) },
+      )
+      // dotted indicator when this slot's structure changed from the previous step
+      if struct_idx != -1 and step > 0 and structures_by_step.at(step - 1).at(slot) != struct_idx {
+        line(
+          (rel: (0, 0), to: name + ".south-west"),
+          (rel: (-0.25, -0.3), to: name + ".south-west"),
+          stroke: (dash: "dotted", paint: dark_green),
+          mark: (start: "stealth", fill: dark_green, scale: 0.3),
+          name: name + "-swap-indicator",
+        )
       }
     }
 

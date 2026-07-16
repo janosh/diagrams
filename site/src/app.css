@@ -33,8 +33,6 @@ html[data-theme='dark'] {
   --light-card-border: rgba(0, 0, 0, 0.1);
   --light-shadow: rgba(0, 0, 0, 0.1);
   --light-diagram-bg: rgba(0, 0, 0, 0.03);
-  --light-tooltip-bg: var(--light-bg);
-  --light-tooltip-text: var(--light-text);
 
   /* Dark theme colors */
   --dark-bg: #090019;
@@ -56,10 +54,8 @@ html[data-theme='dark'] {
   --dark-card-border: rgba(255, 255, 255, 0.1);
   --dark-shadow: rgba(0, 0, 0, 0.3);
   --dark-diagram-bg: rgba(255, 255, 255, 0.3);
-  --dark-tooltip-bg: var(--dark-card-bg);
-  --dark-tooltip-text: var(--dark-text);
 
-  /* Use light-dark() function to switch between themes */
+  /* Resolved theme tokens via light-dark() */
   --page-bg: light-dark(var(--light-bg), var(--dark-bg));
   --text-color: light-dark(var(--light-text), var(--dark-text));
   --text-secondary: light-dark(var(--light-text-secondary), var(--dark-text-secondary));
@@ -82,10 +78,9 @@ html[data-theme='dark'] {
   --card-border: light-dark(var(--light-card-border), var(--dark-card-border));
   --shadow: light-dark(var(--light-shadow), var(--dark-shadow));
   --diagram-bg: light-dark(var(--light-diagram-bg), var(--dark-diagram-bg));
-
-  /* Tooltip variables */
-  --tooltip-bg: light-dark(var(--light-tooltip-bg), var(--dark-tooltip-bg));
-  --tooltip-text-color: light-dark(var(--light-tooltip-text), var(--dark-tooltip-text));
+  --tooltip-bg: light-dark(var(--light-bg), var(--dark-card-bg));
+  --tooltip-text-color: light-dark(var(--light-text), var(--dark-text));
+  --content-max-width: 55em;
 }
 
 body {
@@ -134,4 +129,22 @@ a:hover {
 ::highlight(highlight-match) {
   color: var(--highlight);
   text-decoration: underline;
+}
+
+/* Card tooltips: justify text (page centers `p`) and compact block spacing. */
+.custom-tooltip,
+.custom-tooltip :is(p, ul, ol) {
+  text-align: justify;
+}
+.custom-tooltip :is(p, ul, ol) {
+  margin-block: 0.4em;
+}
+.custom-tooltip :is(p, ul, ol):first-child {
+  margin-block-start: 0;
+}
+.custom-tooltip :is(p, ul, ol):last-child {
+  margin-block-end: 0;
+}
+.custom-tooltip :is(ul, ol) {
+  padding-inline-start: 1.25em;
 }

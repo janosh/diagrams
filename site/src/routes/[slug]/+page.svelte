@@ -6,14 +6,28 @@
   import { PrevNext } from 'svelte-multiselect'
 
   let { data } = $props()
-  let { title, description, code, images, tags, slug } = $derived(data.diagram)
-  let { creator, creator_url, url, downloads } = $derived(data.diagram)
+  let {
+    title,
+    description,
+    code,
+    images,
+    tags,
+    slug,
+    creator,
+    creator_url,
+    url,
+    downloads,
+  } = $derived(data.diagram)
   const labels = [
     [`.png`, `PNG`],
     [`-hd.png`, `PNG (HD)`],
     [`.pdf`, `PDF`],
     [`.svg`, `SVG`],
     [`.tex`, `TeX`],
+  ] as const
+  const code_tabs = [
+    [`typst`, `Typst`, `simple-icons:typst`],
+    [`tikz`, `TikZ`, `simple-icons:latex`],
   ] as const
 
   // development server fetches files from local folder (specified by svelte.config.js kit.files.assets)
@@ -27,6 +41,10 @@
   // one isn't in the filtered set (direct navigation, or the filter excludes it)
   let in_filtered = $derived(filters.filtered.some((diagram) => diagram.slug === slug))
   let nav_diagrams = $derived(in_filtered ? filters.filtered : data.diagrams)
+
+  // Prefer Typst when both Typst (CeTZ) and TeX (TikZ) sources exist
+  let code_tab = $state<`typst` | `tikz`>(`typst`)
+  let show_typst = $derived(Boolean(code.typst) && (code_tab === `typst` || !code.tex))
 </script>
 
 <svelte:head>
@@ -87,24 +105,35 @@
 <h2>
   <Icon icon="octicon:code" inline />&nbsp; Code
 </h2>
-{#if code.typst}
-  {@const repo_link = `${repository}/blob/main/assets/${slug}/${slug}.typ`}
-  <CodeBlock code={code.typst} title="{slug}.typ" {repo_link} />
+{#if code.typst && code.tex}
+  <div class="code-tabs" role="tablist" aria-label="Code language">
+    {#each code_tabs as [id, label, icon] (id)}
+      <button
+        type="button"
+        role="tab"
+        class:active={code_tab === id}
+        aria-selected={code_tab === id}
+        onclick={() => (code_tab = id)}
+      >
+        <Icon {icon} inline />&nbsp;{label}
+      </button>
+    {/each}
+  </div>
 {/if}
-{#if code.tex}
-  {@const repo_link = `${repository}/blob/main/assets/${slug}/${slug}.tex`}
+{#if code.typst || code.tex}
+  {@const ext = show_typst ? `typ` : `tex`}
   <CodeBlock
-    code={code.tex}
-    title="{slug}.tex"
-    {repo_link}
-    tex_file_uri="{base_uri}.tex"
+    code={(show_typst ? code.typst : code.tex)!}
+    title="{slug}.{ext}"
+    repo_link={`${repository}/blob/main/assets/${slug}/${slug}.${ext}`}
+    tex_file_uri={show_typst ? `` : `${base_uri}.tex`}
   />
 {/if}
 
 <PrevNext
   items={nav_diagrams.map((diagram) => [diagram.slug, diagram])}
   current={data.slug}
-  style="max-width: 50em; margin: auto"
+  style="max-width: var(--content-max-width); margin: auto"
 >
   {#snippet children({ item, kind })}
     {@const [slug, diagram] = item as [string, Diagram]}
@@ -134,7 +163,7 @@
     padding-bottom: 8pt;
   }
   section {
-    max-width: 45em;
+    max-width: var(--content-max-width);
     margin: 1em auto;
     line-height: 3ex;
     text-align: center;
@@ -175,5 +204,37 @@
     position: absolute;
     top: 2em;
     left: 2em;
+  }
+  .code-tabs {
+    display: flex;
+    max-width: fit-content;
+    margin: -0.5em auto 0;
+    padding: 2pt;
+    border-radius: 5pt;
+    background: var(--nav-bg);
+    border: 1px solid var(--border);
+  }
+  .code-tabs button {
+    display: inline-flex;
+    place-items: center;
+    gap: 2pt;
+    padding: 2pt 9pt;
+    border: none;
+    border-radius: 3pt;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 10pt;
+    line-height: 1.2;
+    cursor: pointer;
+    transition:
+      color 0.2s,
+      background-color 0.2s;
+  }
+  .code-tabs button:hover {
+    color: var(--text-color);
+  }
+  .code-tabs button.active {
+    color: var(--text-color);
+    background: var(--button-bg);
   }
 </style>

@@ -41,7 +41,7 @@
   }
   p.tags button {
     background-color: var(--nav-bg);
-    font-size: smaller;
+    font-size: 0.75em;
     color: var(--text-secondary);
     padding: 2pt 4pt;
     border-radius: 3pt;
