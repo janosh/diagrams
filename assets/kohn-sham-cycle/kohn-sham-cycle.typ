@@ -113,10 +113,17 @@
   line("criterion", "energy", ..arrow-style, name: "converged-yes")
 
   // Yes/No labels
-  content((rel: (0.1, 0), to: "converged-yes.60%"), [Yes], frame: "rect", stroke: none, anchor: "west", padding: (
-    3pt,
-    2pt,
-  ))
+  content(
+    (rel: (0.1, 0), to: "converged-yes.60%"),
+    [Yes],
+    frame: "rect",
+    stroke: none,
+    anchor: "west",
+    padding: (
+      3pt,
+      2pt,
+    ),
+  )
 
   // No feedback loop
   line(
@@ -127,5 +134,11 @@
     ..arrow-style,
     name: "converged-no",
   )
-  content("converged-no.13%", [No], frame: none, anchor: "north-east", padding: (-1pt, 2pt))
+  content(
+    "converged-no.13%",
+    [No],
+    frame: none,
+    anchor: "north-east",
+    padding: (-1pt, 2pt),
+  )
 })

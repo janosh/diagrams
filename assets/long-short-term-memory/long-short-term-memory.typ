@@ -4,7 +4,10 @@
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #canvas({
-  let arr = (mark: (end: "stealth", fill: black, scale: .7), stroke: black + 1pt)
+  let arr = (
+    mark: (end: "stealth", fill: black, scale: .7),
+    stroke: black + 1pt,
+  )
   let box-w = 2.2
   let gate-h = .56
 
@@ -49,8 +52,13 @@
   content("M", $M$)
 
   for (from, to) in (
-    ("ft", "t1"), ("t1", "pl"), ("pl", "th"), ("th", "t2"), ("t2", "y1"),
-    ("M", "t3"), ("t3", "pl"),
+    ("ft", "t1"),
+    ("t1", "pl"),
+    ("pl", "th"),
+    ("th", "t2"),
+    ("t2", "y1"),
+    ("M", "t3"),
+    ("t3", "pl"),
   ) { line(from, to, ..arr) }
   content((3.95, 2.5), $arrow(c)_(t - 1)$, anchor: "east")
 
@@ -66,6 +74,10 @@
   content((6.5, 2.55), $arrow(c)_t$, anchor: "west")
 
   // === enclosing dashed border ===
-  rect((-1.5, -1.5), (8.4, 4.8), stroke: (paint: gray, thickness: 1.8pt, dash: "dashed"))
+  rect((-1.5, -1.5), (8.4, 4.8), stroke: (
+    paint: gray,
+    thickness: 1.8pt,
+    dash: "dashed",
+  ))
   content((-.55, 4.3), text(size: 14pt, weight: "bold")[LSTM])
 })

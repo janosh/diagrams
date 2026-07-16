@@ -57,8 +57,18 @@
     ..arrow-style,
     name: "veracity",
   )
-  content("veracity.5%", text(size: .8em)[high variance], anchor: "south-west", padding: 3pt)
-  content("veracity.95%", text(size: .8em)[reference data], anchor: "south-west", padding: 3pt)
+  content(
+    "veracity.5%",
+    text(size: .8em)[high variance],
+    anchor: "south-west",
+    padding: 3pt,
+  )
+  content(
+    "veracity.95%",
+    text(size: .8em)[reference data],
+    anchor: "south-west",
+    padding: 3pt,
+  )
 
   // Volume arrow (top left, 90-180°)
   arc(
@@ -70,7 +80,12 @@
     name: "volume",
   )
   content("volume.5%", text(size: .8em)[kilobytes], anchor: "south-east")
-  content("volume.95%", text(size: .8em)[terabytes], anchor: "south-east", padding: 3pt)
+  content(
+    "volume.95%",
+    text(size: .8em)[terabytes],
+    anchor: "south-east",
+    padding: 3pt,
+  )
 
   // Velocity arrow (bottom left, 180-270°)
   arc(
@@ -82,7 +97,12 @@
     name: "velocity",
   )
   content("velocity.5%", text(size: .8em)[static], anchor: "east", padding: 3pt)
-  content("velocity.95%", text(size: .8em)[dynamic], anchor: "north-east", padding: 3pt)
+  content(
+    "velocity.95%",
+    text(size: .8em)[dynamic],
+    anchor: "north-east",
+    padding: 3pt,
+  )
 
   // Variety arrow (bottom right, 270-360°)
   arc(
@@ -93,6 +113,16 @@
     ..arrow-style,
     name: "variety",
   )
-  content("variety.start", text(size: .8em)[clustered], anchor: "north-west", padding: 3pt)
-  content("variety.95%", text(size: .8em)[heterogeneous], anchor: "north-west", padding: 3pt)
+  content(
+    "variety.start",
+    text(size: .8em)[clustered],
+    anchor: "north-west",
+    padding: 3pt,
+  )
+  content(
+    "variety.95%",
+    text(size: .8em)[heterogeneous],
+    anchor: "north-west",
+    padding: 3pt,
+  )
 })

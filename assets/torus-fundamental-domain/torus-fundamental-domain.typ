@@ -19,7 +19,6 @@
   draw.set-style(stroke: (thickness: 0.4pt))
   draw.set-viewport((0, 0), (20, 20), bounds: (12, 12))
 
-
   // Light gray vertical strip
   rect(
     (-0.5, 0),
@@ -63,7 +62,13 @@
     name: "C-prime-arc",
     anchor: "arc-end",
   )
-  content("C-prime-arc.25%", $C'$, fill: green, anchor: "north-west", padding: 2pt)
+  content(
+    "C-prime-arc.25%",
+    $C'$,
+    fill: green,
+    anchor: "north-west",
+    padding: 2pt,
+  )
   // Draw semicircle B and B' (dark red)
   arc(
     (0, 0),
@@ -100,7 +105,12 @@
     mark: (end: "stealth", fill: blue, scale: 0.2),
     name: "A-line",
   )
-  content("A-line.80%", $A$, fill: blue, anchor: "east", padding: (0, 4pt, 0, 0))
+  content("A-line.80%", $A$, fill: blue, anchor: "east", padding: (
+    0,
+    4pt,
+    0,
+    0,
+  ))
 
   line(
     (0.5, 0),
@@ -109,7 +119,12 @@
     mark: (end: "stealth", fill: blue, scale: 0.2),
     name: "A-prime-line",
   )
-  content("A-prime-line.80%", $A'$, fill: blue, anchor: "west", padding: (0, 0, 0, 4pt))
+  content("A-prime-line.80%", $A'$, fill: blue, anchor: "west", padding: (
+    0,
+    0,
+    0,
+    4pt,
+  ))
 
   // Add F₀ labels
   content("y-axis.80%", $F_0$, anchor: "west", padding: (0, 0, 0, 2pt))

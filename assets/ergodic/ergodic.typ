@@ -25,9 +25,21 @@
   )
 
   // Labels for radii
-  content((rx + .2, 1), $sqrt(2E \/ m)$, anchor: "south-west", padding: 1pt, name: "r1")
+  content(
+    (rx + .2, 1),
+    $sqrt(2E \/ m)$,
+    anchor: "south-west",
+    padding: 1pt,
+    name: "r1",
+  )
   line((rx, 0), "r1.south", stroke: 0.2pt)
-  content((0.5, ry + .5), $sqrt(2E \/ k)$, anchor: "south-west", padding: 1pt, name: "r2")
+  content(
+    (0.5, ry + .5),
+    $sqrt(2E \/ k)$,
+    anchor: "south-west",
+    padding: 1pt,
+    name: "r2",
+  )
   line((0, ry), "r2.south-west", stroke: 0.2pt)
 
   // Label P
@@ -41,7 +53,9 @@
     fill: rgb(100%, 65%, 0%, 10%),
     name: "rect",
   )
-  content((-rx / 4, ry / 2), text(fill: rgb("#ffa500"))[$R$ for $omega in.not QQ$])
+  content((-rx / 4, ry / 2), text(
+    fill: rgb("#ffa500"),
+  )[$R$ for $omega in.not QQ$])
 
   // Trajectory
   hobby(
@@ -62,5 +76,7 @@
     omega: 0,
     stroke: red,
   )
-  content((2.5, -1.3), align(center, text(fill: red)[$R$ for\ $omega = 2 in QQ$]))
+  content((2.5, -1.3), align(center, text(
+    fill: red,
+  )[$R$ for\ $omega = 2 in QQ$]))
 })

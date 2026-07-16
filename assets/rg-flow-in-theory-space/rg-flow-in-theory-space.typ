@@ -33,10 +33,15 @@
   line((0, 0), (unit, 0), ..arrow-style)
 
   // Draw dotted line segment
-  hobby((0.75 * unit, -0.3 * unit), (0.82 * unit, -0.2 * unit), (0.83 * unit, -0.1 * unit), stroke: (
-    dash: "loosely-dotted",
-    thickness: 1.5pt,
-  ))
+  hobby(
+    (0.75 * unit, -0.3 * unit),
+    (0.82 * unit, -0.2 * unit),
+    (0.83 * unit, -0.1 * unit),
+    stroke: (
+      dash: "loosely-dotted",
+      thickness: 1.5pt,
+    ),
+  )
 
   // Draw flow trajectories using hobby curves
   hobby(ma1, r1, (0, -.8), qea, stroke: (dash: "dashed"))
@@ -51,15 +56,31 @@
   // Draw points and labels
   let dark-red = rgb("8B0000")
   circle(qea, radius: 0.1, fill: dark-red, stroke: none)
-  content((rel: (0, -0.2), to: qea), text(fill: dark-red)[$Gamma_(k=0) = Gamma$], anchor: "north")
+  content(
+    (rel: (0, -0.2), to: qea),
+    text(fill: dark-red)[$Gamma_(k=0) = Gamma$],
+    anchor: "north",
+  )
 
   let dark-blue = rgb("00008B")
   circle(ma1, radius: 0.1, fill: dark-blue, stroke: none)
-  content((rel: (0, 0.2), to: ma1), text(fill: dark-blue)[$Gamma_(k=Lambda_1) = S_1$], anchor: "south")
+  content(
+    (rel: (0, 0.2), to: ma1),
+    text(fill: dark-blue)[$Gamma_(k=Lambda_1) = S_1$],
+    anchor: "south",
+  )
 
   circle(ma2, radius: 0.1, fill: dark-blue, stroke: none)
-  content((rel: (0, 0.2), to: ma2), text(fill: dark-blue)[$Gamma_(k=Lambda_2) = S_2$], anchor: "south")
+  content(
+    (rel: (0, 0.2), to: ma2),
+    text(fill: dark-blue)[$Gamma_(k=Lambda_2) = S_2$],
+    anchor: "south",
+  )
 
   circle(ma3, radius: 0.1, fill: dark-blue, stroke: none)
-  content((rel: (0, 0.2), to: ma3), text(fill: dark-blue)[$Gamma_(k=Lambda_3) = S_3$], anchor: "south")
+  content(
+    (rel: (0, 0.2), to: ma3),
+    text(fill: dark-blue)[$Gamma_(k=Lambda_3) = S_3$],
+    anchor: "south",
+  )
 })

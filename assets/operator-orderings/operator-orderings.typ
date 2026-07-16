@@ -35,21 +35,51 @@
 // Draw one real number line with dots and labels
 #let real-line(ox, oy, above_labels, ordering_num, name_prefix) = {
   // Main line
-  line((ox, oy), (ox + line_len, oy), stroke: line_thickness, name: name_prefix + "-line")
-  content((ox - left_label_offset, oy), str(ordering_num) + ".", anchor: "east", name: name_prefix + "-num")
-  content((ox + line_len + right_label_offset, oy), [$bb(R)$], anchor: "west", name: name_prefix + "-R")
+  line(
+    (ox, oy),
+    (ox + line_len, oy),
+    stroke: line_thickness,
+    name: name_prefix + "-line",
+  )
+  content(
+    (ox - left_label_offset, oy),
+    str(ordering_num) + ".",
+    anchor: "east",
+    name: name_prefix + "-num",
+  )
+  content(
+    (ox + line_len + right_label_offset, oy),
+    [$bb(R)$],
+    anchor: "west",
+    name: name_prefix + "-R",
+  )
 
   // Dots at x anchors with labels below.
   for (idx, dx) in x_anchor.enumerate() {
     let below_label = tick_labels.at(idx)
-    circle((ox + dx, oy), radius: dot_radius, fill: black, name: name_prefix + "-dot-" + str(idx))
-    content((ox + dx, oy - below_label_offset), below_label, anchor: "north", name: name_prefix + "-below-" + str(idx))
+    circle(
+      (ox + dx, oy),
+      radius: dot_radius,
+      fill: black,
+      name: name_prefix + "-dot-" + str(idx),
+    )
+    content(
+      (ox + dx, oy - below_label_offset),
+      below_label,
+      anchor: "north",
+      name: name_prefix + "-below-" + str(idx),
+    )
   }
 
   // Labels above interior positions (3, 5, 8)
   for (idx, label) in above_labels.enumerate() {
     let dx = interior_anchor.at(idx)
-    content((ox + dx, oy + above_label_offset), label, anchor: "south", name: name_prefix + "-above-" + str(idx))
+    content(
+      (ox + dx, oy + above_label_offset),
+      label,
+      anchor: "south",
+      name: name_prefix + "-above-" + str(idx),
+    )
   }
 }
 

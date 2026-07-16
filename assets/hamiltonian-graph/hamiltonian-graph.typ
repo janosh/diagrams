@@ -8,12 +8,21 @@
   let bottom = ("GCA", "TGC", "GTG", "CGT", "GCG")
   for (row-y, row) in ((2.6, top), (0, bottom)) {
     for (idx, name) in row.enumerate() {
-      circle((idx * 2.4, row-y), radius: .42, fill: white, stroke: 1pt, name: name)
+      circle(
+        (idx * 2.4, row-y),
+        radius: .42,
+        fill: white,
+        stroke: 1pt,
+        name: name,
+      )
       content(name, text(size: .8em, raw(name)))
     }
   }
 
-  let arr(color) = (stroke: color + 1.4pt, mark: (end: "stealth", fill: color, scale: .65))
+  let arr(color) = (
+    stroke: color + 1.4pt,
+    mark: (end: "stealth", fill: color, scale: .65),
+  )
 
   // red Hamiltonian cycle: along the top row, down, back along the bottom row
   for (from, to) in (top + bottom.rev() + (top.first(),)).windows(2) {

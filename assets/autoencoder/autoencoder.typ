@@ -4,7 +4,14 @@
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #let neuron(pos, fill: white, text: none) = {
-  draw.content(pos, text, frame: "circle", fill: fill, stroke: 0.5pt, padding: 1pt)
+  draw.content(
+    pos,
+    text,
+    frame: "circle",
+    fill: fill,
+    stroke: 0.5pt,
+    padding: 1pt,
+  )
 }
 
 #let connect-layers(start-pos, start-count, end-pos, end-count) = {

@@ -17,18 +17,26 @@
 
   let wave-arrow(start, end, segments: 8, straight-end: .18) = {
     let direction = (end.at(0) - start.at(0), end.at(1) - start.at(1))
-    let distance = calc.sqrt(direction.at(0) * direction.at(0) + direction.at(1) * direction.at(1))
+    let distance = calc.sqrt(
+      direction.at(0) * direction.at(0) + direction.at(1) * direction.at(1),
+    )
     let straight-start = (
       end.at(0) - straight-end * direction.at(0) / distance,
       end.at(1) - straight-end * direction.at(1) / distance,
     )
-    decorations.wave(line(start, straight-start), amplitude: .035, segments: segments, stroke: .9pt)
+    decorations.wave(
+      line(start, straight-start),
+      amplitude: .035,
+      segments: segments,
+      stroke: .9pt,
+    )
     line(straight-start, end, ..arrow)
   }
   let transition(start, end, ctrl-1, ctrl-2, label-pos, label) = {
     bezier(start, end, ctrl-1, ctrl-2, ..heavy)
     content(label-pos, label, anchor: "east", fill: white, padding: 2pt)
   }
+  // @typstyle off
   let state(x, idx, q, action, reward, reward-label, mark-pos, wiggle-x, dollar-pos) = {
     let id = "s" + str(idx)
     let mid = x + panel-w / 2
@@ -38,29 +46,74 @@
     let panel-sw = panel-name + ".south-west"
     let policy = id + "-policy"
     let reward-arrow = id + "-reward"
-    rect(panel.at(0), panel.at(1), stroke: none, fill: rgb("#f5f5f5"), name: panel-name)
+    rect(
+      panel.at(0),
+      panel.at(1),
+      stroke: none,
+      fill: rgb("#f5f5f5"),
+      name: panel-name,
+    )
     rect(
       (rel: mark-pos, to: panel-sw),
-      (rel: (mark-pos.at(0) + marker-w, mark-pos.at(1) + marker-w), to: panel-sw),
+      (
+        rel: (mark-pos.at(0) + marker-w, mark-pos.at(1) + marker-w),
+        to: panel-sw,
+      ),
       fill: rgb("#aaaaff"),
       stroke: none,
     )
     rect(panel.at(0), panel.at(1), stroke: 1.2pt, fill: none)
-    content((rel: dollar-pos, to: panel-sw), text(fill: green)[\$ \$], anchor: "center")
-    content((rel: (0, -.28), to: panel-name + ".south"), $s_#idx$, anchor: "north")
+    content(
+      (rel: dollar-pos, to: panel-sw),
+      text(fill: green)[\$ \$],
+      anchor: "center",
+    )
+    content(
+      (rel: (0, -.28), to: panel-name + ".south"),
+      $s_#idx$,
+      anchor: "north",
+    )
 
-    line(panel-name + ".north", (rel: (0, 1.6), to: panel-name + ".north"), ..heavy, name: policy)
-    content((rel: (-.55, -.8), to: policy + ".end"), $pi_theta(s_#idx)$, anchor: "east")
+    line(
+      panel-name + ".north",
+      (rel: (0, 1.6), to: panel-name + ".north"),
+      ..heavy,
+      name: policy,
+    )
+    content(
+      (rel: (-.55, -.8), to: policy + ".end"),
+      $pi_theta(s_#idx)$,
+      anchor: "east",
+    )
     content((rel: (0, .2), to: policy + ".end"), q, anchor: "south")
 
     wave-arrow((mid + wiggle-x, y-box + 3.85), (mid, y-box + 4.95))
     content((rel: (0, 1.8), to: policy + ".end"), action, anchor: "south")
-    line((rel: (0, 2.2), to: policy + ".end"), (rel: (0, 3.1), to: policy + ".end"), ..heavy, name: reward-arrow)
-    content((rel: (-.5, .05), to: reward-arrow + ".mid"), reward-label, anchor: "east")
+    line(
+      (rel: (0, 2.2), to: policy + ".end"),
+      (rel: (0, 3.1), to: policy + ".end"),
+      ..heavy,
+      name: reward-arrow,
+    )
+    content(
+      (rel: (-.5, .05), to: reward-arrow + ".mid"),
+      reward-label,
+      anchor: "east",
+    )
     content((rel: (0, .25), to: reward-arrow + ".end"), reward, anchor: "south")
   }
 
-  state(x0, 0, $[0.12, bold(0.64), 0.07, 0.17]$, [up], $r_0 = 0$, $cal(R)(s_0, "↑")$, (0, 0), -.35, (1.18, 1.24))
+  state(
+    x0,
+    0,
+    $[0.12, bold(0.64), 0.07, 0.17]$,
+    [up],
+    $r_0 = 0$,
+    $cal(R)(s_0, "↑")$,
+    (0, 0),
+    -.35,
+    (1.18, 1.24),
+  )
   state(
     x1,
     1,
@@ -84,7 +137,14 @@
     (panel-w - marker-w / 2, panel-w - marker-w / 2),
   )
 
-  transition((1.35, 1.10), west-rim(x1), (3.65, 1.10), (3.55, -3.0), (x1 - .25, -3.18), $cal(T)(s_0, "↑")$)
+  transition(
+    (1.35, 1.10),
+    west-rim(x1),
+    (3.65, 1.10),
+    (3.55, -3.0),
+    (x1 - .25, -3.18),
+    $cal(T)(s_0, "↑")$,
+  )
   transition(
     (x1 + 1.35, 1.10),
     west-rim(x2),

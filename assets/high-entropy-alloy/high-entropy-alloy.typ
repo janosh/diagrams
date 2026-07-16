@@ -58,12 +58,18 @@
     for j in range(4) {
       // First set of atoms (equivalent to the first nested loop in LaTeX)
       for k in range(4) {
-        atom((-i + x-factor * j, y-factor * j + z-spacing * k), pseudo-random-color(i, j, k))
+        atom(
+          (-i + x-factor * j, y-factor * j + z-spacing * k),
+          pseudo-random-color(i, j, k),
+        )
       }
 
       // Second set of atoms (equivalent to the second nested loop in LaTeX)
       for k in range(3) {
-        atom((-i + 0.5 + x-factor * j, y-factor * j + z-spacing * k + 0.65), pseudo-random-color(i, j, k + 10))
+        atom(
+          (-i + 0.5 + x-factor * j, y-factor * j + z-spacing * k + 0.65),
+          pseudo-random-color(i, j, k + 10),
+        )
       }
     }
   }

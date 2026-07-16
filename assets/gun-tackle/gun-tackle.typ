@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.3.4"
 #import "@preview/pull-eh:0.1.0"
-#import cetz.draw: on-layer, line, content
-#import pull-eh: wind, ccw, cw
+#import cetz.draw: content, line, on-layer
+#import pull-eh: ccw, cw, wind
 
 #set page(width: auto, height: auto, margin: 5mm, fill: none)
 #set text(0.9em)
@@ -36,7 +36,11 @@
     {
       block(name: "block1", "pulley1", (0.4, 2.4))
       block(name: "block2", "pulley2", (0.4, 2.4))
-      line(stroke: 2pt, (rel: (-1.4, 0), to: "block1.north"), (rel: (1.4, 0), to: "block1.north"))
+      line(
+        stroke: 2pt,
+        (rel: (-1.4, 0), to: "block1.north"),
+        (rel: (1.4, 0), to: "block1.north"),
+      )
     },
   )
   // the rope; drawn over the pulleys, but hidden by the blocks
@@ -55,10 +59,18 @@
       content((rel: (-0.1, -2), to: "pulley1"))[50N]
       content((rel: (1.7, -1.5), to: "pulley1"))[50N]
 
-      force((rel: (0, 0.4), to: "pulley1.north"), (90deg, 0.8), name: "f-ceiling")
+      force(
+        (rel: (0, 0.4), to: "pulley1.north"),
+        (90deg, 0.8),
+        name: "f-ceiling",
+      )
       content((rel: (0.7, 0), to: "f-ceiling"))[150N]
 
-      force((rel: (0, -0.4), to: "pulley2.south"), (-90deg, 0.8), name: "f-load")
+      force(
+        (rel: (0, -0.4), to: "pulley2.south"),
+        (-90deg, 0.8),
+        name: "f-load",
+      )
       content((rel: (0.7, 0), to: "f-load"))[100N]
 
       force((rel: (1.54, -2.7), to: "pulley1"), (-78deg, 0.8), name: "f-rope")
@@ -80,7 +92,11 @@
     {
       fixing("pulley1.center", (0, 1.2))
       fixing("pulley2.center", (0, -1.2))
-      line(stroke: 2pt, (rel: (-4.4, 0), to: block1), (rel: (0.4, 0), to: block1))
+      line(
+        stroke: 2pt,
+        (rel: (-4.4, 0), to: block1),
+        (rel: (0.4, 0), to: block1),
+      )
     },
   )
   // the rope; drawn over the pulleys, but hidden by the blocks
@@ -99,10 +115,18 @@
       content((rel: (1.4, -2), to: "pulley1"))[50N]
       content((rel: (-1.7, -1.5), to: "pulley1"))[50N]
 
-      force((rel: (1.5, 0.4), to: "pulley1.north"), (90deg, 0.8), name: "f-ceiling")
+      force(
+        (rel: (1.5, 0.4), to: "pulley1.north"),
+        (90deg, 0.8),
+        name: "f-ceiling",
+      )
       content((rel: (0.7, 0), to: "f-ceiling"))[150N]
 
-      force((rel: (0, -0.4), to: "pulley2.south"), (-90deg, 0.8), name: "f-load")
+      force(
+        (rel: (0, -0.4), to: "pulley2.south"),
+        (-90deg, 0.8),
+        name: "f-load",
+      )
       content((rel: (0.7, 0), to: "f-load"))[100N]
 
       force((rel: (-1.54, -2.7), to: "pulley1"), (-102deg, 0.8), name: "f-rope")

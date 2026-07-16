@@ -20,7 +20,9 @@
     segment-length: 0.2,
     name: "x-axis",
   )
-  content("x-axis.end", $"Re"(omega)$, anchor: "north-east", padding: (top: 5pt))
+  content("x-axis.end", $"Re"(omega)$, anchor: "north-east", padding: (
+    top: 5pt,
+  ))
 
   // Imaginary axis
   line(
@@ -29,7 +31,9 @@
     mark: arrow-style,
     name: "y-axis",
   )
-  content("y-axis.end", $"Im"(omega)$, anchor: "north-west", padding: (left: 5pt))
+  content("y-axis.end", $"Im"(omega)$, anchor: "north-west", padding: (
+    left: 5pt,
+  ))
 
   // Matsubara frequencies
   for n in range(-im-range, im-range + 1) {

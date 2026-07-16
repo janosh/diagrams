@@ -27,7 +27,9 @@
     ("entropy", "enthalpy", "s-h", btt),
     ("free-energy", "entropy", "g-s", ltr),
   ) {
-    let stroke = 3pt + gradient.linear(dir: dir, colors.at(start), colors.at(end))
+    let stroke = (
+      3pt + gradient.linear(dir: dir, colors.at(start), colors.at(end))
+    )
     line(start, end, stroke: stroke, name: name)
   }
 

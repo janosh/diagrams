@@ -26,9 +26,33 @@
   // Arrow data: (from_off, to_off, ctrl1, ctrl2, label, lbl_pos, anchor)
   // Control points for moderate curvature
   let arrows = (
-    ((-0.3, 0.3), (-0.3, -0.3), (-5.4, 0.5), (-4.5, 2.4), align(center)[compac-\ tification], (-4.5, 2.1), "east"),
-    ((0.3, 0.2), (-0.2, 0.3), (-0.1, 4.8), (2.2, 4.5), [M-theory], (0.6, 4.4), "south"),
-    ((0.3, -0.2), (0.3, 0.3), (5.8, 1.6), (5.9, 0.0), [T-duality], (5.8, 0.6), "west"),
+    (
+      (-0.3, 0.3),
+      (-0.3, -0.3),
+      (-5.4, 0.5),
+      (-4.5, 2.4),
+      align(center)[compac-\ tification],
+      (-4.5, 2.1),
+      "east",
+    ),
+    (
+      (0.3, 0.2),
+      (-0.2, 0.3),
+      (-0.1, 4.8),
+      (2.2, 4.5),
+      [M-theory],
+      (0.6, 4.4),
+      "south",
+    ),
+    (
+      (0.3, -0.2),
+      (0.3, 0.3),
+      (5.8, 1.6),
+      (5.9, 0.0),
+      [T-duality],
+      (5.8, 0.6),
+      "west",
+    ),
     (
       (-0.2, -0.3),
       (0.3, -0.2),
@@ -38,7 +62,15 @@
       (3.9, -4.5),
       "north",
     ),
-    ((-0.3, -0.2), (-0.2, -0.3), (-1.6, -5.5), (-4.5, -3.2), [S-duality], (-4.0, -4.2), "north"),
+    (
+      (-0.3, -0.2),
+      (-0.2, -0.3),
+      (-1.6, -5.5),
+      (-4.5, -3.2),
+      [S-duality],
+      (-4.0, -4.2),
+      "north",
+    ),
   )
   // Node labels: (offset, label, anchor) - positioned close to cusp tips
   let labels = (
@@ -57,11 +89,18 @@
       let (pt, ..) = vertices.at(idx)
       let (next, ..) = vertices.at(calc.rem(idx + 1, 5))
       let (ctrl1, ctrl2) = edge_ctrls.at(idx)
-      if idx == 0 { bezier(pt, next, ctrl1, ctrl2) } else { bezier((), next, ctrl1, ctrl2) }
+      if idx == 0 { bezier(pt, next, ctrl1, ctrl2) } else {
+        bezier((), next, ctrl1, ctrl2)
+      }
     }
   }
 
-  on-layer(0, merge-path(pentagon, close: true, fill: gray.transparentize(70%), stroke: none))
+  on-layer(0, merge-path(
+    pentagon,
+    close: true,
+    fill: gray.transparentize(70%),
+    stroke: none,
+  ))
 
   on-layer(1, {
     set-style(stroke: (paint: rgb("#00008b"), thickness: 0.8pt), fill: none)
@@ -72,16 +111,28 @@
     }
   })
 
-  on-layer(2, merge-path(pentagon, close: true, fill: none, stroke: (paint: rgb("#666"), thickness: 2pt)))
+  on-layer(2, merge-path(pentagon, close: true, fill: none, stroke: (
+    paint: rgb("#666"),
+    thickness: 2pt,
+  )))
 
   on-layer(3, {
     let arrow_gray = rgb("#555")
     set-style(
       stroke: (paint: arrow_gray, thickness: 1.2pt),
-      mark: (fill: arrow_gray, stroke: arrow_gray, scale: 0.8, start: "stealth", end: "stealth"),
+      mark: (
+        fill: arrow_gray,
+        stroke: arrow_gray,
+        scale: 0.8,
+        start: "stealth",
+        end: "stealth",
+      ),
     )
 
-    for (idx, (off1, off2, ctrl1, ctrl2, lbl, lbl_pos, anchor)) in arrows.enumerate() {
+    for (
+      idx,
+      (off1, off2, ctrl1, ctrl2, lbl, lbl_pos, anchor),
+    ) in arrows.enumerate() {
       let (p1, ..) = vertices.at(idx)
       let (p2, ..) = vertices.at(calc.rem(idx + 1, 5))
       bezier(off(p1, off1), off(p2, off2), ctrl1, ctrl2)
@@ -94,7 +145,9 @@
 
     content(
       (0, -0.5),
-      align(center)[parameter space of \ #text(size: 1.4em, weight: "bold")[M-Theory]],
+      align(
+        center,
+      )[parameter space of \ #text(size: 1.4em, weight: "bold")[M-Theory]],
       anchor: "center",
     )
   })

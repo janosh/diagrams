@@ -6,7 +6,10 @@
 #canvas({
   let layer-sep = 2 // Horizontal separation between layers
   let node-sep = 1.4 // Vertical separation between nodes
-  let arrow-style = (stroke: .5pt, mark: (end: "stealth", fill: black, scale: .3))
+  let arrow-style = (
+    stroke: .5pt,
+    mark: (end: "stealth", fill: black, scale: .3),
+  )
 
   // Helper function to draw a layer of nodes
   let draw-layer(x, nodes, prefix: "") = {
@@ -50,18 +53,33 @@
   // Draw mu nodes
   let mu-x = layer-sep * 3
   for ii in range(3) {
-    circle((mu-x, 1.5 + ii), radius: 0.4, name: "mu" + str(ii + 1), fill: rgb(100%, 100%, 0%, 20%))
+    circle((mu-x, 1.5 + ii), radius: 0.4, name: "mu" + str(ii + 1), fill: rgb(
+      100%,
+      100%,
+      0%,
+      20%,
+    ))
   }
 
   // Draw sigma nodes
   for ii in range(3) {
-    circle((mu-x, -1.5 - ii), radius: 0.4, name: "sigma" + str(ii + 1), fill: rgb(0%, 0%, 100%, 10%))
+    circle(
+      (mu-x, -1.5 - ii),
+      radius: 0.4,
+      name: "sigma" + str(ii + 1),
+      fill: rgb(0%, 0%, 100%, 10%),
+    )
   }
 
   // Draw sample nodes
   let sample-x = mu-x + layer-sep
   for ii in range(3) {
-    circle((sample-x, ii - 1), radius: 0.4, name: "sample" + str(ii + 1), fill: rgb(0%, 100%, 0%, 10%))
+    circle(
+      (sample-x, ii - 1),
+      radius: 0.4,
+      name: "sample" + str(ii + 1),
+      fill: rgb(0%, 100%, 0%, 10%),
+    )
   }
 
   // Draw boxes around mu, sigma, sample nodes
@@ -90,7 +108,12 @@
     name: "sample-box",
     stroke: .1pt,
   )
-  content("sample-box.north", text(size: 0.8em)[Sample], anchor: "south", padding: 3pt)
+  content(
+    "sample-box.north",
+    text(size: 0.8em)[Sample],
+    anchor: "south",
+    padding: 3pt,
+  )
 
   // Connect encoder to mu and sigma
   for ii in range(3) {
@@ -137,6 +160,16 @@
     )
   }
 
-  content("e11.north", text(weight: "regular")[Input], anchor: "south", padding: 5pt)
-  content("d31.north", text(weight: "regular")[Output], anchor: "south", padding: 5pt)
+  content(
+    "e11.north",
+    text(weight: "regular")[Input],
+    anchor: "south",
+    padding: 5pt,
+  )
+  content(
+    "d31.north",
+    text(weight: "regular")[Output],
+    anchor: "south",
+    padding: 5pt,
+  )
 })

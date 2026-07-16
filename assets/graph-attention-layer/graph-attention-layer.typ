@@ -31,7 +31,13 @@
   let decorate(kind, body, paint, thickness) = {
     let deco = (wave: wave, zigzag: zigzag).at(kind, default: none)
     if deco == none { body } else {
-      deco(body, amplitude: .07, segment-length: .2, segments: none, stroke: paint + thickness)
+      deco(
+        body,
+        amplitude: .07,
+        segment-length: .2,
+        segments: none,
+        stroke: paint + thickness,
+      )
     }
   }
 
@@ -50,8 +56,16 @@
     let (x1, y1) = to
     let len = calc.sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0))
     let tip-len = calc.min(.3, len / 3)
-    let break-pt = (x1 - (x1 - x0) / len * tip-len, y1 - (y1 - y0) / len * tip-len)
-    decorate(kind, line(from, break-pt, stroke: paint + thickness), paint, thickness)
+    let break-pt = (
+      x1 - (x1 - x0) / len * tip-len,
+      y1 - (y1 - y0) / len * tip-len,
+    )
+    decorate(
+      kind,
+      line(from, break-pt, stroke: paint + thickness),
+      paint,
+      thickness,
+    )
     arrow-tip(break-pt, to, paint, thickness)
   }
 
@@ -66,7 +80,12 @@
   let heads = (("wave", mauve), ("line", pure-blue), ("zigzag", green2))
   for spec in triples {
     for (idx, (kind, color)) in heads.enumerate() {
-      deco-arrow(kind, on-ring(spec.from, spec.out.at(idx)), on-ring("h1", spec.into.at(idx)), color)
+      deco-arrow(
+        kind,
+        on-ring(spec.from, spec.out.at(idx)),
+        on-ring("h1", spec.into.at(idx)),
+        color,
+      )
     }
   }
 
@@ -80,7 +99,13 @@
     let stop = on-ring("h1", ang-in)
     // end the decorated body just outside the node, then a straight arrowhead segment
     let tip-base = offset(stop, ang-in, .25)
-    let body = bezier(start, tip-base, offset(start, ang-out, reach), offset(stop, ang-in, reach), stroke: color + 1.1pt)
+    let body = bezier(
+      start,
+      tip-base,
+      offset(start, ang-out, reach),
+      offset(stop, ang-in, reach),
+      stroke: color + 1.1pt,
+    )
     decorate(kind, body, color, 1.1pt)
     arrow-tip(tip-base, stop, color, 1.1pt)
   }
@@ -94,10 +119,29 @@
   let mid = (2.85, 0)
   for (kind, color, ang) in (("wave", mauve, 20), ("zigzag", green2, -20)) {
     let paint = color.transparentize(50%)
-    decorate(kind, line(on-ring("h1", ang), mid, stroke: paint + 2.2pt), paint, 2.2pt)
-    deco-arrow(kind, mid, on-ring("hp", 180), color, thickness: 2.2pt, opacity: 50%)
+    decorate(
+      kind,
+      line(on-ring("h1", ang), mid, stroke: paint + 2.2pt),
+      paint,
+      2.2pt,
+    )
+    deco-arrow(
+      kind,
+      mid,
+      on-ring("hp", 180),
+      color,
+      thickness: 2.2pt,
+      opacity: 50%,
+    )
   }
-  deco-arrow("line", on-ring("h1", 0), on-ring("hp", 180), pure-blue, thickness: 2.2pt, opacity: 50%)
+  deco-arrow(
+    "line",
+    on-ring("h1", 0),
+    on-ring("hp", 180),
+    pure-blue,
+    thickness: 2.2pt,
+    opacity: 50%,
+  )
 
   // === nodes ===
   for (name, label) in (
@@ -109,7 +153,13 @@
     h6: $arrow(h)_6$,
     hp: $arrow(h)'_1$,
   ).pairs() {
-    circle(nodes.at(name), radius: node-r, fill: white, stroke: 1.1pt, name: name)
+    circle(
+      nodes.at(name),
+      radius: node-r,
+      fill: white,
+      stroke: 1.1pt,
+      name: name,
+    )
     content(name, label)
   }
 

@@ -17,7 +17,9 @@
 #let dressed-vertex(pos, label: none, rel-label: none, name: none, ..rest) = {
   circle(pos, radius: vertex-rad, fill: hatched, name: name)
   if label != none {
-    let label-pos = if rel-label != none { (rel: rel-label, to: pos) } else { pos }
+    let label-pos = if rel-label != none { (rel: rel-label, to: pos) } else {
+      pos
+    }
     content(label-pos, $#label$, ..rest)
   }
 }
@@ -55,7 +57,12 @@
   circle((5 * radius, 0), radius: radius, stroke: 1pt, name: "loop2")
 
   // External line
-  draw.line((5 * radius - 2 * radius, -radius), (5 * radius + 2 * radius, -radius), stroke: 1pt, name: "external2")
+  draw.line(
+    (5 * radius - 2 * radius, -radius),
+    (5 * radius + 2 * radius, -radius),
+    stroke: 1pt,
+    name: "external2",
+  )
 
   // Four-vertex with label
   dressed-vertex(

@@ -17,17 +17,44 @@
 
   // Draw coordinate system
   let arrow_style = (mark: (end: "stealth", fill: black))
-  let vector_style = (mark: (end: "stealth", fill: green_color, scale: 0.8), stroke: green_color + 1.1pt)
+  let vector_style = (
+    mark: (end: "stealth", fill: green_color, scale: 0.8),
+    stroke: green_color + 1.1pt,
+  )
 
   // Draw axes - z-axis first (to position things relative to it)
-  line((0, -2.7 * h), (0, zmax), stroke: black + 1pt, ..arrow_style, name: "z-axis")
+  line(
+    (0, -2.7 * h),
+    (0, zmax),
+    stroke: black + 1pt,
+    ..arrow_style,
+    name: "z-axis",
+  )
   line((0, 0), (zmax, 0), stroke: black + 1pt, ..arrow_style, name: "y-axis")
-  line((0, 0), (-0.62 * zmax, -0.55 * zmax), stroke: black + 1pt, ..arrow_style, name: "x-axis")
+  line(
+    (0, 0),
+    (-0.62 * zmax, -0.55 * zmax),
+    stroke: black + 1pt,
+    ..arrow_style,
+    name: "x-axis",
+  )
 
   // Add axis labels
   content("z-axis.end", $L_z$, anchor: "west", padding: (left: 3pt), size: 13pt)
-  content("y-axis.end", $L_y$, anchor: "south", padding: (bottom: 3pt), size: 13pt)
-  content("x-axis.end", $L_x$, anchor: "south", padding: (bottom: 6pt, left: -9pt), size: 13pt)
+  content(
+    "y-axis.end",
+    $L_y$,
+    anchor: "south",
+    padding: (bottom: 3pt),
+    size: 13pt,
+  )
+  content(
+    "x-axis.end",
+    $L_x$,
+    anchor: "south",
+    padding: (bottom: 6pt, left: -9pt),
+    size: 13pt,
+  )
 
   // Draw blue dashed ellipse to the left of the z-axis (matching target)
   // This needs to be fully to the left of the z-axis
@@ -56,7 +83,6 @@
     name: "origin",
   ))
 
-
   // Draw quantized Lz levels and vectors
   for m in range(-l, l + 1) {
     // Calculate coordinates
@@ -67,7 +93,13 @@
     line((0, y), (rx, y), stroke: blue_color + 0.6pt, name: "level-" + str(m))
 
     // Add Lz level labels with proper formatting
-    content((0, y), $#m thin ħ$, anchor: "east", padding: (right: 6pt), size: 15pt)
+    content(
+      (0, y),
+      $#m thin ħ$,
+      anchor: "east",
+      padding: (right: 6pt),
+      size: 15pt,
+    )
 
     // Draw green angular momentum vector
     line((0, 0), (rx, y), ..vector_style, name: "vector-" + str(m))

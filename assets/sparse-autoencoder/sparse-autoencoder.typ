@@ -1,11 +1,10 @@
 #import "@preview/cetz:0.5.2": canvas, draw
+#import draw: circle, line, on-layer
 #import "@preview/suiji:0.5.1"
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #canvas({
-  import draw: circle, line, on-layer
-
   // Layer configuration
   let (n-input-neurons, n-hidden-neurons) = (6, 12)
   let (input-len, hidden-len) = (20, 30)
@@ -13,11 +12,20 @@
 
   // Generate activations
   let input-rng = suiji.gen-rng(43)
-  let (input-rng, input-activations) = suiji.uniform(input-rng, size: n-input-neurons)
+  let (input-rng, input-activations) = suiji.uniform(
+    input-rng,
+    size: n-input-neurons,
+  )
 
   let hidden-rng = suiji.gen-rng(47)
-  let (hidden-rng, uniform-values) = suiji.uniform(hidden-rng, size: n-hidden-neurons)
-  let (hidden-rng, hidden-activations) = suiji.uniform(hidden-rng, size: n-hidden-neurons)
+  let (hidden-rng, uniform-values) = suiji.uniform(
+    hidden-rng,
+    size: n-hidden-neurons,
+  )
+  let (hidden-rng, hidden-activations) = suiji.uniform(
+    hidden-rng,
+    size: n-hidden-neurons,
+  )
   let is-alive = uniform-values.map(x => x < sparsity)
 
   // Draw neurons
@@ -38,7 +46,9 @@
       circle(
         (10, ii * hidden-len / (n-hidden-neurons - 1) + y-offset),
         radius: 1,
-        fill: green.transparentize(100% * (1 - float(is-alive.at(ii)) * hidden-activations.at(ii))),
+        fill: green.transparentize(
+          100% * (1 - float(is-alive.at(ii)) * hidden-activations.at(ii)),
+        ),
         stroke: green.darken(30%) + 2pt,
         name: "hidden-" + str(ii),
       )

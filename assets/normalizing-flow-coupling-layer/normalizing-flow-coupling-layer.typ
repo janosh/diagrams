@@ -28,7 +28,13 @@
 
   // Helper to draw circle node with its label
   let circle-node(pos, name, label) = {
-    circle(pos, radius: 0.4, name: name, stroke: 0.7pt, fill: rgb("#ffa64d").lighten(40%))
+    circle(
+      pos,
+      radius: 0.4,
+      name: name,
+      stroke: 0.7pt,
+      fill: rgb("#ffa64d").lighten(40%),
+    )
     content(pos, label, anchor: "center")
   }
 

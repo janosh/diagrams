@@ -16,8 +16,14 @@
 
 #canvas({
   draw.set-style(axes: (
-    y: (mark: (end: "stealth", fill: black), label: (anchor: "north-west", offset: -0.2)),
-    x: (mark: (end: "stealth", fill: black), label: (anchor: "south-east", offset: -0.2)),
+    y: (
+      mark: (end: "stealth", fill: black),
+      label: (anchor: "north-west", offset: -0.2),
+    ),
+    x: (
+      mark: (end: "stealth", fill: black),
+      label: (anchor: "south-east", offset: -0.2),
+    ),
   ))
 
   plot.plot(
@@ -40,7 +46,11 @@
       )
 
       // Dashed line y=x from 0 to 1
-      plot.add(style: (stroke: (dash: "dashed", thickness: 1pt)), domain: (0, 1), x => x)
+      plot.add(
+        style: (stroke: (dash: "dashed", thickness: 1pt)),
+        domain: (0, 1),
+        x => x,
+      )
     },
   )
 })

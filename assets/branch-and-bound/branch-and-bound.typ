@@ -5,7 +5,9 @@
 
 #canvas({
   let layout = (node: 1.5, level: 1.5, radius: 0.35)
-  let arrow-style = (mark: (end: "stealth", fill: black, scale: 0.2, offset: 0.03))
+  let arrow-style = (
+    mark: (end: "stealth", fill: black, scale: 0.2, offset: 0.03),
+  )
 
   // Helper to draw a node with label
   let draw-node(pos, label, name: none) = {

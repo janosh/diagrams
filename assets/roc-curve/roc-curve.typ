@@ -45,7 +45,12 @@
     y-grid: true,
     axis-style: "left",
     legend: "inner-north",
-    legend-style: (item: (spacing: 0.15), padding: 0.15, stroke: none, offset: (7.8, 0.3)),
+    legend-style: (
+      item: (spacing: 0.15),
+      padding: 0.15,
+      stroke: none,
+      offset: (7.8, 0.3),
+    ),
     {
       plot.add(
         style: (stroke: gray),

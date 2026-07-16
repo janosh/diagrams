@@ -38,11 +38,22 @@
       let (u, v) = (u_idx * u_step, v_idx * v_step)
       let u_next = calc.rem(u_idx + 1, 48) * u_step
       let v_next = if v_idx < 43 { v + v_step } else { v_max }
-      let (p1, p2, p3, p4) = (torus_pt(u, v), torus_pt(u_next, v), torus_pt(u_next, v_next), torus_pt(u, v_next))
+      let (p1, p2, p3, p4) = (
+        torus_pt(u, v),
+        torus_pt(u_next, v),
+        torus_pt(u_next, v_next),
+        torus_pt(u, v_next),
+      )
       let cx = (p1.at(0) + p2.at(0) + p3.at(0) + p4.at(0)) / 4
       let cy = (p1.at(1) + p2.at(1) + p3.at(1) + p4.at(1)) / 4
       let cz = (p1.at(2) + p2.at(2) + p3.at(2) + p4.at(2)) / 4
-      quads.push((depth: weights.at(0) * cx + weights.at(1) * cy + weights.at(2) * cz, p1: p1, p2: p2, p3: p3, p4: p4))
+      quads.push((
+        depth: weights.at(0) * cx + weights.at(1) * cy + weights.at(2) * cz,
+        p1: p1,
+        p2: p2,
+        p3: p3,
+        p4: p4,
+      ))
     }
   }
 
@@ -60,15 +71,32 @@
   // upper z-axis on top (its lower half is drawn earlier, behind the torus), then axis tips.
   line((0, 0, 0), (0, 0, 10), stroke: ax_stroke, mark: arrow, name: "z")
   content("z.end", $z$, anchor: "south", padding: 2pt)
-  line((outer_rim, 0, 0), (axis_len, 0, 0), stroke: ax_stroke, mark: arrow, name: "x")
+  line(
+    (outer_rim, 0, 0),
+    (axis_len, 0, 0),
+    stroke: ax_stroke,
+    mark: arrow,
+    name: "x",
+  )
   content("x.end", $x$, anchor: "west", padding: 2pt)
-  line((0, -outer_rim, 0), (0, -axis_len, 0), stroke: ax_stroke, mark: arrow, name: "y")
+  line(
+    (0, -outer_rim, 0),
+    (0, -axis_len, 0),
+    stroke: ax_stroke,
+    mark: arrow,
+    name: "y",
+  )
   content("y.end", $y$, anchor: "north-east", padding: 2pt)
 
   // R (blue): origin to tube center at far open slice.
   let v_end = v_max * 1deg
   let (rx, ry) = (major_r * calc.cos(v_end), major_r * calc.sin(v_end))
-  line((0, 0, 0), (rx, ry, 0), stroke: (paint: blue, thickness: rad_stroke), name: "R")
+  line(
+    (0, 0, 0),
+    (rx, ry, 0),
+    stroke: (paint: blue, thickness: rad_stroke),
+    name: "R",
+  )
   content("R.mid", text(fill: blue)[$R$], anchor: "south", padding: 2pt)
 
   // r (red): minor radius pointing diagonally upward.

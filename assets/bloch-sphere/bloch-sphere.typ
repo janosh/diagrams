@@ -11,7 +11,13 @@
   let mark = (end: "stealth", fill: black)
 
   // Bloch vector
-  line((0, 0), vec-a, mark: (start: "circle", end: "circle", fill: black, scale: .5, anchor: "center"))
+  line((0, 0), vec-a, mark: (
+    start: "circle",
+    end: "circle",
+    fill: black,
+    scale: .5,
+    anchor: "center",
+  ))
   content((rel: (0.08, 0.08), to: vec-a), $arrow(a)$, anchor: "south-west")
 
   // Dashed line forming angle
@@ -50,5 +56,10 @@
 
   // Sphere
   circle((0, 0), radius: rad)
-  circle((0, 0), radius: (rad, rad / 3), stroke: (dash: "dashed"), fill: gray.transparentize(70%))
+  circle(
+    (0, 0),
+    radius: (rad, rad / 3),
+    stroke: (dash: "dashed"),
+    fill: gray.transparentize(70%),
+  )
 })

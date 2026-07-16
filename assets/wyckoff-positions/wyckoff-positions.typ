@@ -66,8 +66,18 @@
 
   // Red circles on axes
   for a in (-0.7 * size, 0.7 * size) {
-    circle((a, 0), radius: circle-radius, fill: colors.red, name: "horiz-circle-" + str(a).replace(".", "p"))
-    circle((0, a), radius: circle-radius, fill: colors.red, name: "vert-circle-" + str(a).replace(".", "p"))
+    circle(
+      (a, 0),
+      radius: circle-radius,
+      fill: colors.red,
+      name: "horiz-circle-" + str(a).replace(".", "p"),
+    )
+    circle(
+      (0, a),
+      radius: circle-radius,
+      fill: colors.red,
+      name: "vert-circle-" + str(a).replace(".", "p"),
+    )
   }
 
   // Rotated teal squares

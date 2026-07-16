@@ -35,7 +35,11 @@
   }
 
   // Add dashed diagonal line
-  line((0, 0), (range, range * xy-ratio), stroke: (dash: "dashed", paint: gray, thickness: .75pt))
+  line((0, 0), (range, range * xy-ratio), stroke: (
+    dash: "dashed",
+    paint: gray,
+    thickness: .75pt,
+  ))
 
   // Data points with labels
   let methods = (

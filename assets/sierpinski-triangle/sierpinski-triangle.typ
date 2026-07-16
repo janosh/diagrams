@@ -83,11 +83,29 @@
               columns: (color_square_size, auto),
               column-gutter: 2.5pt,
               row-gutter: 3pt,
-              rect(width: color_square_size, height: color_square_size, fill: rgb(200, 50, 50), radius: 1pt), [Au(100)],
-              rect(width: color_square_size, height: color_square_size, fill: rgb(255, 230, 100), radius: 1pt),
+              rect(
+                width: color_square_size,
+                height: color_square_size,
+                fill: rgb(200, 50, 50),
+                radius: 1pt,
+              ),
+              [Au(100)],
+
+              rect(
+                width: color_square_size,
+                height: color_square_size,
+                fill: rgb(255, 230, 100),
+                radius: 1pt,
+              ),
               [Fe/C3PC],
 
-              rect(width: color_square_size, height: color_square_size, fill: rgb(200, 140, 0), radius: 1pt), [BPyB],
+              rect(
+                width: color_square_size,
+                height: color_square_size,
+                fill: rgb(200, 140, 0),
+                radius: 1pt,
+              ),
+              [BPyB],
             )
           },
         ),

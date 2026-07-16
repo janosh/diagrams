@@ -19,7 +19,10 @@
     radius: 3,
     slice-style: data.map(itm => itm.at(-1)),
     stroke: white + .2pt,
-    inner-label: (content: (value, label) => [#text(label, size: 4em)], radius: 120%),
+    inner-label: (
+      content: (value, label) => [#text(label, size: 4em)],
+      radius: 120%,
+    ),
     outer-label: (content: ()), // hide outer labels
     legend: (label: ()), // hide legend
   )

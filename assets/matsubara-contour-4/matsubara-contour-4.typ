@@ -14,7 +14,12 @@
   // Styles
   let arrow-style = (mark: (end: "stealth", fill: black, scale: 0.5))
   let dark-blue = blue.darken(20%)
-  let marc-style = (symbol: "stealth", fill: dark-blue, scale: 0.5, shorten-to: none)
+  let marc-style = (
+    symbol: "stealth",
+    fill: dark-blue,
+    scale: 0.5,
+    shorten-to: none,
+  )
   let contour-style = (paint: dark-blue, thickness: 0.8pt)
   let zigzag-style = (amplitude: 0.2, segment-length: 0.3)
 
@@ -49,7 +54,12 @@
 
   // Draw x-axis with zigzag on both sides
   // Center straight segment
-  line((-zigzag-start, 0), (zigzag-start, 0), stroke: 0.8pt, name: "x-axis-center")
+  line(
+    (-zigzag-start, 0),
+    (zigzag-start, 0),
+    stroke: 0.8pt,
+    name: "x-axis-center",
+  )
 
   // Left side zigzag
   decorations.zigzag(
@@ -88,10 +98,23 @@
   draw-contour-line("left-arc.end", (x-range, contour-radius), "top-line")
 
   // Add C_b label
-  content("top-line.end", text(fill: dark-blue)[$C_b$], anchor: "south-east", padding: 2pt)
+  content(
+    "top-line.end",
+    text(fill: dark-blue)[$C_b$],
+    anchor: "south-east",
+    padding: 2pt,
+  )
 
   // Draw right contour
   draw-semicircle((-contour-radius, 0), -90deg, 90deg, "right-arc")
-  draw-contour-line((-x-range, contour-radius), "right-arc.end", "right-top-line")
-  draw-contour-line("right-arc.start", (-x-range, -contour-radius), "right-bottom-line")
+  draw-contour-line(
+    (-x-range, contour-radius),
+    "right-arc.end",
+    "right-top-line",
+  )
+  draw-contour-line(
+    "right-arc.start",
+    (-x-range, -contour-radius),
+    "right-bottom-line",
+  )
 })

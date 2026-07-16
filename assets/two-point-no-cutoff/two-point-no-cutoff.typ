@@ -15,10 +15,13 @@
 ]
 
 // Helper function for dressed vertices
+// @typstyle off
 #let dressed-vertex(pos, label: none, rel-label: (0, 0), name: none, radius: small-rad, ..rest) = {
   circle(pos, radius: radius, fill: hatched, name: name, stroke: 0.5pt)
   if label != none {
-    let label-pos = if rel-label != none { (rel: rel-label, to: pos) } else { pos }
+    let label-pos = if rel-label != none { (rel: rel-label, to: pos) } else {
+      pos
+    }
     content(label-pos, $#label$, ..rest)
   }
 }
@@ -34,7 +37,10 @@
     let label-angle = (angle - 3) * 1deg
 
     // Add momentum labels
-    let rel-pos = (0.75 * radius * calc.cos(label-angle), 0.75 * radius * calc.sin(label-angle))
+    let rel-pos = (
+      0.75 * radius * calc.cos(label-angle),
+      0.75 * radius * calc.sin(label-angle),
+    )
     content(
       (rel: rel-pos, to: "loop"),
       $p_#ii$,
@@ -46,7 +52,14 @@
       symbol: "stealth",
       (name: "loop", anchor: angle * 1deg),
       (name: "loop", anchor: (angle + 1) * 1deg),
-      ..(width: .25, length: .15, stroke: .7pt, angle: 60deg, scale: .7, fill: black),
+      ..(
+        width: .25,
+        length: .15,
+        stroke: .7pt,
+        angle: 60deg,
+        scale: .7,
+        fill: black,
+      ),
     )
   }
 
@@ -146,7 +159,10 @@
     let label-angle = (angle - 3) * 1deg
 
     // Add momentum labels
-    let rel-pos = (0.75 * radius * calc.cos(label-angle), 0.75 * radius * calc.sin(label-angle))
+    let rel-pos = (
+      0.75 * radius * calc.cos(label-angle),
+      0.75 * radius * calc.sin(label-angle),
+    )
     content(
       (rel: rel-pos, to: "loop"),
       $p_#ii$,
@@ -158,7 +174,14 @@
       symbol: "stealth",
       (name: "loop", anchor: angle * 1deg),
       (name: "loop", anchor: (angle + 1) * 1deg),
-      ..(width: .25, length: .15, stroke: .7pt, angle: 60deg, scale: .7, fill: black),
+      ..(
+        width: .25,
+        length: .15,
+        stroke: .7pt,
+        angle: 60deg,
+        scale: .7,
+        fill: black,
+      ),
     )
   }
 
@@ -172,7 +195,12 @@
   )
 
   // External line
-  draw.line((-2 * radius, -radius), (2 * radius, -radius), stroke: 1pt, name: "external")
+  draw.line(
+    (-2 * radius, -radius),
+    (2 * radius, -radius),
+    stroke: 1pt,
+    name: "external",
+  )
 
   // External line labels
   content((rel: (-0.1, 0), to: "external.start"), $phi_a$, anchor: "east")

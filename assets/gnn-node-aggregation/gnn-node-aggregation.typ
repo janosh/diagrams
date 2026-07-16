@@ -5,7 +5,10 @@
 
 #canvas({
   // Styles
-  let arrow-style = (mark: (end: "stealth", fill: black, scale: 0.5, offset: 2pt), stroke: 0.5pt)
+  let arrow-style = (
+    mark: (end: "stealth", fill: black, scale: 0.5, offset: 2pt),
+    stroke: 0.5pt,
+  )
   let edge-style = (stroke: 0.4pt)
   let node-radius = 0.3
   let graph-sep = 4.5 // separation between input graph and aggregation
@@ -22,7 +25,13 @@
 
   // Helper to draw a node with label
   let draw-node(pos, label, name) = {
-    circle(pos, radius: node-radius, fill: colors.at(label), stroke: 0.5pt, name: name)
+    circle(
+      pos,
+      radius: node-radius,
+      fill: colors.at(label),
+      stroke: 0.5pt,
+      name: name,
+    )
     content(pos, label, anchor: "center")
   }
 
@@ -104,7 +113,6 @@
     )
     line("aggr-" + letter, node, ..arrow-style)
   }
-
 
   // Second layer nodes and connections - renamed to show full path
   let second-layer = (

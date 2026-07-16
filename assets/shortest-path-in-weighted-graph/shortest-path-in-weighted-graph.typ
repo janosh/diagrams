@@ -15,13 +15,21 @@
     t: (6, 0),
   )
   let edge-color(shortest) = if shortest { red } else { black }
-  let arrow(color) = (mark: (end: "stealth", fill: color, scale: .55), stroke: color + .75pt)
+  let arrow(color) = (
+    mark: (end: "stealth", fill: color, scale: .55),
+    stroke: color + .75pt,
+  )
 
   let vertex(name, fill: white) = {
     circle(nodes.at(name), radius: .28, fill: fill, stroke: .7pt, name: name)
     content(name, $upright(#name)$)
   }
-  let label(pos, value, color) = content(pos, text(fill: color)[$#value$], fill: white, padding: 1pt)
+  let label(pos, value, color) = content(
+    pos,
+    text(fill: color)[$#value$],
+    fill: white,
+    padding: 1pt,
+  )
   let straight(from, to, weight, offset, shortest: false) = {
     let color = edge-color(shortest)
     let edge = from + "-" + to

@@ -31,7 +31,10 @@
   }
 
   // Create nodes in both rows
-  for (y, prefix, colors) in ((0, "x", (blue, rgb(0%, 100%, 0%, 20%))), (-layout.spacing.y, "z", (blue, orange))) {
+  for (y, prefix, colors) in (
+    (0, "x", (blue, rgb(0%, 100%, 0%, 20%))),
+    (-layout.spacing.y, "z", (blue, orange)),
+  ) {
     // Left group (indices 1, 2, d)
     for (i, x) in ((1, 0), (2, 1), ("d", 3)) {
       box(
@@ -69,7 +72,9 @@
       1, // render above the filled triangles
       content(
         if pos != none { pos } else { (rel: rel-pos, to: "t-circle") },
-        text(fill: white, baseline: if label == "s" { -1pt } else { 0pt })[#label],
+        text(fill: white, baseline: if label == "s" { -1pt } else {
+          0pt
+        })[#label],
         frame: "circle",
         name: label + "-circle",
         stroke: none,

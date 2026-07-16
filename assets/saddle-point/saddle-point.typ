@@ -13,7 +13,11 @@
 #let domain_size = 2
 #let scale_factor = 0.2
 #let (x_scale, y_scale, z_scale) = (0.5, 0.3, 0.15)
-#let scale_dim = (x_scale * scale_factor, y_scale * scale_factor, z_scale * scale_factor)
+#let scale_dim = (
+  x_scale * scale_factor,
+  y_scale * scale_factor,
+  z_scale * scale_factor,
+)
 
 // Plot the 3D surface
 #plot-3d-surface(

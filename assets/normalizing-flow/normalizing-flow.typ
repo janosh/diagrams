@@ -36,7 +36,12 @@
   group({
     translate((x - 0.8, y))
     plot.plot(size: plot-size, axis-style: none, y-min: 0, y-max: 1.5, {
-      plot.add(style: (stroke: blue.darken(20%) + 1.2pt), domain: (-0.8, 0.8), samples: 100, dist-fn)
+      plot.add(
+        style: (stroke: blue.darken(20%) + 1.2pt),
+        domain: (-0.8, 0.8),
+        samples: 100,
+        dist-fn,
+      )
     })
   })
 }
@@ -74,16 +79,28 @@
   // Draw arrows and labels
   let arrow-style = (end: ">", fill: black, scale: 0.8, offset: 0.1)
   line("z0", "z1", mark: arrow-style, name: "z0-z1")
-  content("z0-z1.mid", $f_1(z_0)$, name: "f1", anchor: "south", padding: (bottom: 3pt))
+  content("z0-z1.mid", $f_1(z_0)$, name: "f1", anchor: "south", padding: (
+    bottom: 3pt,
+  ))
 
   line("dots1.east", "zi", mark: arrow-style, name: "z1-zi")
-  content("z1-zi.30%", $f_i (z_1)$, name: "fi", anchor: "south", padding: (bottom: 3pt))
+  content("z1-zi.30%", $f_i (z_1)$, name: "fi", anchor: "south", padding: (
+    bottom: 3pt,
+  ))
 
   line("zi", "zi1", mark: arrow-style, name: "zi-zi1")
-  content("zi-zi1.mid", $f_(i+1) (z_i)$, name: "fi1", anchor: "south", padding: (bottom: 3pt))
+  content(
+    "zi-zi1.mid",
+    $f_(i+1) (z_i)$,
+    name: "fi1",
+    anchor: "south",
+    padding: (bottom: 3pt),
+  )
 
   line("dots2.east", "zk", mark: arrow-style, name: "zi1-zk")
-  content("zi1-zk.30%", $f_k (z_(k-1))$, name: "fk", anchor: "south", padding: (bottom: 3pt))
+  content("zi1-zk.30%", $f_k (z_(k-1))$, name: "fk", anchor: "south", padding: (
+    bottom: 3pt,
+  ))
 
   // Draw distributions
   draw-distro(0, y-distro, p0, name: "d0")

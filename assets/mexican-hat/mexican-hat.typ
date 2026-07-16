@@ -24,12 +24,15 @@
   )
 }
 
+// @typstyle off
 #let draw_downhill_arrow(arrow_steps, arrow_radius_start, arrow_radius_stop, downhill_point, theta_deg) = {
   line(
     ..(
       for step_idx in range(arrow_steps + 1) {
         let t = step_idx / arrow_steps
-        let radius_val = arrow_radius_start + t * (arrow_radius_stop - arrow_radius_start)
+        let radius_val = (
+          arrow_radius_start + t * (arrow_radius_stop - arrow_radius_start)
+        )
         (downhill_point(radius_val, theta_deg),)
       }
     ),
@@ -123,17 +126,51 @@
     set-style(
       stroke: (paint: arrow_color, thickness: 1.1pt),
       fill: none,
-      mark: (fill: arrow_color, stroke: arrow_color, scale: 0.56, end: "stealth"),
+      mark: (
+        fill: arrow_color,
+        stroke: arrow_color,
+        scale: 0.56,
+        end: "stealth",
+      ),
     )
-    draw_downhill_arrow(arrow_steps, arrow_radius_start, arrow_radius_stop, downhill_point, 28.8)
-    draw_downhill_arrow(arrow_steps, arrow_radius_start, arrow_radius_stop, downhill_point, 32.8)
+    draw_downhill_arrow(
+      arrow_steps,
+      arrow_radius_start,
+      arrow_radius_stop,
+      downhill_point,
+      28.8,
+    )
+    draw_downhill_arrow(
+      arrow_steps,
+      arrow_radius_start,
+      arrow_radius_stop,
+      downhill_point,
+      32.8,
+    )
     // Dark inner stroke for crisp arrow edges.
     set-style(
       stroke: (paint: rgb("#575757"), thickness: 0.42pt),
       fill: none,
-      mark: (fill: rgb("#575757"), stroke: rgb("#575757"), scale: 0.44, end: "stealth"),
+      mark: (
+        fill: rgb("#575757"),
+        stroke: rgb("#575757"),
+        scale: 0.44,
+        end: "stealth",
+      ),
     )
-    draw_downhill_arrow(arrow_steps, arrow_radius_start, arrow_radius_stop, downhill_point, 28.8)
-    draw_downhill_arrow(arrow_steps, arrow_radius_start, arrow_radius_stop, downhill_point, 32.8)
+    draw_downhill_arrow(
+      arrow_steps,
+      arrow_radius_start,
+      arrow_radius_stop,
+      downhill_point,
+      28.8,
+    )
+    draw_downhill_arrow(
+      arrow_steps,
+      arrow_radius_start,
+      arrow_radius_stop,
+      downhill_point,
+      32.8,
+    )
   })
 })

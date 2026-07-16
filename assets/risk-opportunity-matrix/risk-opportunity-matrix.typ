@@ -86,7 +86,14 @@
   }
 
   let arrow-inset = 0.3
-  labeled-arrow((-1, arrow-inset), (-1, height - arrow-inset), "probability1", probability, dir: ltr, align: top)
+  labeled-arrow(
+    (-1, arrow-inset),
+    (-1, height - arrow-inset),
+    "probability1",
+    probability,
+    dir: ltr,
+    align: top,
+  )
   labeled-arrow(
     (width + 1, arrow-inset),
     (width + 1, height - arrow-inset),
@@ -96,7 +103,14 @@
     align: top,
   )
 
-  labeled-arrow((arrow-inset, -1), (width / 2 - arrow-inset, -1), "neg-impact", neg-impact, dir: ltr, align: bottom)
+  labeled-arrow(
+    (arrow-inset, -1),
+    (width / 2 - arrow-inset, -1),
+    "neg-impact",
+    neg-impact,
+    dir: ltr,
+    align: bottom,
+  )
   labeled-arrow(
     (width - arrow-inset, -1),
     (width / 2 + arrow-inset, -1),

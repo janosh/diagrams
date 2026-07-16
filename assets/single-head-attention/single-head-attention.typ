@@ -8,14 +8,14 @@
   let spacing = (horizontal: 1.2, vertical: 0.8)
 
   // Helper function for drawing a matrix with colored dimension indicators
-  let matrix(
-    pos, // (x, y) position of top-left corner
-    size, // (width, height) of matrix
-    label, // matrix label (e.g. Q, K, V)
-    top-color: none, // color for top dimension line
-    left-color: none, // color for left dimension line
-    style: (stroke: rgb(50%, 50%, 50%), fill: white, thickness: 1.5pt), // matrix style
-  ) = {
+  // (x, y) position of top-left corner
+  // (width, height) of matrix
+  // matrix label (e.g. Q, K, V)
+  // color for top dimension line
+  // color for left dimension line
+  // matrix style
+  // @typstyle off
+  let matrix(pos, size, label, top-color: none, left-color: none, style: (stroke: rgb(50%, 50%, 50%), fill: white, thickness: 1.5pt)) = {
     let (x, y) = pos
     let (w, h) = size
     let offset = 0.1 // offset for dimension lines to avoid overlap
@@ -27,10 +27,16 @@
 
     // Draw dimension indicators if colors specified
     if top-color != none {
-      line((x - 0.02, y + offset), (x + w + 0.02, y + offset), stroke: (paint: top-color, thickness: 2pt))
+      line((x - 0.02, y + offset), (x + w + 0.02, y + offset), stroke: (
+        paint: top-color,
+        thickness: 2pt,
+      ))
     }
     if left-color != none {
-      line((x - offset, y + 0.02), (x - offset, y - h - 0.02), stroke: (paint: left-color, thickness: 2pt))
+      line((x - offset, y + 0.02), (x - offset, y - h - 0.02), stroke: (
+        paint: left-color,
+        thickness: 2pt,
+      ))
     }
   }
 
@@ -64,7 +70,11 @@
   )
 
   // Title and equation
-  content((4, 2.5), text(weight: "bold", size: 1.2em)[Single-head attention], name: "title")
+  content(
+    (4, 2.5),
+    text(weight: "bold", size: 1.2em)[Single-head attention],
+    name: "title",
+  )
   content(
     (4, -2.75),
     $"Attention"(Q, K, V) = "softmax"_"row" ( (Q K^top) / sqrt(d)) V$,
@@ -153,13 +163,30 @@
   line("K.east", "att.west", ..edge-style, name: "k-to-att")
 
   // Q to att (right angle)
-  line("Q.east", ("Q.east", "-|", "att.north"), "att.north", ..edge-style, name: "q-to-att")
+  line(
+    "Q.east",
+    ("Q.east", "-|", "att.north"),
+    "att.north",
+    ..edge-style,
+    name: "q-to-att",
+  )
 
   // V to prod (right angle)
-  line("V.east", ("V.east", "-|", "prod.south"), "prod.south", ..edge-style, name: "v-to-prod")
+  line(
+    "V.east",
+    ("V.east", "-|", "prod.south"),
+    "prod.south",
+    ..edge-style,
+    name: "v-to-prod",
+  )
 
   // Other straight connections
-  line("att.east", "softmax.west", stroke: rgb(50%, 50%, 50%), name: "att-to-sm")
+  line(
+    "att.east",
+    "softmax.west",
+    stroke: rgb(50%, 50%, 50%),
+    name: "att-to-sm",
+  )
   line("softmax.east", "A.west", ..arrow-style, name: "sm-to-a")
   line("A.east", "prod.west", stroke: rgb(50%, 50%, 50%), name: "a-to-prod")
   line("prod.east", "Y.west", ..arrow-style, name: "prod-to-y")

@@ -25,8 +25,16 @@
     )
 
     // Add axis labels
-    content((rel: (0, -0.3), to: label + "-x.end"), eval(lower(label) + "_1", mode: "math"), name: label + "-x-label")
-    content((rel: (0.3, 0), to: label + "-y.end"), eval(lower(label) + "_2", mode: "math"), name: label + "-y-label")
+    content(
+      (rel: (0, -0.3), to: label + "-x.end"),
+      eval(lower(label) + "_1", mode: "math"),
+      name: label + "-x-label",
+    )
+    content(
+      (rel: (0.3, 0), to: label + "-y.end"),
+      eval(lower(label) + "_2", mode: "math"),
+      name: label + "-y-label",
+    )
 
     // Add plot label
     content(
@@ -75,14 +83,22 @@
     ..arrow-style,
     name: "f-arrow",
   )
-  content("f-arrow.mid", $f$, name: "f-label", anchor: "south", padding: (bottom: 4pt))
+  content("f-arrow.mid", $f$, name: "f-label", anchor: "south", padding: (
+    bottom: 4pt,
+  ))
   line(
     (mid-x + 0.3, -2.5),
     (mid-x - 0.3, -2.5),
     ..arrow-style,
     name: "f-inv-arrow",
   )
-  content("f-inv-arrow.mid", $f^(-1)$, name: "f-inv-label", anchor: "north", padding: (top: 4pt))
+  content(
+    "f-inv-arrow.mid",
+    $f^(-1)$,
+    name: "f-inv-label",
+    anchor: "north",
+    padding: (top: 4pt),
+  )
 
   // Draw dotted transformation arrows with determinant labels
   line(

@@ -9,7 +9,10 @@
   let node-layout = (radius: 0.25, sep: (x: 1.2, y: 1.2))
   let tree-color = rgb("#6495ED") // Cornflower blue for tree nodes
   let leaf-color = rgb("#FF6347") // Tomato red for leaf nodes
-  let arrow-style = (mark: (end: "stealth", fill: black, scale: 0.3), stroke: 0.6pt)
+  let arrow-style = (
+    mark: (end: "stealth", fill: black, scale: 0.3),
+    stroke: 0.6pt,
+  )
   let tree-line-style = (stroke: (paint: gray, thickness: 0.6pt))
 
   // Draw the circles with labels and different fills
@@ -112,7 +115,13 @@
 
   // Helper to draw tree nodes
   let draw_tree_node(pos, label, name) = {
-    circle(pos, radius: node-layout.radius, fill: node_colors.at(label), stroke: 0.5pt, name: name)
+    circle(
+      pos,
+      radius: node-layout.radius,
+      fill: node_colors.at(label),
+      stroke: 0.5pt,
+      name: name,
+    )
     content(pos, $#label$)
   }
 
@@ -120,40 +129,76 @@
   draw_tree_node((tree_offset.at(0) + 0, tree_offset.at(1) + 0), "a", "node-a")
 
   // Level 1
-  draw_tree_node((tree_offset.at(0) - 1.5 * node-layout.sep.x, tree_offset.at(1) - node-layout.sep.y), "b", "node-b")
-  draw_tree_node((tree_offset.at(0) + 2.0 * node-layout.sep.x, tree_offset.at(1) - node-layout.sep.y), "c", "node-c")
-  draw_tree_node((tree_offset.at(0) + 0, tree_offset.at(1) - node-layout.sep.y * 1.5), "j", "node-j")
+  draw_tree_node(
+    (
+      tree_offset.at(0) - 1.5 * node-layout.sep.x,
+      tree_offset.at(1) - node-layout.sep.y,
+    ),
+    "b",
+    "node-b",
+  )
+  draw_tree_node(
+    (
+      tree_offset.at(0) + 2.0 * node-layout.sep.x,
+      tree_offset.at(1) - node-layout.sep.y,
+    ),
+    "c",
+    "node-c",
+  )
+  draw_tree_node(
+    (tree_offset.at(0) + 0, tree_offset.at(1) - node-layout.sep.y * 1.5),
+    "j",
+    "node-j",
+  )
 
   // Level 2
   draw_tree_node(
-    (tree_offset.at(0) - 2.0 * node-layout.sep.x, tree_offset.at(1) - 2 * node-layout.sep.y),
+    (
+      tree_offset.at(0) - 2.0 * node-layout.sep.x,
+      tree_offset.at(1) - 2 * node-layout.sep.y,
+    ),
     "f",
     "node-f",
   )
   draw_tree_node(
-    (tree_offset.at(0) - 1.0 * node-layout.sep.x, tree_offset.at(1) - 2 * node-layout.sep.y),
+    (
+      tree_offset.at(0) - 1.0 * node-layout.sep.x,
+      tree_offset.at(1) - 2 * node-layout.sep.y,
+    ),
     "d",
     "node-d",
   )
   draw_tree_node(
-    (tree_offset.at(0) + 1.0 * node-layout.sep.x, tree_offset.at(1) - 2 * node-layout.sep.y),
+    (
+      tree_offset.at(0) + 1.0 * node-layout.sep.x,
+      tree_offset.at(1) - 2 * node-layout.sep.y,
+    ),
     "g",
     "node-g",
   )
   draw_tree_node(
-    (tree_offset.at(0) + 2.0 * node-layout.sep.x, tree_offset.at(1) - 2 * node-layout.sep.y),
+    (
+      tree_offset.at(0) + 2.0 * node-layout.sep.x,
+      tree_offset.at(1) - 2 * node-layout.sep.y,
+    ),
     "e",
     "node-e",
   )
   draw_tree_node(
-    (tree_offset.at(0) + 3.0 * node-layout.sep.x, tree_offset.at(1) - 2 * node-layout.sep.y),
+    (
+      tree_offset.at(0) + 3.0 * node-layout.sep.x,
+      tree_offset.at(1) - 2 * node-layout.sep.y,
+    ),
     "i",
     "node-i",
   )
 
   // Level 3
   draw_tree_node(
-    (tree_offset.at(0) + 1.0 * node-layout.sep.x, tree_offset.at(1) - 3 * node-layout.sep.y),
+    (
+      tree_offset.at(0) + 1.0 * node-layout.sep.x,
+      tree_offset.at(1) - 3 * node-layout.sep.y,
+    ),
     "h",
     "node-h",
   )

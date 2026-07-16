@@ -20,7 +20,12 @@
     axis-style: "school-book",
     {
       // Main logarithmic curve
-      plot.add(style: (stroke: rgb(0%, 0%, 80%) + 1.5pt), domain: (11, 150), samples: 150, x => calc.ln(x - 10) - 2)
+      plot.add(
+        style: (stroke: rgb(0%, 0%, 80%) + 1.5pt),
+        domain: (11, 150),
+        samples: 150,
+        x => calc.ln(x - 10) - 2,
+      )
 
       // Dashed line
       plot.add(

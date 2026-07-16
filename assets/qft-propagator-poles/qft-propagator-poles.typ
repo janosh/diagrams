@@ -20,7 +20,11 @@
     ..line-style,
     name: "x-axis-right",
   )
-  content((rel: (-0.3, 0.3), to: "x-axis-right.end"), $"Re"(p_0)$, name: "x-label")
+  content(
+    (rel: (-0.3, 0.3), to: "x-axis-right.end"),
+    $"Re"(p_0)$,
+    name: "x-label",
+  )
 
   decorations.zigzag(
     line((2, -3), (xrange, -3), name: "lower-zigzag"),
@@ -52,8 +56,18 @@
 
   // Poles
   let pole(x, y, label) = {
-    circle((x, y), radius: 0.06, fill: black, name: "pole-" + str(x) + "-" + str(y))
-    content("pole-" + str(x) + "-" + str(y), label, anchor: "south", padding: 0.1)
+    circle(
+      (x, y),
+      radius: 0.06,
+      fill: black,
+      name: "pole-" + str(x) + "-" + str(y),
+    )
+    content(
+      "pole-" + str(x) + "-" + str(y),
+      label,
+      anchor: "south",
+      padding: 0.1,
+    )
   }
 
   // First row of poles

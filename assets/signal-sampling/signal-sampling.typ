@@ -26,7 +26,12 @@
   for idx in range(n-samples) {
     let t = idx * sample-period
     line((t * scale-x, 0), pt(t), stroke: 1.1pt)
-    circle(pt(t), radius: .09, fill: red.darken(25%), stroke: red.darken(60%) + .6pt)
+    circle(
+      pt(t),
+      radius: .09,
+      fill: red.darken(25%),
+      stroke: red.darken(60%) + .6pt,
+    )
   }
 
   // sample-time tick labels

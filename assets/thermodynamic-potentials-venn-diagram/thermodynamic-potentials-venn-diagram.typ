@@ -48,7 +48,11 @@
 
   merge-path(
     {
-      arc-through(ab-inner, (rel: (0.866, -0.5), to: mechanical-center), ac-inner)
+      arc-through(
+        ab-inner,
+        (rel: (0.866, -0.5), to: mechanical-center),
+        ac-inner,
+      )
       arc-through((), (rel: (0, 1), to: chemical-center), bc-inner)
       arc-through((), (rel: (-0.866, -0.5), to: thermal-center), ab-inner)
     },
@@ -93,5 +97,9 @@
   // Add outer circle label
   content((0, 1.6), $G_[mu]$)
   content((0, 1.4), text(.8em)[(Gibbs-Duhem)])
-  circle((0, 0), radius: 1.75, fill: rgb(70%, 70%, 90%, 20%), stroke: rgb(0%, 0%, 0%))
+  circle((0, 0), radius: 1.75, fill: rgb(70%, 70%, 90%, 20%), stroke: rgb(
+    0%,
+    0%,
+    0%,
+  ))
 })

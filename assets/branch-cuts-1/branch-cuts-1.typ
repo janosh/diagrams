@@ -25,7 +25,11 @@
   let right-point = (xr / 2, 0)
 
   // Draw branch cut line
-  line(left-point, right-point, name: "x-axis", mark: (symbol: "circle", fill: blue, scale: 0.75))
+  line(left-point, right-point, name: "x-axis", mark: (
+    symbol: "circle",
+    fill: blue,
+    scale: 0.75,
+  ))
   // Add branch point labels
   content(
     (rel: (0, 0.3), to: "x-axis.start"),

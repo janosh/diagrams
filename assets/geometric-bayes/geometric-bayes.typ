@@ -32,14 +32,32 @@
   )
 
   // Left column - p(H)
-  rect((left-x, 0), (mid-x, p-e-height), fill: colors.orange, stroke: white, name: "p-e-given-h")
+  rect(
+    (left-x, 0),
+    (mid-x, p-e-height),
+    fill: colors.orange,
+    stroke: white,
+    name: "p-e-given-h",
+  )
   content("p-e-given-h", $p(E|H)$)
 
-  rect((left-x, p-e-height), (mid-x, height), fill: colors.teal, stroke: white, name: "p-not-e-given-h")
+  rect(
+    (left-x, p-e-height),
+    (mid-x, height),
+    fill: colors.teal,
+    stroke: white,
+    name: "p-not-e-given-h",
+  )
   content("p-not-e-given-h", $p(not E|H)$)
 
   // Middle column - p(¬H)
-  rect((mid-x, 0), (right-x - gap, p-e-height / 2), fill: colors.dark-blue, stroke: white, name: "p-e-given-not-h")
+  rect(
+    (mid-x, 0),
+    (right-x - gap, p-e-height / 2),
+    fill: colors.dark-blue,
+    stroke: white,
+    name: "p-e-given-not-h",
+  )
   content("p-e-given-not-h", $p(E|not H)$)
 
   rect(
@@ -52,10 +70,22 @@
   content("p-not-e-given-not-h", $p(not E|not H)$)
 
   // Right column - posterior probabilities
-  rect((right-x, 0), (width, p-h-e-height), fill: colors.darker-blue, stroke: white, name: "p-h-given-e")
+  rect(
+    (right-x, 0),
+    (width, p-h-e-height),
+    fill: colors.darker-blue,
+    stroke: white,
+    name: "p-h-given-e",
+  )
   content("p-h-given-e", $p(H|E)$)
 
-  rect((right-x, p-h-e-height), (width, height), fill: colors.darkest-gray, stroke: white, name: "p-not-h-given-e")
+  rect(
+    (right-x, p-h-e-height),
+    (width, height),
+    fill: colors.darkest-gray,
+    stroke: white,
+    name: "p-not-h-given-e",
+  )
   content("p-not-h-given-e", $p(not H|E)$)
 
   // Left brace for p(H)

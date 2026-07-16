@@ -16,7 +16,13 @@
   )
   let fills = (s: rgb(255, 0, 0).lighten(50%), t: pure-blue.lighten(50%))
   for (name, pos) in nodes {
-    circle(pos, radius: .26, fill: fills.at(name, default: white), stroke: .9pt, name: name)
+    circle(
+      pos,
+      radius: .26,
+      fill: fills.at(name, default: white),
+      stroke: .9pt,
+      name: name,
+    )
     content(name, raw(name))
   }
 
@@ -33,7 +39,8 @@
   ) {
     let name = from + "-" + to
     line(
-      from, to,
+      from,
+      to,
       mark: (end: "stealth", fill: color, scale: .6),
       stroke: color + 1.1pt,
       name: name,
@@ -41,7 +48,10 @@
     content(
       name + ".mid",
       text(fill: color, size: .85em, raw(label)),
-      fill: white, frame: "rect", stroke: none, padding: 1.5pt,
+      fill: white,
+      frame: "rect",
+      stroke: none,
+      padding: 1.5pt,
     )
   }
 })

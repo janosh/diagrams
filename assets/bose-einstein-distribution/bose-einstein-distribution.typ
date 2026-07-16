@@ -31,7 +31,12 @@
     {
       // Plot distributions for different temperatures
       for (T, color) in ((0.5, red), (1, orange), (2, blue)) {
-        plot.add(style: (stroke: color + 1.5pt), domain: (0.01, 2), samples: 150, x => n_B(x, T))
+        plot.add(
+          style: (stroke: color + 1.5pt),
+          domain: (0.01, 2),
+          samples: 150,
+          x => n_B(x, T),
+        )
       }
     },
   )

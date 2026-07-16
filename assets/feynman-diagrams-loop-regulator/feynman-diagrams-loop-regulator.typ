@@ -37,17 +37,23 @@
     content(label-pos, text(fill: dark-blue)[$q_0$], anchor: anchor)
   }
 
+  // @typstyle off
   let draw-diagram(offset: 0, cross-pos: "50%", arc-start: 140deg, arc-stop: 40deg) = {
     group({
       if offset != 0 { translate((offset, 0)) }
 
       // Main circle and labels
       circle((0, 0), radius: radius, stroke: 1pt, name: "loop")
-      content((0, radius), $m_1^2, gamma_1^2$, anchor: "south", padding: (bottom: 7pt))
+      content((0, radius), $m_1^2, gamma_1^2$, anchor: "south", padding: (
+        bottom: 7pt,
+      ))
 
       // Momentum arrow on loop
       arc(
-        (rel: (.23, 0), to: if arc-start > 180deg { "loop.35%" } else { "loop.15%" }),
+        (
+          rel: (.23, 0),
+          to: if arc-start > 180deg { "loop.35%" } else { "loop.15%" },
+        ),
         radius: 0.85 * radius,
         start: arc-start,
         stop: arc-stop,
@@ -63,7 +69,9 @@
 
       // Cross marker
       cross("loop." + cross-pos, name: "cross")
-      content("loop.50%", $m_2^2, gamma_2^2$, anchor: "north", padding: (top: 7pt))
+      content("loop.50%", $m_2^2, gamma_2^2$, anchor: "north", padding: (
+        top: 7pt,
+      ))
 
       // External lines and vertices
       let ext-len = 2 * radius

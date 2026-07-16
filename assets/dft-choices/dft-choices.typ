@@ -7,11 +7,15 @@
 #canvas({
   // Define styles and constants
   let node-sep = 1.7 // Reduced horizontal separation
-  let arrow-style = (mark: (end: "stealth", fill: black, offset: 4pt), stroke: 0.8pt)
+  let arrow-style = (
+    mark: (end: "stealth", fill: black, offset: 4pt),
+    stroke: 0.8pt,
+  )
   let node-height = 1.6 // Shorter boxes
   let node-width = 1.2 // Increased for larger text
 
   // Helper function to create rounded rectangle nodes
+  // @typstyle off
   let node(pos, text, fill: none, name: none, width: node-width, height: node-height) = {
     rect(
       (rel: (-width, -height / 2), to: pos),
@@ -34,7 +38,11 @@
     width: 1.3 * node-width,
   ) // Kinetic term
 
-  content((rel: (-1.6 * node-width, 0.1), to: "kinetic"), scale(350%, $($), name: "lparen") // Opening parenthesis
+  content(
+    (rel: (-1.6 * node-width, 0.1), to: "kinetic"),
+    scale(350%, $($),
+    name: "lparen",
+  ) // Opening parenthesis
 
   content((rel: (1.6 * node-width, 0), to: "kinetic"), $+$, name: "plus-1")
 

@@ -2,7 +2,7 @@
 // Style matches typical CeTZ assets: transparent page, black strokes, math labels.
 
 #import "@preview/cetz:0.5.2": canvas, draw
-#import draw: line, rect, circle
+#import draw: circle, line, rect
 
 // --- palette (shared across all contribution diagrams) ---
 // Prefer black geometry like Feynman / contour diagrams; colored fills like ball-tree.
@@ -67,12 +67,18 @@
 }
 
 // --- Eisenstein fractal (ports generateEisensteinFractal.m) ---
-#let _complex-add(left, right) = (left.at(0) + right.at(0), left.at(1) + right.at(1))
+#let _complex-add(left, right) = (
+  left.at(0) + right.at(0),
+  left.at(1) + right.at(1),
+)
 #let _complex-multiply(left, right) = (
   left.at(0) * right.at(0) - left.at(1) * right.at(1),
   left.at(0) * right.at(1) + left.at(1) * right.at(0),
 )
-#let _complex-scale(factor, value) = (factor * value.at(0), factor * value.at(1))
+#let _complex-scale(factor, value) = (
+  factor * value.at(0),
+  factor * value.at(1),
+)
 #let _complex-from-angle(angle) = (calc.cos(angle), calc.sin(angle))
 
 #let _omega = _complex-from-angle(2.0 * calc.pi / 3.0)
@@ -179,7 +185,11 @@
 
 #let _draw-points-canvas(points) = {
   let bounds = _bounds(points)
-  let span = calc.max(bounds.x-max - bounds.x-min, bounds.y-max - bounds.y-min, 1.0)
+  let span = calc.max(
+    bounds.x-max - bounds.x-min,
+    bounds.y-max - bounds.y-min,
+    1.0,
+  )
   // Taper dots as stages get denser, but never below ~1pt wide on the page
   // (0.055 canvas units shrink to a fraction of a pixel at dense stages).
   let radius = calc.max(

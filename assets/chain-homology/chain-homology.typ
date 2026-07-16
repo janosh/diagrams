@@ -10,7 +10,13 @@
   let padding = 0.2
 
   // Chains
-  circle((x, 0), anchor: "south", radius: (1.5, 1.5), fill: luma(192), name: "C")
+  circle(
+    (x, 0),
+    anchor: "south",
+    radius: (1.5, 1.5),
+    fill: luma(192),
+    name: "C",
+  )
   content("C.north", Cr, anchor: "north", padding: padding)
 
   // Cycles
@@ -18,7 +24,13 @@
   content("Z.north", Zr, anchor: "north", padding: padding)
 
   // Boundaries
-  circle((x, 0), anchor: "south", radius: (0.5, 0.5), fill: luma(128), name: "B")
+  circle(
+    (x, 0),
+    anchor: "south",
+    radius: (0.5, 0.5),
+    fill: luma(128),
+    name: "B",
+  )
   content("B.north", Br, anchor: "north", padding: padding)
 
   circle((x, 0), anchor: "center", radius: dr, fill: white, name: "zero")
@@ -36,17 +48,28 @@
   line((x + dr, 0), (2 * x - dr, 0), stroke: (dash: "dashed"))
 
   // Kernel
-  bezier((0, 2), (x - dr, 0), (0.5 * x, 2), (0.5 * x, 0), stroke: (dash: "dashed"))
-  bezier((x, 2), (2 * x - dr, 0), (1.5 * x, 2), (1.5 * x, 0), stroke: (dash: "dashed"))
+  bezier((0, 2), (x - dr, 0), (0.5 * x, 2), (0.5 * x, 0), stroke: (
+    dash: "dashed",
+  ))
+  bezier((x, 2), (2 * x - dr, 0), (1.5 * x, 2), (1.5 * x, 0), stroke: (
+    dash: "dashed",
+  ))
 
   // Image
   bezier((0, 3), (x, 1), (0.5 * x, 3), (0.5 * x, 1), stroke: (dash: "dashed"))
-  bezier((x, 3), (2 * x, 1), (1.5 * x, 3), (1.5 * x, 1), stroke: (dash: "dashed"))
+  bezier((x, 3), (2 * x, 1), (1.5 * x, 3), (1.5 * x, 1), stroke: (
+    dash: "dashed",
+  ))
 
   // Boundary operators
   line((1, -0.5), (x - 1, -0.5), mark: (end: "straight"), name: "arrow1")
   content("arrow1", $partial_(r+1)$, anchor: "north", padding: 0.1)
 
-  line((x + 1, -0.5), (2 * x - 1, -0.5), mark: (end: "straight"), name: "arrow0")
+  line(
+    (x + 1, -0.5),
+    (2 * x - 1, -0.5),
+    mark: (end: "straight"),
+    name: "arrow0",
+  )
   content("arrow0", $partial_(r)$, anchor: "north", padding: 0.1)
 })

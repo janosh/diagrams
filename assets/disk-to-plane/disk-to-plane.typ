@@ -32,7 +32,12 @@
   content("y-axis.end", $y$, anchor: "south", padding: (0, 3pt, 2pt))
 
   // Transformation arrow and label
-  line((arrow-sep, 0), (arrow-sep + arrow-width, 0), ..arrow-style, name: "transform-arrow")
+  line(
+    (arrow-sep, 0),
+    (arrow-sep + arrow-width, 0),
+    ..arrow-style,
+    name: "transform-arrow",
+  )
   content(
     (rel: (0, 0), to: "transform-arrow.mid"),
     $z &= S(w)\ &= (w + i) / (i w + 1)$,
@@ -41,7 +46,13 @@
   )
 
   // Unit disk with gray fill
-  circle((0, 0), radius: radius, stroke: 0.8pt, fill: rgb(220, 220, 220).transparentize(60%), name: "disk")
+  circle(
+    (0, 0),
+    radius: radius,
+    stroke: 0.8pt,
+    fill: rgb(220, 220, 220).transparentize(60%),
+    name: "disk",
+  )
   content((rel: (-0.4, 0.5), to: "disk.center"), $DD^2$)
 
   // Dots at special points
@@ -92,9 +103,19 @@
   )
 
   // Right coordinate system (upper half-plane)
-  line((x-shift - axis-length, 0), (x-shift + axis-length, 0), ..arrow-style, name: "u-axis")
+  line(
+    (x-shift - axis-length, 0),
+    (x-shift + axis-length, 0),
+    ..arrow-style,
+    name: "u-axis",
+  )
   content("u-axis.end", $u$, anchor: "west", padding: 2pt)
-  line((x-shift, -axis-length), (x-shift, axis-length), ..arrow-style, name: "v-axis")
+  line(
+    (x-shift, -axis-length),
+    (x-shift, axis-length),
+    ..arrow-style,
+    name: "v-axis",
+  )
   content("v-axis.end", $v$, anchor: "south", padding: 2pt)
 
   // Extend blue and red lines to full width
@@ -144,6 +165,10 @@
   content((rel: (0, -0.4), to: "z1"), $z_1 = 1$)
   content((rel: (-1, 0.8), to: "z2"), $z_2 = 0$, name: "z2-label")
   content((rel: (0, -0.4), to: "z3"), $z_3 = -1$)
-  content((rel: (0.2, -0.2), to: "v-axis.end"), $z_4 = +i infinity$, anchor: "west")
+  content(
+    (rel: (0.2, -0.2), to: "v-axis.end"),
+    $z_4 = +i infinity$,
+    anchor: "west",
+  )
   line("z2-label", "z2", stroke: gray + 0.5pt)
 })

@@ -42,7 +42,12 @@
   // Draw all rungs from bottom to top
   draw-rung(0, rgb("b4a7d6"), [0: *Hartree World*], none)
 
-  draw-rung(rung-sep, rgb("a4c2f4"), [1: *Local Density Approx. (LDA)*\ VWN, GPW92], $rho(bold(r))$)
+  draw-rung(
+    rung-sep,
+    rgb("a4c2f4"),
+    [1: *Local Density Approx. (LDA)*\ VWN, GPW92],
+    $rho(bold(r))$,
+  )
 
   draw-rung(
     2 * rung-sep,
@@ -51,7 +56,12 @@
     $nabla rho(bold(r))$,
   )
 
-  draw-rung(3 * rung-sep, rgb("ffe599"), [3: *Meta-GGA*\ (r/r$""^2$)SCAN], [$\ nabla^2rho(bold(r))$ \ $tau(bold(r))$])
+  draw-rung(
+    3 * rung-sep,
+    rgb("ffe599"),
+    [3: *Meta-GGA*\ (r/r$""^2$)SCAN],
+    [$\ nabla^2rho(bold(r))$ \ $tau(bold(r))$],
+  )
 
   draw-rung(
     4 * rung-sep,
@@ -60,7 +70,12 @@
     ${phi_i^"occ"}$,
   )
 
-  draw-rung(5 * rung-sep, rgb("ea9999"), [5: *Virtual Double-Hybrids* \ B2PLYP], ${phi_i^"virt"}$)
+  draw-rung(
+    5 * rung-sep,
+    rgb("ea9999"),
+    [5: *Virtual Double-Hybrids* \ B2PLYP],
+    ${phi_i^"virt"}$,
+  )
 
   draw-rung(6 * rung-sep, rgb("ffb7c5"), [*Chemical accuracy*], none)
 

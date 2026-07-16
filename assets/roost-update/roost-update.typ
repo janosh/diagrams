@@ -1,10 +1,10 @@
 #import "@preview/cetz:0.5.2": canvas, decorations, draw
+#import draw: bezier, circle, content, line, scale, set-style
 
 #set page(width: auto, height: auto, margin: 10pt, fill: none)
 #set text(size: 14pt)
 
 #canvas(length: 1cm, {
-  import draw: *
   scale(1.2)
 
   let colors = (rgb("#2a9d8f"), rgb("#6a7fdb"), rgb("#f8961e")) // La, O, Cu
@@ -13,13 +13,29 @@
 
   // Draw triangle with La at origin_pos, O at (-3, -1), Cu at (-3, +1) relative offset
   let tri(origin, labels: none) = {
-    let pts = (origin, (origin.at(0) - 3, origin.at(1) - 1), (origin.at(0) - 3, origin.at(1) + 1))
+    let pts = (
+      origin,
+      (origin.at(0) - 3, origin.at(1) - 1),
+      (origin.at(0) - 3, origin.at(1) + 1),
+    )
     set-style(stroke: thick)
     line(..pts, close: true)
-    for (idx, pt) in pts.enumerate() { circle(pt, radius: node_r, fill: colors.at(idx), stroke: thick) }
+    for (idx, pt) in pts.enumerate() {
+      circle(pt, radius: node_r, fill: colors.at(idx), stroke: thick)
+    }
     if labels != none {
-      content((pts.at(0).at(0) + 0.45, pts.at(0).at(1)), labels.at(0), anchor: "west")
-      for idx in (1, 2) { content((pts.at(idx).at(0) - 0.45, pts.at(idx).at(1)), labels.at(idx), anchor: "east") }
+      content(
+        (pts.at(0).at(0) + 0.45, pts.at(0).at(1)),
+        labels.at(0),
+        anchor: "west",
+      )
+      for idx in (1, 2) {
+        content(
+          (pts.at(idx).at(0) - 0.45, pts.at(idx).at(1)),
+          labels.at(idx),
+          anchor: "east",
+        )
+      }
     }
   }
 
@@ -39,9 +55,22 @@
   content((tp1.at(0) + 0.45, tp1.at(1)), [$h_"La"^(t+1)$], anchor: "west")
 
   // Braces on edges
-  let brace = (stroke: (thickness: 1.3pt, paint: black), fill: none, amplitude: 0.35, flip: false)
-  decorations.flat-brace((rt.at(0) - 2.65, rt.at(1) + 1.15), (rt.at(0) - 0.15, rt.at(1) + 0.35), ..brace)
-  decorations.flat-brace((rt.at(0) - 0.15, rt.at(1) - 0.35), (rt.at(0) - 2.65, rt.at(1) - 1.15), ..brace)
+  let brace = (
+    stroke: (thickness: 1.3pt, paint: black),
+    fill: none,
+    amplitude: 0.35,
+    flip: false,
+  )
+  decorations.flat-brace(
+    (rt.at(0) - 2.65, rt.at(1) + 1.15),
+    (rt.at(0) - 0.15, rt.at(1) + 0.35),
+    ..brace,
+  )
+  decorations.flat-brace(
+    (rt.at(0) - 0.15, rt.at(1) - 0.35),
+    (rt.at(0) - 2.65, rt.at(1) - 1.15),
+    ..brace,
+  )
 
   // Message nodes: (y, color, label, attention_label, sign for curve direction)
   let msg_nodes = (
@@ -52,7 +81,9 @@
 
   for (gy, col, lbl, attn, sign) in msg_nodes {
     circle((5.85, gy), radius: small_r, fill: col, stroke: (thickness: 2pt))
-    content((5.85, gy + sign * 0.5), lbl, anchor: if sign > 0 { "south" } else { "north" })
+    content((5.85, gy + sign * 0.5), lbl, anchor: if sign > 0 { "south" } else {
+      "north"
+    })
   }
   circle(alpha, radius: small_r, fill: yellow, stroke: (thickness: 2pt))
 
@@ -71,7 +102,11 @@
   }
 
   // Plus and final arrow
-  content((alpha.at(0) + 0.5, alpha.at(1)), text(weight: "bold", size: 1.2em)[+], anchor: "west")
+  content(
+    (alpha.at(0) + 0.5, alpha.at(1)),
+    text(weight: "bold", size: 1.2em)[+],
+    anchor: "west",
+  )
   bezier(
     (alpha.at(0) + 0.9, alpha.at(1)),
     (tp1.at(0), tp1.at(1) + node_r),

@@ -25,14 +25,29 @@
   line((0, axis-overshoot), (0, 5), ..arrow-style, name: "y-axis") // y-axis
 
   // Add axis labels
-  content((rel: (-axis-overshoot, -0.2), to: "x-axis.6%"), "weak", anchor: "north")
-  content((rel: (-axis-overshoot, -0.25), to: "x-axis.50%"), text(weight: "bold")[bond strength], anchor: "north")
+  content(
+    (rel: (-axis-overshoot, -0.2), to: "x-axis.6%"),
+    "weak",
+    anchor: "north",
+  )
+  content(
+    (rel: (-axis-overshoot, -0.25), to: "x-axis.50%"),
+    text(weight: "bold")[bond strength],
+    anchor: "north",
+  )
   content((rel: (0, -0.2), to: "x-axis.95%"), "strong", anchor: "north")
-  content((rel: (0.1, 0), to: "y-axis.95%"), text(weight: "bold")[reaction rate], anchor: "west")
+  content(
+    (rel: (0.1, 0), to: "y-axis.95%"),
+    text(weight: "bold")[reaction rate],
+    anchor: "west",
+  )
 
   // Add region labels
   content((rel: (0, 1), to: "x-axis.37%"), [limited by\ desorption\ of product])
-  content((rel: (0, 1), to: "x-axis.77%"), [limited by\ activation\ of reactant])
+  content(
+    (rel: (0, 1), to: "x-axis.77%"),
+    [limited by\ activation\ of reactant],
+  )
 
   // Draw Sabatier optimum label
   let ellipse-center = (4.5, 4.2)

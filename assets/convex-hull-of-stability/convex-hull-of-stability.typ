@@ -9,10 +9,15 @@
   let height = 8
   let point_radius = 0.15
   let line_thickness = 1.5pt
-  let arrow_style = (mark: (end: "stealth"), stroke: line_thickness, fill: black)
+  let arrow_style = (
+    mark: (end: "stealth"),
+    stroke: line_thickness,
+    fill: black,
+  )
   let hull_style = (stroke: blue.darken(20%) + 2.5pt)
-  let hyp_hull_style = (stroke: (paint: gray, thickness: line_thickness, dash: "dashed"))
-
+  let hyp_hull_style = (
+    stroke: (paint: gray, thickness: line_thickness, dash: "dashed"),
+  )
 
   // Draw axes first to establish named positions
   line((0, 0), (0, height), ..arrow_style, name: "y-axis-left")
@@ -25,10 +30,34 @@
     content(pos, label, anchor: anchor, padding: padding)
   }
 
-  stable_point((0, height - 1), "A", anchor: "west", padding: (left: 10pt), name: "a")
-  stable_point((width / 2, 2), "AX", anchor: "north", padding: (top: 10pt), name: "ax")
-  stable_point((width * 5 / 7, 1.5), $A_2X_5$, anchor: "north", padding: (top: 10pt), name: "a2x5")
-  stable_point((width, height - 1.5), "X", anchor: "east", padding: (right: 10pt), name: "x")
+  stable_point(
+    (0, height - 1),
+    "A",
+    anchor: "west",
+    padding: (left: 10pt),
+    name: "a",
+  )
+  stable_point(
+    (width / 2, 2),
+    "AX",
+    anchor: "north",
+    padding: (top: 10pt),
+    name: "ax",
+  )
+  stable_point(
+    (width * 5 / 7, 1.5),
+    $A_2X_5$,
+    anchor: "north",
+    padding: (top: 10pt),
+    name: "a2x5",
+  )
+  stable_point(
+    (width, height - 1.5),
+    "X",
+    anchor: "east",
+    padding: (right: 10pt),
+    name: "x",
+  )
 
   // Draw unstable points
   let unstable_point(pos, label, ..rest) = {
@@ -107,7 +136,12 @@
     stroke: none,
     name: "a2x5-vertical",
   )
-  intersections("a2x5-isect", "a2x5-vertical", "hyp-hull-ax-a2x7", "hyp-hull-a2x7-x")
+  intersections(
+    "a2x5-isect",
+    "a2x5-vertical",
+    "hyp-hull-ax-a2x7",
+    "hyp-hull-a2x7-x",
+  )
 
   // Draw arrow between intersection points
   line(
@@ -117,7 +151,12 @@
     stroke: rgb("#4d8000") + line_thickness,
     name: "arrow-a2x5",
   )
-  content("arrow-a2x5.mid", text(fill: rgb("#4d8000"))[$Delta E_d$], anchor: "east", padding: (right: 3pt))
+  content(
+    "arrow-a2x5.mid",
+    text(fill: rgb("#4d8000"))[$Delta E_d$],
+    anchor: "east",
+    padding: (right: 3pt),
+  )
   content(
     (rel: (0.1, 0), to: "arrow-a2x5.mid"),
     text(fill: rgb("#4d8000"), size: 10pt)[4/5 AX + 3/5 A₂X₇ → A₂X₅],
@@ -151,7 +190,12 @@
   )
 
   // Draw legend
-  circle((0.5, 1), radius: point_radius, fill: blue.darken(20%), name: "legend-stable")
+  circle(
+    (0.5, 1),
+    radius: point_radius,
+    fill: blue.darken(20%),
+    name: "legend-stable",
+  )
   content("legend-stable.east", "stable", anchor: "west", padding: (left: 5pt))
   rect(
     (0.5 - 0.15, 1 - 0.6),
@@ -160,9 +204,13 @@
     stroke: red,
     name: "legend-unstable",
   )
-  content((0.5 + 0.15, 1 - 0.45), "unstable", anchor: "west", padding: (left: 5pt))
+  content((0.5 + 0.15, 1 - 0.45), "unstable", anchor: "west", padding: (
+    left: 5pt,
+  ))
 
   // Add axis labels
-  content((rel: (-0.5, 0), to: "y-axis-left.mid"), [#rotate(-90deg)[$Delta E_f$ (energy/atom)]])
+  content((rel: (-0.5, 0), to: "y-axis-left.mid"), [#rotate(
+    -90deg,
+  )[$Delta E_f$ (energy/atom)]])
   content((width / 2, -0.5), $x "in" A_(1-x)X_x$)
 })

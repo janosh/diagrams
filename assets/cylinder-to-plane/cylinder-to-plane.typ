@@ -41,7 +41,6 @@
   content("tau2-arc.mid", $tau_2$, anchor: "east", padding: 2pt)
   content("sigma-arc.mid", $sigma$, anchor: "east", padding: 2pt)
 
-
   // Draw cylinder: Horizontal lines
   line((0, 0), (4, 0), name: "bottom-line") // bottom
   line((0, 3), (4, 3), name: "top-line") // top

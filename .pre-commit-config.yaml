@@ -38,7 +38,7 @@ repos:
         pass_filenames: false
 
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.4.2
+    rev: v2.4.3
     hooks:
       - id: codespell
         stages: [pre-commit, commit-msg]
@@ -46,7 +46,7 @@ repos:
         args: [--ignore-words-list, 'Noe,ket,ba,te,nd', --check-filenames]
 
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.48.0
+    rev: v0.49.1
     hooks:
       - id: markdownlint
         # MD013: line too long
@@ -54,8 +54,21 @@ repos:
         # MD041: first line in a file should be a top-level heading
         args: [--disable, MD013, MD033, MD041, '--']
 
+  - repo: https://github.com/typstyle-rs/pre-commit-typstyle
+    rev: v0.14.4
+    hooks:
+      - id: typstyle
+        args: [-i, --line-width, '100']
+
   - repo: local
     hooks:
+      - id: lint-typst-imports
+        name: Require explicit module-scope Typst imports
+        entry: bash -c 'if rg --line-number --with-filename "^(?:\s+(?:#?import)|import)\s+|^#import\s+.+:\s*\*" -- "$@"; then exit 1; fi' --
+        language: system
+        files: \.typ$
+        types: [file]
+
       - id: check-yaml-files
         name: Check YAML files match folder names, have descriptions and unique tags
         entry: python scripts/check_yaml_files.py
@@ -83,7 +96,7 @@ repos:
         types: [file]
 
   - repo: https://github.com/crate-ci/typos
-    rev: v1.47.0
+    rev: v1.48.0
     hooks:
       - id: typos
         types: [text]

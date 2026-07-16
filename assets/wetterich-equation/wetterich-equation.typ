@@ -17,17 +17,30 @@
 // Helper functions
 #let cross(pos, label: none, rel-label: (0, 0), name: none, ..rest) = {
   let txt = text(size: 16pt, baseline: -0.2pt)[$times.o$]
-  content(pos, txt, stroke: none, fill: white, frame: "circle", padding: -2.75pt, name: name)
+  content(
+    pos,
+    txt,
+    stroke: none,
+    fill: white,
+    frame: "circle",
+    padding: -2.75pt,
+    name: name,
+  )
   if label != none {
-    let label-pos = if rel-label != none { (rel: rel-label, to: pos) } else { pos }
+    let label-pos = if rel-label != none { (rel: rel-label, to: pos) } else {
+      pos
+    }
     content(label-pos, $#label$, ..rest)
   }
 }
 
+// @typstyle off
 #let dressed-vertex(pos, label: none, rel-label: none, name: none, radius: med-rad, ..rest) = {
   circle(pos, radius: radius, fill: hatched, name: name, stroke: 0.5pt)
   if label != none {
-    let label-pos = if rel-label != none { (rel: rel-label, to: pos) } else { pos }
+    let label-pos = if rel-label != none { (rel: rel-label, to: pos) } else {
+      pos
+    }
     content(label-pos, $#label$, ..rest)
   }
 }
@@ -42,7 +55,10 @@
     let label-angle = (angle - 3) * 1deg
 
     // Add momentum labels
-    let rel-pos = (0.75 * radius * calc.cos(label-angle), 0.75 * radius * calc.sin(label-angle))
+    let rel-pos = (
+      0.75 * radius * calc.cos(label-angle),
+      0.75 * radius * calc.sin(label-angle),
+    )
     content(
       (rel: rel-pos, to: "loop"),
       $p_#ii$,
@@ -54,7 +70,14 @@
       symbol: "stealth",
       (name: "loop", anchor: angle * 1deg),
       (name: "loop", anchor: (angle + 1) * 1deg),
-      ..(width: .25, length: .15, stroke: .7pt, angle: 60deg, scale: .7, fill: black),
+      ..(
+        width: .25,
+        length: .15,
+        stroke: .7pt,
+        angle: 60deg,
+        scale: .7,
+        fill: black,
+      ),
     )
   }
 

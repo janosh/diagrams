@@ -156,13 +156,24 @@
   }
 
   // bonds on a background layer (behind atoms); resolve H vs heavy-atom lookups
-  let pos-of(name) = if name.starts-with("H") { h-positions.at(name) } else { heavy-atoms.at(name) }
+  let pos-of(name) = if name.starts-with("H") { h-positions.at(name) } else {
+    heavy-atoms.at(name)
+  }
   let chain = ("H1", "C1", "N1", "C2", "C3", "C4", "O1")
   let bonds = ()
   for i in range(chain.len() - 1) { bonds.push((chain.at(i), chain.at(i + 1))) }
   bonds += (
-    ("H2", "C1"), ("H3", "C1"), ("N1", "H4"), ("C2", "H5"), ("C2", "H6"),
-    ("C3", "H7"), ("C3", "N2"), ("N2", "H8"), ("N2", "H9"), ("C4", "O2"), ("O2", "H10"),
+    ("H2", "C1"),
+    ("H3", "C1"),
+    ("N1", "H4"),
+    ("C2", "H5"),
+    ("C2", "H6"),
+    ("C3", "H7"),
+    ("C3", "N2"),
+    ("N2", "H8"),
+    ("N2", "H9"),
+    ("C4", "O2"),
+    ("O2", "H10"),
   )
   on-layer(-1, {
     for (from, to) in bonds {

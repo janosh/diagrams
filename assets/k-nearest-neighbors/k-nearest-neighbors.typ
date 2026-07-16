@@ -5,7 +5,15 @@
 #set text(weight: "bold")
 
 #let draw-star(pos, size: 0.3, fill: red) = {
-  n-star(pos, 5, radius: size, inner-radius: .4 * size, fill: fill, stroke: .5pt, show-inner: false)
+  n-star(
+    pos,
+    5,
+    radius: size,
+    inner-radius: .4 * size,
+    fill: fill,
+    stroke: .5pt,
+    show-inner: false,
+  )
 }
 
 // Draw a triangle using polygon function
@@ -32,10 +40,18 @@
     ..arrow-style,
     name: "x-axis",
   )
-  content((rel: (-0.1, 0.2), to: "x-axis.end"), [$x$ axis], anchor: "south-east")
+  content(
+    (rel: (-0.1, 0.2), to: "x-axis.end"),
+    [$x$ axis],
+    anchor: "south-east",
+  )
 
   line((0, 0), (0, axis-length), ..arrow-style, name: "y-axis")
-  content((rel: (0.2, -0.1), to: "y-axis.end"), [$y$ axis], anchor: "north-west")
+  content(
+    (rel: (0.2, -0.1), to: "y-axis.end"),
+    [$y$ axis],
+    anchor: "north-west",
+  )
 
   // Draw Class A (red stars)
   draw-star((1.6, 4.0))
@@ -86,10 +102,25 @@
   content((rel: (0, -0.3), to: "k7-circle.south"), $k = 7$, anchor: "north")
 
   // Add class labels in the upper right corner
-  content((rel: (-.6, 4.8), to: "x-axis.end"), text(fill: red, size: 12pt)[Class A], name: "class-a-label")
-  content((rel: (0, -.5), to: "class-a-label"), text(fill: green, size: 12pt)[Class B])
+  content(
+    (rel: (-.6, 4.8), to: "x-axis.end"),
+    text(fill: red, size: 12pt)[Class A],
+    name: "class-a-label",
+  )
+  content((rel: (0, -.5), to: "class-a-label"), text(
+    fill: green,
+    size: 12pt,
+  )[Class B])
 
   // Add arrow pointing to the new example
-  content((rel: (1, 3), to: "new-example"), [New example\ to classify], name: "new-example-label")
-  line("new-example-label", "new-example.north", stroke: 0.6pt, mark: (end: "stealth", fill: black, offset: 0.05))
+  content(
+    (rel: (1, 3), to: "new-example"),
+    [New example\ to classify],
+    name: "new-example-label",
+  )
+  line("new-example-label", "new-example.north", stroke: 0.6pt, mark: (
+    end: "stealth",
+    fill: black,
+    offset: 0.05,
+  ))
 })

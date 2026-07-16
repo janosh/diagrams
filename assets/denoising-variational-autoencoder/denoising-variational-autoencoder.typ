@@ -6,7 +6,10 @@
 #canvas({
   let green = rgb("#009900")
   let edge-stroke = .65pt
-  let arr = (mark: (end: "stealth", fill: black, scale: .5), stroke: edge-stroke)
+  let arr = (
+    mark: (end: "stealth", fill: black, scale: .5),
+    stroke: edge-stroke,
+  )
   let bg = (paint: black, dash: "dashed", thickness: .9pt)
   let node-r = .14
   let at(pos) = (rel: pos, to: "origin")
@@ -21,14 +24,23 @@
     let delta-y = end.at(1) - start.at(1)
     let length = calc.sqrt(delta-x * delta-x + delta-y * delta-y)
     (
-      (start.at(0) + delta-x / length * start-pad, start.at(1) + delta-y / length * start-pad),
-      (end.at(0) - delta-x / length * end-pad, end.at(1) - delta-y / length * end-pad),
+      (
+        start.at(0) + delta-x / length * start-pad,
+        start.at(1) + delta-y / length * start-pad,
+      ),
+      (
+        end.at(0) - delta-x / length * end-pad,
+        end.at(1) - delta-y / length * end-pad,
+      ),
     )
   }
   let dense(a, b) = {
     for start in a {
       for end in b {
-        let (trimmed-start, trimmed-end) = trim(point-pos(start), point-pos(end))
+        let (trimmed-start, trimmed-end) = trim(
+          point-pos(start),
+          point-pos(end),
+        )
         line(at(trimmed-start), at(trimmed-end), ..arr)
       }
     }
@@ -52,7 +64,13 @@
     line(at(wave-end), at(trimmed-end), ..arr)
   }
   let node(point, fill: white, label: none, stroke: .8pt) = {
-    circle(at(point-pos(point)), radius: node-r, fill: fill, stroke: stroke, name: point-name(point))
+    circle(
+      at(point-pos(point)),
+      radius: node-r,
+      fill: fill,
+      stroke: stroke,
+      name: point-name(point),
+    )
     if label != none { content(point-name(point), text(size: 7pt)[#label]) }
   }
   let region(name, south-west, north-east, fill) = rect(
@@ -85,10 +103,30 @@
   let out-mu = layer("out-mu", out-mu-x, 7)
   let out-pts = layer("out", out-x, 7)
 
-  region("encoder-bg", (corrupt-x - .25, -2.65), (z-x + .3, 2.65), green.transparentize(88%))
-  region("decoder-bg", (z-x - .3, -2.45), (out-x + .4, 2.45), red.transparentize(88%))
-  region("corrupt-bg", (input-x - .45, -2.75), (corrupt-x + .35, 2.75), blue.transparentize(88%))
-  region("corrupt-overlap", (corrupt-x - .25, -2.75), (corrupt-x + .35, 2.75), blue.transparentize(82%))
+  region(
+    "encoder-bg",
+    (corrupt-x - .25, -2.65),
+    (z-x + .3, 2.65),
+    green.transparentize(88%),
+  )
+  region(
+    "decoder-bg",
+    (z-x - .3, -2.45),
+    (out-x + .4, 2.45),
+    red.transparentize(88%),
+  )
+  region(
+    "corrupt-bg",
+    (input-x - .45, -2.75),
+    (corrupt-x + .35, 2.75),
+    blue.transparentize(88%),
+  )
+  region(
+    "corrupt-overlap",
+    (corrupt-x - .25, -2.75),
+    (corrupt-x + .35, 2.75),
+    blue.transparentize(82%),
+  )
   content((rel: (0, -.15), to: "corrupt-bg.south"), [corrupt], anchor: "north")
   content((rel: (0, -.15), to: "encoder-bg.south"), [encoder], anchor: "north")
   content((rel: (0, -.15), to: "decoder-bg.south"), [decoder], anchor: "north")

@@ -38,14 +38,20 @@
   for (from, to) in selected {
     line(base.at(from), base.at(to), stroke: red.lighten(50%) + 2.6pt)
   }
-  for (from, to) in edge-set { line(base.at(from), base.at(to), stroke: black + .55pt) }
-  for key in ("a", "c", "d", "e") { node(key, base.at(key), label: $arrow(h)_#key$, fill: blue.lighten(75%)) }
+  for (from, to) in edge-set {
+    line(base.at(from), base.at(to), stroke: black + .55pt)
+  }
+  for key in ("a", "c", "d", "e") {
+    node(key, base.at(key), label: $arrow(h)_#key$, fill: blue.lighten(75%))
+  }
   node("b", base.b, label: $arrow(h)_b$, fill: red.lighten(75%))
   for key in ("f", "g") { node(key, base.at(key)) }
 
   let x-shift = 5.6
   let moved(name) = (rel: (x-shift, 0), to: name)
-  for (from, to) in edge-set { line(moved(from), moved(to), stroke: black + .55pt) }
+  for (from, to) in edge-set {
+    line(moved(from), moved(to), stroke: black + .55pt)
+  }
   for key in ("a", "c", "d", "e", "f", "g") { node(key + "1", moved(key)) }
   node("b1", moved("b"), label: $arrow(h)'_b$, fill: green.lighten(75%))
 
@@ -55,6 +61,10 @@
     (rel: (1.0, 2.2), to: "b"),
     (rel: (-.9, 2.2), to: "b1"),
     mark: (end: "stealth", fill: green, scale: .6),
-    stroke: (paint: green, dash: (array: (1pt, 2pt), phase: 0pt), thickness: 1.2pt),
+    stroke: (
+      paint: green,
+      dash: (array: (1pt, 2pt), phase: 0pt),
+      thickness: 1.2pt,
+    ),
   )
 })

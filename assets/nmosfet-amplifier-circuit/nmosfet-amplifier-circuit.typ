@@ -3,10 +3,13 @@
 
 #let connect-orthogonal(start_anchor, end_anchor, style: "hv", ..styling) = {
   assert(style in ("hv", "vh"), message: "Style must be 'hv' or 'vh'.")
-  let corner = if style == "hv" { (start_anchor, "|-", end_anchor) } else { (start_anchor, "-|", end_anchor) }
+  let corner = if style == "hv" { (start_anchor, "|-", end_anchor) } else {
+    (start_anchor, "-|", end_anchor)
+  }
   cetz.draw.line(start_anchor, corner, end_anchor, ..styling)
 }
 
+// @typstyle off
 #let _draw_label(label, label_pos, label_offset, label_anchor, label_size, text_fill: black) = {
   if label != none {
     cetz.draw.content(
@@ -35,56 +38,27 @@
   ("default", (lead_start_x, 0)),
 )
 
-#let _base_component(
-  position,
-  name,
-  scale: 1.0,
-  rotate: 0deg,
-  draw_content_func,
-  anchor_definitions,
-  label: none,
-  label_pos: "center",
-  label_anchor: "center",
-  label_offset: (0, 0),
-  label_size: 8pt,
-  text_fill: black,
-  ..styling,
-) = {
+// @typstyle off
+#let _base_component(position, name, scale: 1.0, rotate: 0deg, draw_content_func, anchor_definitions, label: none, label_pos: "center", label_anchor: "center", label_offset: (0, 0), label_size: 8pt, text_fill: black, ..styling) = {
   cetz.draw.group(name: name, ..styling, {
     cetz.draw.set-origin(position)
     cetz.draw.scale(scale)
     cetz.draw.rotate(rotate)
     draw_content_func(..styling)
     _define_anchors(anchor_definitions)
-    _draw_label(label, label_pos, label_offset, label_anchor, label_size, text_fill: text_fill)
+    _draw_label(
+      label,
+      label_pos,
+      label_offset,
+      label_anchor,
+      label_size,
+      text_fill: text_fill,
+    )
   })
 }
 
-#let nmos_transistor(
-  position,
-  name,
-  label: none,
-  label_pos: "D",
-  label_anchor: "north-west",
-  label_offset: (0.05, 0.05),
-  label_size: 8pt,
-  show_pin_labels: false,
-  pin_label_size: 7pt,
-  scale: 1.0,
-  rotate: 0deg,
-  width: 0.9,
-  height: 1.2,
-  gate_lead_factor: 0.3,
-  bulk_lead_factor: 0.3,
-  gate_pos_factor: 0.3,
-  channel_pos_factor: 0.4,
-  gate_v_extent_factor: 0.35,
-  channel_v_extent_factor: 0.35,
-  thick_factor: 2.0,
-  arrow_scale: 0.8,
-  arrow_fill: black,
-  ..styling,
-) = {
+// @typstyle off
+#let nmos_transistor(position, name, label: none, label_pos: "D", label_anchor: "north-west", label_offset: (0.05, 0.05), label_size: 8pt, show_pin_labels: false, pin_label_size: 7pt, scale: 1.0, rotate: 0deg, width: 0.9, height: 1.2, gate_lead_factor: 0.3, bulk_lead_factor: 0.3, gate_pos_factor: 0.3, channel_pos_factor: 0.4, gate_v_extent_factor: 0.35, channel_v_extent_factor: 0.35, thick_factor: 2.0, arrow_scale: 0.8, arrow_fill: black, ..styling) = {
   cetz.draw.group(name: name, ..styling, {
     cetz.draw.set-origin(position)
     cetz.draw.scale(scale)
@@ -127,45 +101,68 @@
       ("default", gate_term_rel),
     ))
 
-    cetz.draw.line(channel_bottom, channel_top, ..styling, thickness: line_thickness)
-    cetz.draw.line(gate_line_bottom, gate_line_top, ..styling, thickness: line_thickness)
+    cetz.draw.line(
+      channel_bottom,
+      channel_top,
+      ..styling,
+      thickness: line_thickness,
+    )
+    cetz.draw.line(
+      gate_line_bottom,
+      gate_line_top,
+      ..styling,
+      thickness: line_thickness,
+    )
     cetz.draw.line(gate_term_rel, gate_conn_pt, ..styling)
     cetz.draw.line(bulk_conn_pt, bulk_term_rel, ..styling)
 
     cetz.draw.line(drain_term_rel, horiz_top, ..styling)
     cetz.draw.line(horiz_top, channel_top, ..styling)
     cetz.draw.line(horiz_bottom, source_term_rel, ..styling)
-    cetz.draw.line(channel_bottom, horiz_bottom, ..styling, mark: (end: "stealth", fill: arrow_fill, scale: arrow_scale))
+    cetz.draw.line(channel_bottom, horiz_bottom, ..styling, mark: (
+      end: "stealth",
+      fill: arrow_fill,
+      scale: arrow_scale,
+    ))
 
     if show_pin_labels {
-      cetz.draw.content((rel: (-0.05, 0), to: "G"), text(size: pin_label_size, $G$), anchor: "east")
-      cetz.draw.content((rel: (0.05, 0), to: "S"), text(size: pin_label_size, $S$), anchor: "south")
-      cetz.draw.content((rel: (0.05, 0), to: "D"), text(size: pin_label_size, $D$), anchor: "north")
-      cetz.draw.content((rel: (0.05, 0), to: "B"), text(size: pin_label_size, $B$), anchor: "west")
+      cetz.draw.content(
+        (rel: (-0.05, 0), to: "G"),
+        text(size: pin_label_size, $G$),
+        anchor: "east",
+      )
+      cetz.draw.content(
+        (rel: (0.05, 0), to: "S"),
+        text(size: pin_label_size, $S$),
+        anchor: "south",
+      )
+      cetz.draw.content(
+        (rel: (0.05, 0), to: "D"),
+        text(size: pin_label_size, $D$),
+        anchor: "north",
+      )
+      cetz.draw.content(
+        (rel: (0.05, 0), to: "B"),
+        text(size: pin_label_size, $B$),
+        anchor: "west",
+      )
     }
     _draw_label(label, label_pos, label_offset, label_anchor, label_size)
   })
 }
 
-#let gnd_symbol(
-  position,
-  name,
-  label: none,
-  label_pos: "north",
-  label_anchor: "south",
-  label_offset: (0, 0.1),
-  label_size: 8pt,
-  scale: 1.0,
-  rotate: 0deg,
-  lead_length: 0.3,
-  bar_width: 0.5,
-  bar_spacing: 0.05,
-  bar_width_factors: (1.0, 0.7, 0.4),
-  ..styling,
-) = {
-  assert(bar_width_factors.len() == 3, message: "bar_width_factors must have 3 elements.")
+// @typstyle off
+#let gnd_symbol(position, name, label: none, label_pos: "north", label_anchor: "south", label_offset: (0, 0.1), label_size: 8pt, scale: 1.0, rotate: 0deg, lead_length: 0.3, bar_width: 0.5, bar_spacing: 0.05, bar_width_factors: (1.0, 0.7, 0.4), ..styling) = {
+  assert(
+    bar_width_factors.len() == 3,
+    message: "bar_width_factors must have 3 elements.",
+  )
   let draw_func(..styling) = {
-    let y_coords = (-lead_length, -lead_length - bar_spacing, -lead_length - 2 * bar_spacing)
+    let y_coords = (
+      -lead_length,
+      -lead_length - bar_spacing,
+      -lead_length - 2 * bar_spacing,
+    )
     cetz.draw.line((0, 0), (0, -lead_length), ..styling)
     for (idx, y) in y_coords.enumerate() {
       let half_w = bar_width * bar_width_factors.at(idx) / 2
@@ -198,22 +195,8 @@
   )
 }
 
-#let resistor(
-  position,
-  name,
-  label: none,
-  label_pos: "south",
-  label_anchor: "north",
-  label_offset: (0, -0.1),
-  label_size: 8pt,
-  scale: 1.0,
-  rotate: 0deg,
-  width: 0.8,
-  height: 0.3,
-  zigs: 3,
-  lead_extension: 0.3,
-  ..styling,
-) = {
+// @typstyle off
+#let resistor(position, name, label: none, label_pos: "south", label_anchor: "north", label_offset: (0, -0.1), label_size: 8pt, scale: 1.0, rotate: 0deg, width: 0.8, height: 0.3, zigs: 3, lead_extension: 0.3, ..styling) = {
   let hw = width / 2
   let hh = height / 2
   let lead_start_x = -hw - lead_extension
@@ -252,21 +235,8 @@
   )
 }
 
-#let capacitor(
-  position,
-  name,
-  label: none,
-  label_pos: "south",
-  label_anchor: "north",
-  label_offset: (0, -0.1),
-  label_size: 8pt,
-  scale: 1.0,
-  rotate: 0deg,
-  plate_height: 0.6,
-  plate_gap: 0.2,
-  lead_extension: 0.5,
-  ..styling,
-) = {
+// @typstyle off
+#let capacitor(position, name, label: none, label_pos: "south", label_anchor: "north", label_offset: (0, -0.1), label_size: 8pt, scale: 1.0, rotate: 0deg, plate_height: 0.6, plate_gap: 0.2, lead_extension: 0.5, ..styling) = {
   let hg = plate_gap / 2
   let hh = plate_height / 2
   let lead_start_x = -hg - lead_extension
@@ -295,28 +265,8 @@
   )
 }
 
-#let voltage_source(
-  position,
-  name,
-  label: none,
-  annotation_label_pos: "left",
-  annotation_label_anchor: auto,
-  annotation_label_offset: auto,
-  annotation_label_size: 8pt,
-  show_voltage_annotation: true,
-  voltage_arrow_pos: "left",
-  voltage_arrow_dir: "down",
-  voltage_arrow_length_factor: 2,
-  voltage_arrow_offset_factor: 0.7,
-  arrow_scale: 1.0,
-  arrow_fill: black,
-  stroke_thickness: 0.6pt,
-  scale: 1.0,
-  rotate: 0deg,
-  radius: 0.3,
-  lead_length: 0.3,
-  ..styling,
-) = {
+// @typstyle off
+#let voltage_source(position, name, label: none, annotation_label_pos: "left", annotation_label_anchor: auto, annotation_label_offset: auto, annotation_label_size: 8pt, show_voltage_annotation: true, voltage_arrow_pos: "left", voltage_arrow_dir: "down", voltage_arrow_length_factor: 2, voltage_arrow_offset_factor: 0.7, arrow_scale: 1.0, arrow_fill: black, stroke_thickness: 0.6pt, scale: 1.0, rotate: 0deg, radius: 0.3, lead_length: 0.3, ..styling) = {
   let draw_func(..styling) = {
     let top_y = radius
     let bottom_y = -radius
@@ -326,28 +276,46 @@
     cetz.draw.line((0, top_y), (0, top_lead_y), ..styling)
     cetz.draw.line((0, bottom_y), (0, bottom_lead_y), ..styling)
     if show_voltage_annotation {
-      let arrow_x = if voltage_arrow_pos == "left" { -radius * (1 + voltage_arrow_offset_factor) } else {
+      let arrow_x = if voltage_arrow_pos == "left" {
+        -radius * (1 + voltage_arrow_offset_factor)
+      } else {
         radius * (1 + voltage_arrow_offset_factor)
       }
       let arrow_len = radius * voltage_arrow_length_factor
       let arrow_half_len = arrow_len / 2
-      let (arrow_start_y, arrow_end_y) = if voltage_arrow_dir == "down" { (arrow_half_len, -arrow_half_len) } else {
+      let (arrow_start_y, arrow_end_y) = if voltage_arrow_dir == "down" {
+        (arrow_half_len, -arrow_half_len)
+      } else {
         (-arrow_half_len, arrow_half_len)
       }
-      cetz.draw.line((arrow_x, arrow_start_y), (arrow_x, arrow_end_y), ..styling, mark: (
-        end: "stealth",
-        scale: arrow_scale * 0.4,
-        fill: arrow_fill,
-        stroke: (paint: black, thickness: stroke_thickness),
-      ))
+      cetz.draw.line(
+        (arrow_x, arrow_start_y),
+        (arrow_x, arrow_end_y),
+        ..styling,
+        mark: (
+          end: "stealth",
+          scale: arrow_scale * 0.4,
+          fill: arrow_fill,
+          stroke: (paint: black, thickness: stroke_thickness),
+        ),
+      )
       if label != none {
-        let (default_anchor, default_offset) = if annotation_label_pos == "left" { ("east", (-0.05, 0)) } else {
+        let (default_anchor, default_offset) = if (
+          annotation_label_pos == "left"
+        ) { ("east", (-0.05, 0)) } else {
           ("west", (0.05, 0))
         }
-        let final_anchor = if annotation_label_anchor == auto { default_anchor } else { annotation_label_anchor }
-        let final_offset = if annotation_label_offset == auto { default_offset } else { annotation_label_offset }
+        let final_anchor = if annotation_label_anchor == auto {
+          default_anchor
+        } else { annotation_label_anchor }
+        let final_offset = if annotation_label_offset == auto {
+          default_offset
+        } else { annotation_label_offset }
         cetz.draw.content(
-          (rel: (0.1 * scale * arrow_x / calc.abs(arrow_x), 0), to: (arrow_x, 0)),
+          (
+            rel: (0.1 * scale * arrow_x / calc.abs(arrow_x), 0),
+            to: (arrow_x, 0),
+          ),
           text(size: annotation_label_size, fill: arrow_fill, label),
           anchor: final_anchor,
           offset: final_offset,
@@ -379,20 +347,8 @@
   )
 }
 
-#let node(
-  position,
-  name,
-  label: none,
-  radius: 0.05,
-  label_size: 8pt,
-  label_offset: (0, 0),
-  label_anchor: "center",
-  fill: white,
-  text_fill: black,
-  scale: 1.0,
-  rotate: 0deg,
-  ..styling,
-) = {
+// @typstyle off
+#let node(position, name, label: none, radius: 0.05, label_size: 8pt, label_offset: (0, 0), label_anchor: "center", fill: white, text_fill: black, scale: 1.0, rotate: 0deg, ..styling) = {
   let draw_func(..styling) = {
     cetz.draw.circle((0, 0), radius: radius, ..styling, fill: fill)
   }
@@ -426,26 +382,17 @@
   )
 }
 
-#let vdd_symbol(
-  position,
-  name,
-  label: none,
-  label_pos: "north",
-  label_anchor: "south",
-  label_offset: (0, 0.1),
-  label_size: 8pt,
-  scale: 1.0,
-  rotate: 0deg,
-  stem_length: 0.3,
-  bar_width: 0.5,
-  text_fill: black,
-  ..styling,
-) = {
+// @typstyle off
+#let vdd_symbol(position, name, label: none, label_pos: "north", label_anchor: "south", label_offset: (0, 0.1), label_size: 8pt, scale: 1.0, rotate: 0deg, stem_length: 0.3, bar_width: 0.5, text_fill: black, ..styling) = {
   let draw_func(..styling) = {
     let stem_top_y = stem_length
     let bar_half_width = bar_width / 2
     cetz.draw.line((0, 0), (0, stem_top_y), ..styling)
-    cetz.draw.line((-bar_half_width, stem_top_y), (bar_half_width, stem_top_y), ..styling)
+    cetz.draw.line(
+      (-bar_half_width, stem_top_y),
+      (bar_half_width, stem_top_y),
+      ..styling,
+    )
   }
   let stem_top_y = stem_length
   let bar_half_width = bar_width / 2
@@ -497,8 +444,23 @@
   let y_cl_center = y_m1_s - 0.95
 
   // Components
-  voltage_source((x_vin, y_gate - 1), "Vin", label: $V_"in"$, radius: 0.4, lead_length: 0.2, ..default_stroke)
-  resistor((x_r1, y_gate), "R1", label: $R_1$, label_pos: "north", label_offset: (0, 0.4), width: 1.0, ..default_stroke)
+  voltage_source(
+    (x_vin, y_gate - 1),
+    "Vin",
+    label: $V_"in"$,
+    radius: 0.4,
+    lead_length: 0.2,
+    ..default_stroke,
+  )
+  resistor(
+    (x_r1, y_gate),
+    "R1",
+    label: $R_1$,
+    label_pos: "north",
+    label_offset: (0, 0.4),
+    width: 1.0,
+    ..default_stroke,
+  )
   nmos_transistor(
     (x_m1, y_m1_base),
     "M1",
@@ -527,7 +489,14 @@
     label_offset: (-0.2, -0.5),
     ..default_stroke,
   )
-  node((x_vout, y_m1_b), "VoutNode", label: $V_"out"$, label_offset: (0.15, 0), label_anchor: "west", ..default_stroke)
+  node(
+    (x_vout, y_m1_b),
+    "VoutNode",
+    label: $V_"out"$,
+    label_offset: (0.15, 0),
+    label_anchor: "west",
+    ..default_stroke,
+  )
 
   // Ground connections
   for (name, pos) in (

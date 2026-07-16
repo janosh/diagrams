@@ -7,8 +7,14 @@
 
 #canvas({
   draw.set-style(axes: (
-    y: (label: (anchor: "north-west", offset: -0.2), mark: (end: "stealth", fill: black)),
-    x: (label: (anchor: "north", offset: 0.1), mark: (end: "stealth", fill: black)),
+    y: (
+      label: (anchor: "north-west", offset: -0.2),
+      mark: (end: "stealth", fill: black),
+    ),
+    x: (
+      label: (anchor: "north", offset: 0.1),
+      mark: (end: "stealth", fill: black),
+    ),
   ))
 
   // First plot (Bose fluctuations)

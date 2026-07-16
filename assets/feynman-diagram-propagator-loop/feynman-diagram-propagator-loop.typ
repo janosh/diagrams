@@ -52,7 +52,12 @@
     ..arrow-style,
     name: "left-momentum",
   )
-  content("left-momentum", text(fill: dark-blue)[$q_0$], anchor: "south", padding: 3pt)
+  content(
+    "left-momentum",
+    text(fill: dark-blue)[$q_0$],
+    anchor: "south",
+    padding: 3pt,
+  )
 
   line(
     (rel: (0.15, 0.15), to: "right-line.start"),
@@ -60,5 +65,10 @@
     ..arrow-style,
     name: "right-momentum",
   )
-  content("right-momentum", text(fill: dark-blue)[$q_0$], anchor: "south", padding: 3pt)
+  content(
+    "right-momentum",
+    text(fill: dark-blue)[$q_0$],
+    anchor: "south",
+    padding: 3pt,
+  )
 })

@@ -74,10 +74,28 @@
   circle((V-min, 0.45 * p), radius: 3pt, fill: black, name: "point-d")
 
   // Add point labels
-  content("point-a", [1], anchor: "south", padding: (bottom: 5pt), name: "label-a")
+  content(
+    "point-a",
+    [1],
+    anchor: "south",
+    padding: (bottom: 5pt),
+    name: "label-a",
+  )
   content("point-b", [2], anchor: "west", padding: (left: 5pt), name: "label-b")
-  content("point-c", [3], anchor: "north-west", padding: (left: 5pt), name: "label-c")
-  content("point-d", [4], anchor: "east", padding: (right: 5pt), name: "label-d")
+  content(
+    "point-c",
+    [3],
+    anchor: "north-west",
+    padding: (left: 5pt),
+    name: "label-c",
+  )
+  content(
+    "point-d",
+    [4],
+    anchor: "east",
+    padding: (right: 5pt),
+    name: "label-d",
+  )
 
   // Define styles for paths
   let arrow_style = (end: "stealth", fill: black, scale: .5)
@@ -105,7 +123,13 @@
   )
 
   // b -> c (heat rejection)
-  line("point-b", "point-c", mark: arrow_style, stroke: stroke_style, name: "path-bc")
+  line(
+    "point-b",
+    "point-c",
+    mark: arrow_style,
+    stroke: stroke_style,
+    name: "path-bc",
+  )
 
   content(
     (rel: (0.1, 0), to: "path-bc"),

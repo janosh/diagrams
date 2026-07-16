@@ -38,12 +38,23 @@
   // Draw input line
   line((rel: (-1, 0), to: "dot"), "dot", name: "input", ..arrow-style)
 
-  content("input.start", $ partial_t (partial V) / (partial chi) = $, anchor: "east", padding: (0, 5pt, 0))
+  content(
+    "input.start",
+    $ partial_t (partial V) / (partial chi) = $,
+    anchor: "east",
+    padding: (0, 5pt, 0),
+  )
 
   // Add momentum arrows
   let top-mark = (0, rad - 0.05)
   let bottom-mark = (0, -rad + 0.05)
-  let mark-style = (length: .15, stroke: .7pt, angle: 60deg, scale: .7, fill: black)
+  let mark-style = (
+    length: .15,
+    stroke: .7pt,
+    angle: 60deg,
+    scale: .7,
+    fill: black,
+  )
   mark(symbol: "stealth", top-mark, (0.1, rad - 0.05), ..mark-style)
   mark(symbol: "stealth", bottom-mark, (-0.1, -rad + 0.05), ..mark-style)
   // Add momentum labels

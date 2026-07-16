@@ -5,7 +5,9 @@
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #let relu(x) = if x < 0 { 0 } else { x }
-#let gelu(x) = 0.5 * x * (1 + calc.tanh(calc.sqrt(2 / calc.pi) * (x + 0.044715 * calc.pow(x, 3))))
+#let gelu(x) = (
+  0.5 * x * (1 + calc.tanh(calc.sqrt(2 / calc.pi) * (x + 0.044715 * calc.pow(x, 3))))
+)
 #let leaky_relu(x) = if x < 0 { 0.01 * x } else { x }
 #let sigmoid(x) = 1 / (1 + calc.exp(-x))
 #let tanh(x) = (calc.exp(x) - calc.exp(-x)) / (calc.exp(x) + calc.exp(-x))
@@ -33,7 +35,12 @@
         "Sigmoid": (sigmoid, orange),
         "Tanh": (tanh, purple),
       ).pairs() {
-        plot.add(style: (stroke: color + 1.5pt), domain: (-4, 4), func, label: key)
+        plot.add(
+          style: (stroke: color + 1.5pt),
+          domain: (-4, 4),
+          func,
+          label: key,
+        )
       }
     },
   )

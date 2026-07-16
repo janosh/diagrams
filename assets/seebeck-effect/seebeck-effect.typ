@@ -11,7 +11,12 @@
 #let pillar_dx = 0.66
 #let edge_stroke = (paint: black, thickness: 0.6pt)
 #let circuit_stroke = (paint: black, thickness: 1.1pt)
-#let circuit_mark = (symbol: "stealth", fill: black, scale: 0.5, shorten-to: none)
+#let circuit_mark = (
+  symbol: "stealth",
+  fill: black,
+  scale: 0.5,
+  shorten-to: none,
+)
 #let field_color = black.transparentize(10%)
 #let field_stroke = (paint: field_color, thickness: 1.0pt)
 #let field_mark = (end: "stealth", fill: field_color, scale: 0.55)
@@ -33,6 +38,7 @@
 #let bar_w = 9.95
 #let bar_h = 0.9
 
+// @typstyle off
 #let draw_prism(x0, y0, w, h, depth_x, front_fill, right_fill, top_fill, stroke, depth_y: dy) = {
   rect((x0, y0), (x0 + w, y0 + h), fill: front_fill, stroke: stroke)
   line(
@@ -57,7 +63,11 @@
 
 #let charge_marker(x, y, sign: $+$, fill: p_color) = {
   circle((x, y), radius: 0.2, fill: fill, stroke: none)
-  content((x, y + 0.03), text(size: 12pt, weight: "light", fill: black)[#sign], anchor: "center")
+  content(
+    (x, y + 0.03),
+    text(size: 12pt, weight: "light", fill: black)[#sign],
+    anchor: "center",
+  )
   line(
     (x, y - 0.22),
     (x, y - 0.72),
@@ -79,7 +89,11 @@
     edge_stroke,
     depth_y: sink_dy,
   )
-  content((x0 + w / 2, y0 + h / 2), text(size: 14pt, fill: white)[heat sink], anchor: "center")
+  content(
+    (x0 + w / 2, y0 + h / 2),
+    text(size: 14pt, fill: white)[heat sink],
+    anchor: "center",
+  )
 }
 
 #let pillar_w = 2.45
@@ -96,15 +110,31 @@
     fill: pillar_grad,
     stroke: none,
   )
-  circle((x0 + w / 2, y0 + h * 0.58), radius: 0.38, stroke: (paint: white.transparentize(25%), thickness: 0.7pt))
-  content((x0 + w / 2, y0 + h * 0.58), text(size: 16pt, fill: white.transparentize(25%))[#label], anchor: "center")
+  circle((x0 + w / 2, y0 + h * 0.58), radius: 0.38, stroke: (
+    paint: white.transparentize(25%),
+    thickness: 0.7pt,
+  ))
+  content(
+    (x0 + w / 2, y0 + h * 0.58),
+    text(size: 16pt, fill: white.transparentize(25%))[#label],
+    anchor: "center",
+  )
 }
 
+// @typstyle off
 #let field_arrow_with_polarity(x, y_start, y_end, top_label, bottom_label, label_side) = {
   line((x, y_start), (x, y_end), stroke: field_stroke, mark: field_mark)
   let x_offset = if label_side == "west" { 0.18 } else { -0.18 }
-  content((x + x_offset, y_start), text(size: 11pt, fill: field_color)[#top_label], anchor: label_side)
-  content((x + x_offset, y_end), text(size: 11pt, fill: field_color)[#bottom_label], anchor: label_side)
+  content(
+    (x + x_offset, y_start),
+    text(size: 11pt, fill: field_color)[#top_label],
+    anchor: label_side,
+  )
+  content(
+    (x + x_offset, y_end),
+    text(size: 11pt, fill: field_color)[#bottom_label],
+    anchor: label_side,
+  )
 }
 
 #let draw_circuit_leg(..pts) = {
@@ -126,30 +156,82 @@
   sink_block(left_sink_x, sink_y)
   pillar_block(left_pillar_x, pillar_y, label: [N])
   let left_field_x = left_pillar_x + pillar_w + pillar_dx + 0.25
-  field_arrow_with_polarity(left_field_x, pillar_y + pillar_h - 0.6, pillar_y + 0.6, [+], [-], "west")
-  for (dx_offset, dy_offset) in ((1.05, 5.2), (2.25, 5.2), (1.05, 2.3), (2.35, 2.45)) {
-    charge_marker(left_sink_x + dx_offset, sink_y + dy_offset, sign: [−], fill: n_color)
+  field_arrow_with_polarity(
+    left_field_x,
+    pillar_y + pillar_h - 0.6,
+    pillar_y + 0.6,
+    [+],
+    [-],
+    "west",
+  )
+  for (dx_offset, dy_offset) in (
+    (1.05, 5.2),
+    (2.25, 5.2),
+    (1.05, 2.3),
+    (2.35, 2.45),
+  ) {
+    charge_marker(
+      left_sink_x + dx_offset,
+      sink_y + dy_offset,
+      sign: [−],
+      fill: n_color,
+    )
   }
 
   // Right (P) pillar and sink
   sink_block(right_sink_x, sink_y)
   pillar_block(right_pillar_x, pillar_y, label: [P])
   let right_field_x = right_pillar_x - 0.25
-  field_arrow_with_polarity(right_field_x, pillar_y + 0.55, pillar_y + pillar_h - 0.55, [-], [+], "east")
+  field_arrow_with_polarity(
+    right_field_x,
+    pillar_y + 0.55,
+    pillar_y + pillar_h - 0.55,
+    [-],
+    [+],
+    "east",
+  )
   content(
     ((left_field_x + right_field_x) / 2, pillar_y + pillar_h * 0.55),
     text(size: 15pt, fill: field_color)[electric field],
     anchor: "center",
   )
-  for (dx_offset, dy_offset) in ((1.02, 5.2), (2.2, 5.2), (1.02, 2.3), (2.32, 2.45)) {
-    charge_marker(right_sink_x + dx_offset, sink_y + dy_offset, sign: [+], fill: p_color)
+  for (dx_offset, dy_offset) in (
+    (1.02, 5.2),
+    (2.2, 5.2),
+    (1.02, 2.3),
+    (2.32, 2.45),
+  ) {
+    charge_marker(
+      right_sink_x + dx_offset,
+      sink_y + dy_offset,
+      sign: [+],
+      fill: p_color,
+    )
   }
 
   // Top heat source bar (foreground so it occludes pillars/charges)
   on-layer(20, {
-    draw_prism(bar_x0, bar_y0, bar_w, bar_h, bar_dx, bar_red, bar_side_red, bar_top_red, edge_stroke)
-    content((6.05, 8.16), text(size: 15pt, fill: white)[heat source], anchor: "center")
-    content((5.68, 7.4), text(size: 20pt, fill: white)[$J arrow.r$], anchor: "center")
+    draw_prism(
+      bar_x0,
+      bar_y0,
+      bar_w,
+      bar_h,
+      bar_dx,
+      bar_red,
+      bar_side_red,
+      bar_top_red,
+      edge_stroke,
+    )
+    content(
+      (6.05, 8.16),
+      text(size: 15pt, fill: white)[heat source],
+      anchor: "center",
+    )
+    content(
+      (5.68, 7.4),
+      text(size: 20pt, fill: white)[$J arrow.r$],
+      anchor: "center",
+    )
   })
 
   // Bottom wire closing the electric circuit with central resistor zig-zag.
@@ -160,8 +242,16 @@
   let zig_left_x = 4.65
 
   // Right-angle segments.
-  draw_circuit_leg((right_wire_x, sink_y), (right_wire_x, wire_y), (zig_right_x, wire_y))
-  draw_circuit_leg((zig_left_x, wire_y), (left_wire_x, wire_y), (left_wire_x, sink_y))
+  draw_circuit_leg(
+    (right_wire_x, sink_y),
+    (right_wire_x, wire_y),
+    (zig_right_x, wire_y),
+  )
+  draw_circuit_leg(
+    (zig_left_x, wire_y),
+    (left_wire_x, wire_y),
+    (left_wire_x, sink_y),
+  )
   // Center resistor as a decorated zigzag, with multiple arrow tips on the same path.
   decorations.zigzag(
     line(

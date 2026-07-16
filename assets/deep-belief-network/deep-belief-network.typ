@@ -20,7 +20,13 @@
   let row(prefix, count, y) = {
     for idx in range(count) {
       let x-pos = (idx - (count - 1) / 2) * 1.0
-      circle((x-pos, y), radius: node-r, fill: white, stroke: 1.5pt, name: prefix + str(idx))
+      circle(
+        (x-pos, y),
+        radius: node-r,
+        fill: white,
+        stroke: 1.5pt,
+        name: prefix + str(idx),
+      )
     }
   }
 
@@ -30,12 +36,22 @@
     (7.6, 5.15, light-gray, $arrow(h)_2$, "c", 5),
   ) {
     pill((0, center-y), width, fill)
-    content((-width / 2 - .35, center-y), text(size: 14pt, label), anchor: "east")
+    content(
+      (-width / 2 - .35, center-y),
+      text(size: 14pt, label),
+      anchor: "east",
+    )
     row(prefix, count, center-y)
   }
 
-  let arr = (mark: (end: "stealth", fill: black, scale: .6), stroke: black + 1.2pt)
-  let bi-arr = (mark: (start: "stealth", end: "stealth", fill: black, scale: .6), stroke: black + 1.2pt)
+  let arr = (
+    mark: (end: "stealth", fill: black, scale: .6),
+    stroke: black + 1.2pt,
+  )
+  let bi-arr = (
+    mark: (start: "stealth", end: "stealth", fill: black, scale: .6),
+    stroke: black + 1.2pt,
+  )
   for bot in range(9) {
     for mid in range(5) { line("a" + str(bot), "b" + str(mid), ..arr) }
   }

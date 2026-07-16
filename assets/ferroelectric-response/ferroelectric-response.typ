@@ -44,7 +44,11 @@
   )
 
   // Add "Free Energy" label
-  content("y-axis.mid", [Free Energy], angle: 90deg, anchor: "south", padding: (0, 0, 2pt))
+  content("y-axis.mid", [Free Energy], angle: 90deg, anchor: "south", padding: (
+    0,
+    0,
+    2pt,
+  ))
 
   // Bottom plot: Polarization vs. displacement
   let bottom-origin = (-5, 0)
@@ -94,7 +98,11 @@
     anchor: "south",
     padding: 4pt,
   )
-  content("x-axis.mid", [Ti Displacement], anchor: "north", padding: (10pt, 0, 0))
+  content("x-axis.mid", [Ti Displacement], anchor: "north", padding: (
+    10pt,
+    0,
+    0,
+  ))
 
   // Helper function to draw BaTiO3 unit cell
   let atom(pos, radius: 0.20, fill: luma(50), ..args) = {
@@ -131,16 +139,32 @@
       ((x - 1, y - 1, 0), (x - 1, y - 1, z-offset), cell-name + "-left"),
       ((x + 1, y - 1, 0), (x + 1, y - 1, z-offset), cell-name + "-right"),
       ((x - 1, y - 1, z-offset), (x + 1, y - 1, z-offset), cell-name + "-back"),
-      ((x - 1, y + 1, z-offset), (x + 1, y + 1, z-offset), cell-name + "-top-back"),
-      ((x - 1, y - 1, z-offset), (x - 1, y + 1, z-offset), cell-name + "-left-back"),
-      ((x + 1, y - 1, z-offset), (x + 1, y + 1, z-offset), cell-name + "-right-back"),
+      (
+        (x - 1, y + 1, z-offset),
+        (x + 1, y + 1, z-offset),
+        cell-name + "-top-back",
+      ),
+      (
+        (x - 1, y - 1, z-offset),
+        (x - 1, y + 1, z-offset),
+        cell-name + "-left-back",
+      ),
+      (
+        (x + 1, y - 1, z-offset),
+        (x + 1, y + 1, z-offset),
+        cell-name + "-right-back",
+      ),
       ((x + 1, y - -1), (x + 1, y - -1, z-offset), cell-name + "top-right"),
       ((x + -1, y - -1), (x + -1, y - -1, z-offset), cell-name + "top-left"),
     ) {
       line(start, end, ..cube-style, name: edge-name)
     }
 
-    let Ba-atom(pos, name) = atom(pos, fill: rgb("#00ffff"), name: cell-name + "-ba-" + name)
+    let Ba-atom(pos, name) = atom(
+      pos,
+      fill: rgb("#00ffff"),
+      name: cell-name + "-ba-" + name,
+    )
     let O-atom(pos, name) = atom(pos, fill: red, name: cell-name + "-o-" + name)
     let Ti-atom(pos) = atom(pos, fill: gray, name: cell-name + "-ti")
     let Ti-O-bond(end-pos, name) = line(
@@ -151,7 +175,12 @@
     )
 
     // --- Back Plane (z = z-offset) ---
-    for (dx, dy, name) in ((-1, -1, "back-bl"), (1, -1, "back-br"), (-1, 1, "back-tl"), (1, 1, "back-tr")) {
+    for (dx, dy, name) in (
+      (-1, -1, "back-bl"),
+      (1, -1, "back-br"),
+      (-1, 1, "back-tl"),
+      (1, 1, "back-tr"),
+    ) {
       Ba-atom((x + dx, y + dy, z-offset), name)
     }
     O-atom((x, y, z-offset), "back")
@@ -174,7 +203,12 @@
 
     // --- Front Plane (z = 0) ---
     Ti-O-bond((x, y, 0), "front")
-    for (dx, dy, name) in ((-1, -1, "front-bl"), (1, -1, "front-br"), (-1, 1, "front-tl"), (1, 1, "front-tr")) {
+    for (dx, dy, name) in (
+      (-1, -1, "front-bl"),
+      (1, -1, "front-br"),
+      (-1, 1, "front-tl"),
+      (1, 1, "front-tr"),
+    ) {
       Ba-atom((x + dx, y + dy, 0), name)
     }
     O-atom((x, y, 0), "front")

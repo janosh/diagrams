@@ -5,8 +5,14 @@
 
 #canvas({
   draw.set-style(axes: (
-    y: (label: (anchor: "north-west", offset: -0.2), mark: (end: "stealth", fill: black)),
-    x: (label: (anchor: "north", offset: 0.1), mark: (end: "stealth", fill: black)),
+    y: (
+      label: (anchor: "north-west", offset: -0.2),
+      mark: (end: "stealth", fill: black),
+    ),
+    x: (
+      label: (anchor: "north", offset: 0.1),
+      mark: (end: "stealth", fill: black),
+    ),
   ))
   plot.plot(
     size: (8, 5),
@@ -29,7 +35,12 @@
       )
 
       // x-1 function
-      plot.add(style: (stroke: red + 1.5pt), domain: (0, 2.7), label: $x-1$, x => x - 1)
+      plot.add(
+        style: (stroke: red + 1.5pt),
+        domain: (0, 2.7),
+        label: $x-1$,
+        x => x - 1,
+      )
     },
   )
 })

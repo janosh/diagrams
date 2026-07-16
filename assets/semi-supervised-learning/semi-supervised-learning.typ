@@ -7,7 +7,11 @@
   let dot(pos, fill) = circle(pos, radius: .15, fill: fill, stroke: none)
   let gray-dot = gray.darken(10%)
 
-  line((5.5, 2), (5.5, -2), stroke: (paint: gray.lighten(35%), dash: "dashed", thickness: 1.4pt))
+  line((5.5, 2), (5.5, -2), stroke: (
+    paint: gray.lighten(35%),
+    dash: "dashed",
+    thickness: 1.4pt,
+  ))
   line(
     (1.5, -1),
     (2, -.866),

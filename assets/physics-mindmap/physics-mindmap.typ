@@ -14,7 +14,11 @@
   ))
 }
 
-#let connect(from, to, color) = on-layer(-1, line(from, to, stroke: 3pt + color))
+#let connect(from, to, color) = on-layer(-1, line(
+  from,
+  to,
+  stroke: 3pt + color,
+))
 
 #canvas({
   let center = (0, 0)
@@ -36,28 +40,48 @@
       [High-Energy],
       purple,
       false,
-      (([Particle\ Physics], 30deg), ([Quantum\ Field\ Theory], 70deg), ([Nuclear\ Physics], 110deg)),
+      (
+        ([Particle\ Physics], 30deg),
+        ([Quantum\ Field\ Theory], 70deg),
+        ([Nuclear\ Physics], 110deg),
+      ),
     ),
-    ([Cosmology], rgb("#006400"), false, (([Astronomy], 140deg), ([Early\ Universe], 100deg))),
+    (
+      [Cosmology],
+      rgb("#006400"),
+      false,
+      (([Astronomy], 140deg), ([Early\ Universe], 100deg)),
+    ),
     (
       [Statistical\ Mechanics],
       red,
       false,
-      (([Thermo\ dynamics], 140deg), ([Kinetic\ Gas\ Theory], 180deg), ([Condensed\ Matter], 220deg)),
+      (
+        ([Thermo\ dynamics], 140deg),
+        ([Kinetic\ Gas\ Theory], 180deg),
+        ([Condensed\ Matter], 220deg),
+      ),
     ),
     ([Relativity], teal, false, (([Special], 270deg), ([General], 210deg))),
     (
       [Quantum\ Mechanics],
       rgb("#00008B"),
       false,
-      (([Atomic\ Physics], 250deg), ([Molecular\ Physics], 290deg), ([Chemistry], 330deg)),
+      (
+        ([Atomic\ Physics], 250deg),
+        ([Molecular\ Physics], 290deg),
+        ([Chemistry], 330deg),
+      ),
     ),
   ).enumerate() {
     let pos = (calc.cos(idx * 60deg) * 3.75, calc.sin(idx * 60deg) * 3.75)
     node(pos, title, color: color, black-text: is-black, size: 1.2)
     connect(center, pos, color)
     for (sub-title, angle) in subs {
-      let sub-pos = (pos.at(0) + calc.cos(angle) * 3, pos.at(1) + calc.sin(angle) * 3)
+      let sub-pos = (
+        pos.at(0) + calc.cos(angle) * 3,
+        pos.at(1) + calc.sin(angle) * 3,
+      )
       node(sub-pos, sub-title, color: color, black-text: is-black, size: 0.8)
       connect(pos, sub-pos, color)
     }

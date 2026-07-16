@@ -55,7 +55,9 @@
       name: if ii == 67 { "blue-curve-label-pos" } else { none },
     )
   }
-  content((rel: (0, -.45), to: "blue-curve-label-pos.mid"), text(fill: blue)[$1 / alpha << ell$])
+  content((rel: (0, -.45), to: "blue-curve-label-pos.mid"), text(
+    fill: blue,
+  )[$1 / alpha << ell$])
 
   // Second curve (orange)
   let (A2, B2, alpha2) = (15, 120, 3)
@@ -72,5 +74,7 @@
       name: if ii == 67 { "orange-curve-label-pos" } else { none },
     )
   }
-  content((rel: (0, .4), to: "orange-curve-label-pos.mid"), text(fill: orange)[$1 / alpha << ell$])
+  content((rel: (0, .4), to: "orange-curve-label-pos.mid"), text(
+    fill: orange,
+  )[$1 / alpha << ell$])
 })

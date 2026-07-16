@@ -17,7 +17,13 @@
   let end-y = 3
 
   // Draw brick pattern background
-  rect((start-x, start-y), (end-x, end-y), fill: white, stroke: rgb("#f00"), name: "dielectric-box")
+  rect(
+    (start-x, start-y),
+    (end-x, end-y),
+    fill: white,
+    stroke: rgb("#f00"),
+    name: "dielectric-box",
+  )
 
   // Draw horizontal brick lines
   for y in range(int((end-y - start-y) / brick-height + 1)) {
@@ -50,7 +56,14 @@
   rect((7, 1), (10, 2), fill: rgb("#90ee90"), name: "drain-n")
   content("drain-n", align(center)[$n$-type\ semiconductor])
 
-  content("dielectric-box", [dielectric], frame: "rect", padding: 2pt, fill: white, stroke: (thickness: .5pt))
+  content(
+    "dielectric-box",
+    [dielectric],
+    frame: "rect",
+    padding: 2pt,
+    fill: white,
+    stroke: (thickness: .5pt),
+  )
 
   // Metal contacts
   rect((4, 3), (7, 3.5), fill: rgb("#e6e6ff"), name: "gate-metal")
@@ -63,5 +76,7 @@
   content("drain-metal", [drain])
 
   // Title
-  content("gate-metal.north", [$n$-type MOSFET], anchor: "south", padding: (bottom: 2mm))
+  content("gate-metal.north", [$n$-type MOSFET], anchor: "south", padding: (
+    bottom: 2mm,
+  ))
 })

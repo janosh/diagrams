@@ -41,7 +41,10 @@
     line(from, to, ..edge-style)
     if arrow { red-path-arrow(from, to) }
   }
-  let point(x-position, x-offset, y-position) = (x-position + x-offset, y-position)
+  let point(x-position, x-offset, y-position) = (
+    x-position + x-offset,
+    y-position,
+  )
   let red-node(position) = (position, red-fill)
   let blue-node(position) = (position, blue-fill)
   let edge(from, to, arrow: false) = (from, to, arrow)
@@ -204,7 +207,11 @@
   node-box((0, 1.75), [Training Data], "training")
   node-box((0, 0.55), [sample and feature bagging], "bagging")
   content((3.2, -3.55), text(size: 1.8em)[$dots.c$])
-  node-box((0, -7.8), [mean in regression or majority vote in classification], "mean")
+  node-box(
+    (0, -7.8),
+    [mean in regression or majority vote in classification],
+    "mean",
+  )
   node-box((0, -9.2), [prediction], "pred")
 
   line("training", "bagging", ..edge-style)

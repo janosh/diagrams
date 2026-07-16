@@ -41,8 +41,14 @@
     for col in range(9) {
       let value = cell-data.at(row).at(col)
       rect(
-        ((col + 1) * cell-size - cell-size / 2, -(row + 1) * cell-size - cell-size / 2),
-        ((col + 1) * cell-size + cell-size / 2, -(row + 1) * cell-size + cell-size / 2),
+        (
+          (col + 1) * cell-size - cell-size / 2,
+          -(row + 1) * cell-size - cell-size / 2,
+        ),
+        (
+          (col + 1) * cell-size + cell-size / 2,
+          -(row + 1) * cell-size + cell-size / 2,
+        ),
         fill: rgb(
           // Purple (90%, 70%, 90%) to Yellow (90%, 90%, 70%)
           90%, // Red stays constant at 90% for pastel effect

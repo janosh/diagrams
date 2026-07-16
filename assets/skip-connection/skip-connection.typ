@@ -7,7 +7,6 @@
   let node-sep = 2.5 // Horizontal separation between nodes
   let arrow-style = (mark: (end: "stealth", fill: black, scale: 0.5))
 
-
   // Draw main nodes
   content(
     (0, 0),

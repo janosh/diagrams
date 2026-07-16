@@ -68,7 +68,10 @@
   }
 
   let lattice-node(pos) = {
-    circle(pos, radius: nr, fill: white, stroke: (paint: color-at(..pos), thickness: nw))
+    circle(pos, radius: nr, fill: white, stroke: (
+      paint: color-at(..pos),
+      thickness: nw,
+    ))
   }
 
   let square-cell-edges(col, row) = {
@@ -105,7 +108,13 @@
   }
 
   let diamond-cell-nodes(cx, cy, d) = {
-    for v in ((cx, cy + d), (cx + d, cy), (cx, cy - d), (cx - d, cy), (cx, cy)) {
+    for v in (
+      (cx, cy + d),
+      (cx + d, cy),
+      (cx, cy - d),
+      (cx - d, cy),
+      (cx, cy),
+    ) {
       lattice-node(v)
     }
   }
@@ -117,7 +126,9 @@
 
     on-layer(-1, {
       for (col, row) in f-cells { square-cell-edges(col, row) }
-      for (ox, oy) in x-inner { diamond-cell-edges(x-cx + ox * d, x-cy + oy * d, d) }
+      for (ox, oy) in x-inner {
+        diamond-cell-edges(x-cx + ox * d, x-cy + oy * d, d)
+      }
       // Truncated tip diamonds: remove outward vertex (top for upper, bottom for lower)
       for (ox, oy) in x-tips {
         let cx = x-cx + ox * d
@@ -134,7 +145,9 @@
     })
 
     for (col, row) in f-cells { square-cell-nodes(col, row) }
-    for (ox, oy) in x-inner { diamond-cell-nodes(x-cx + ox * d, x-cy + oy * d, d) }
+    for (ox, oy) in x-inner {
+      diamond-cell-nodes(x-cx + ox * d, x-cy + oy * d, d)
+    }
     for (ox, oy) in x-tips {
       let cx = x-cx + ox * d
       let cy = x-cy + oy * d
@@ -147,7 +160,12 @@
 }
 
 // === Output ===
-#set page(width: auto, height: auto, margin: if show-grid { 12pt } else { 8pt }, fill: none)
+#set page(
+  width: auto,
+  height: auto,
+  margin: if show-grid { 12pt } else { 8pt },
+  fill: none,
+)
 
 #if show-grid {
   grid(

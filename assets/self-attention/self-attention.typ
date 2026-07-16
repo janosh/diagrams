@@ -28,25 +28,84 @@
 
   // Second column (attention nodes)
   let x2 = spacing.layer
-  content((x2, y1), $a_phi$, frame: "rect", stroke: 1pt, padding: (3pt, 4pt), name: "attn1")
-  content((x2, yj), $a_phi$, frame: "rect", stroke: 1pt, padding: (3pt, 4pt), name: "attnj")
-  content((x2, yn), $a_phi$, frame: "rect", stroke: 1pt, padding: (3pt, 4pt), name: "attnn")
+  content(
+    (x2, y1),
+    $a_phi$,
+    frame: "rect",
+    stroke: 1pt,
+    padding: (3pt, 4pt),
+    name: "attn1",
+  )
+  content(
+    (x2, yj),
+    $a_phi$,
+    frame: "rect",
+    stroke: 1pt,
+    padding: (3pt, 4pt),
+    name: "attnj",
+  )
+  content(
+    (x2, yn),
+    $a_phi$,
+    frame: "rect",
+    stroke: 1pt,
+    padding: (3pt, 4pt),
+    name: "attnn",
+  )
 
   // Third column (alpha values)
   let x3 = x2 + spacing.layer
-  content((x3, y1), text(fill: rgb(0, 0, 0, 20%))[$alpha_(1j)$], name: "alpha1j", padding: 3pt)
+  content(
+    (x3, y1),
+    text(fill: rgb(0, 0, 0, 20%))[$alpha_(1j)$],
+    name: "alpha1j",
+    padding: 3pt,
+  )
   content((x3, yj), $alpha_(j j)$, name: "alphajj", padding: 3pt)
-  content((x3, yn), text(fill: rgb(0, 0, 0, 60%))[$alpha_(n j)$], name: "alphanj", padding: 3pt)
+  content(
+    (x3, yn),
+    text(fill: rgb(0, 0, 0, 60%))[$alpha_(n j)$],
+    name: "alphanj",
+    padding: 3pt,
+  )
 
   // Fourth column (multiplication nodes)
   let x4 = x3 + spacing.layer
-  content((x4, y1), name: "times1", $times$, frame: "circle", padding: 3pt, stroke: .7pt)
-  content((x4, yj), name: "timesj", $times$, frame: "circle", padding: 3pt, stroke: .7pt)
-  content((x4, yn), name: "timesn", $times$, frame: "circle", padding: 3pt, stroke: .7pt)
+  content(
+    (x4, y1),
+    name: "times1",
+    $times$,
+    frame: "circle",
+    padding: 3pt,
+    stroke: .7pt,
+  )
+  content(
+    (x4, yj),
+    name: "timesj",
+    $times$,
+    frame: "circle",
+    padding: 3pt,
+    stroke: .7pt,
+  )
+  content(
+    (x4, yn),
+    name: "timesn",
+    $times$,
+    frame: "circle",
+    padding: 3pt,
+    stroke: .7pt,
+  )
 
   // Fifth column (sum node)
   let x5 = x4 + spacing.layer
-  content((x5, yj), $Sigma$, frame: "rect", stroke: .7pt, padding: 4pt, name: "sum")
+  content(
+    (x5, yj),
+    $Sigma$,
+    frame: "rect",
+    stroke: .7pt,
+    padding: 4pt,
+    name: "sum",
+  )
 
   // Output node
   let x6 = x5 + 1

@@ -5,7 +5,10 @@
 
 #canvas({
   draw.set-style(axes: (
-    y: (label: (anchor: "north-west", offset: -0.2), mark: (end: "stealth", fill: black)),
+    y: (
+      label: (anchor: "north-west", offset: -0.2),
+      mark: (end: "stealth", fill: black),
+    ),
     x: (mark: (end: "stealth", fill: black)),
   ))
   plot.plot(
@@ -22,8 +25,7 @@
     axis-style: "left",
     {
       // x function
-      plot.add(style: (stroke: blue + 1.5pt), domain: (0, 1), label: $x$, x => x)
-
+      plot.add(style: (stroke: blue + 1.5pt), domain: (0, 1), label: $x$, x => { x })
       // -x ln(x) function
       plot.add(
         style: (stroke: red + 1.5pt),

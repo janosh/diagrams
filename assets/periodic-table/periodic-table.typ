@@ -217,7 +217,10 @@
     for group in range(1, 19) {
       let data = elements.at(period - 1).at(group - 1)
       if data != none {
-        content(pos(group, period), element(..data.slice(0, 4), fill: data.at(4)))
+        content(pos(group, period), element(
+          ..data.slice(0, 4),
+          fill: data.at(4),
+        ))
       }
     }
   }
@@ -229,26 +232,37 @@
 
   // Actinides
   for (idx, data) in actinides.enumerate() {
-    content(special-pos(89 + idx, is-actinide: true), if idx <= 3 { element(..data, fill: colors.lanthanide) } else {
+    content(special-pos(89 + idx, is-actinide: true), if idx <= 3 {
+      element(..data, fill: colors.lanthanide)
+    } else {
       synthetic-element(..data, fill: colors.lanthanide)
     })
   }
 
-
   // Title
-  content((7 * cell-size, 0.2 * cell-size), text(size: 76pt, weight: "bold")[Periodic Table of Elements])
+  content((7 * cell-size, 0.2 * cell-size), text(
+    size: 76pt,
+    weight: "bold",
+  )[Periodic Table of Elements])
 
   // Period labels
   for period in range(1, 8) {
-    content((start-x - cell-size * 0.6, start-y - (period - 1) * cell-size), text(size: 16pt, weight: "bold")[#period])
+    content(
+      (start-x - cell-size * 0.6, start-y - (period - 1) * cell-size),
+      text(size: 16pt, weight: "bold")[#period],
+    )
   }
 
   // Group labels
-  let groups = "IA IIA IIIB IVB VB VIB VIIB VIIIB VIIIB VIIIB IB IIB IIIA IVA VA VIA VIIA VIIIA".split(" ")
+  let groups = "IA IIA IIIB IVB VB VIB VIIB VIIIB VIIIB VIIIB IB IIB IIIA IVA VA VIA VIIA VIIIA".split(
+    " ",
+  )
 
   // Find first element in each column
   for (num, label) in groups.enumerate(start: 1) {
-    let first_period = if num == 1 { 1 } else if num == 2 { 2 } else if num <= 12 { 4 } else { 2 }
+    let first_period = if num == 1 { 1 } else if num == 2 { 2 } else if (
+      num <= 12
+    ) { 4 } else { 2 }
     let (x, y) = pos(num, first_period)
     content((x, y + cell-size * 0.7), box(width: 3cm)[
       #text(size: 14pt, weight: "bold")[#num #h(1fr) #label]

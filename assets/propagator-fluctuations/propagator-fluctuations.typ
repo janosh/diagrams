@@ -18,7 +18,14 @@
   // Helper function for cross markers
   let cross(pos, label: none, label-offset: 2, rel-label: (0, -0.5)) = {
     let rad = cross-radius
-    content(pos, text(size: 16pt)[$times.o$], stroke: none, fill: white, frame: "circle", padding: -2.5pt)
+    content(
+      pos,
+      text(size: 16pt)[$times.o$],
+      stroke: none,
+      fill: white,
+      frame: "circle",
+      padding: -2.5pt,
+    )
     if label != none {
       content((rel: rel-label, to: pos), eval(label, mode: "math"))
     }
@@ -59,14 +66,26 @@
     circle((offset.at(0), 0), radius: unit, stroke: 1pt)
 
     // External lines
-    draw.line((-ext-len + offset.at(0), 0), (-unit + offset.at(0), 0), stroke: 1pt)
-    draw.line((unit + offset.at(0), 0), (ext-len + offset.at(0), 0), stroke: 1pt)
+    draw.line(
+      (-ext-len + offset.at(0), 0),
+      (-unit + offset.at(0), 0),
+      stroke: 1pt,
+    )
+    draw.line(
+      (unit + offset.at(0), 0),
+      (ext-len + offset.at(0), 0),
+      stroke: 1pt,
+    )
 
     // Cross marker
     cross((offset.at(0), -unit), label: "partial_k R_k", rel-label: (0, 0.5))
 
     // Vertices
-    vertex((-unit + offset.at(0), 0), label: "Gamma_k^(3)", rel-label: (-0.35, 0.35))
+    vertex(
+      (-unit + offset.at(0), 0),
+      label: "Gamma_k^(3)",
+      rel-label: (-0.35, 0.35),
+    )
     vertex((unit + offset.at(0), 0), label: "Gamma_k^(3)")
   })
 

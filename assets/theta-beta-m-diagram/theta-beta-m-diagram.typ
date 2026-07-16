@@ -1,4 +1,5 @@
 #import "@preview/cetz:0.5.2"
+#import cetz.draw: content, line, set-style
 #import "@preview/epsilon:0.1.0": secant
 #import "@preview/lilaq:0.4.0" as lq
 
@@ -51,7 +52,11 @@
   }
 
   /// Shock angle that maximizes deflection for Mach $M$.
-  let max-shock-angle(M) = golden-section-search(b => shock-polar(M, b), 0, rad(90))
+  let max-shock-angle(M) = golden-section-search(
+    b => shock-polar(M, b),
+    0,
+    rad(90),
+  )
 
   /// Densify samples near $theta = 0$ (same pattern as the original double loops).
   let densify-near-zero(max-angle) = (
@@ -127,10 +132,17 @@
   let shock-angle-plots = (
     mach-numbers
       .map(M => {
-        let deflection-angles = shock-angles.map(b => shock-polar(M, rad(b)).deg())
+        let deflection-angles = shock-angles.map(b => shock-polar(
+          M,
+          rad(b),
+        ).deg())
         let max-deflection-angle = calc.max(..deflection-angles)
-        let weak-solution-index = deflection-angles.position(t => t == max-deflection-angle)
-        let thickness = if M in highlighted-mach-numbers { 1.2pt } else { 0.5pt }
+        let weak-solution-index = deflection-angles.position(t => (
+          t == max-deflection-angle
+        ))
+        let thickness = if M in highlighted-mach-numbers { 1.2pt } else {
+          0.5pt
+        }
 
         (
           // weak solution
@@ -155,7 +167,10 @@
   )
 
   // Calculate maximum deflection angle for M = infinity
-  let max-deflection-angle = shock-polar(infinity, max-shock-angle(infinity)).rad()
+  let max-deflection-angle = shock-polar(
+    infinity,
+    max-shock-angle(infinity),
+  ).rad()
 
   // Helper function to find Mach number for given deflection angle
   let find-mach-for-deflection(deflection-angle) = {
@@ -170,11 +185,17 @@
 
   // Reuse the expensive Mach roots for both boundary curves.
   let deflection-mach-pairs = densify-near-zero(max-deflection-angle).map(
-    deflection-angle => (deflection-angle, find-mach-for-deflection(deflection-angle)),
+    deflection-angle => (
+      deflection-angle,
+      find-mach-for-deflection(deflection-angle),
+    ),
   )
 
   // Generate solution border data
-  let solution-border-data = deflection-mach-pairs.map(((_, M)) => (M, max-shock-angle(M)))
+  let solution-border-data = deflection-mach-pairs.map(((_, M)) => (
+    M,
+    max-shock-angle(M),
+  ))
   let solution-border-plot = polar-curve-plot(solution-border-data)
 
   // Generate Mach 1 line data
@@ -205,25 +226,36 @@
       .map(M => {
         let maximum-shock-angle = max-shock-angle(M)
         let deflection-angle = shock-polar(M, maximum-shock-angle).deg()
-        let align = if M in highlighted-mach-numbers { top + left } else { bottom + left }
+        let align = if M in highlighted-mach-numbers { top + left } else {
+          bottom + left
+        }
         let label = if M == infinity { $#sym.infinity$ } else { [#M] }
         if M in highlighted-mach-numbers { label = strong(label) }
 
         let (x, y, pad-x, pad-y) = if str(M) not in custom-label-placements {
           (deflection-angle, deg(maximum-shock-angle), 0.07em, 0.3em)
         } else {
-          (custom-label-placements.at(str(M)).at("coordinates"), 0em, 0em).flatten()
+          (
+            custom-label-placements.at(str(M)).at("coordinates"),
+            0em,
+            0em,
+          ).flatten()
         }
 
         let labels = (
-          lq.place(x, y, align: align, pad(x: pad-x, y: pad-y)[#text(size: label-text-size)[$#label$]])
+          lq.place(x, y, align: align, pad(x: pad-x, y: pad-y)[#text(
+            size: label-text-size,
+          )[$#label$]])
         )
 
         if str(M) in custom-label-placements {
           let line = custom-label-placements.at(str(M)).at("line")
           let y = (line.at(0).at(1), line.at(1))
           let x = (line.at(0).at(0), shock-polar(M, rad(y.at(1))).deg())
-          labels = (labels, lq.plot(x, y, color: black, stroke: (thickness: 0.5pt), mark: none))
+          labels = (
+            labels,
+            lq.plot(x, y, color: black, stroke: (thickness: 0.5pt), mark: none),
+          )
         }
 
         labels
@@ -232,7 +264,11 @@
       // hat(M) = 1 label
       + (63,).map(_ => {
         let M = 1.4
-        let shock-angle = deg(secant(shock-angle => mach-1-residual(M, shock-angle), rad(60), rad(70)))
+        let shock-angle = deg(secant(
+          shock-angle => mach-1-residual(M, shock-angle),
+          rad(60),
+          rad(70),
+        ))
         let deflection-angle = shock-polar(M, rad(shock-angle)).deg()
 
         lq.place(
@@ -251,8 +287,6 @@
     stroke: (thickness: 0.5pt, paint: black),
     padding: 0.2cm,
     {
-      import cetz.draw: *
-
       let theta = 15deg
       let beta = 65deg
       let M-length = 0.8
@@ -288,7 +322,13 @@
       let strong-stroke = (thickness: 1.2pt)
 
       // arrows
-      line((-M-length, 0), (0, 0), mark: (end: "stealth"), stroke: strong-stroke, name: "mach")
+      line(
+        (-M-length, 0),
+        (0, 0),
+        mark: (end: "stealth"),
+        stroke: strong-stroke,
+        name: "mach",
+      )
       content("mach.mid", $M$, anchor: "south")
       line(
         (0, 0),
@@ -312,7 +352,11 @@
       line((x1, x1 * slope), (x2, x2 * slope))
 
       let shift = 0.01
-      line((x1 - shift, x1 * slope + shift), (x2 - shift, x2 * slope + shift), name: "shock-line")
+      line(
+        (x1 - shift, x1 * slope + shift),
+        (x2 - shift, x2 * slope + shift),
+        name: "shock-line",
+      )
 
       content(
         ("shock-line.start", 65%, "shock-line.end"),
@@ -328,11 +372,21 @@
   // Legend
   let legend-plots = (
     lq.plot((), (), color: black, mark: none, label: "strong solution"),
-    lq.plot((), (), color: black, stroke: (dash: "dashed"), mark: none, label: "weak solution"),
+    lq.plot(
+      (),
+      (),
+      color: black,
+      stroke: (dash: "dashed"),
+      mark: none,
+      label: "weak solution",
+    ),
   )
 
   let plots = (
-    shock-angle-plots + (solution-border-plot, mach-1-plot, drawing-plot) + legend-plots + label-plots
+    shock-angle-plots
+      + (solution-border-plot, mach-1-plot, drawing-plot)
+      + legend-plots
+      + label-plots
   )
 
   set page(margin: 1cm, fill: none)

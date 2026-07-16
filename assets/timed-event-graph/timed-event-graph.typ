@@ -46,11 +46,22 @@
     cetz.draw.anchor("south-west", (rel: (-diag, -diag), to: coords))
 
     if content != none {
-      cetz.draw.arc((rel: (-.1, 0), to: coords), start: 0deg, stop: 360deg, radius: 0.4 - 0.1)
+      cetz.draw.arc(
+        (rel: (-.1, 0), to: coords),
+        start: 0deg,
+        stop: 360deg,
+        radius: 0.4 - 0.1,
+      )
     }
 
     if token {
-      cetz.draw.arc((rel: (-.35, 0), to: coords), start: 0deg, stop: 360deg, radius: 0.4 - 0.35, fill: black)
+      cetz.draw.arc(
+        (rel: (-.35, 0), to: coords),
+        start: 0deg,
+        stop: 360deg,
+        radius: 0.4 - 0.35,
+        fill: black,
+      )
     }
 
     if content != none {
@@ -104,7 +115,12 @@
     place((rel: (2.3, -1), to: "t1in.right"), name: "pr1", content: $ρ_(1)$)
     place((rel: (2.3, 1), to: "t1in.right"), name: "p11", content: $τ_(11)$)
     place((rel: (2.3, 0), to: "t1out.right"), name: "p16", content: $τ_(16)$)
-    place((rel: (3, -4), to: "t2out.right"), name: "p61", content: $τ_(60)$, token: true)
+    place(
+      (rel: (3, -4), to: "t2out.right"),
+      name: "p61",
+      content: $τ_(60)$,
+      token: true,
+    )
 
     cetz.draw.line("t0.right", "p02.left", mark: (end: ">"))
     cetz.draw.line("p02.right", "t2in.left", mark: (end: ">"))

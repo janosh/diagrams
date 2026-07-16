@@ -14,7 +14,12 @@
 // Styles
 #let arrow-style = (mark: (end: "stealth", scale: 0.5))
 #let dark-blue = blue.darken(20%)
-#let marc-style = (symbol: "stealth", fill: dark-blue, scale: 0.5, shorten-to: none)
+#let marc-style = (
+  symbol: "stealth",
+  fill: dark-blue,
+  scale: 0.5,
+  shorten-to: none,
+)
 #let gray-line = (paint: gray, thickness: 0.2pt)
 
 // Helper function to draw poles
@@ -33,7 +38,9 @@
     circle((x, y), radius: dot-radius, fill: black, name: name)
     content(name, $p_#name.last()$, anchor: anchor, padding: 2pt)
 
-    let connect-point = if name == "p3" { "poles-label.west" } else { "poles-label" }
+    let connect-point = if name == "p3" { "poles-label.west" } else {
+      "poles-label"
+    }
     line(connect-point, name, stroke: gray-line)
   }
 }
@@ -78,14 +85,27 @@
   // Draw Matsubara frequencies
   for n in range(-y-range, y-range + 1) {
     if n != 0 {
-      circle((0, n), radius: small-dot-radius, fill: black, name: "freq-" + str(n))
-      content("freq-" + str(n), $i omega_#text(size: 0.7em)[#n]$, anchor: "west", padding: (x: 3pt))
+      circle(
+        (0, n),
+        radius: small-dot-radius,
+        fill: black,
+        name: "freq-" + str(n),
+      )
+      content(
+        "freq-" + str(n),
+        $i omega_#text(size: 0.7em)[#n]$,
+        anchor: "west",
+        padding: (x: 3pt),
+      )
     }
   }
 
   // Draw origin
   circle((0, 0), radius: small-dot-radius, fill: black, name: "origin")
-  content("origin", [0], anchor: "south-west", padding: (left: 3pt, bottom: 2pt))
+  content("origin", [0], anchor: "south-west", padding: (
+    left: 3pt,
+    bottom: 2pt,
+  ))
 
   // Draw main contour
   arc(
@@ -106,7 +126,12 @@
     anchor: "origin",
   )
 
-  content("main-contour.90%", text(fill: dark-blue)[$C$], anchor: "north-west", padding: 2pt)
+  content(
+    "main-contour.90%",
+    text(fill: dark-blue)[$C$],
+    anchor: "north-west",
+    padding: 2pt,
+  )
 
   // Draw poles and pole contours
   draw-poles((2.5, 1.5))

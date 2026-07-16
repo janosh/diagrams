@@ -18,24 +18,44 @@
   }
   draw.line((0, 0, -1.2), (0, 0, 1.2), stroke: gray + .3pt, ..arrow-style)
 
-
   // Draw the zero plane (gray, semi-transparent)
   group({
-    draw.rect((-1, -1, 0), (1, 1, 0), fill: rgb(128, 128, 128, 20), stroke: none)
+    draw.rect(
+      (-1, -1, 0),
+      (1, 1, 0),
+      fill: rgb(128, 128, 128, 20),
+      stroke: none,
+    )
   })
 
   // Draw the blue quadrants (s = -1)
   group({
     draw.on-layer(-1, {
-      draw.line((-1, 0, -1), (0, 0, -1), (0, 1, -1), (-1, 1, -1), fill: rgb(173, 216, 230))
-      draw.line((0, -1, -1), (1, -1, -1), (1, 0, -1), (0, 0, -1), fill: rgb(173, 216, 230))
+      draw.line((-1, 0, -1), (0, 0, -1), (0, 1, -1), (-1, 1, -1), fill: rgb(
+        173,
+        216,
+        230,
+      ))
+      draw.line((0, -1, -1), (1, -1, -1), (1, 0, -1), (0, 0, -1), fill: rgb(
+        173,
+        216,
+        230,
+      ))
     })
   })
 
   // Draw the orange quadrants (s = 1)
   group({
-    draw.line((0, 0, 1), (1, 0, 1), (1, 1, 1), (0, 1, 1), fill: rgb(255, 165, 0))
-    draw.line((-1, -1, 1), (0, -1, 1), (0, 0, 1), (-1, 0, 1), fill: rgb(255, 165, 0))
+    draw.line((0, 0, 1), (1, 0, 1), (1, 1, 1), (0, 1, 1), fill: rgb(
+      255,
+      165,
+      0,
+    ))
+    draw.line((-1, -1, 1), (0, -1, 1), (0, 0, 1), (-1, 0, 1), fill: rgb(
+      255,
+      165,
+      0,
+    ))
   })
 
   // Draw grid lines

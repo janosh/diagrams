@@ -1,4 +1,5 @@
 #import "@preview/cetz:0.5.2": canvas, draw, matrix
+#import draw: content, grid, line, set-style, set-transform
 
 #set page(width: auto, height: auto, margin: 18pt, fill: none)
 #set text(fill: black)
@@ -14,7 +15,9 @@
 #let peak_overlay_threshold = 1.6
 
 #let n_b_surface(x_val, y_val) = {
-  let denominator = calc.exp(2 * x_val) - 2 * calc.exp(x_val) * calc.cos(y_val * 1rad) + 1
+  let denominator = (
+    calc.exp(2 * x_val) - 2 * calc.exp(x_val) * calc.cos(y_val * 1rad) + 1
+  )
   if denominator <= 0.001 { return 2.0 }
 
   let z_val = calc.pow(denominator, -0.5)
@@ -33,15 +36,20 @@
   } else if z_ratio < 0.5 {
     color.mix((low_color, 1.0 - z_ratio * 2), (mid_color, z_ratio * 2))
   } else {
-    color.mix((mid_color, 1.0 - (z_ratio - 0.5) * 2), (high_color, (z_ratio - 0.5) * 2))
+    color.mix(
+      (mid_color, 1.0 - (z_ratio - 0.5) * 2),
+      (high_color, (z_ratio - 0.5) * 2),
+    )
   }
 }
 
 #canvas({
-  import draw: content, grid, line, set-style, set-transform
-
   let view_transform = matrix.transform-rotate-dir((2.25, 1.75, -4), (0, 1, 0))
-  let base_transform = matrix.mul-mat(view_transform, matrix.transform-scale((0.95, 0.95, 6.0)))
+  let base_transform = matrix.mul-mat(view_transform, matrix.transform-scale((
+    0.95,
+    0.95,
+    6.0,
+  )))
 
   let (x_min, x_max) = x_domain
   let (y_min, y_max) = y_domain
@@ -114,22 +122,42 @@
   let tick_length = 0.35
   for tick_x in axis_tick_values {
     line((tick_x, y_max, z_min), (tick_x, y_max + tick_length, z_min))
-    content((tick_x, y_max + 2.5, z_min), text(size: tick_font_size)[#tick_x], anchor: "south")
+    content(
+      (tick_x, y_max + 2.5, z_min),
+      text(size: tick_font_size)[#tick_x],
+      anchor: "south",
+    )
   }
   for tick_y in axis_tick_values {
     line((x_max, tick_y, z_min), (x_max + tick_length, tick_y, z_min))
-    content((x_max + 1.2, tick_y, z_min), text(size: tick_font_size)[#tick_y], anchor: "west")
+    content(
+      (x_max + 1.2, tick_y, z_min),
+      text(size: tick_font_size)[#tick_y],
+      anchor: "west",
+    )
   }
   for tick_z in z_tick_values {
     line((x_max, y_max, tick_z), (x_max + tick_length, y_max, tick_z))
-    content((x_max + 1.2, y_max, tick_z), text(size: tick_font_size)[#tick_z], anchor: "west")
+    content(
+      (x_max + 1.2, y_max, tick_z),
+      text(size: tick_font_size)[#tick_z],
+      anchor: "west",
+    )
   }
 
-  content((2.0, y_max + 6.8, z_min), text(size: axis_label_font_size)[$"Re"(p_0)$], anchor: "south")
+  content(
+    (2.0, y_max + 6.8, z_min),
+    text(size: axis_label_font_size)[$"Re"(p_0)$],
+    anchor: "south",
+  )
   content(
     (x_max + 3, (y_min + y_max) / 2 + 2.4, z_min),
     text(size: axis_label_font_size)[$"Im"(p_0)$],
     anchor: "west",
   )
-  content((x_max + 2.6, y_max, (z_min + z_max) / 2), text(size: axis_label_font_size)[$n_B(p_0)$], anchor: "west")
+  content(
+    (x_max + 2.6, y_max, (z_min + z_max) / 2),
+    text(size: axis_label_font_size)[$n_B(p_0)$],
+    anchor: "west",
+  )
 })

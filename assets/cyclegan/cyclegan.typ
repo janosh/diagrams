@@ -5,7 +5,10 @@
 
 #canvas({
   let r = .42
-  let arr = (mark: (end: "stealth", fill: black, scale: .7), stroke: black + 1pt)
+  let arr = (
+    mark: (end: "stealth", fill: black, scale: .7),
+    stroke: black + 1pt,
+  )
 
   let vertices = (
     a-real: ((0, 0), $arrow(a)_"real"$),
@@ -32,13 +35,31 @@
   labeled((-.7, 3.9), "b-real", "in-b", [real data], [(type B)])
 
   // generators
-  labeled("a-real", "b-fake", "gen1", $G_(A B)(arrow(a))$, align(center)[generator \ ($A -> B$)], dy: .4, dy-below: .55)
-  labeled("b-fake", "a-rec", "gen2", $G_(B A)(arrow(b))$, align(center)[generator \ ($B -> A$)], dy: .4, dy-below: .55)
+  labeled(
+    "a-real",
+    "b-fake",
+    "gen1",
+    $G_(A B)(arrow(a))$,
+    align(center)[generator \ ($A -> B$)],
+    dy: .4,
+    dy-below: .55,
+  )
+  labeled(
+    "b-fake",
+    "a-rec",
+    "gen2",
+    $G_(B A)(arrow(b))$,
+    align(center)[generator \ ($B -> A$)],
+    dy: .4,
+    dy-below: .55,
+  )
 
   // discriminator
   line("b-disc", (7.6, 2.5), ..arr, name: "disc")
   content((rel: (0, .4), to: "disc.mid"), $D_B (arrow(b))$)
-  content((rel: (0, -.62), to: "disc.mid"), align(center)[discriminator \ (type B)])
+  content((rel: (0, -.62), to: "disc.mid"), align(
+    center,
+  )[discriminator \ (type B)])
   content((7.7, 2.5), [real?], anchor: "west")
 
   // routing dots
@@ -54,10 +75,18 @@
 
   // dashed selector curve pt1 ↔ pt2, bowing left through the switch pivot pt3,
   // which is drawn after the dash so its white fill occludes it
-  bezier(pt1, pt2, (2.63, 2.85), stroke: (dash: "dashed", paint: black, thickness: 1pt))
+  bezier(pt1, pt2, (2.63, 2.85), stroke: (
+    dash: "dashed",
+    paint: black,
+    thickness: 1pt,
+  ))
   circle(pt3, radius: .09, fill: white, stroke: .9pt)
   // switch output to the discriminator, starting at pt3's rim
-  line((rel: (.085, -.031), to: pt3), (rel: (-r * .8, r * .8), to: "b-disc"), ..arr)
+  line(
+    (rel: (.085, -.031), to: pt3),
+    (rel: (-r * .8, r * .8), to: "b-disc"),
+    ..arr,
+  )
 
   // dashed cyclic-consistency loop
   line(

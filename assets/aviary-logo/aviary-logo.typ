@@ -1,10 +1,10 @@
 #import "@preview/cetz:0.5.2": canvas, draw
+#import draw: bezier, circle, line, scale, set-style
 
 // Transparent background so only the black circle is visible
 #set page(width: auto, height: auto, margin: 5pt, fill: none)
 
 #canvas(length: 1cm, {
-  import draw: *
   scale(2.5)
 
   // Node positions and colors: (position, color)

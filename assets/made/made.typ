@@ -4,13 +4,18 @@
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #canvas({
-  let arrow-style = (mark: (end: "stealth", fill: black, scale: 0.5, offset: 1pt), stroke: .5pt)
+  let arrow-style = (
+    mark: (end: "stealth", fill: black, scale: 0.5, offset: 1pt),
+    stroke: .5pt,
+  )
   let node-style = (stroke: 0.7pt)
   let spacing = (layer: 2, horizontal: 1.3)
 
   let draw-layer(y, nodes, prefix: "", masks: none, x-offset: 0) = {
     for i in range(nodes) {
-      let x = (nodes - 1) * spacing.horizontal / 2 - i * spacing.horizontal + x-offset
+      let x = (
+        (nodes - 1) * spacing.horizontal / 2 - i * spacing.horizontal + x-offset
+      )
       circle((x, y), radius: 0.3, name: prefix + str(i), ..node-style)
       if masks != none {
         content((x, y), str(masks.at(i)))
@@ -31,15 +36,32 @@
   let made-x = 5
 
   // === Autoencoder (left): fully-connected layers + weight labels ===
-  for (idx, (y, nodes)) in ((0, 3), (spacing.layer, 4), (2 * spacing.layer, 4), (3 * spacing.layer, 3)).enumerate() {
+  for (idx, (y, nodes)) in (
+    (0, 3),
+    (spacing.layer, 4),
+    (2 * spacing.layer, 4),
+    (3 * spacing.layer, 3),
+  ).enumerate() {
     draw-layer(y, nodes, prefix: "fcnn" + str(idx) + "-", x-offset: fcnn-x)
   }
-  for (from-idx, to-idx, layer-label) in ((0, 1, $W_1$), (1, 2, $W_2$), (2, 3, $V$)) {
+  for (from-idx, to-idx, layer-label) in (
+    (0, 1, $W_1$),
+    (1, 2, $W_2$),
+    (2, 3, $V$),
+  ) {
     let from-nodes = if from-idx == 0 { 3 } else { 4 }
     let to-nodes = if to-idx == 3 { 3 } else { 4 }
-    connect-layers("fcnn" + str(from-idx) + "-", "fcnn" + str(to-idx) + "-", from-nodes, to-nodes)
+    connect-layers(
+      "fcnn" + str(from-idx) + "-",
+      "fcnn" + str(to-idx) + "-",
+      from-nodes,
+      to-nodes,
+    )
     let mid-y = (from-idx + 0.5) * spacing.layer
-    content((fcnn-x + 2.1 + if layer-label == $W_2$ { 0.3 } else { 0 }, mid-y), layer-label)
+    content(
+      (fcnn-x + 2.1 + if layer-label == $W_2$ { 0.3 } else { 0 }, mid-y),
+      layer-label,
+    )
   }
 
   // === Mask matrices (middle) ===
@@ -52,15 +74,26 @@
     let cell-width = width / cols
     let cell-height = height / rows
     for i in range(cols + 1) {
-      line((x - width / 2 + i * cell-width, y), (x - width / 2 + i * cell-width, y + height), stroke: .2pt)
+      line(
+        (x - width / 2 + i * cell-width, y),
+        (x - width / 2 + i * cell-width, y + height),
+        stroke: .2pt,
+      )
     }
     for i in range(rows + 1) {
-      line((x - width / 2, y + i * cell-height), (x + width / 2, y + i * cell-height), stroke: .2pt)
+      line(
+        (x - width / 2, y + i * cell-height),
+        (x + width / 2, y + i * cell-height),
+        stroke: .2pt,
+      )
     }
     for (row, col) in filled-cells {
       rect(
         (x - width / 2 + col * cell-width, y + (rows - row - 1) * cell-height),
-        (x - width / 2 + (col + 1) * cell-width, y + (rows - row) * cell-height),
+        (
+          x - width / 2 + (col + 1) * cell-width,
+          y + (rows - row) * cell-height,
+        ),
         fill: black,
       )
     }
@@ -75,9 +108,30 @@
     draw-mask(x, y, rows, cols, filled)
   }
 
-  mask-box(mask-x, 2 * mask-sep, 2, 4, ((0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (1, 3)), $M_V =$)
-  mask-box(mask-x, mask-sep, 4, 4, ((0, 0), (0, 2), (0, 3), (3, 0), (3, 2), (3, 3)), $M_(W_2) =$)
-  mask-box(mask-x, 0, 4, 3, ((0, 0), (1, 0), (2, 0), (3, 0), (2, 2)), $M_(W_1) =$)
+  mask-box(
+    mask-x,
+    2 * mask-sep,
+    2,
+    4,
+    ((0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (1, 3)),
+    $M_V =$,
+  )
+  mask-box(
+    mask-x,
+    mask-sep,
+    4,
+    4,
+    ((0, 0), (0, 2), (0, 3), (3, 0), (3, 2), (3, 3)),
+    $M_(W_2) =$,
+  )
+  mask-box(
+    mask-x,
+    0,
+    4,
+    3,
+    ((0, 0), (1, 0), (2, 0), (3, 0), (2, 2)),
+    $M_(W_1) =$,
+  )
 
   // === MADE (right): masked autoregressive connections ===
   for (idx, (y, nodes, masks)) in (
@@ -86,7 +140,13 @@
     (2 * spacing.layer, 4, (1, 2, 2, 1)),
     (3 * spacing.layer, 3, (3, 1, 2)),
   ).enumerate() {
-    draw-layer(y, nodes, prefix: "made" + str(idx) + "-", masks: masks, x-offset: made-x)
+    draw-layer(
+      y,
+      nodes,
+      prefix: "made" + str(idx) + "-",
+      masks: masks,
+      x-offset: made-x,
+    )
   }
 
   for (from, tos) in ((0, ()), (1, (0, 1, 2, 3)), (2, (0, 2, 3))) {
@@ -94,7 +154,12 @@
       line("made0-" + str(from), "made1-" + str(to), ..arrow-style)
     }
   }
-  for (from, tos) in ((0, (1, 2)), (1, (0, 1, 2, 3)), (2, (1, 2)), (3, (1, 2))) {
+  for (from, tos) in (
+    (0, (1, 2)),
+    (1, (0, 1, 2, 3)),
+    (2, (1, 2)),
+    (3, (1, 2)),
+  ) {
     for to in tos {
       line("made1-" + str(from), "made2-" + str(to), ..arrow-style)
     }
@@ -117,9 +182,18 @@
 
   let label-size = 1.5em
   let bottom-y = -1.5
-  content((fcnn-x, bottom-y), text(weight: "bold", size: label-size)[autoencoder])
-  content((mask-x - 2, bottom-y), text(weight: "bold", size: label-size)[$times$])
+  content((fcnn-x, bottom-y), text(
+    weight: "bold",
+    size: label-size,
+  )[autoencoder])
+  content((mask-x - 2, bottom-y), text(
+    weight: "bold",
+    size: label-size,
+  )[$times$])
   content((mask-x, bottom-y), text(weight: "bold", size: label-size)[masks])
-  content((mask-x + 2, bottom-y), text(weight: "bold", size: label-size)[$arrow.r$])
+  content((mask-x + 2, bottom-y), text(
+    weight: "bold",
+    size: label-size,
+  )[$arrow.r$])
   content((made-x, bottom-y), text(weight: "bold", size: label-size)[MADE])
 })

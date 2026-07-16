@@ -24,9 +24,21 @@
   )
 
   // Labels for radii
-  content((rx + .2, 1), $sqrt(2E \/ m)$, anchor: "south-west", padding: 1pt, name: "r1")
+  content(
+    (rx + .2, 1),
+    $sqrt(2E \/ m)$,
+    anchor: "south-west",
+    padding: 1pt,
+    name: "r1",
+  )
   line((rx, 0), "r1.south", stroke: 0.2pt)
-  content((0.5, ry + .5), $sqrt(2E \/ k)$, anchor: "south-west", padding: 1pt, name: "r2")
+  content(
+    (0.5, ry + .5),
+    $sqrt(2E \/ k)$,
+    anchor: "south-west",
+    padding: 1pt,
+    name: "r2",
+  )
   line((0, ry), "r2.south-west", stroke: 0.2pt)
 
   // Label P

@@ -73,8 +73,16 @@
   draw-layer(mid-x + 3 * spacing.layer, 5, prefix: "dh2")
 
   // Draw output nodes
-  circle((mid-x + 4 * spacing.layer, 2 * spacing.node), radius: 0.3, name: "do1")
-  circle((mid-x + 4 * spacing.layer, 4 * spacing.node), radius: 0.3, name: "do2")
+  circle(
+    (mid-x + 4 * spacing.layer, 2 * spacing.node),
+    radius: 0.3,
+    name: "do1",
+  )
+  circle(
+    (mid-x + 4 * spacing.layer, 4 * spacing.node),
+    radius: 0.3,
+    name: "do2",
+  )
 
   // Add dropout X marks
   let x-style = (fill: red, weight: "bold", size: 4em, baseline: -4pt)

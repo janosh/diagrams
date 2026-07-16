@@ -36,13 +36,34 @@
   // Classical Force Fields (red)
   let cff-acc = (0, 2)
   let cff-color = rgb("#ff0000")
-  line(cff-acc, speed, (0.87, -0.5), cff-acc, stroke: cff-color + .5pt, fill: cff-color.transparentize(90%))
+  line(
+    cff-acc,
+    speed,
+    (0.87, -0.5),
+    cff-acc,
+    stroke: cff-color + .5pt,
+    fill: cff-color.transparentize(90%),
+  )
   // ML Force Fields (blue)
   let mlff-blue = rgb("#5a5adc")
-  line((0, 3), (-2.598, -1.5), (2.598, -1.5), (0, 3), stroke: mlff-blue + .5pt, fill: mlff-blue.transparentize(85%))
+  line(
+    (0, 3),
+    (-2.598, -1.5),
+    (2.598, -1.5),
+    (0, 3),
+    stroke: mlff-blue + .5pt,
+    fill: mlff-blue.transparentize(85%),
+  )
   // DFT (green)
   let dft-green = rgb("#4c9900")
-  line(acc, (-0.866, -0.5), transfer, acc, stroke: dft-green + .5pt, fill: dft-green.transparentize(80%))
+  line(
+    acc,
+    (-0.866, -0.5),
+    transfer,
+    acc,
+    stroke: dft-green + .5pt,
+    fill: dft-green.transparentize(80%),
+  )
 
   // // Add rotated labels
   content(

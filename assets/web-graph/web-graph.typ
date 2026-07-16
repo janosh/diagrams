@@ -16,11 +16,20 @@
     d6: (3 * dx, 0),
   )
   for (idx, (name, pos)) in nodes.pairs().enumerate() {
-    circle(pos, radius: r, fill: white.transparentize(40%), stroke: 1.1pt, name: name)
+    circle(
+      pos,
+      radius: r,
+      fill: white.transparentize(40%),
+      stroke: 1.1pt,
+      name: name,
+    )
     content(name, $d_#idx$)
   }
 
-  let arrow = (mark: (end: "stealth", fill: black, scale: .7), stroke: black + 1.4pt)
+  let arrow = (
+    mark: (end: "stealth", fill: black, scale: .7),
+    stroke: black + 1.4pt,
+  )
   let straight(from, to) = line(from, to, ..arrow)
 
   // bezier doesn't clip at node borders like line does, so start/end curved
@@ -31,7 +40,12 @@
     let len = calc.sqrt((tx - cx) * (tx - cx) + (ty - cy) * (ty - cy))
     (cx + (tx - cx) / len * r, cy + (ty - cy) / len * r)
   }
-  let curved(from, to, ctrl) = bezier(rim(from, ctrl), rim(to, ctrl), ctrl, ..arrow)
+  let curved(from, to, ctrl) = bezier(
+    rim(from, ctrl),
+    rim(to, ctrl),
+    ctrl,
+    ..arrow,
+  )
 
   // self loop drawn as a bezier starting/ending on the node boundary
   let self-loop(name, angle) = {
@@ -40,7 +54,13 @@
       center.at(0) + dist * r * calc.cos(angle + offset),
       center.at(1) + dist * r * calc.sin(angle + offset),
     )
-    bezier(endpoint(-14deg, 1), endpoint(14deg, 1), endpoint(-24deg, 3.3), endpoint(24deg, 3.3), ..arrow)
+    bezier(
+      endpoint(-14deg, 1),
+      endpoint(14deg, 1),
+      endpoint(-24deg, 3.3),
+      endpoint(24deg, 3.3),
+      ..arrow,
+    )
   }
 
   curved("d2", "d0", (dx / 2, 1.0)) // top arc, arrow into d0
