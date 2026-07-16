@@ -180,12 +180,12 @@
     ("struct-5.north-east", "relaxed-pool.south", (0, 0.5), (0.5, -0.5), structure_colors.at(4), 50%, "s5-converged"),
     ("struct-3-3.north-east", "relaxed-pool.south", (0, 0.5), (0.25, -5), structure_colors.at(2), 50%, "s3-converged"),
     ("struct-7-2.north-east", "relaxed-pool.south", (0, 0.5), (0.75, -0.5), structure_colors.at(6), 25%, "s7-2-converged"),
-    ("initial-pool.south", "struct-4.north-west", (-0.5, -5), (0, 0.5), rgb("#9F7AEA"), 50%, "s4-new"),
-    ("initial-pool.south", "struct-5.north-east", (0.15, -0.5), (0, 0.5), rgb("#F56565"), 50%, "s5-new"),
-    ("initial-pool.south", "struct-6.north-west", (-0.15, -0.5), (0, 0.5), rgb("#ED64A6"), 20%, "s6-new"),
-    ("initial-pool.south", "struct-7.north-west", (-0.3, -0.5), (0, 0.5), rgb("#ECC94B"), 20%, "s7-new"),
-    ("initial-pool.south", "struct-8.north-west", (-0.4, -0.5), (0, 0.5), rgb("#81E6D9"), 50%, "s8-new"),
-    ("initial-pool.south", "struct-9.north-west", (-0.25, -0.5), (0, 0.5), rgb("#9F7AEA"), 50%, "s9-new"),
+    ("initial-pool.south", "struct-4.north-west", (-0.5, -5), (0, 0.5), structure_colors.at(8), 50%, "s4-new"),
+    ("initial-pool.south", "struct-5.north-east", (0.15, -0.5), (0, 0.5), structure_colors.at(4), 50%, "s5-new"),
+    ("initial-pool.south", "struct-6.north-west", (-0.15, -0.5), (0, 0.5), structure_colors.at(5), 20%, "s6-new"),
+    ("initial-pool.south", "struct-7.north-west", (-0.3, -0.5), (0, 0.5), structure_colors.at(6), 20%, "s7-new"),
+    ("initial-pool.south", "struct-8.north-west", (-0.4, -0.5), (0, 0.5), structure_colors.at(7), 50%, "s8-new"),
+    ("initial-pool.south", "struct-9.north-west", (-0.25, -0.5), (0, 0.5), structure_colors.at(8), 50%, "s9-new"),
   ) {
     dotted_arrow(from, to, ctrl_from, ctrl_to, color, mark_pos, name)
   }

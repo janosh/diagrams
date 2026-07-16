@@ -20,7 +20,7 @@ def render_typst(input_file: str) -> None:
 
     print("Compiling Typst → SVG")
     svg_path = f"{base_path}.svg"
-    subprocess.run([*compile_cmd, svg_path, "-f", "svg"], check=True)
+    subprocess.run([*compile_cmd, svg_path, "-f", "svg", "--pages", "1"], check=True)
     if os.path.isfile(svg_path) and os.path.getsize(svg_path) > 500_000:
         print(f"  SVG too large ({os.path.getsize(svg_path)} bytes), removing")
         os.remove(svg_path)
@@ -32,7 +32,7 @@ def render_typst(input_file: str) -> None:
         out_path = f"{base_path}{suffix}"
         print(f"Compiling Typst → {label}")
         subprocess.run(
-            [*compile_cmd, out_path, "-f", "png", "--ppi", ppi],
+            [*compile_cmd, out_path, "-f", "png", "--pages", "1", "--ppi", ppi],
             check=True,
         )
         compress_png(out_path)

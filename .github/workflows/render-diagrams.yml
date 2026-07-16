@@ -1,9 +1,9 @@
-name: Update PDF, PNG and SVG assets for changed TeX files
+name: Update rendered assets for changed Typst sources
 
 on:
   pull_request:
     branches: [main]
-    paths: [assets/**/*.tex]
+    paths: [assets/**/*.typ]
 
 jobs:
   update-assets:
@@ -18,44 +18,42 @@ jobs:
           # get full history to include BASE_REF commit where PR branched off
           fetch-depth: 0
 
-      - name: Get changed TeX files
+      - name: Get changed Typst source files
         id: diff
         run: |
-          BASE_REF=${{ github.event.before }}
-          git fetch origin $BASE_REF --depth=1
-          echo "TeX files changed between BASE_REF=$BASE_REF and SHA=$GITHUB_SHA:"
-          tex_files=$(git diff --name-only $BASE_REF $GITHUB_SHA | grep .tex$ | xargs)
-          echo "$tex_files"
-          typst_files=$(git diff --name-only $BASE_REF $GITHUB_SHA | grep .typ$ | xargs)
-          echo "$typst_files"
-          echo "::set-output name=tex-files::$tex_files"
-          echo "::set-output name=typst-files::$typst_files"
+          BASE_REF=${{ github.event.pull_request.base.sha }}
+          typst_files=()
+
+          while IFS= read -r changed_file; do
+            case "$changed_file" in
+              assets/_shared/*.typ)
+                shared_name=${changed_file##*/}
+                while IFS= read -r consumer_file; do
+                  typst_files+=("$consumer_file")
+                done < <(git grep -l -F "../_shared/$shared_name" -- 'assets/**/*.typ' || true)
+                ;;
+              assets/*.typ) typst_files+=("$changed_file") ;;
+            esac
+          done < <(git diff --name-only --diff-filter=ACMR "$BASE_REF" "$GITHUB_SHA")
+
+          typst_output=$(printf '%s\n' "${typst_files[@]}" | sort -u | xargs)
+          echo "Typst files: $typst_output"
+          echo "typst-files=$typst_output" >> "$GITHUB_OUTPUT"
 
       - name: Install compression deps
-        if: steps.diff.outputs.tex-files != ''
+        if: steps.diff.outputs.typst-files != ''
         run: |
-          sudo apt-get install -y pdf2svg imagemagick pngquant zopfli
+          sudo apt-get install -y pngquant zopfli
           sudo snap install svgo
-          pip install pdf-compressor
-          pdf-compressor --set-api-key ${{ secrets.ILOVEPDF_PUBLIC_KEY }}
-
-      - name: Install TeX Live
-        if: steps.diff.outputs.tex-files != ''
-        # texlive-latex-extra is needed for package standalone
-        run: sudo apt-get install texlive latexmk texlive-latex-base texlive-latex-extra
 
       - name: Install Typst
         if: steps.diff.outputs.typst-files != ''
         uses: typst-community/setup-typst@v5
 
-      - name: Run render_(typst|tikz).py on changed TeX files
-        if: steps.diff.outputs.tex-files != ''
+      - name: Render changed Typst sources
+        if: steps.diff.outputs.typst-files != ''
         id: render-diagrams
         run: |
-          for tex_file in ${{ steps.diff.outputs.tex-files }}; do
-            echo "Processing $tex_file..."
-            python scripts/render_tikz.py "$tex_file"
-          done
           for typst_file in ${{ steps.diff.outputs.typst-files }}; do
             echo "Processing $typst_file..."
             python scripts/render_typst.py "$typst_file"
@@ -67,6 +65,6 @@ jobs:
           git config user.name 'Janosh Riebesell'
           git config user.email janosh.riebesell@gmail.com
           git checkout ${{ github.head_ref }}
-          git add assets/**/*.{pdf,svg,png}
-          git commit -m 'assets for ${{ steps.diff.outputs.tex-files }}'
+          git add -A -- 'assets/**/*.pdf' 'assets/**/*.svg' 'assets/**/*.png'
+          git diff --cached --quiet || git commit -m 'Update rendered diagram assets'
           git push

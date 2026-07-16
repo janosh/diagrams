@@ -36,7 +36,7 @@
 /// Place $p_i$ labels and barbed marks around `main-loop` at fractional anchors.
 #let draw-momenta(pairs) = {
   for (ii, pos) in pairs {
-    let angle = float(pos) * 360
+    let angle = pos * 360
     let label-angle = (angle - 3) * 1deg
     let rel-pos = (0.75 * radius * calc.cos(label-angle), 0.75 * radius * calc.sin(label-angle))
     content(
@@ -57,7 +57,7 @@
 // First diagram
 #canvas({
   circle((0, 0), radius: radius, stroke: 1pt, name: "main-loop")
-  draw-momenta(((6, "0.0625"), (1, "0.1875"), (2, "0.3125"), (3, "0.4375"), (4, "0.625"), (5, "0.875")))
+  draw-momenta(((6, 0.0625), (1, 0.1875), (2, 0.3125), (3, 0.4375), (4, 0.625), (5, 0.875)))
 
   cross(
     (rel: (0, radius), to: "main-loop"),
@@ -188,7 +188,7 @@
 // Second diagram
 #canvas({
   circle((0, 0), radius: radius, stroke: 1pt, name: "main-loop")
-  draw-momenta(((6, "0.125"), (3, "0.375"), (4, "0.5625"), (1, "0.6875"), (2, "0.8125"), (5, "0.9375")))
+  draw-momenta(((6, 0.125), (3, 0.375), (4, 0.5625), (1, 0.6875), (2, 0.8125), (5, 0.9375)))
 
   cross((rel: (0, -radius), to: "main-loop"), label: $partial_k R_(k,i j)(p_1,p_2)$, rel-label: (0, -0.5))
 
@@ -291,7 +291,7 @@
 // Third diagram
 #canvas({
   circle((0, 0), radius: radius, stroke: 1pt, name: "main-loop")
-  draw-momenta(((1, "0.125"), (2, "0.375"), (3, "0.625"), (4, "0.875")))
+  draw-momenta(((1, 0.125), (2, 0.375), (3, 0.625), (4, 0.875)))
 
   cross((rel: (0, radius), to: "main-loop"), label: $partial_k R_(k,i j)(p_1,p_2)$, rel-label: (0, 0.4))
 

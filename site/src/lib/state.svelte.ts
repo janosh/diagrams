@@ -11,6 +11,7 @@ const search_haystack = (file: Diagram): string =>
     (file.description ?? ``).replaceAll(/<[^>]*>/g, ` `),
   ]
     .join(` `)
+    .normalize(`NFKC`)
     .toLowerCase()
 
 // site-wide reactive filter store; a class instance keeps `filtered` a live derived across
@@ -23,7 +24,11 @@ class DiagramFilters {
   // memoized matches, stays title-sorted (sorted_diagrams pre-sorted; filter keeps order)
   filtered = $derived.by(() => {
     // split on whitespace, drop empties so stray/pasted spaces don't break search
-    const search_terms = this.search.toLowerCase().split(/\s+/).filter(Boolean)
+    const search_terms = this.search
+      .normalize(`NFKC`)
+      .toLowerCase()
+      .split(/\s+/)
+      .filter(Boolean)
     return sorted_diagrams.filter((file) => {
       const haystack = search_haystack(file)
       const matches_search = search_terms.every((term) => haystack.includes(term))

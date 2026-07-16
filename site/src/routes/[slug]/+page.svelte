@@ -44,7 +44,12 @@
 
   // Prefer Typst when both Typst (CeTZ) and TeX (TikZ) sources exist
   let code_tab = $state<`typst` | `tikz`>(`typst`)
-  let show_typst = $derived(Boolean(code.typst) && (code_tab === `typst` || !code.tex))
+  let selected_source = $derived.by(() => {
+    if (code.typst && (code_tab === `typst` || !code.tex)) {
+      return { code: code.typst, ext: `typ` as const }
+    }
+    if (code.tex) return { code: code.tex, ext: `tex` as const }
+  })
 </script>
 
 <svelte:head>
@@ -106,13 +111,12 @@
   <Icon icon="octicon:code" inline />&nbsp; Code
 </h2>
 {#if code.typst && code.tex}
-  <div class="code-tabs" role="tablist" aria-label="Code language">
+  <div class="code-tabs" role="group" aria-label="Code language">
     {#each code_tabs as [id, label, icon] (id)}
       <button
         type="button"
-        role="tab"
         class:active={code_tab === id}
-        aria-selected={code_tab === id}
+        aria-pressed={code_tab === id}
         onclick={() => (code_tab = id)}
       >
         <Icon {icon} inline />&nbsp;{label}
@@ -120,13 +124,12 @@
     {/each}
   </div>
 {/if}
-{#if code.typst || code.tex}
-  {@const ext = show_typst ? `typ` : `tex`}
+{#if selected_source}
   <CodeBlock
-    code={(show_typst ? code.typst : code.tex)!}
-    title="{slug}.{ext}"
-    repo_link={`${repository}/blob/main/assets/${slug}/${slug}.${ext}`}
-    tex_file_uri={show_typst ? `` : `${base_uri}.tex`}
+    code={selected_source.code}
+    title="{slug}.{selected_source.ext}"
+    repo_link={`${repository}/blob/main/assets/${slug}/${slug}.${selected_source.ext}`}
+    tex_file_uri={selected_source.ext === `tex` ? `${base_uri}.tex` : ``}
   />
 {/if}
 
@@ -232,6 +235,10 @@
   }
   .code-tabs button:hover {
     color: var(--text-color);
+  }
+  .code-tabs button:focus-visible {
+    outline: 2px solid var(--link-color);
+    outline-offset: 2px;
   }
   .code-tabs button.active {
     color: var(--text-color);

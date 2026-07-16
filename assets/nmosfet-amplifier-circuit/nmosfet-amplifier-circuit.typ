@@ -552,6 +552,6 @@
     ("CL.R", "M1.S"),
     ("VoutNode", "M1.S"),
   ) {
-    connect-orthogonal(start, end, style: "hv", ..default_stroke)
+    connect-orthogonal(start, end, ..default_stroke)
   }
 })

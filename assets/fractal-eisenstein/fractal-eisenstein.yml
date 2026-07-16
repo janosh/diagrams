@@ -6,8 +6,8 @@ description: |
   copies of a four-point seed at the vertices {0, 1, ω, ω²} with ω = exp(2πi/3).
   At each stage p, every current site is replicated at offsets Δ_p r_p v for seed
   vertices v, where Δ_p = 2^(p-1) and r_p = exp((p-1)πi/3). A final rotation
-  centers the pattern. This is a complex integer lattice structure that can be
-  labeled as a space-filling fractal rather than a curve.
+  gives the pattern a consistent orientation. This is a complex integer lattice
+  structure that can be labeled as a space-filling fractal rather than a curve.
 
 tags:
   - fractal

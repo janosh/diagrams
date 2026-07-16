@@ -168,17 +168,17 @@
     M
   }
 
-  // Generate solution border data
-  let solution-border-data = densify-near-zero(max-deflection-angle).map(deflection-angle => {
-    let M = find-mach-for-deflection(deflection-angle)
-    (M, max-shock-angle(M))
-  })
+  // Reuse the expensive Mach roots for both boundary curves.
+  let deflection-mach-pairs = densify-near-zero(max-deflection-angle).map(
+    deflection-angle => (deflection-angle, find-mach-for-deflection(deflection-angle)),
+  )
 
+  // Generate solution border data
+  let solution-border-data = deflection-mach-pairs.map(((_, M)) => (M, max-shock-angle(M)))
   let solution-border-plot = polar-curve-plot(solution-border-data)
 
   // Generate Mach 1 line data
-  let mach-1-data = densify-near-zero(max-deflection-angle).map(deflection-angle => {
-    let M = find-mach-for-deflection(deflection-angle)
+  let mach-1-data = deflection-mach-pairs.map(((_, M)) => {
     let shock-angle = secant(
       shock-angle => mach-1-residual(M, shock-angle),
       rad(60),

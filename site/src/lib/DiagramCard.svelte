@@ -13,7 +13,7 @@
     format?: `short` | `full`
   } = $props()
   let { slug, title, description, tags } = $derived(item)
-  let content = $derived(description?.replaceAll(/\r?\n/g, ``))
+  let tooltip_content = $derived(description?.replaceAll(/\r\n?|\n/g, ` `))
 </script>
 
 <a href={slug} transition:fade={{ duration: 200 }} {...rest}>
@@ -26,7 +26,7 @@
       src={item.images.sd}
       alt={title}
       class="diagram"
-      {@attach tooltip({ content, allow_html: true })}
+      {@attach tooltip({ content: tooltip_content, allow_html: true })}
     />
   {/if}
 </a>

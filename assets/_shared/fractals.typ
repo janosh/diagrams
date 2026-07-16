@@ -109,19 +109,19 @@
 }
 
 // --- recursive carpet ---
-// Subdivide a square into 3×3 cells, drop cells failing `keep`, recurse until unit cells.
-#let _grid-rectangles(size, origin-x, origin-y, rectangles, keep) = {
+// Subdivide a square into 3×3 cells, drop the center, and recurse until unit cells.
+#let _carpet-rectangles(size, origin-x, origin-y, rectangles) = {
   if size <= 1 { return rectangles }
   let third = calc.floor(size / 3)
   for column in range(3) {
     for row in range(3) {
-      if not keep(column, row) { continue }
+      if column == 1 and row == 1 { continue }
       let block-x = origin-x + column * third
       let block-y = origin-y + row * third
       if third <= 1 {
         rectangles.push((block-x, block-y, block-x + 1.0, block-y + 1.0))
       } else {
-        rectangles = _grid-rectangles(third, block-x, block-y, rectangles, keep)
+        rectangles = _carpet-rectangles(third, block-x, block-y, rectangles)
       }
     }
   }
@@ -159,57 +159,50 @@
   canvas(length: unit-length, render(shift))
 }
 
-#let _draw-segments-canvas(segments, max-size: _panel-size-default) = {
+#let _draw-segments-canvas(segments) = {
   let stroke = _curve-stroke(segments.len())
-  _fit-canvas(segments, 0, max-size, shift => {
+  _fit-canvas(segments, 0, _panel-size-default, shift => {
     for (x0, y0, x1, y1) in segments {
       line(shift((x0, y0)), shift((x1, y1)), stroke: stroke)
     }
   })
 }
 
-#let _draw-rectangles-canvas(rectangles, fill, stroke: auto, max-size: _panel-size-default) = {
+#let _draw-rectangles-canvas(rectangles, fill) = {
   // Stroking with the fill color closes antialiasing seams between adjacent unit cells.
-  let stroke = if stroke == auto { fill + 0.3pt } else { stroke }
-  _fit-canvas(rectangles, 0, max-size, shift => {
+  _fit-canvas(rectangles, 0, _panel-size-default, shift => {
     for (x0, y0, x1, y1) in rectangles {
-      rect(shift((x0, y0)), shift((x1, y1)), stroke: stroke, fill: fill)
+      rect(shift((x0, y0)), shift((x1, y1)), stroke: fill + 0.3pt, fill: fill)
     }
   })
 }
 
-#let _draw-points-canvas(points, fill: _point-fill, max-size: _panel-size-default) = {
+#let _draw-points-canvas(points) = {
   let bounds = _bounds(points)
   let span = calc.max(bounds.x-max - bounds.x-min, bounds.y-max - bounds.y-min, 1.0)
   // Taper dots as stages get denser, but never below ~1pt wide on the page
   // (0.055 canvas units shrink to a fraction of a pixel at dense stages).
   let radius = calc.max(
     0.32 / calc.sqrt(calc.max(points.len(), 1)),
-    0.5pt / (max-size / span),
+    0.5pt / (_panel-size-default / span),
   )
-  _fit-canvas(points, radius, max-size, shift => {
+  _fit-canvas(points, radius, _panel-size-default, shift => {
     for point in points {
-      circle(shift(point), radius: radius, fill: fill, stroke: none)
+      circle(shift(point), radius: radius, fill: _point-fill, stroke: none)
     }
   })
 }
 
 // --- layout ---
-#let standalone-stages(
-  stages: (1, 2, 3),
-  draw-stage: order => none,
-  panel-size: _panel-size-default,
-  gutter: _gutter-default,
-  label-gap: 6pt,
-) = {
+#let _standalone-stages(stages, draw-stage) = {
   // Fixed width, natural height: wide curves (Koch) and near-square sets (carpet)
   // both fill the panel without forced letterboxing.
   grid(
     columns: stages.len(),
-    column-gutter: gutter,
-    row-gutter: label-gap,
+    column-gutter: _gutter-default,
+    row-gutter: 6pt,
     ..stages.map(order => box(
-      width: panel-size,
+      width: _panel-size-default,
       align(center + horizon, draw-stage(order)),
     )),
     ..stages.map(order => align(center, text(size: _label-size)[$n = #order$])),
@@ -252,36 +245,29 @@
     stages: (1, 2, 3),
   ),
   carpet: (
-    kind: "grid",
-    keep: (column, row) => not (column == 1 and row == 1), // punch out center cell
-    fill: _carpet-fill,
+    kind: "carpet",
     stages: (2, 3, 4),
   ),
   eisenstein: (kind: "eisenstein", stages: (2, 3, 4)),
 )
 
-#let standalone-preset-stages(preset-name, panel-size: _panel-size-default, ..style) = {
+#let standalone-preset-stages(preset-name) = {
   let preset = presets.at(preset-name)
   let draw-stage = if preset.kind == "lsystem" {
     order => {
       let path = _expand(preset.axiom, preset.rules, order)
       let segments = _turtle(path, preset.draw-symbols, turtle: preset.turtle)
-      _draw-segments-canvas(segments, max-size: panel-size)
+      _draw-segments-canvas(segments)
     }
-  } else if preset.kind == "grid" {
+  } else if preset.kind == "carpet" {
     order => {
-      let rectangles = _grid-rectangles(calc.pow(3, order), 0.0, 0.0, (), preset.keep)
-      _draw-rectangles-canvas(rectangles, preset.fill, max-size: panel-size)
+      let rectangles = _carpet-rectangles(calc.pow(3, order), 0.0, 0.0, ())
+      _draw-rectangles-canvas(rectangles, _carpet-fill)
     }
   } else if preset.kind == "eisenstein" {
-    stage => _draw-points-canvas(_eisenstein-positions(stage), max-size: panel-size)
+    stage => _draw-points-canvas(_eisenstein-positions(stage))
   } else {
     panic("unknown fractal preset kind: " + repr(preset.kind))
   }
-  standalone-stages(
-    stages: preset.stages,
-    draw-stage: draw-stage,
-    panel-size: panel-size,
-    ..style,
-  )
+  _standalone-stages(preset.stages, draw-stage)
 }

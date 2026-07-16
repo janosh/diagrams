@@ -12,7 +12,7 @@ import yaml
 ROOT = os.path.dirname(os.path.dirname(__file__))
 
 with open(f"{ROOT}/site/package.json") as file:
-    site_url = json.load(file)["homepage"]
+    SITE_URL = json.load(file)["homepage"]
 
 
 @dataclass(frozen=True)
@@ -25,12 +25,17 @@ class DiagramInfo:
 
 def get_diagram_sources(ext: str) -> list[str]:
     """Return source files named after their parent diagram folder."""
-    return [
-        src_path
-        for src_path in glob(f"{ROOT}/assets/**/*{ext}")
-        if os.path.basename(src_path)
-        == f"{os.path.basename(os.path.dirname(src_path))}{ext}"
-    ]
+    sources: list[str] = []
+    for src_path in glob(f"{ROOT}/assets/**/*{ext}"):
+        dir_name = os.path.dirname(src_path)
+        diagram_name = os.path.basename(dir_name)
+        if diagram_name.startswith("_"):
+            continue
+        expected_path = f"{dir_name}/{diagram_name}{ext}"
+        if src_path != expected_path:
+            raise ValueError(f"Expected {expected_path}, found {src_path}")
+        sources.append(src_path)
+    return sources
 
 
 def collect_diagrams() -> list[DiagramInfo]:
@@ -79,10 +84,9 @@ def table_cell(diagram: DiagramInfo | None) -> tuple[str, str]:
     """Build the title and image markdown for one diagram table cell."""
     if diagram is None:
         return "", ""
-    name = diagram.name
-    title = diagram.title
+    name, title = diagram.name, diagram.title
     return (
-        f"[{title}]({site_url}/{name}) {get_code_links(name)}",
+        f"[{title}]({SITE_URL}/{name}) {get_code_links(name)}",
         f"![{title}](assets/{name}/{name}.png)",
     )
 
@@ -112,12 +116,8 @@ def update_readme(table: str, diagram_count: int) -> None:
     with open(f"{ROOT}/readme.md") as file:
         readme = file.read()
 
-    readme = re.sub(
-        pattern=r"(?<=<!-- diagram-table -->\n)(.*)(?=## Scripts\n)",
-        repl=f"\n{table}\n",
-        string=readme,
-        flags=re.DOTALL,
-    )
+    table_pattern = r"(?<=<!-- diagram-table -->\n)(.*)(?=## Scripts\n)"
+    readme = re.sub(table_pattern, f"\n{table}\n", readme, flags=re.DOTALL)
 
     for pattern in (
         r"(?<=Collection of \*\*)\d+(?=\*\* Scientific Diagrams)",
@@ -125,10 +125,7 @@ def update_readme(table: str, diagram_count: int) -> None:
     ):
         readme = re.sub(pattern, str(diagram_count), readme)
 
-    for ext, lang in (
-        (".typ", "Typst"),
-        (".tex", "LaTeX"),
-    ):
+    for ext, lang in ((".typ", "Typst"), (".tex", "LaTeX")):
         count = len(get_diagram_sources(ext))
         readme = re.sub(
             rf"\[\!\[(\d+) with {lang}\]", f"[![{count} with {lang}]", readme
