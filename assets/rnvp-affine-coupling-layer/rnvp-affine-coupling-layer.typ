@@ -4,7 +4,6 @@
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #canvas({
-  // Define styles and constants
   let node-width = 1
   let node-height = 0.6
   let horiz-sep = 1.2
@@ -58,7 +57,6 @@
   let mid-y = -vert-sep / 2
 
   // Function triangles and circles
-  // Draw t triangle with lines
   content(
     (4.3 * horiz-sep, 0.4 * -vert-sep),
     text(fill: white)[t],
@@ -78,7 +76,6 @@
     name: "t-triangle",
   )
 
-  // Draw s triangle with lines
   content(
     (rel: (.6, -.75), to: "t-circle"),
     text(fill: white, baseline: -1pt)[s],

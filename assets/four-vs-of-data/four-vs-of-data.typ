@@ -1,6 +1,6 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import "@preview/cetz-plot:0.1.4": chart
-#import draw: arc, content, line
+#import draw: arc, content
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
@@ -24,7 +24,6 @@
     ("variety-sub", 15, "", rgb("#FFFF00").lighten(60%)),
   )
 
-  // Draw main pie chart
   chart.piechart(
     data,
     value-key: 1,
@@ -47,7 +46,6 @@
     mark: (end: "stealth", fill: black, offset: 5pt, scale: .75),
   )
 
-  // Draw curved arrows using arc
   // Veracity arrow (top right, 0-90°)
   arc(
     (arrow-radius, 0),

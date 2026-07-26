@@ -14,16 +14,6 @@
   mark: (end: "stealth", fill: black, scale: 0.7),
   stroke: 0.8pt,
 )
-#let arc-arrow = (
-  mark: (
-    end: (
-      (pos: 25%, symbol: "barbed", fill: none, scale: 0.7),
-      (pos: 75%, symbol: "barbed", fill: none, scale: 0.7),
-    ),
-  ),
-  stroke: 0.8pt,
-)
-
 #canvas({
   // Left coordinate system (disk)
   line((-axis-length, 0), (axis-length, 0), ..arrow-style, name: "x-axis")

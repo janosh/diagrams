@@ -4,7 +4,6 @@
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #canvas({
-  // Define spacing variables
   let spacing = (horizontal: 1.2, vertical: 0.8)
 
   // Helper function for drawing a matrix with colored dimension indicators
@@ -20,12 +19,10 @@
     let (w, h) = size
     let offset = 0.1 // offset for dimension lines to avoid overlap
 
-    // Draw matrix rectangle
     rect(pos, (x + w, y - h), ..style, name: label)
     // eval label as math so matrix names render italic (matching the formula below)
     content(label, eval(label, mode: "math"))
 
-    // Draw dimension indicators if colors specified
     if top-color != none {
       line((x - 0.02, y + offset), (x + w + 0.02, y + offset), stroke: (
         paint: top-color,
@@ -40,7 +37,6 @@
     }
   }
 
-  // Define styles
   let value-style = (
     stroke: rgb(50%, 50%, 50%),
     fill: white,

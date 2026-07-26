@@ -5,7 +5,6 @@
 #set text(size: 10pt) // Set default text size
 
 #canvas({
-  // Styles
   let node-layout = (radius: 0.25, sep: (x: 1.2, y: 1.2))
   let tree-color = rgb("#6495ED") // Cornflower blue for tree nodes
   let leaf-color = rgb("#FF6347") // Tomato red for leaf nodes
@@ -15,7 +14,6 @@
   )
   let tree-line-style = (stroke: (paint: gray, thickness: 0.6pt))
 
-  // Draw the circles with labels and different fills
   circle(
     (-3, 0),
     radius: 3.0,
@@ -97,10 +95,9 @@
   content("circ-j", $j$)
 
   // --- Tree Structure (Right Side) ---
-  let tree_offset = (3.5, 2.5)
+  let tree-offset = (3.5, 2.5)
 
-  // Define colors for tree nodes matching partition circles
-  let node_colors = (
+  let node-colors = (
     a: blue.lighten(70%).transparentize(50%),
     b: green.lighten(70%).transparentize(50%),
     c: green.lighten(70%).transparentize(50%),
@@ -113,12 +110,11 @@
     j: blue.lighten(30%).transparentize(50%),
   )
 
-  // Helper to draw tree nodes
-  let draw_tree_node(pos, label, name) = {
+  let draw-tree-node(pos, label, name) = {
     circle(
       pos,
       radius: node-layout.radius,
-      fill: node_colors.at(label),
+      fill: node-colors.at(label),
       stroke: 0.5pt,
       name: name,
     )
@@ -126,84 +122,83 @@
   }
 
   // Level 0
-  draw_tree_node((tree_offset.at(0) + 0, tree_offset.at(1) + 0), "a", "node-a")
+  draw-tree-node((tree-offset.at(0) + 0, tree-offset.at(1) + 0), "a", "node-a")
 
   // Level 1
-  draw_tree_node(
+  draw-tree-node(
     (
-      tree_offset.at(0) - 1.5 * node-layout.sep.x,
-      tree_offset.at(1) - node-layout.sep.y,
+      tree-offset.at(0) - 1.5 * node-layout.sep.x,
+      tree-offset.at(1) - node-layout.sep.y,
     ),
     "b",
     "node-b",
   )
-  draw_tree_node(
+  draw-tree-node(
     (
-      tree_offset.at(0) + 2.0 * node-layout.sep.x,
-      tree_offset.at(1) - node-layout.sep.y,
+      tree-offset.at(0) + 2.0 * node-layout.sep.x,
+      tree-offset.at(1) - node-layout.sep.y,
     ),
     "c",
     "node-c",
   )
-  draw_tree_node(
-    (tree_offset.at(0) + 0, tree_offset.at(1) - node-layout.sep.y * 1.5),
+  draw-tree-node(
+    (tree-offset.at(0) + 0, tree-offset.at(1) - node-layout.sep.y * 1.5),
     "j",
     "node-j",
   )
 
   // Level 2
-  draw_tree_node(
+  draw-tree-node(
     (
-      tree_offset.at(0) - 2.0 * node-layout.sep.x,
-      tree_offset.at(1) - 2 * node-layout.sep.y,
+      tree-offset.at(0) - 2.0 * node-layout.sep.x,
+      tree-offset.at(1) - 2 * node-layout.sep.y,
     ),
     "f",
     "node-f",
   )
-  draw_tree_node(
+  draw-tree-node(
     (
-      tree_offset.at(0) - 1.0 * node-layout.sep.x,
-      tree_offset.at(1) - 2 * node-layout.sep.y,
+      tree-offset.at(0) - 1.0 * node-layout.sep.x,
+      tree-offset.at(1) - 2 * node-layout.sep.y,
     ),
     "d",
     "node-d",
   )
-  draw_tree_node(
+  draw-tree-node(
     (
-      tree_offset.at(0) + 1.0 * node-layout.sep.x,
-      tree_offset.at(1) - 2 * node-layout.sep.y,
+      tree-offset.at(0) + 1.0 * node-layout.sep.x,
+      tree-offset.at(1) - 2 * node-layout.sep.y,
     ),
     "g",
     "node-g",
   )
-  draw_tree_node(
+  draw-tree-node(
     (
-      tree_offset.at(0) + 2.0 * node-layout.sep.x,
-      tree_offset.at(1) - 2 * node-layout.sep.y,
+      tree-offset.at(0) + 2.0 * node-layout.sep.x,
+      tree-offset.at(1) - 2 * node-layout.sep.y,
     ),
     "e",
     "node-e",
   )
-  draw_tree_node(
+  draw-tree-node(
     (
-      tree_offset.at(0) + 3.0 * node-layout.sep.x,
-      tree_offset.at(1) - 2 * node-layout.sep.y,
+      tree-offset.at(0) + 3.0 * node-layout.sep.x,
+      tree-offset.at(1) - 2 * node-layout.sep.y,
     ),
     "i",
     "node-i",
   )
 
   // Level 3
-  draw_tree_node(
+  draw-tree-node(
     (
-      tree_offset.at(0) + 1.0 * node-layout.sep.x,
-      tree_offset.at(1) - 3 * node-layout.sep.y,
+      tree-offset.at(0) + 1.0 * node-layout.sep.x,
+      tree-offset.at(1) - 3 * node-layout.sep.y,
     ),
     "h",
     "node-h",
   )
 
-  // Draw Tree Edges
   line("node-a", "node-b", ..tree-line-style)
   line("node-a", "node-c", ..tree-line-style)
   line("node-a", "node-j", ..tree-line-style) // Connect a to j

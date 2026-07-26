@@ -12,7 +12,6 @@
     stroke: 0.7pt,
   )
 
-  // Helper to draw diamond node with its label
   let diamond(pos, name, label, fill: none) = {
     polygon(
       pos,
@@ -26,7 +25,6 @@
     content(pos, label, anchor: "center")
   }
 
-  // Helper to draw circle node with its label
   let circle-node(pos, name, label) = {
     circle(
       pos,
@@ -52,7 +50,6 @@
   // Middle node
   let m1-pos = (spacing.node / 2, -spacing.row / 2)
 
-  // Draw forward pass nodes
   diamond(z1-pos, "z1", $arrow(z)_(1:d)$, fill: rgb("#cce5ff"))
   circle-node(eq1-pos, "eq1", "=")
   diamond(x1-pos, "x1", $arrow(x)_(1:d)$, fill: rgb("#cce5ff"))
@@ -92,7 +89,6 @@
   // Middle node
   let m2-pos = (right-x + 1.5 * spacing.node, -spacing.row / 2)
 
-  // Draw inverse pass nodes
   diamond(z1r-pos, "z1r", $arrow(z)_(1:d)$, fill: rgb("#cce5ff"))
   circle-node(eq2-pos, "eq2", "=")
   diamond(x1r-pos, "x1r", $arrow(x)_(1:d)$, fill: rgb("#cce5ff"))

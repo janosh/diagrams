@@ -7,7 +7,7 @@
 #canvas(length: 1cm, {
   draw.scale(1.2)
 
-  // Vertices: (position, arc_start, arc_stop)
+  // Vertices: (position, arc-start, arc-stop)
   let vertices = (
     ((-4.5, -1.2), -34deg, 45deg),
     ((-2.8, 3.5), -90deg, -11deg),
@@ -16,14 +16,14 @@
     ((0, -5.2), 56deg, 124deg),
   )
   // Pentagon edge controls
-  let edge_ctrls = (
+  let edge-ctrls = (
     ((-3.2, 0.2), (-2.8, 1.8)),
     ((0.2, 2.8), (2.2, 2.8)),
     ((4, 0.8), (4, -0.2)),
     ((3, -2.8), (1.2, -3.5)),
     ((-1.2, -3.5), (-2.8, -2.3)),
   )
-  // Arrow data: (from_off, to_off, ctrl1, ctrl2, label, lbl_pos, anchor)
+  // Arrow data: (from-off, to-off, ctrl1, ctrl2, label, label-pos, anchor)
   // Control points for moderate curvature
   let arrows = (
     (
@@ -88,7 +88,7 @@
     for idx in range(5) {
       let (pt, ..) = vertices.at(idx)
       let (next, ..) = vertices.at(calc.rem(idx + 1, 5))
-      let (ctrl1, ctrl2) = edge_ctrls.at(idx)
+      let (ctrl1, ctrl2) = edge-ctrls.at(idx)
       if idx == 0 { bezier(pt, next, ctrl1, ctrl2) } else {
         bezier((), next, ctrl1, ctrl2)
       }
@@ -117,12 +117,12 @@
   )))
 
   on-layer(3, {
-    let arrow_gray = rgb("#555")
+    let arrow-gray = rgb("#555")
     set-style(
-      stroke: (paint: arrow_gray, thickness: 1.2pt),
+      stroke: (paint: arrow-gray, thickness: 1.2pt),
       mark: (
-        fill: arrow_gray,
-        stroke: arrow_gray,
+        fill: arrow-gray,
+        stroke: arrow-gray,
         scale: 0.8,
         start: "stealth",
         end: "stealth",
@@ -131,12 +131,12 @@
 
     for (
       idx,
-      (off1, off2, ctrl1, ctrl2, lbl, lbl_pos, anchor),
+      (off1, off2, ctrl1, ctrl2, lbl, label-pos, anchor),
     ) in arrows.enumerate() {
       let (p1, ..) = vertices.at(idx)
       let (p2, ..) = vertices.at(calc.rem(idx + 1, 5))
       bezier(off(p1, off1), off(p2, off2), ctrl1, ctrl2)
-      content(lbl_pos, lbl, anchor: anchor)
+      content(label-pos, lbl, anchor: anchor)
     }
 
     for (idx, (delta, lbl, anchor)) in labels.enumerate() {

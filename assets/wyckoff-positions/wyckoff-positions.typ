@@ -8,7 +8,6 @@
   let small-square = 0.3 // Size of small squares
   let circle-radius = 0.3 // Size of circles
 
-  // Define colors
   let colors = (
     teal: rgb("#19d4d4"),
     yellow: rgb("#f3f380"),

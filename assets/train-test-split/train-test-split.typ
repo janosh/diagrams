@@ -10,6 +10,7 @@
   let target-color = rgb("#ffcc00")
   let target-color-alt = rgb("#e6b800")
   let test-target-color = rgb("#ffe680")
+  let (data-header, target-header) = (rgb("#008080"), rgb("#cc9900"))
   let arrow-style = (stroke: black + 2pt, mark: (end: "stealth", size: 10pt))
   let step-text-style = (fill: black, weight: "bold", size: 14.3pt)
   let label-text-style = (fill: black, weight: "bold", size: 18.2pt)
@@ -36,236 +37,155 @@
   let test-x = train-x
   let test-y = -8.0
   let model-x = 18
-  let top_tables_y_offset = -3.5
-  let nn_y_offset = -4.5
+  let top-tables-y-offset = -3.5
+  let nn-y-offset = -4.5
 
   // rows selected for the test set (0-indexed), simulating random sampling
   let test-indices = (1, 4, 6)
+  let feature-headers = ("X1", "X2", "X3", "X4", "X5")
 
-  let create_table(x, y, width, height, fill, header_fill, header_texts) = {
-    let num_rows = int((height - header-height) / row-height)
-    rect(
-      (x, y + height / 2),
-      (x + width, y - height / 2),
-      stroke: matrix-stroke,
-      fill: fill,
-    )
-    rect(
-      (x, y + height / 2),
-      (x + width, y + height / 2 - header-height),
-      stroke: matrix-stroke,
-      fill: header_fill,
-    )
-    for i in range(header_texts.len()) {
-      content(
-        (x + 0.5 + i, y + height / 2 - header-height / 2),
-        text(..header-text-style)[#header_texts.at(i)],
-        anchor: "center",
-      )
-    }
-    for i in range(num_rows + 1) {
-      let y-pos = y + height / 2 - header-height - i * row-height
-      line((x, y-pos), (x + width, y-pos), stroke: matrix-stroke)
-    }
-    for i in range(int(width) + 1) {
-      line(
-        (x + i, y + height / 2 - header-height),
-        (x + i, y - height / 2),
-        stroke: matrix-stroke,
-      )
-    }
+  // color a data row: test rows are highlighted, the rest alternate two shades
+  let striped(base, alt, highlight) = idx => {
+    if test-indices.contains(idx) { highlight } else if calc.rem(idx, 2) == 0 {
+      base
+    } else { alt }
   }
 
-  // fill a table's data rows with per-row colors from row_color(i)
-  let fill_rows(x, y_base, width, table_height, count, row_color) = {
-    for i in range(count) {
-      let row-y-top = y_base + table_height / 2 - header-height - i * row-height
-      rect(
-        (x, row-y-top),
-        (x + width, row-y-top - row-height),
-        stroke: matrix-stroke,
-        fill: row_color(i),
-      )
-    }
-  }
+  let tables = (
+    (
+      x: full-data-x,
+      y: top-tables-y-offset,
+      width: full-data-width,
+      height: full-data-height,
+      label: "Full Dataset",
+      headers: feature-headers + ("Y",),
+      fill: white,
+      header-fill: rgb("#0099cc"),
+    ),
+    (
+      x: features-x,
+      y: top-tables-y-offset,
+      width: feature-width,
+      height: full-data-height,
+      label: "Features",
+      headers: feature-headers,
+      fill: data-color,
+      header-fill: data-header,
+      rows: 7,
+      row-color: striped(data-color, data-color-alt, test-data-color),
+    ),
+    (
+      x: target-x,
+      y: top-tables-y-offset,
+      width: target-width,
+      height: full-data-height,
+      label: "Target",
+      headers: ("Y",),
+      fill: target-color,
+      header-fill: target-header,
+      rows: 7,
+      row-color: striped(target-color, target-color-alt, test-target-color),
+    ),
+    (
+      x: train-x,
+      y: vertical-center,
+      width: feature-width,
+      height: train-height,
+      label: [X#sub[train]],
+      headers: feature-headers,
+      fill: data-color,
+      header-fill: data-header,
+      rows: 5,
+      row-color: idx => data-color,
+    ),
+    (
+      x: train-x + feature-width + 0.5,
+      y: vertical-center,
+      width: target-width,
+      height: train-height,
+      label: [y#sub[train]],
+      headers: ("Y",),
+      fill: target-color,
+      header-fill: target-header,
+      rows: 5,
+      row-color: idx => target-color,
+    ),
+    (
+      x: test-x,
+      y: test-y,
+      width: feature-width,
+      height: test-height,
+      label: [X#sub[test]],
+      headers: feature-headers,
+      fill: test-data-color,
+      header-fill: data-header,
+      rows: 3,
+      row-color: idx => test-data-color,
+    ),
+    (
+      x: test-x + feature-width + 0.5,
+      y: test-y,
+      width: target-width,
+      height: test-height,
+      label: [y#sub[test]],
+      headers: ("Y",),
+      fill: test-target-color,
+      header-fill: target-header,
+      rows: 3,
+      row-color: idx => test-target-color,
+    ),
+  )
 
-  let add_table_label(x, y, width, height, label_text) = {
+  for (x, y, width, height, label, ..) in tables {
     content(
       (x + width / 2, y + height / 2 + label-offset),
-      text(..label-text-style)[#label_text],
+      text(..label-text-style)[#label],
       anchor: "center",
     )
   }
 
-  add_table_label(
-    full-data-x,
-    top_tables_y_offset,
-    full-data-width,
-    full-data-height,
-    "Full Dataset",
-  )
-  add_table_label(
-    features-x,
-    top_tables_y_offset,
-    feature-width,
-    full-data-height,
-    "Features",
-  )
-  add_table_label(
-    target-x,
-    top_tables_y_offset,
-    target-width,
-    full-data-height,
-    "Target",
-  )
-  add_table_label(
-    train-x,
-    vertical-center,
-    feature-width,
-    train-height,
-    [X#sub[train]],
-  )
-  add_table_label(
-    train-x + feature-width + 0.5,
-    vertical-center,
-    target-width,
-    train-height,
-    [y#sub[train]],
-  )
-  add_table_label(test-x, test-y, feature-width, test-height, [X#sub[test]])
-  add_table_label(
-    test-x + feature-width + 0.5,
-    test-y,
-    target-width,
-    test-height,
-    [y#sub[test]],
-  )
-
-  let feature_headers = ("X1", "X2", "X3", "X4", "X5")
-  let full_dataset_headers = feature_headers + ("Y",)
-
-  // full dataset (left, white cells)
-  create_table(
-    full-data-x,
-    top_tables_y_offset,
-    full-data-width,
-    full-data-height,
-    white,
-    rgb("#0099cc"),
-    full_dataset_headers,
-  )
-
-  // features + target with alternating rows; test rows highlighted
-  create_table(
-    features-x,
-    top_tables_y_offset,
-    feature-width,
-    full-data-height,
-    data-color,
-    rgb("#008080"),
-    feature_headers,
-  )
-  fill_rows(
-    features-x,
-    top_tables_y_offset,
-    feature-width,
-    full-data-height,
-    7,
-    i => if test-indices.contains(i) { test-data-color } else if calc.rem(i, 2) == 0 {
-      data-color
-    } else { data-color-alt },
-  )
-
-  create_table(
-    target-x,
-    top_tables_y_offset,
-    target-width,
-    full-data-height,
-    target-color,
-    rgb("#cc9900"),
-    ("Y",),
-  )
-  fill_rows(
-    target-x,
-    top_tables_y_offset,
-    target-width,
-    full-data-height,
-    7,
-    i => if test-indices.contains(i) { test-target-color } else if calc.rem(
-      i,
-      2,
+  for spec in tables {
+    let (x, y, width, height, headers) = spec
+    let top = y + height / 2
+    rect((x, top), (x + width, y - height / 2), stroke: matrix-stroke, fill: spec.fill)
+    rect(
+      (x, top),
+      (x + width, top - header-height),
+      stroke: matrix-stroke,
+      fill: spec.header-fill,
     )
-      == 0 { target-color } else { target-color-alt },
-  )
-
-  // train tables (uniform color)
-  create_table(
-    train-x,
-    vertical-center,
-    feature-width,
-    train-height,
-    data-color,
-    rgb("#008080"),
-    feature_headers,
-  )
-  fill_rows(train-x, vertical-center, feature-width, train-height, 5, i => {
-    data-color
-  })
-
-  create_table(
-    train-x + feature-width + 0.5,
-    vertical-center,
-    target-width,
-    train-height,
-    target-color,
-    rgb("#cc9900"),
-    ("Y",),
-  )
-  fill_rows(
-    train-x + feature-width + 0.5,
-    vertical-center,
-    target-width,
-    train-height,
-    5,
-    i => target-color,
-  )
-
-  // test tables (uniform lighter color)
-  create_table(
-    test-x,
-    test-y,
-    feature-width,
-    test-height,
-    test-data-color,
-    rgb("#008080"),
-    feature_headers,
-  )
-  fill_rows(test-x, test-y, feature-width, test-height, 3, i => test-data-color)
-
-  create_table(
-    test-x + feature-width + 0.5,
-    test-y,
-    target-width,
-    test-height,
-    test-target-color,
-    rgb("#cc9900"),
-    ("Y",),
-  )
-  fill_rows(
-    test-x + feature-width + 0.5,
-    test-y,
-    target-width,
-    test-height,
-    3,
-    i => test-target-color,
-  )
+    for (idx, header) in headers.enumerate() {
+      content(
+        (x + 0.5 + idx, top - header-height / 2),
+        text(..header-text-style)[#header],
+        anchor: "center",
+      )
+    }
+    for idx in range(int((height - header-height) / row-height) + 1) {
+      let row-y = top - header-height - idx * row-height
+      line((x, row-y), (x + width, row-y), stroke: matrix-stroke)
+    }
+    for idx in range(int(width) + 1) {
+      line((x + idx, top - header-height), (x + idx, y - height / 2), stroke: matrix-stroke)
+    }
+    for idx in range(spec.at("rows", default: 0)) {
+      let row-top = top - header-height - idx * row-height
+      rect(
+        (x, row-top),
+        (x + width, row-top - row-height),
+        stroke: matrix-stroke,
+        fill: (spec.row-color)(idx),
+      )
+    }
+  }
 
   // === Neural network ===
   let nn-x = model-x
-  let nn-y = vertical-center + nn_y_offset
-  let nn-width = 6
-  let nn-height = 6
+  let nn-y = vertical-center + nn-y-offset
+  let (nn-width, nn-height) = (6, 6)
   let neuron-radius = 0.65
+  let input-x = nn-x - nn-width / 3
+  let output-x = nn-x + nn-width / 3
 
   content(
     (nn-x, nn-y + nn-height / 2 + 1.2),
@@ -273,86 +193,74 @@
     anchor: "center",
   )
 
-  let create_neuron(x, y, name) = {
+  let neuron(x, y, name) = {
     circle((x, y), radius: neuron-radius, fill: rgb("#aaddff"), stroke: none)
     content((x, y), text(..neuron-text-style)[#name], anchor: "center")
   }
+  let input-y = idx => nn-y - 2 + idx * 2
+  let hidden-y = idx => nn-y - 3 + idx * 2
 
-  for i in range(3) {
-    create_neuron(nn-x - nn-width / 3, nn-y - 2 + i * 2, "i" + str(i + 1))
-  }
-  for i in range(4) {
-    create_neuron(nn-x, nn-y - 3 + i * 2, "h" + str(i + 1))
-  }
-  create_neuron(nn-x + nn-width / 3, nn-y, "o")
+  for idx in range(3) { neuron(input-x, input-y(idx), "i" + str(idx + 1)) }
+  for idx in range(4) { neuron(nn-x, hidden-y(idx), "h" + str(idx + 1)) }
+  neuron(output-x, nn-y, "o")
 
-  for i in range(3) {
-    let input-y = nn-y - 2 + i * 2
-    for j in range(4) {
+  for idx in range(3) {
+    for jdx in range(4) {
       line(
-        (nn-x - nn-width / 3 + neuron-radius, input-y),
-        (nn-x - neuron-radius, nn-y - 3 + j * 2),
+        (input-x + neuron-radius, input-y(idx)),
+        (nn-x - neuron-radius, hidden-y(jdx)),
         stroke: black + 0.5pt,
       )
     }
   }
-  for j in range(4) {
+  for jdx in range(4) {
     line(
-      (nn-x + neuron-radius, nn-y - 3 + j * 2),
-      (nn-x + nn-width / 3 - neuron-radius, nn-y),
+      (nn-x + neuron-radius, hidden-y(jdx)),
+      (output-x - neuron-radius, nn-y),
       stroke: black + 0.5pt,
     )
   }
 
   // === Step arrows ===
-  let create_arrow(start, end, label, label_offset) = {
+  let step-arrow(start, end, label, label-offset) = {
     line(start, end, ..arrow-style)
     if label != "" {
       content(
-        (
-          (start.at(0) + end.at(0)) / 2,
-          (start.at(1) + end.at(1)) / 2 + label_offset,
-        ),
+        ((start.at(0) + end.at(0)) / 2, (start.at(1) + end.at(1)) / 2 + label-offset),
         text(..step-text-style)[#label],
         anchor: "center",
       )
     }
   }
 
-  // full dataset -> features/target
-  create_arrow(
-    (full-data-x + full-data-width + 0.5, top_tables_y_offset),
-    (features-x - 0.5, top_tables_y_offset),
+  step-arrow(
+    (full-data-x + full-data-width + 0.5, top-tables-y-offset),
+    (features-x - 0.5, top-tables-y-offset),
     [1. Arrange\ data],
     1.2,
   )
 
-  // features/target -> train and test
-  let arrow2_common_start = (target-x + target-width + 0.5, top_tables_y_offset)
-  create_arrow(
-    arrow2_common_start,
-    (train-x - 0.5, vertical-center + .5),
-    "",
-    0,
-  )
-  create_arrow(arrow2_common_start, (test-x - 0.5, test-y), "", 0)
+  // one arrow head fans out to both the train and the test table
+  let split-from = (target-x + target-width + 0.5, top-tables-y-offset)
+  step-arrow(split-from, (train-x - 0.5, vertical-center + .5), "", 0)
+  step-arrow(split-from, (test-x - 0.5, test-y), "", 0)
   content(
-    (target-x + target-width + 3.0, arrow2_common_start.at(1)),
+    (target-x + target-width + 3.0, split-from.at(1)),
     text(..step-text-style)[2. Train-Test\ Split],
     anchor: "center",
   )
 
-  // train -> model
-  create_arrow(
-    (train-x + feature-width + 0.5 + target-width + 0.5, vertical-center),
-    (nn-x - nn-width / 3 - neuron-radius - 0.5, nn-y + 1),
+  let tables-right = feature-width + 0.5 + target-width + 0.5
+  let model-left = input-x - neuron-radius - 0.5
+  step-arrow(
+    (train-x + tables-right, vertical-center),
+    (model-left, nn-y + 1),
     [3. Use for\ training],
     2,
   )
-  // test -> model
-  create_arrow(
-    (test-x + feature-width + 0.5 + target-width + 0.5, test-y),
-    (nn-x - nn-width / 3 - neuron-radius - 0.5, nn-y - 1),
+  step-arrow(
+    (test-x + tables-right, test-y),
+    (model-left, nn-y - 1),
     [4. Use for\ testing],
     -2.2,
   )

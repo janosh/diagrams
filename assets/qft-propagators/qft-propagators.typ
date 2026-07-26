@@ -8,7 +8,6 @@
 #let arrow-style = (end: "stealth", fill: black, scale: 0.5)
 
 #canvas({
-  // Axes
   // Real axis with zigzag decoration
   // TODO: add arrow at the end, requireshttps://github.com/cetz-package/cetz/issues/446
   decorations.zigzag(

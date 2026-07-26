@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw, vector
+#import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content, intersections, line, rect
 
 #set page(width: auto, height: auto, margin: 3pt, fill: none)
@@ -7,51 +7,50 @@
   // Diagram dimensions and styles
   let width = 12
   let height = 8
-  let point_radius = 0.15
-  let line_thickness = 1.5pt
-  let arrow_style = (
+  let point-radius = 0.15
+  let line-thickness = 1.5pt
+  let arrow-style = (
     mark: (end: "stealth"),
-    stroke: line_thickness,
+    stroke: line-thickness,
     fill: black,
   )
-  let hull_style = (stroke: blue.darken(20%) + 2.5pt)
-  let hyp_hull_style = (
-    stroke: (paint: gray, thickness: line_thickness, dash: "dashed"),
+  let hull-style = (stroke: blue.darken(20%) + 2.5pt)
+  let hyp-hull-style = (
+    stroke: (paint: gray, thickness: line-thickness, dash: "dashed"),
   )
 
   // Draw axes first to establish named positions
-  line((0, 0), (0, height), ..arrow_style, name: "y-axis-left")
-  line((0, 0), (width, 0), stroke: line_thickness, name: "x-axis")
-  line((width, 0), (width, height), ..arrow_style, name: "y-axis-right")
+  line((0, 0), (0, height), ..arrow-style, name: "y-axis-left")
+  line((0, 0), (width, 0), stroke: line-thickness, name: "x-axis")
+  line((width, 0), (width, height), ..arrow-style, name: "y-axis-right")
 
-  // Draw stable points
-  let stable_point(pos, label, anchor: "north", padding: none, ..rest) = {
-    circle(pos, radius: point_radius, fill: blue.darken(20%), ..rest)
+  let stable-point(pos, label, anchor: "north", padding: none, ..rest) = {
+    circle(pos, radius: point-radius, fill: blue.darken(20%), ..rest)
     content(pos, label, anchor: anchor, padding: padding)
   }
 
-  stable_point(
+  stable-point(
     (0, height - 1),
     "A",
     anchor: "west",
     padding: (left: 10pt),
     name: "a",
   )
-  stable_point(
+  stable-point(
     (width / 2, 2),
     "AX",
     anchor: "north",
     padding: (top: 10pt),
     name: "ax",
   )
-  stable_point(
+  stable-point(
     (width * 5 / 7, 1.5),
     $A_2X_5$,
     anchor: "north",
     padding: (top: 10pt),
     name: "a2x5",
   )
-  stable_point(
+  stable-point(
     (width, height - 1.5),
     "X",
     anchor: "east",
@@ -59,20 +58,18 @@
     name: "x",
   )
 
-  // Draw unstable points
-  let unstable_point(pos, label, ..rest) = {
+  let unstable-point(pos, label, ..rest) = {
     let (x, y) = pos
     rect((x, y - 0.15), (x + 0.3, y + 0.15), fill: red, stroke: .5pt, ..rest)
     content(pos, label, anchor: "south", padding: (bottom: 8pt))
   }
 
-  unstable_point((width / 3, height - 1.5), $A_2X$, name: "a2x")
-  unstable_point((width * 7 / 9, 3.7), $A_2X_7$, name: "a2x7")
+  unstable-point((width / 3, height - 1.5), $A_2X$, name: "a2x")
+  unstable-point((width * 7 / 9, 3.7), $A_2X_7$, name: "a2x7")
 
-  // Draw convex hull
-  line("a", "ax", ..hull_style, name: "hull-a-ax")
-  line("ax", "a2x5", ..hull_style, name: "hull-ax-a2x5")
-  line("a2x5", "x", ..hull_style, name: "hull-a2x5-x")
+  line("a", "ax", ..hull-style, name: "hull-a-ax")
+  line("ax", "a2x5", ..hull-style, name: "hull-ax-a2x5")
+  line("a2x5", "x", ..hull-style, name: "hull-a2x5-x")
   content(
     (rel: (-1.8, -.8), to: "ax"),
     text(fill: blue.darken(20%), size: 12pt)[convex hull\ of stability],
@@ -90,16 +87,14 @@
     name: "hull-label-line",
   )
 
-  // Draw hypothetical hull
-  line("ax", "a2x7", ..hyp_hull_style, name: "hyp-hull-ax-a2x7")
-  line("a2x7", "x", ..hyp_hull_style, name: "hyp-hull-a2x7-x")
+  line("ax", "a2x7", ..hyp-hull-style, name: "hyp-hull-ax-a2x7")
+  line("a2x7", "x", ..hyp-hull-style, name: "hyp-hull-a2x7-x")
   content(
     (rel: (0, 0.3), to: "hyp-hull-a2x7-x.mid"),
     text(fill: gray, size: 13pt)[hypothetical hull for\ evaluating $A_2X_5$],
     anchor: "east",
   )
 
-  // Draw decomposition energy arrows
   // First draw invisible lines to find intersections
   line(
     (rel: (0, 3), to: "a2x"),
@@ -109,12 +104,11 @@
   )
   intersections("a2x-isect", "a2x-vertical", "hull-a-ax", "hull-ax-a2x5")
 
-  // Draw arrow between intersection points
   line(
     "a2x-isect.0",
     "a2x",
     mark: (end: "stealth", fill: red),
-    stroke: red + line_thickness,
+    stroke: red + line-thickness,
     name: "arrow-a2x",
   )
   content((rel: (-0.5, 0), to: "arrow-a2x.60%"), text(fill: red)[$Delta E_d$])
@@ -143,12 +137,11 @@
     "hyp-hull-a2x7-x",
   )
 
-  // Draw arrow between intersection points
   line(
     "a2x5-isect.0",
     "a2x5",
     mark: (end: "stealth", fill: rgb("#4d8000")),
-    stroke: rgb("#4d8000") + line_thickness,
+    stroke: rgb("#4d8000") + line-thickness,
     name: "arrow-a2x5",
   )
   content(
@@ -168,11 +161,10 @@
     fill: rgb("#4d8000").lighten(90%),
   )
 
-  // Draw chemical potential range
   line(
     (0, height - 4.5),
     "ax",
-    stroke: (paint: orange, thickness: line_thickness, dash: "dashed"),
+    stroke: (paint: orange, thickness: line-thickness, dash: "dashed"),
     name: "mu-line",
   )
   content((rel: (2.4, 0), to: "mu-line.start"), rotate(14deg)[#text(
@@ -180,19 +172,17 @@
     size: 13pt,
   )[$μ_A$ range\ where AX is stable]])
 
-  // Draw orange double arrow
   line(
     "hull-a-ax.2%",
     "mu-line.4%",
     mark: (symbol: "stealth", fill: orange, offset: 0.1, scale: 0.6),
-    stroke: orange + line_thickness,
+    stroke: orange + line-thickness,
     name: "mu-arrow",
   )
 
-  // Draw legend
   circle(
     (0.5, 1),
-    radius: point_radius,
+    radius: point-radius,
     fill: blue.darken(20%),
     name: "legend-stable",
   )
@@ -208,7 +198,6 @@
     left: 5pt,
   ))
 
-  // Add axis labels
   content((rel: (-0.5, 0), to: "y-axis-left.mid"), [#rotate(
     -90deg,
   )[$Delta E_f$ (energy/atom)]])

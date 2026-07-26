@@ -10,9 +10,7 @@
   let circle-r = 0.8 // Radius of symbol circles
   let circle-offset = -3.2 // X offset for symbol circles
 
-  // Helper to draw a rung with its symbol
   let draw-rung(y, color, text-content, symbol) = {
-    // Draw rung rectangle
     rect(
       (-width / 2, y),
       (width / 2, y + height),
@@ -27,7 +25,6 @@
       anchor: "west", // Left align text
     )
 
-    // Add symbol circle if provided
     if symbol != none {
       circle(
         (circle-offset, y + height / 2),
@@ -39,7 +36,6 @@
     }
   }
 
-  // Draw all rungs from bottom to top
   draw-rung(0, rgb("b4a7d6"), [0: *Hartree World*], none)
 
   draw-rung(
@@ -79,7 +75,6 @@
 
   draw-rung(6 * rung-sep, rgb("ffb7c5"), [*Chemical accuracy*], none)
 
-  // Draw vertical lines connecting rungs
   line(
     (-width / 2, 0),
     (-width / 2, 6 * rung-sep + height),

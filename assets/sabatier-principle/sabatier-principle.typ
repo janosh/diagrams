@@ -4,7 +4,6 @@
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #canvas({
-  // Draw background rectangles
   rect(
     (0, 0),
     (4.5, 4),
@@ -18,13 +17,11 @@
     stroke: none,
   )
 
-  // Draw axes
   let arrow-style = (mark: (end: "stealth", fill: black, scale: 0.7))
   let axis-overshoot = -0.75
   line((axis-overshoot, 0), (8, 0), ..arrow-style, name: "x-axis") // x-axis
   line((0, axis-overshoot), (0, 5), ..arrow-style, name: "y-axis") // y-axis
 
-  // Add axis labels
   content(
     (rel: (-axis-overshoot, -0.2), to: "x-axis.6%"),
     "weak",
@@ -42,19 +39,16 @@
     anchor: "west",
   )
 
-  // Add region labels
   content((rel: (0, 1), to: "x-axis.37%"), [limited by\ desorption\ of product])
   content(
     (rel: (0, 1), to: "x-axis.77%"),
     [limited by\ activation\ of reactant],
   )
 
-  // Draw Sabatier optimum label
   let ellipse-center = (4.5, 4.2)
   let ellipse-width = 1.2
   let ellipse-height = ellipse-width / 2
 
-  // Draw ellipse background
   circle(
     ellipse-center,
     radius: (ellipse-width, ellipse-height),
@@ -62,7 +56,6 @@
     stroke: none,
   )
 
-  // Draw volcano curve using hobby spline
   hobby(
     (0, 1),
     (2, 2.6),
@@ -72,7 +65,6 @@
     stroke: 1.2pt,
     omega: 1,
   )
-  // Add label
   content(
     ellipse-center,
     align(center)[Sabatier\ optimum],

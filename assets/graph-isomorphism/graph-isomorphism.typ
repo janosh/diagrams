@@ -3,7 +3,6 @@
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
-// Helper function to draw a node with a name
 #let node(pos, label, color, name) = {
   content(
     pos,
@@ -18,7 +17,6 @@
 }
 
 #canvas({
-  // Define colors
   let light-red = rgb("#f9c5c5")
   let light-orange = rgb("#f2ceaa")
   let light-blue = rgb("#b9d6f2")

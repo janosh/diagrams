@@ -80,11 +80,9 @@
     anchor: "origin",
   )
 
-  // Draw axes
   line((xmin, 0), (xmax, 0), ..arrow-style, name: "x-axis")
   line((0, ymin), (0, ymax), ..arrow-style, name: "y-axis")
 
-  // Draw tick marks with labels
   line((-0.5, -0.02), (-0.5, 0.02), name: "x-minus-tick")
   content((rel: (0, -0.08), to: "x-minus-tick.mid"), $-1 / 2$, anchor: "north")
 
@@ -126,7 +124,6 @@
     4pt,
   ))
 
-  // Add F₀ labels
   content("y-axis.80%", $F_0$, anchor: "west", padding: (0, 0, 0, 2pt))
   content((rel: (-0.2, -0.2), to: "B-arc.50%"), $F_0'$)
 })

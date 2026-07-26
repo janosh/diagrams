@@ -7,18 +7,15 @@
 #set-style(line: (mark: (scale: .5)))
 
 #canvas({
-  // Draw axes
   line((0, 0), (0, p), mark: (end: "stealth", fill: black), name: "y-axis")
   content((rel: (0.2, 0), to: "y-axis.end"), $p$, name: "p-label")
 
   line((0, 0), (V, 0), mark: (end: "stealth", fill: black), name: "x-axis")
   content((rel: (0.2, 0), to: "x-axis.end"), $V$, name: "V-label")
 
-  // Define key values
   let (p-min, p-max) = (0.2 * p, 0.9 * p)
   let (V-min, V-max) = (0.2 * V, 0.9 * V)
 
-  // Create reference points for min/max values
   content((0, p-max), name: "p-max-ref", [])
   content((0, p-min), name: "p-min-ref", [])
   content((V-min, 0), name: "V-min-ref", [])
@@ -64,7 +61,6 @@
   content((rel: (-0.5, 0), to: "p-min-ref"), $p_"min"$, name: "p-min-label")
   content((rel: (0, -0.5), to: "V-max-ref"), $V_"max"$, name: "V-max-label")
 
-  // Define cycle points
   circle((V-min, p-max), radius: 3pt, fill: black, name: "point-a")
 
   circle((V-max, 0.5 * p), radius: 3pt, fill: black, name: "point-b")
@@ -73,7 +69,6 @@
 
   circle((V-min, 0.45 * p), radius: 3pt, fill: black, name: "point-d")
 
-  // Add point labels
   content(
     "point-a",
     [1],
@@ -97,23 +92,20 @@
     name: "label-d",
   )
 
-  // Define styles for paths
-  let arrow_style = (end: "stealth", fill: black, scale: .5)
-  let stroke_style = (paint: rgb("#00008b"), thickness: 1.5pt)
+  let arrow-style = (end: "stealth", fill: black, scale: .5)
+  let stroke-style = (paint: rgb("#00008b"), thickness: 1.5pt)
 
-  // Draw cycle paths with arrows and labels
   // a -> b (adiabatic expansion)
   bezier(
     "point-a",
     "point-b",
     (rel: (-5, 1), to: "point-b"),
-    stroke: stroke_style,
-    mark: arrow_style,
+    stroke: stroke-style,
+    mark: arrow-style,
     name: "path-ab",
   )
 
   // Calculate midpoint for label using relative positioning
-  // Create a midpoint reference
   content(
     ((V-min + V-max) / 2, (p-max + 0.5 * p) / 2 - 0.35),
     text(fill: blue.darken(25%), $Delta Q = 0$),
@@ -126,8 +118,8 @@
   line(
     "point-b",
     "point-c",
-    mark: arrow_style,
-    stroke: stroke_style,
+    mark: arrow-style,
+    stroke: stroke-style,
     name: "path-bc",
   )
 
@@ -143,8 +135,8 @@
     "point-c",
     "point-d",
     (rel: (2.4, -1.3), to: "point-d"),
-    stroke: stroke_style,
-    mark: arrow_style,
+    stroke: stroke-style,
+    mark: arrow-style,
     name: "path-cd",
   )
 
@@ -160,8 +152,8 @@
   line(
     "point-d",
     "point-a",
-    mark: arrow_style,
-    stroke: stroke_style,
+    mark: arrow-style,
+    stroke: stroke-style,
     name: "path-da",
   )
 

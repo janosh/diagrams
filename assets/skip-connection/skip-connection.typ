@@ -7,7 +7,6 @@
   let node-sep = 2.5 // Horizontal separation between nodes
   let arrow-style = (mark: (end: "stealth", fill: black, scale: 0.5))
 
-  // Draw main nodes
   content(
     (0, 0),
     [layer 1],
@@ -51,13 +50,11 @@
   )
   content((rel: (0, -0.3), to: "act2.south"), "activation")
 
-  // Draw main flow arrows
   line("l1", "act1", ..arrow-style)
   line("act1", "l2", ..arrow-style)
   line("l2", "add.west", ..arrow-style)
   line("add.east", "act2", ..arrow-style)
 
-  // Draw input arrow
   line(
     (rel: (-2, 0), to: "l1"),
     "l1",
@@ -66,7 +63,6 @@
   )
   content((rel: (0, -0.2), to: "input.10%"), $arrow(x)$)
 
-  // Draw skip connection using hobby curve
   hobby(
     (rel: (-1.5, 0), to: "l1"),
     (rel: (0, 2.2), to: "act1"),

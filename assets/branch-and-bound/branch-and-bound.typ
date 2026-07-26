@@ -9,13 +9,11 @@
     mark: (end: "stealth", fill: black, scale: 0.2, offset: 0.03),
   )
 
-  // Helper to draw a node with label
   let draw-node(pos, label, name: none) = {
     circle(pos, radius: layout.radius, name: name)
     content(pos, $#label$)
   }
 
-  // Helper to draw edge label
   let draw-edge-label(from, to, label, left: true) = {
     let anchor = if left { "east" } else { "west" }
     content(
@@ -25,7 +23,6 @@
     )
   }
 
-  // Draw nodes level by level
   // Root (level 0)
   draw-node((0, 0), $P_0$, name: "p0")
 
@@ -41,7 +38,6 @@
   draw-node((-layout.node, -3 * layout.level), $P_5$, name: "p5")
   draw-node((layout.node, -3 * layout.level), $P_6$, name: "p6")
 
-  // Draw edges
   line("p0", "p1", ..arrow-style, name: "p0-p1")
   line("p0", "p2", ..arrow-style, name: "p0-p2")
   line("p2", "p3", ..arrow-style, name: "p2-p3")
@@ -49,7 +45,6 @@
   line("p3", "p5", ..arrow-style, name: "p3-p5")
   line("p3", "p6", ..arrow-style, name: "p3-p6")
 
-  // Draw edge labels
   draw-edge-label("p0", "p1", $x_1 <= 0$)
   draw-edge-label("p0", "p2", $x_1 >= 1$, left: false)
   draw-edge-label("p2", "p3", $x_2 <= 0$)

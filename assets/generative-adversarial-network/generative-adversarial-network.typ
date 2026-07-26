@@ -1,5 +1,5 @@
 #import "@preview/cetz:0.5.2": canvas, draw
-#import draw: circle, content, group, hobby, line, on-layer
+#import draw: circle, content, hobby, line, on-layer
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
@@ -17,7 +17,6 @@
 
   let (y-real, y-fake) = (2, 0)
 
-  // Draw nodes
   // z_in node
   circle((0, y-fake), name: "zin", ..node-style)
   content("zin", $arrow(z)_"in"$)
@@ -42,7 +41,6 @@
     padding: 2pt,
   )
 
-  // Draw arrows and their labels
   // Generator input arrow
   line((-2.5, y-fake), "zin", ..arrow-style, name: "zin-line")
   content("zin-line.mid", $p_theta (arrow(z))$, anchor: "south", padding: 0.1)
@@ -78,12 +76,10 @@
     name: "dot3",
   ))
 
-  // Draw connecting lines with names
   line("fake", "dot1", ..arrow-style, name: "conn1")
   line("real", "dot2", ..arrow-style, name: "conn2")
   line("dot3", "D", ..arrow-style, name: "conn3")
 
-  // Draw dashed curve using named points
   hobby(
     "dot1",
     (4.2, (y-real - y-fake) / 2),

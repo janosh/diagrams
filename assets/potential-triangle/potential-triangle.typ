@@ -5,7 +5,7 @@
 #set text(size: 10pt)
 
 #canvas({
-  let node_radius = 0.8
+  let node-radius = 0.8
   let colors = (
     "enthalpy": rgb("#FFA500"),
     "free-energy": rgb("#008080"),
@@ -18,7 +18,7 @@
     ("entropy", [$S$\ Entropy], (0, -3)),
   ) {
     let fill = colors.at(name)
-    circle(pos, radius: node_radius, fill: fill, name: name, stroke: none)
+    circle(pos, radius: node-radius, fill: fill, name: name, stroke: none)
     content(pos, align(center, text(fill: white, label)))
   }
 

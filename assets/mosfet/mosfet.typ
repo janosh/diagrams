@@ -1,5 +1,5 @@
 #import "@preview/cetz:0.5.2": canvas, draw
-#import draw: content, line, rect, set-style
+#import draw: content, line, rect
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
@@ -16,7 +16,6 @@
   let start-y = 2
   let end-y = 3
 
-  // Draw brick pattern background
   rect(
     (start-x, start-y),
     (end-x, end-y),
@@ -25,7 +24,6 @@
     name: "dielectric-box",
   )
 
-  // Draw horizontal brick lines
   for y in range(int((end-y - start-y) / brick-height + 1)) {
     let y-pos = start-y + y * brick-height
     if y-pos < end-y {
@@ -33,7 +31,6 @@
     }
   }
 
-  // Draw vertical brick lines with offset for alternating rows
   for x in range(int((end-x - start-x) / brick-width + 1)) {
     for y in range(int((end-y - start-y) / brick-height)) {
       let x-offset = if calc.rem(y, 2) == 0 { 0 } else { brick-width / 2 }

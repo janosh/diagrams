@@ -36,7 +36,6 @@
     )
   }
 
-  // Draw heatmap cells
   for row in range(9) {
     for col in range(9) {
       let value = cell-data.at(row).at(col)

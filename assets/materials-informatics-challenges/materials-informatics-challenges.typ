@@ -4,7 +4,6 @@
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 #set text(weight: "bold")
 
-// Constants
 #let (main-r, item-r, spacing) = (1.2, 2.2, 6)
 #let (main-stroke, item-stroke, arrow-stroke) = (1pt, 1pt, 1.5pt)
 #let (main-font, item-font) = (11pt, 7pt)
@@ -105,7 +104,6 @@
     ),
   )
 
-  // Draw all circles and their items
   for (pos, title, color, name, items) in circles {
     challenge-node(pos, title, color, name + "-node")
     for (idx, (item, angle)) in items.enumerate() {

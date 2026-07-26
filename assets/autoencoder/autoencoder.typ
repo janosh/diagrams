@@ -28,7 +28,6 @@
 }
 
 #canvas({
-  // Define layer configurations
   let layers = (
     // (x-pos, neuron-count, fill-color, label-prefix, label-superscript, y-offset)
     (0, 8, rgb("#f6db71"), "x", none, 3.2), // Input layer
@@ -50,7 +49,6 @@
   content((layers.at(2).at(0), 2.2), align(center)[Latent\ Representation])
   content((layers.at(-1).at(0), 4), align(center)[Output Layer])
 
-  // Draw all layers
   for (x, count, fill, prefix, sup, y-offset) in layers {
     // eval prefix as math so the base renders in italic math font (e.g. x, h, hat(x))
     let base = eval(prefix, mode: "math")

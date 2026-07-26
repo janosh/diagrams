@@ -4,7 +4,6 @@
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #canvas({
-  // Define styles and constants
   let layout = (
     node: (width: 1, height: 0.45),
     spacing: (x: 1.2, y: 4),
@@ -30,7 +29,6 @@
     content((left-name, 50%, right-name), text(size: 14pt)[$dots.c$])
   }
 
-  // Create nodes in both rows
   for (y, prefix, colors) in (
     (0, "x", (blue, rgb(0%, 100%, 0%, 20%))),
     (-layout.spacing.y, "z", (blue, orange)),

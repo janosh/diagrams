@@ -10,7 +10,6 @@
 #canvas({
   // Set up coordinate system
 
-  // Draw blue circle with fill in background
   circle(
     (0, 0),
     radius: 2 / 3 * y-range,
@@ -20,14 +19,12 @@
     name: "fermi-circle",
   )
 
-  // Draw dot grid
   for x in range(-x-range, x-range + 1) {
     for y in range(-y-range, y-range + 1) {
       circle((x, ratio * y), radius: 2pt, fill: black)
     }
   }
 
-  // Draw axes with arrows
   let arrow-style = (mark: (end: "stealth", fill: black))
   let x-end = (x-range + 0.5, 0)
   let y-end = (0, ratio * y-range + 0.5)
@@ -35,11 +32,9 @@
   line((-x-range - 0.5, 0), x-end, ..arrow-style)
   line((0, -ratio * y-range - 0.5), y-end, ..arrow-style, name: "y-axis")
 
-  // Add axis labels
   content(x-end, $k_x$, anchor: "south-west")
   content((rel: (.55, 0), to: "y-axis.end"), $k_y$, anchor: "north-east")
 
-  // Draw lattice spacing indicators with arrows
   let spacing-arrow = (
     mark: (symbol: "stealth", fill: black, scale: .3, offset: 0.1),
     stroke: 0.7pt,

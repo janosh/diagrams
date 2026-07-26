@@ -16,15 +16,12 @@
   let arrow-style = (mark: (end: ">", fill: black, scale: 0.7))
   let wall-width = 0.5
 
-  // Draw axes
   draw.line((-0.1, 0), (6.2, 0), ..arrow-style, name: "x-axis")
   draw.line((0, -0.7), (0, 4), ..arrow-style, name: "y-axis")
 
-  // Add axis labels
   content((rel: (-0.2, 0.3), to: "x-axis.end"), $x$, name: "x-label")
   content((rel: (0.5, 0), to: "y-axis.end"), $U(x)$, name: "y-label")
 
-  // Draw wall with hatching
   on-layer(
     1, // draw wall above pressure lines
     draw.rect(
@@ -36,7 +33,6 @@
     ),
   )
 
-  // Draw potential curves
   let samples = 100
   let dx = (6 - wall-width) / samples
 
