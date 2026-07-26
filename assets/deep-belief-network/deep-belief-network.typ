@@ -1,6 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content, rect
-#import "../_shared/network.typ": fully-connect
+#import "../_shared/network.typ": fully-connect, node-stroke
+#import "../_shared/theme.typ": line-weight, neutral
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
@@ -25,7 +26,7 @@
         (x-pos, y),
         radius: node-r,
         fill: white,
-        stroke: 1.5pt,
+        stroke: node-stroke,
         name: prefix + str(idx),
       )
     }
@@ -47,11 +48,11 @@
 
   let arr = (
     mark: (end: "stealth", fill: black, scale: .6),
-    stroke: black + 1.2pt,
+    stroke: neutral.annotation + line-weight.hairline,
   )
   let bi-arr = (
     mark: (start: "stealth", end: "stealth", fill: black, scale: .6),
-    stroke: black + 1.2pt,
+    stroke: neutral.annotation + line-weight.hairline,
   )
   fully-connect("a", "b", 9, 5, start: 0, ..arr)
   fully-connect("b", "c", 5, 5, start: 0, ..bi-arr)

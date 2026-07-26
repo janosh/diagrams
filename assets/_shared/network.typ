@@ -1,6 +1,12 @@
-// Shared wiring for the neural-network diagrams.
+// Shared vocabulary for the neural-network diagrams, so a reader moving between them
+// can assume a styling difference means something.
 
 #import "@preview/cetz:0.5.2": draw
+#import "theme.typ": line-weight
+
+// One outline weight for every unit in every network diagram. Radius still varies,
+// because the diagrams are drawn at different scales and show different amounts.
+#let node-stroke = line-weight.thin
 
 // Edge from every node of one layer to every node of the next, addressing nodes by the
 // `<prefix><index>` names their layer gave them. `start` is that numbering's first index.

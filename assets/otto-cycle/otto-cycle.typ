@@ -4,9 +4,11 @@
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #let (V, p) = (9, 6)
-#set-style(line: (mark: (scale: .5)))
 
 #canvas({
+  // must live inside the canvas; at document level Typst prints the returned closure
+  set-style(line: (mark: (scale: .5)))
+
   line((0, 0), (0, p), mark: (end: "stealth", fill: black), name: "y-axis")
   content((rel: (0.2, 0), to: "y-axis.end"), $p$, name: "p-label")
 

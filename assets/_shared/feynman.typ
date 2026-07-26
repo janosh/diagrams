@@ -3,6 +3,7 @@
 
 #import "@preview/cetz:0.5.2": draw
 #import draw: circle, content, mark
+#import "theme.typ": line-weight, neutral
 
 // Diagonal hatching marking a vertex as dressed rather than bare.
 #let hatched = tiling(size: (.1cm, .1cm))[
@@ -15,7 +16,7 @@
   stroke: (thickness: 0.75pt),
 )
 // Hairline tying an off-diagram label to the vertex it names.
-#let callout = (stroke: gray + 0.3pt)
+#let callout = (stroke: (paint: neutral.hairline, thickness: line-weight.hairline))
 
 // `rel-label: none` puts the label on top of `pos` instead of offset from it.
 #let _label-at(pos, rel-label) = if rel-label == none { pos } else {

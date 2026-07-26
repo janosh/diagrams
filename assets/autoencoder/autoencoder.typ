@@ -1,5 +1,6 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: content, line
+#import "../_shared/network.typ": node-stroke
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
@@ -9,7 +10,7 @@
     text,
     frame: "circle",
     fill: fill,
-    stroke: 0.5pt,
+    stroke: node-stroke,
     padding: 1pt,
   )
 }

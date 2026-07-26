@@ -1,6 +1,6 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content, line
-#import "../_shared/network.typ": fully-connect
+#import "../_shared/network.typ": fully-connect, node-stroke
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
@@ -13,6 +13,7 @@
       circle(
         (x, spacing.node * (ii + 1)),
         radius: 0.3,
+        stroke: node-stroke,
         name: prefix + str(ii + 1),
       )
     }
@@ -25,8 +26,8 @@
   draw-layer(spacing.layer, 5, prefix: "h1") // First hidden layer
   draw-layer(2 * spacing.layer, 5, prefix: "h2") // Second hidden layer
 
-  circle((3 * spacing.layer, 2 * spacing.node), radius: 0.3, name: "o1")
-  circle((3 * spacing.layer, 4 * spacing.node), radius: 0.3, name: "o2")
+  circle((3 * spacing.layer, 2 * spacing.node), radius: 0.3, stroke: node-stroke, name: "o1")
+  circle((3 * spacing.layer, 4 * spacing.node), radius: 0.3, stroke: node-stroke, name: "o2")
 
   // Connect all layers
   connect-layers("i", "h1", 5, 5)

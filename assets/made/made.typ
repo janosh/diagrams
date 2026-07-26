@@ -1,6 +1,6 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content, line, rect
-#import "../_shared/network.typ": fully-connect
+#import "../_shared/network.typ": fully-connect, node-stroke
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
@@ -9,7 +9,7 @@
     mark: (end: "stealth", fill: black, scale: 0.5, offset: 1pt),
     stroke: .5pt,
   )
-  let node-style = (stroke: 0.7pt)
+  let node-style = (stroke: node-stroke)
   let spacing = (layer: 2, horizontal: 1.3)
 
   let draw-layer(y, nodes, prefix: "", masks: none, x-offset: 0) = {

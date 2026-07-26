@@ -1,6 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas
 #import "@preview/cetz-plot:0.1.4": plot
-#import "../_shared/plot.typ": style-axes
+#import "../_shared/plot.typ": legend-box, style-axes
+#import "../_shared/theme.typ": series
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
@@ -31,12 +32,12 @@
     axis-style: "left",
     x-tick-step: 0.2,
     y-tick-step: 0.5,
-    legend: (6.5, 8.5),
-    legend-style: (item: (spacing: 0.15), padding: 0.25, stroke: .5pt),
+    legend: "inner-north-east",
+    legend-style: legend-box,
     {
       // First function (blue)
       plot.add(
-        style: (stroke: blue + 1.5pt),
+        style: (stroke: series(0)),
         samples: 100,
         domain: (0.01, 1),
         f1,
@@ -45,7 +46,7 @@
 
       // Second function (red)
       plot.add(
-        style: (stroke: red + 1.5pt),
+        style: (stroke: series(1)),
         samples: 50,
         domain: (0, 1.1),
         f2,
@@ -54,7 +55,7 @@
 
       // Third function (orange)
       plot.add(
-        style: (stroke: orange + 1.5pt),
+        style: (stroke: series(2)),
         samples: 125,
         domain: (0.01, 1),
         f3,

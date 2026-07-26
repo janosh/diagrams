@@ -5,6 +5,11 @@
 
 #let stealth = (end: "stealth", fill: black)
 
+// One legend look for every plot: hairline box, consistent padding and item spacing.
+// Pair it with a named `legend:` anchor rather than hardcoded coordinates, which drift
+// as soon as the data range changes.
+#let legend-box = (item: (spacing: 0.15), padding: 0.15, stroke: 0.5pt)
+
 // Pass `none` for a label or the mark to fall back to cetz-plot's own default.
 #let style-axes(
   x-label: (anchor: "south-east", offset: -0.2),

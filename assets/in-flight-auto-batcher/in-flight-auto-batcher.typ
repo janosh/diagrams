@@ -1,5 +1,6 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: bezier, circle, content, line, rect
+#import "../_shared/theme.typ": size
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
@@ -104,7 +105,7 @@
     )
     content(
       (rel: (0, 0.1), to: name + ".north"),
-      text(size: 8pt)[#total atoms total],
+      text(size: size.caption)[#total atoms total],
       anchor: "south",
     )
     content((rel: (0, -0.7), to: name + ".south"), [*Step #(idx + 1)*])
@@ -141,7 +142,7 @@
       name: name,
     )
     content(name, [Structure #label])
-    content((rel: (0, -0.5), to: name), text(size: 8pt)[#atoms atoms], anchor: "north")
+    content((rel: (0, -0.5), to: name), text(size: size.caption)[#atoms atoms], anchor: "north")
     if converged {
       content(
         (rel: (0.1, 0), to: name + ".east"),

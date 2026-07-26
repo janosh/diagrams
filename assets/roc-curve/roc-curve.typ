@@ -1,6 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas
 #import "@preview/cetz-plot:0.1.4": plot
 #import "../_shared/plot.typ": stealth, style-axes
+#import "../_shared/theme.typ": line-weight, neutral, series
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
@@ -54,7 +55,7 @@
     ),
     {
       plot.add(
-        style: (stroke: gray),
+        style: (stroke: (paint: neutral.annotation, dash: "dashed", thickness: line-weight.thin)),
         domain: (0, 1),
         samples: 2,
         random-classifier,
@@ -62,7 +63,7 @@
       )
 
       plot.add(
-        style: (stroke: green),
+        style: (stroke: series(0)),
         domain: (0, 1),
         samples: 50,
         perfect-classifier,
@@ -70,7 +71,7 @@
       )
 
       plot.add(
-        style: (stroke: blue),
+        style: (stroke: series(1)),
         domain: (0, 1),
         samples: 100,
         excellent-classifier,
@@ -78,7 +79,7 @@
       )
 
       plot.add(
-        style: (stroke: purple),
+        style: (stroke: series(2)),
         domain: (0, 1),
         samples: 100,
         good-classifier,
@@ -86,7 +87,7 @@
       )
 
       plot.add(
-        style: (stroke: orange),
+        style: (stroke: series(3)),
         domain: (0, 1),
         samples: 100,
         fair-classifier,
@@ -94,7 +95,7 @@
       )
 
       plot.add(
-        style: (stroke: red),
+        style: (stroke: series(4)),
         domain: (0, 1),
         samples: 100,
         poor-classifier,

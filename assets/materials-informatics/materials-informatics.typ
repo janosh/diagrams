@@ -2,6 +2,7 @@
 #import draw: circle, content, line, rect
 #import "../_shared/network.typ": fully-connect
 #import "../_shared/shading.typ": sphere
+#import "../_shared/theme.typ": size
 
 #set page(width: auto, height: auto, margin: 5pt, fill: none)
 
@@ -137,7 +138,7 @@
       )
       content(
         (x + cell-size / 2, y + cell-size / 2),
-        text(fill: if value < 40 { white } else { black }, size: 8pt)[#value],
+        text(fill: if value < 40 { white } else { black }, size: size.caption)[#value],
         anchor: "center",
         name: "value-" + str(row-idx) + "-" + str(col-idx),
       )

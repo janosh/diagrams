@@ -1,6 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import "@preview/cetz-plot:0.1.4": plot
 #import "../_shared/plot.typ": style-axes
+#import "../_shared/theme.typ": series
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
@@ -25,7 +26,7 @@
     {
       // zT curve (red)
       plot.add(
-        style: (stroke: rgb(85%, 0%, 0%) + 2pt),
+        style: (stroke: series(0, thickness: 2pt)),
         (
           (1.174e18, 0.2317),
           (1.551e18, 0.2787),
@@ -68,7 +69,7 @@
 
       // σ curve (blue)
       plot.add(
-        style: (stroke: rgb(0%, 0%, 70%) + 2pt),
+        style: (stroke: series(1, thickness: 2pt)),
         (
           (1.176e18, 0.005689),
           (1.554e18, 0.008070),
@@ -105,7 +106,7 @@
 
       // κ curve (green)
       plot.add(
-        style: (stroke: rgb(0%, 70%, 0%) + 2pt),
+        style: (stroke: series(2, thickness: 2pt)),
         (
           (1.175e18, 0.08187),
           (1.553e18, 0.08218),
@@ -144,7 +145,7 @@
 
       // S curve (orange)
       plot.add(
-        style: (stroke: orange + 2pt),
+        style: (stroke: series(3, thickness: 2pt)),
         (
           (1.65e18, 1),
           (1.931e18, 0.9729),
@@ -177,7 +178,7 @@
 
       // S²σ curve (cyan)
       plot.add(
-        style: (stroke: aqua + 2pt),
+        style: (stroke: series(4, thickness: 2pt)),
         (
           (1.159e18, 0.04006),
           (1.532e18, 0.04739),

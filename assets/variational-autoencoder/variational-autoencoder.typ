@@ -1,6 +1,6 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content, line, rect
-#import "../_shared/network.typ": fully-connect
+#import "../_shared/network.typ": fully-connect, node-stroke
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
@@ -20,6 +20,7 @@
       circle(
         (x, nodes / 2 - node-sep * ii),
         radius: 0.3,
+        stroke: node-stroke,
         name: prefix + str(ii + 1),
       )
     }

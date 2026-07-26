@@ -1,6 +1,6 @@
 #import "@preview/cetz:0.5.2": canvas
 #import "@preview/cetz-plot:0.1.4": plot
-#import "../_shared/plot.typ": stealth, style-axes
+#import "../_shared/plot.typ": legend-box, stealth, style-axes
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
@@ -15,7 +15,7 @@
     y-tick-step: 2,
     axis-style: "left",
     legend: "inner-north-west",
-    legend-style: (item: (spacing: 0.2), padding: 0.15, stroke: .5pt),
+    legend-style: legend-box,
     {
       plot.add(
         style: (stroke: blue + 1.5pt),

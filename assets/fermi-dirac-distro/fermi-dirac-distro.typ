@@ -1,6 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import "@preview/cetz-plot:0.1.4": plot
-#import "../_shared/plot.typ": style-axes
+#import "../_shared/plot.typ": legend-box, style-axes
+#import "../_shared/theme.typ": series
 #import draw: content
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
@@ -25,14 +26,14 @@
     y-tick-step: .5,
     y-ticks: (0.5, 1),
     axis-style: "left",
-    legend: (5.5, 2.5),
-    legend-style: (item: (spacing: 0.2), padding: 0.15),
+    legend: "inner-south-west",
+    legend-style: legend-box,
     {
       let chem-pot = 1
 
       // T = μ/5k_B (red curve)
       plot.add(
-        style: (stroke: red + 1.5pt),
+        style: (stroke: series(0)),
         domain: (0, 2.3),
         samples: 150,
         x => n-F(x, 5),
@@ -41,7 +42,7 @@
 
       // T = μ/25k_B (orange curve)
       plot.add(
-        style: (stroke: orange + 1.5pt),
+        style: (stroke: series(1)),
         domain: (0, 2.3),
         samples: 150,
         x => n-F(x, 25),
@@ -51,7 +52,7 @@
       // T = 0 (blue step function)
       let points = ((0, 1), (chem-pot, 1), (chem-pot, 0), (2.3, 0))
       plot.add(
-        style: (stroke: blue + 1.5pt),
+        style: (stroke: series(2)),
         points,
         label: $T = 0$,
       )

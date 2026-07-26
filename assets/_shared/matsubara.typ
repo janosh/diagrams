@@ -3,10 +3,11 @@
 
 #import "@preview/cetz:0.5.2": decorations, draw
 #import draw: arc, circle, content, line
+#import "theme.typ": line-weight, neutral
 
 #let dark-blue = blue.darken(20%)
 #let axis-arrow = (mark: (end: "stealth", fill: black, scale: 0.5))
-#let gray-line = (paint: gray, thickness: 0.2pt)
+#let gray-line = (paint: neutral.hairline, thickness: line-weight.hairline)
 #let contour-stroke = (paint: dark-blue, thickness: 0.8pt)
 
 // Arrowheads at the given fractions along a contour, marking its orientation.
