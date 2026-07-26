@@ -15,14 +15,17 @@
 // Stroke weights. `hairline` is the floor for anything meant to be seen.
 #let line-weight = (hairline: 0.5pt, thin: 0.8pt, normal: 1.2pt, heavy: 2pt)
 
-// Ordered so the two closest hues under CVD (orange and red) sit far apart, and so the
-// first four are separable by hue alone before the dashes have to do the work.
+// Ordered so the leading hues stay far apart under simulated deuteranopia and
+// protanopia: the first four are separated by at least 67 in sRGB, which is enough to
+// tell them apart by hue alone. The fifth drops to 53 and the sixth (orange against
+// red) to 15, so those two take a dash pattern as a second cue. Dashes cost real
+// legibility on crossing curves, so they start only where hue stops carrying the load.
 #let _series = (
   (rgb("#0B5FA5"), none),
-  (rgb("#C2570A"), "dashed"),
-  (rgb("#12793F"), "dotted"),
-  (rgb("#7A3E9D"), "dash-dotted"),
-  (rgb("#A81E7A"), "loosely-dashed"),
+  (rgb("#C2570A"), none),
+  (rgb("#12793F"), none),
+  (rgb("#A81E7A"), none),
+  (rgb("#7A3E9D"), "dashed"),
   (rgb("#C0182B"), "densely-dotted"),
 )
 
