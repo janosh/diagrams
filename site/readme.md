@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="../assets/favicon.svg" alt="TikZ" height=150>
+  <img src="../assets/favicon.svg" alt="Scientific Diagrams" height=150>
 </p>
 
 # Scientific Diagram Collection

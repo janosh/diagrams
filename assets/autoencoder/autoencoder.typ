@@ -1,17 +1,11 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: content, line
+#import "../_shared/network.typ": node-stroke
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #let neuron(pos, fill: white, text: none) = {
-  draw.content(
-    pos,
-    text,
-    frame: "circle",
-    fill: fill,
-    stroke: 0.5pt,
-    padding: 1pt,
-  )
+  draw.content(pos, text, frame: "circle", fill: fill, stroke: node-stroke, padding: 1pt)
 }
 
 #let connect-layers(start-pos, start-count, end-pos, end-count) = {
@@ -28,7 +22,6 @@
 }
 
 #canvas({
-  // Define layer configurations
   let layers = (
     // (x-pos, neuron-count, fill-color, label-prefix, label-superscript, y-offset)
     (0, 8, rgb("#f6db71"), "x", none, 3.2), // Input layer
@@ -50,7 +43,6 @@
   content((layers.at(2).at(0), 2.2), align(center)[Latent\ Representation])
   content((layers.at(-1).at(0), 4), align(center)[Output Layer])
 
-  // Draw all layers
   for (x, count, fill, prefix, sup, y-offset) in layers {
     // eval prefix as math so the base renders in italic math font (e.g. x, h, hat(x))
     let base = eval(prefix, mode: "math")

@@ -6,13 +6,7 @@
 // Atom with 3D shading effect
 #let atom(pos, color, element, radius: 0.3, name: none) = {
   // Base circle with main color
-  circle(
-    pos,
-    radius: radius,
-    stroke: none,
-    fill: color,
-    name: name,
-  )
+  circle(pos, radius: radius, stroke: none, fill: color, name: name)
 
   // Gradient overlay for 3D effect
   circle(pos, radius: radius, stroke: none, fill: gradient.radial(
@@ -24,7 +18,6 @@
     center: (30%, 25%),
   ))
 
-  // Add element label
   let text-color = if color == rgb("#333333") { white } else { black }
 
   // Calculate text size based on radius
@@ -38,7 +31,6 @@
 }
 
 #canvas({
-  // Define atom colors
   let hydrogen-color = rgb("#eee")
   let carbon-color = rgb("#333")
   let nitrogen-color = rgb("#3333cc")
@@ -134,23 +126,18 @@
   h-positions.insert("H8", (h8-pos.at(0) + 0.3, h8-pos.at(1) - 0.2))
   h-positions.insert("H9", (h9-pos.at(0) - 0.3, h9-pos.at(1) - 0.2))
 
-  // Draw all atoms
-  // Draw carbon atoms
   for (name, pos) in c-positions {
     atom(pos, carbon-color, "C", radius: heavy-radius, name: name)
   }
 
-  // Draw nitrogen atoms
   for (name, pos) in n-positions {
     atom(pos, nitrogen-color, "N", radius: heavy-radius, name: name)
   }
 
-  // Draw oxygen atoms
   for (name, pos) in o-positions {
     atom(pos, oxygen-color, "O", radius: heavy-radius, name: name)
   }
 
-  // Draw hydrogen atoms
   for (name, pos) in h-positions {
     atom(pos, hydrogen-color, "H", radius: h-radius, name: name)
   }

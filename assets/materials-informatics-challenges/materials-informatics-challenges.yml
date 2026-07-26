@@ -3,5 +3,11 @@ tags:
   - machine learning
   - solid state physics
   - info-graphics
-description: |
-  Inspired by <https://tex.stackexchange.com/a/387466>.
+description: >-
+  The three stages of a materials-informatics pipeline and what goes wrong at each. Data
+  challenges cover the four Vs together with curation concerns like standardization and
+  long-term storage. Descriptor challenges are about encoding a structure so the representation
+  is invariant under symmetry, translation, rotation and permutation while staying compact and
+  cheap to compute. Model challenges are the ones that decide whether a result is usable at all:
+  extrapolation, transfer learning, reproducibility, computational cost and whether known
+  physics is built in. Inspired by <https://tex.stackexchange.com/a/387466>.

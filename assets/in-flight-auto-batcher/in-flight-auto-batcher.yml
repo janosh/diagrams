@@ -10,10 +10,13 @@ tags:
   - auto-batching
   - torch-sim
 description: |
-  When relaxing atomic structures towards their ground state, each structure requires an a priori unknown number of ionic steps. In-flight auto-batching optimizes GPU utilization by dynamically replacing converged structures with new ones based on memory availability for efficient GPU utilization, especially when relaxing large numbers of structures with varying degrees of equilibrium distance.
+  Relaxing an atomic structure towards its ground state takes an unpredictable number of ionic
+  steps, so a fixed batch leaves the GPU idle while it waits for the slowest member. In-flight
+  auto-batching swaps each converged structure out for a new one as soon as it finishes, keeping
+  the device full.
 
-  - Dynamically replaces converged structures with new ones to maintain high GPU utilization
-  - Batch size (number of concurrent relaxations) varies based on memory requirements of individual structures (mainly determined by atom count and density [higher density = more edges in graph representation of structure, often with cubic scaling])
-  - Memory scaling can be configured based on `n_atoms` or `n_atoms` × `density` metrics
+  - Batch size varies with the memory each structure needs, set mainly by atom count and density
+    (denser cells mean more edges in the graph representation, often scaling cubically)
+  - Memory scaling can be configured on `n_atoms` or `n_atoms` × `density`
 
-  For more details, see the [TorchSim InFlightAutoBatcher documentation](https://torchsim.github.io/torch-sim/reference/torch_sim.autobatching.InFlightAutoBatcher)
+  See the [TorchSim InFlightAutoBatcher docs](https://torchsim.github.io/torch-sim/reference/torch_sim.autobatching.InFlightAutoBatcher).

@@ -1,6 +1,6 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import "@preview/cetz-plot:0.1.4": plot
-#import draw: bezier, circle, content, group, line, translate
+#import draw: circle, content, group, line, translate
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
@@ -76,8 +76,8 @@
     })
   }
 
-  // 2-4-1 network; decorate_ih/decorate_ho draw the per-edge annotation (weight or distribution)
-  let draw-network(name, x0, decorate_ih, decorate_ho) = group(name: name, {
+  // 2-4-1 network; decorate-ih/decorate-ho draw the per-edge annotation (weight or distribution)
+  let draw-network(name, x0, decorate-ih, decorate-ho) = group(name: name, {
     for ii in range(2) {
       neuron(
         (x0, (ii + 1) * spacing.node + 1),
@@ -104,7 +104,7 @@
     for ii in range(2) {
       for jj in range(4) {
         line("ii" + str(ii + 1), "h" + str(jj + 1), ..arrow-style)
-        decorate_ih(
+        decorate-ih(
           (x0, (ii + 1) * spacing.node + 1),
           (x0 + spacing.layer, (jj + 1) * spacing.node),
           ii,
@@ -114,7 +114,7 @@
     }
     for ii in range(4) {
       line("h" + str(ii + 1), "o", ..arrow-style)
-      decorate_ho(
+      decorate-ho(
         (x0 + spacing.layer, (ii + 1) * spacing.node),
         (x0 + 2 * spacing.layer, 2.5 * spacing.node),
         ii,

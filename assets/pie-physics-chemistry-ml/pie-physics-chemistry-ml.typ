@@ -11,7 +11,6 @@
     ("ml", 1, "∑", rgb("#ff7f50")),
   )
 
-  // Draw pie chart
   chart.piechart(
     data,
     value-key: 1,

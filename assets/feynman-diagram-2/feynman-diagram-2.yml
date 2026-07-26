@@ -2,4 +2,9 @@ title: Feynman Diagram 2
 tags:
   - physics
   - quantum field theory
-description: null
+description: >-
+  Regulator insertion $\partial_t R_{k,ab}(p_1,p_2)$, drawn as a circled cross, sitting on the
+  propagator between external fields $\varphi_a$ and $\varphi_b$. In the functional
+  renormalization group this vertex is what keeps the loop integrals finite: its scale
+  derivative is peaked on the momentum shell currently being integrated out, so only
+  fluctuations with $|p| \approx k$ feed into the flow.

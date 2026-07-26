@@ -1,234 +1,86 @@
 #import "@preview/cetz:0.5.2": canvas, draw
-#import draw: circle, content, mark
+#import draw: circle, content, line
+#import "../_shared/feynman.typ" as fey
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
-// Define styles and constants
 #let radius = 1.25
 #let med-rad = 0.175 * radius
-#let small-rad = 0.15 * radius
+#let vertex = fey.dressed-vertex.with(radius: 0.15 * radius)
+#let momenta = fey.loop-momenta.with(label-distance: 0.75 * radius)
 
-// Create hatched pattern for vertices
-#let hatched = tiling(size: (.1cm, .1cm))[
-  #place(rect(width: 100%, height: 100%, fill: white, stroke: none))
-  #place(line(start: (0%, 100%), end: (100%, 0%), stroke: 0.4pt))
-]
-
-// Helper function for dressed vertices
-// @typstyle off
-#let dressed-vertex(pos, label: none, rel-label: (0, 0), name: none, radius: small-rad, ..rest) = {
-  circle(pos, radius: radius, fill: hatched, name: name, stroke: 0.5pt)
-  if label != none {
-    let label-pos = if rel-label != none { (rel: rel-label, to: pos) } else {
-      pos
-    }
-    content(label-pos, $#label$, ..rest)
-  }
+// Momentum arrow of length 0.6*radius, drawn just above height `y`.
+#let momentum(idx, x-center, y) = {
+  let half = 0.3 * radius
+  let name = "q" + str(idx)
+  line(
+    (x-center - half, y + 0.15),
+    (x-center + half, y + 0.15),
+    ..fey.momentum-arrow,
+    name: name,
+  )
+  content((rel: (0, 0.3), to: name + ".mid"), $q_#idx$)
 }
 
+// Gamma^(3) box: loop closed by two dressed propagators, one on each side
 #canvas({
-  // First diagram
-  // Main loop
   circle((0, 0), radius: radius, stroke: 1pt, name: "loop")
+  momenta(((1, 0.125), (2, 0.375), (3, 0.625), (4, 0.875)))
 
-  // Add momentum arrows and labels around loop
-  for (ii, pos) in ((1, "0.125"), (2, "0.375"), (3, "0.625"), (4, "0.875")) {
-    let angle = float(pos) * 360
-    let label-angle = (angle - 3) * 1deg
-
-    // Add momentum labels
-    let rel-pos = (
-      0.75 * radius * calc.cos(label-angle),
-      0.75 * radius * calc.sin(label-angle),
-    )
-    content(
-      (rel: rel-pos, to: "loop"),
-      $p_#ii$,
-      size: 8pt,
-    )
-
-    // Add arrow marks
-    mark(
-      symbol: "stealth",
-      (name: "loop", anchor: angle * 1deg),
-      (name: "loop", anchor: (angle + 1) * 1deg),
-      ..(
-        width: .25,
-        length: .15,
-        stroke: .7pt,
-        angle: 60deg,
-        scale: .7,
-        fill: black,
-      ),
-    )
-  }
-
-  // Add dressed vertices with propagators
-  dressed-vertex(
+  vertex(
     (0, radius),
     label: $G_(k,i j)(p_1,p_2)$,
     rel-label: (0, 0.2),
-    name: "vertex-top",
     anchor: "south",
+    name: "vertex-top",
   )
-
-  dressed-vertex(
+  vertex(
     (0, -radius),
     label: $G_(k,k l)(p_3,p_4)$,
     rel-label: (0, -0.3),
-    name: "vertex-bottom",
     anchor: "north",
+    name: "vertex-bottom",
   )
 
-  // External lines
-  draw.line((-2 * radius, 0), (-radius, 0), stroke: 1pt, name: "left-external")
-  draw.line((radius, 0), (2 * radius, 0), stroke: 1pt, name: "right-external")
-
-  // External line labels
+  line((-2 * radius, 0), (-radius, 0), stroke: 1pt, name: "left-external")
+  line((radius, 0), (2 * radius, 0), stroke: 1pt, name: "right-external")
   content("left-external.start", $phi_a$, anchor: "east", padding: 0.1)
   content("right-external.end", $phi_b$, anchor: "west", padding: 0.1)
+  momentum(1, -1.6 * radius, 0)
+  momentum(2, 1.6 * radius, 0)
 
-  // External momentum arrows
-  let arrow-style = (
-    mark: (end: "stealth", fill: black, scale: .5),
-    stroke: (thickness: 0.75pt),
-  )
-  draw.line(
-    (-1.9 * radius, 0.15),
-    (-1.3 * radius, 0.15),
-    ..arrow-style,
-    name: "q1-arrow",
-  )
-  content((rel: (0, 0.3), to: "q1-arrow.mid"), $q_1$)
-
-  draw.line(
-    (1.3 * radius, 0.15),
-    (1.9 * radius, 0.15),
-    ..arrow-style,
-    name: "q2-arrow",
-  )
-  content((rel: (0, 0.3), to: "q2-arrow.mid"), $q_2$)
-
-  // Vertex labels with connecting lines
-  let label-style = (stroke: gray + 0.3pt)
-  content(
-    (-2.1 * radius, radius),
-    $Gamma_(k,a j k)^((3))(q_1,p_2,-p_3)$,
-    name: "left-gamma",
-  )
-  draw.line(
-    "left-gamma",
-    (-radius, 0),
-    ..label-style,
-  )
-
-  content(
-    (2.1 * radius, radius),
-    $Gamma_(k,b l i)^((3))(-q_2,-p_1,p_4)$,
-    name: "right-gamma",
-  )
-  draw.line(
-    "right-gamma",
-    (radius, 0),
-    ..label-style,
-  )
-
-  // External vertices
-  dressed-vertex(
-    (-radius, 0),
-    radius: med-rad,
-    name: "vertex-left-external",
-  )
-  dressed-vertex(
-    (radius, 0),
-    radius: med-rad,
-    name: "vertex-right-external",
-  )
+  for (name, side, label) in (
+    ("gamma-left", -1, $Gamma_(k,a j k)^((3))(q_1,p_2,-p_3)$),
+    ("gamma-right", 1, $Gamma_(k,b l i)^((3))(-q_2,-p_1,p_4)$),
+  ) {
+    content((side * 2.1 * radius, radius), label, name: name)
+    line(name, (side * radius, 0), stroke: fey.leader)
+    vertex((side * radius, 0), radius: med-rad)
+  }
 })
 
 #pagebreak()
 
+// Gamma^(4) tadpole: single dressed propagator over a straight external line
 #canvas({
-  // Second diagram
-  // Main loop
   circle((0, 0), radius: radius, stroke: 1pt, name: "loop")
+  momenta(((1, 0), (2, 0.5)))
 
-  // Add momentum arrows and labels around loop
-  for (ii, pos) in ((1, "0"), (2, "0.5")) {
-    let angle = float(pos) * 360
-    let label-angle = (angle - 3) * 1deg
-
-    // Add momentum labels
-    let rel-pos = (
-      0.75 * radius * calc.cos(label-angle),
-      0.75 * radius * calc.sin(label-angle),
-    )
-    content(
-      (rel: rel-pos, to: "loop"),
-      $p_#ii$,
-      size: 8pt,
-    )
-
-    // Add arrow marks
-    mark(
-      symbol: "stealth",
-      (name: "loop", anchor: angle * 1deg),
-      (name: "loop", anchor: (angle + 1) * 1deg),
-      ..(
-        width: .25,
-        length: .15,
-        stroke: .7pt,
-        angle: 60deg,
-        scale: .7,
-        fill: black,
-      ),
-    )
-  }
-
-  // Add dressed vertex with propagator
-  dressed-vertex(
+  vertex(
     (0, radius),
     label: $G_(k,i j)(p_1,p_2)$,
     rel-label: (0, 0.2),
-    name: "vertex-top",
     anchor: "south",
+    name: "vertex-top",
   )
 
-  // External line
-  draw.line(
-    (-2 * radius, -radius),
-    (2 * radius, -radius),
-    stroke: 1pt,
-    name: "external",
-  )
-
-  // External line labels
+  line((-2 * radius, -radius), (2 * radius, -radius), stroke: 1pt, name: "external")
   content((rel: (-0.1, 0), to: "external.start"), $phi_a$, anchor: "east")
   content((rel: (0.1, 0), to: "external.end"), $phi_b$, anchor: "west")
+  momentum(1, -1.6 * radius, -radius)
+  momentum(2, 1.6 * radius, -radius)
 
-  // External momentum arrows
-  let arrow-style = (
-    mark: (end: "stealth", fill: black, scale: .5),
-    stroke: (thickness: 0.75pt),
-  )
-  draw.line(
-    (-1.9 * radius, -radius + 0.15),
-    (-1.3 * radius, -radius + 0.15),
-    ..arrow-style,
-    name: "q1-arrow",
-  )
-  content((rel: (0, 0.3), to: "q1-arrow.mid"), $q_1$)
-
-  draw.line(
-    (1.3 * radius, -radius + 0.15),
-    (1.9 * radius, -radius + 0.15),
-    ..arrow-style,
-    name: "q2-arrow",
-  )
-  content((rel: (0, 0.3), to: "q2-arrow.mid"), $q_2$)
-
-  // Four-vertex with label
-  dressed-vertex(
+  vertex(
     (0, -radius),
     label: $Gamma_(k,a b j i)^((4))(q_1,-q_2,-p_1,p_2)$,
     rel-label: (0, -0.3),

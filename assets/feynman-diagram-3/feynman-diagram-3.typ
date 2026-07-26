@@ -1,40 +1,29 @@
 #import "@preview/cetz:0.5.2": canvas, draw
-#import draw: circle, content
+#import draw: circle, content, line
+#import "../_shared/feynman.typ": hatched
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
-#let hatched = tiling(size: (.1cm, .1cm))[
-  #place(rect(width: 100%, height: 100%, fill: white, stroke: none))
-  #place(line(start: (0%, 100%), end: (100%, 0%), stroke: 0.4pt))
-]
-
 #canvas({
-  // Define styles and constants
-  let arrow-style = (
-    mark: (end: "stealth", fill: black, scale: .3),
-    stroke: (thickness: 0.5pt),
-  )
+  let arrow = (mark: (end: "stealth", fill: black, scale: .3), stroke: (thickness: 0.5pt))
 
-  // Draw main lines
-  draw.line((-2, 0), (0, 0), name: "in")
-  draw.line((0, 0), (1.5, 1.5), name: "up")
-  draw.line((0, 0), (1.5, -1.5), name: "down")
-
-  // Add phi labels
+  line((-2, 0), (0, 0), name: "in")
+  line((0, 0), (1.5, 1.5), name: "up")
+  line((0, 0), (1.5, -1.5), name: "down")
   content("in.start", $phi_a$, anchor: "east", padding: 1pt)
   content("up.end", $phi_b$, anchor: "south-west", padding: 1pt)
   content("down.end", $phi_c$, anchor: "north-west", padding: 1pt)
 
-  draw.line((-1.7, 0.15), (-0.7, 0.15), ..arrow-style, name: "p1")
-  content((rel: (0, 0.3), to: "p1"), $p_1$)
+  // momentum arrows point inward along each leg
+  for (idx, start, end, label-offset) in (
+    (1, (-1.7, 0.15), (-0.7, 0.15), (0, 0.3)),
+    (2, (1.0, 1.2), (0.3, 0.5), (-0.3, 0.3)),
+    (3, (1.4, -1.2), (0.6, -0.4), (0.3, 0.3)),
+  ) {
+    line(start, end, ..arrow, name: "p" + str(idx))
+    content((rel: label-offset, to: "p" + str(idx)), $p_#idx$)
+  }
 
-  draw.line((1., 1.2), (0.3, 0.5), name: "p2", ..arrow-style)
-  content((rel: (-0.3, 0.3), to: "p2"), $p_2$)
-
-  draw.line((1.4, -1.2), (0.6, -0.4), name: "p3", ..arrow-style)
-  content((rel: (0.3, 0.3), to: "p3"), $p_3$)
-
-  // Draw vertex with hatched pattern
   circle((0, 0), radius: 0.25, fill: hatched, name: "vertex")
   content(
     (rel: (0.35, -.05), to: "vertex"),

@@ -8,7 +8,7 @@
   scale(1.2)
 
   let colors = (rgb("#2a9d8f"), rgb("#6a7fdb"), rgb("#f8961e")) // La, O, Cu
-  let (node_r, small_r) = (0.3, 0.22)
+  let (node-r, small-r) = (0.3, 0.22)
   let thick = (thickness: 2.5pt, paint: black)
 
   // Draw triangle with La at origin_pos, O at (-3, -1), Cu at (-3, +1) relative offset
@@ -21,7 +21,7 @@
     set-style(stroke: thick)
     line(..pts, close: true)
     for (idx, pt) in pts.enumerate() {
-      circle(pt, radius: node_r, fill: colors.at(idx), stroke: thick)
+      circle(pt, radius: node-r, fill: colors.at(idx), stroke: thick)
     }
     if labels != none {
       content(
@@ -72,28 +72,28 @@
     ..brace,
   )
 
-  // Message nodes: (y, color, label, attention_label, sign for curve direction)
-  let msg_nodes = (
+  // Message nodes: (y, color, label, attention-label, sign for curve direction)
+  let msg-nodes = (
     (2.25, rgb("#c00"), [$g(h_"La"^t || h_"Cu"^t)$], $alpha_"LaCu"$, 1),
     (-0.7, rgb("#282"), [$g(h_"La"^t || h_"O"^t)$], $alpha_"LaO"$, -1),
   )
   let alpha = (rt.at(0) + 2, rt.at(1))
 
-  for (gy, col, lbl, attn, sign) in msg_nodes {
-    circle((5.85, gy), radius: small_r, fill: col, stroke: (thickness: 2pt))
+  for (gy, col, lbl, attn, sign) in msg-nodes {
+    circle((5.85, gy), radius: small-r, fill: col, stroke: (thickness: 2pt))
     content((5.85, gy + sign * 0.5), lbl, anchor: if sign > 0 { "south" } else {
       "north"
     })
   }
-  circle(alpha, radius: small_r, fill: yellow, stroke: (thickness: 2pt))
+  circle(alpha, radius: small-r, fill: yellow, stroke: (thickness: 2pt))
 
   // Dashed arrows from g nodes to alpha
   let dashed = (dash: "dashed", thickness: 1.5pt, paint: black)
   set-style(mark: (fill: black, size: 0.15, end: "stealth"))
-  for (gy, _, _, attn, sign) in msg_nodes {
+  for (gy, _, _, attn, sign) in msg-nodes {
     bezier(
-      (5.85 + small_r, gy),
-      (alpha.at(0), alpha.at(1) + sign * small_r),
+      (5.85 + small-r, gy),
+      (alpha.at(0), alpha.at(1) + sign * small-r),
       (6.75, gy + sign * 0.05),
       (alpha.at(0) - 0.6, alpha.at(1) + sign * 0.9),
       stroke: dashed,
@@ -109,7 +109,7 @@
   )
   bezier(
     (alpha.at(0) + 0.9, alpha.at(1)),
-    (tp1.at(0), tp1.at(1) + node_r),
+    (tp1.at(0), tp1.at(1) + node-r),
     (alpha.at(0) + 2.2, alpha.at(1) - 0.2),
     (tp1.at(0) - 0.3, tp1.at(1) + 1),
     stroke: dashed,

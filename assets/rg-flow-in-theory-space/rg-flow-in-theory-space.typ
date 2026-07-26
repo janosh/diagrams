@@ -8,7 +8,6 @@
 #canvas({
   let arrow-style = (mark: (end: "stealth", fill: black, scale: 0.5))
 
-  // Define coordinates
   let qea = (-0.225 * unit, -5 / 12 * unit) // quantum effective action
   let ma1 = (0.4 * unit, 0.5 * unit) // microscopic action 1
   let ma2 = (0.6 * unit, 0.33 * unit) // microscopic action 2
@@ -17,7 +16,6 @@
   let r2 = (0.4 * unit, 0.1 * unit) // regulator 2
   let r3 = (0.5 * unit, -0.2 * unit) // regulator 3
 
-  // Draw coordinate system
   line((0, 0), (0, 0.67 * unit), ..arrow-style, name: "lambda_1")
   content("lambda_1.end", $lambda_1$, anchor: "south")
 
@@ -32,7 +30,6 @@
 
   line((0, 0), (unit, 0), ..arrow-style)
 
-  // Draw dotted line segment
   hobby(
     (0.75 * unit, -0.3 * unit),
     (0.82 * unit, -0.2 * unit),
@@ -43,7 +40,6 @@
     ),
   )
 
-  // Draw flow trajectories using hobby curves
   hobby(ma1, r1, (0, -.8), qea, stroke: (dash: "dashed"))
   content(r1, $R_1$, anchor: "north-west")
 
@@ -53,7 +49,6 @@
   hobby(ma3, r3, qea, stroke: (dash: "dashed"))
   content(r3, $R_3$, anchor: "north-west")
 
-  // Draw points and labels
   let dark-red = rgb("8B0000")
   circle(qea, radius: 0.1, fill: dark-red, stroke: none)
   content(

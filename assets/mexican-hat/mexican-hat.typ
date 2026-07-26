@@ -4,85 +4,72 @@
 #set page(width: auto, height: auto, margin: 12pt, fill: none)
 #set text(size: 15pt, fill: black)
 
-#let radius_domain = (0.0, 1.25)
-#let angle_steps = 84
-#let radius_steps = 24
-#let x_limits = (-1.6, 1.6)
-#let y_limits = (-1.6, 1.6)
-#let z_limits = (0.0, 1.3)
+#let radius-domain = (0.0, 1.25)
+#let angle-steps = 84
+#let radius-steps = 24
+#let x-limits = (-1.6, 1.6)
+#let y-limits = (-1.6, 1.6)
+#let z-limits = (0.0, 1.3)
 
-#let mexican_hat_height(radius_val) = {
-  calc.pow(radius_val * radius_val - 1.0, 2)
+#let mexican-hat-height(radius-val) = {
+  calc.pow(radius-val * radius-val - 1.0, 2)
 }
 
-#let surface_point(radius_val, theta_deg) = {
-  let theta = theta_deg * 1deg
+#let surface-point(radius-val, theta-deg) = {
+  let theta = theta-deg * 1deg
   (
-    calc.sin(theta) * radius_val,
-    calc.cos(theta) * radius_val,
-    mexican_hat_height(radius_val),
-  )
-}
-
-// @typstyle off
-#let draw_downhill_arrow(arrow_steps, arrow_radius_start, arrow_radius_stop, downhill_point, theta_deg) = {
-  line(
-    ..(
-      for step_idx in range(arrow_steps + 1) {
-        let t = step_idx / arrow_steps
-        let radius_val = (
-          arrow_radius_start + t * (arrow_radius_stop - arrow_radius_start)
-        )
-        (downhill_point(radius_val, theta_deg),)
-      }
-    ),
+    calc.sin(theta) * radius-val,
+    calc.cos(theta) * radius-val,
+    mexican-hat-height(radius-val),
   )
 }
 
 #canvas({
   set-transform(matrix.transform-rotate-dir((2.5, 0.6, -2), (0, 1, 0.3)))
-  scale(x: 3, y: 3, z: -2.5)
+  // z must scale positive: negating it turns the hat's central bump into a pit, which
+  // puts the symmetric vacuum below the broken one and points the downhill arrow uphill
+  scale(x: 3, y: 3, z: 2.5)
   rotate(z: -5deg)
   translate((0, -0.02, 0))
 
   // Surface mesh, drawn first.
-  let (radius_min, radius_max) = radius_domain
-  let radius_step = (radius_max - radius_min) / radius_steps
-  let angle_step = 360.0 / angle_steps
+  let (radius-min, radius-max) = radius-domain
+  let radius-step = (radius-max - radius-min) / radius-steps
+  let angle-step = 360.0 / angle-steps
   set-style(stroke: rgb("#1a1a1a") + 0.22pt, fill: white)
-  for radius_rev_idx in range(radius_steps) {
-    let radius_idx = radius_steps - 1 - radius_rev_idx
-    let radius_inner = radius_min + radius_idx * radius_step
-    let radius_outer = radius_inner + radius_step
-    for angle_idx in range(angle_steps) {
-      let theta_left = angle_idx * angle_step
-      let theta_right = theta_left + angle_step
+  for radius-rev-idx in range(radius-steps) {
+    let radius-idx = radius-steps - 1 - radius-rev-idx
+    let radius-inner = radius-min + radius-idx * radius-step
+    let radius-outer = radius-inner + radius-step
+    for angle-idx in range(angle-steps) {
+      let theta-left = angle-idx * angle-step
+      let theta-right = theta-left + angle-step
 
       line(
-        surface_point(radius_inner, theta_left),
-        surface_point(radius_inner, theta_right),
-        surface_point(radius_outer, theta_right),
-        surface_point(radius_outer, theta_left),
+        surface-point(radius-inner, theta-left),
+        surface-point(radius-inner, theta-right),
+        surface-point(radius-outer, theta-right),
+        surface-point(radius-outer, theta-left),
         close: true,
       )
     }
   }
-  let apex_point = surface_point(0.0, 0.0)
-  let first_ring_radius = radius_step
-  for angle_idx in range(angle_steps) {
-    let theta_left = angle_idx * angle_step
-    let theta_right = theta_left + angle_step
+  let apex-point = surface-point(0.0, 0.0)
+  let first-ring-radius = radius-step
+  for angle-idx in range(angle-steps) {
+    let theta-left = angle-idx * angle-step
+    let theta-right = theta-left + angle-step
     line(
-      apex_point,
-      surface_point(first_ring_radius, theta_left),
-      surface_point(first_ring_radius, theta_right),
+      apex-point,
+      surface-point(first-ring-radius, theta-left),
+      surface-point(first-ring-radius, theta-right),
       close: true,
     )
   }
   // Axis lines centered at the origin.
-  let (x_min, x_max) = x_limits
-  let (y_min, y_max) = y_limits
-  let (z_min, z_max) = z_limits
+  let (x-min, x-max) = x-limits
+  let (y-min, y-max) = y-limits
+  let (z-min, z-max) = z-limits
   on-layer(-2, {
     set-style(stroke: rgb("#1f1f1f") + 0.22pt, mark: (
       fill: rgb("#1f1f1f"),
@@ -90,9 +77,9 @@
       scale: 0.52,
       end: "stealth",
     ))
-    line((x_min, 0, 0), (x_max, 0, 0))
-    line((0, y_min, 0), (0, y_max, 0))
-    line((0, 0, z_min), (0, 0, z_max))
+    line((x-min, 0, 0), (x-max, 0, 0))
+    line((0, y-min, 0), (0, y-max, 0))
+    line((0, 0, z-min), (0, 0, z-max))
   })
 
   on-layer(8, {
@@ -103,74 +90,46 @@
   })
 
   // Highlighted states.
-  let center_point = surface_point(0.0, 0.0)
-  let minimum_point = surface_point(1.0, 30.0)
-  circle(center_point, radius: 0.09, fill: rgb("#00008b"), stroke: none)
-  circle(minimum_point, radius: 0.09, fill: rgb("#8b0000"), stroke: none)
+  let center-point = surface-point(0.0, 0.0)
+  let minimum-point = surface-point(1.0, 30.0)
+  circle(center-point, radius: 0.09, fill: rgb("#00008b"), stroke: none)
+  circle(minimum-point, radius: 0.09, fill: rgb("#8b0000"), stroke: none)
 
   // Double downhill arrow that follows the surface profile.
-  let arrow_color = rgb("#c4c4c4")
-  let arrow_steps = 40
-  let arrow_radius_start = 0.03
-  let arrow_radius_stop = 1.02
-  let arrow_clearance = 0.05
-  let downhill_point(radius_val, theta_deg) = {
-    let theta = theta_deg * 1deg
+  let arrow-color = rgb("#c4c4c4")
+  let arrow-steps = 40
+  let arrow-radius-start = 0.03
+  let arrow-radius-stop = 1.02
+  let arrow-clearance = 0.05
+  let downhill-point(radius-val, theta-deg) = {
+    let theta = theta-deg * 1deg
     (
-      calc.sin(theta) * radius_val,
-      calc.cos(theta) * radius_val,
-      mexican_hat_height(radius_val) + arrow_clearance,
+      calc.sin(theta) * radius-val,
+      calc.cos(theta) * radius-val,
+      mexican-hat-height(radius-val) + arrow-clearance,
     )
   }
   on-layer(9, {
-    set-style(
-      stroke: (paint: arrow_color, thickness: 1.1pt),
-      fill: none,
-      mark: (
-        fill: arrow_color,
-        stroke: arrow_color,
-        scale: 0.56,
-        end: "stealth",
-      ),
+    // sample the surface profile at a fixed bearing, lifted clear of the mesh
+    let downhill-arrow(theta-deg) = line(
+      ..range(arrow-steps + 1).map(step => {
+        let t = step / arrow-steps
+        let span = arrow-radius-stop - arrow-radius-start
+        downhill-point(arrow-radius-start + t * span, theta-deg)
+      }),
     )
-    draw_downhill_arrow(
-      arrow_steps,
-      arrow_radius_start,
-      arrow_radius_stop,
-      downhill_point,
-      28.8,
-    )
-    draw_downhill_arrow(
-      arrow_steps,
-      arrow_radius_start,
-      arrow_radius_stop,
-      downhill_point,
-      32.8,
-    )
-    // Dark inner stroke for crisp arrow edges.
-    set-style(
-      stroke: (paint: rgb("#575757"), thickness: 0.42pt),
-      fill: none,
-      mark: (
-        fill: rgb("#575757"),
-        stroke: rgb("#575757"),
-        scale: 0.44,
-        end: "stealth",
-      ),
-    )
-    draw_downhill_arrow(
-      arrow_steps,
-      arrow_radius_start,
-      arrow_radius_stop,
-      downhill_point,
-      28.8,
-    )
-    draw_downhill_arrow(
-      arrow_steps,
-      arrow_radius_start,
-      arrow_radius_stop,
-      downhill_point,
-      32.8,
-    )
+
+    // stroked twice: a thick pale body, then a thin dark core to crisp the edges
+    for (paint, thickness, scale) in (
+      (arrow-color, 1.1pt, 0.56),
+      (rgb("#575757"), 0.42pt, 0.44),
+    ) {
+      set-style(
+        stroke: (paint: paint, thickness: thickness),
+        fill: none,
+        mark: (fill: paint, stroke: paint, scale: scale, end: "stealth"),
+      )
+      for theta in (28.8, 32.8) { downhill-arrow(theta) }
+    }
   })
 })

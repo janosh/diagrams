@@ -185,11 +185,7 @@
 
 #let _draw-points-canvas(points) = {
   let bounds = _bounds(points)
-  let span = calc.max(
-    bounds.x-max - bounds.x-min,
-    bounds.y-max - bounds.y-min,
-    1.0,
-  )
+  let span = calc.max(bounds.x-max - bounds.x-min, bounds.y-max - bounds.y-min, 1.0)
   // Taper dots as stages get denser, but never below ~1pt wide on the page
   // (0.055 canvas units shrink to a fraction of a pixel at dense stages).
   let radius = calc.max(

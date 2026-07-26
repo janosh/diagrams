@@ -5,18 +5,9 @@
 #set text(weight: "bold")
 
 #let draw-star(pos, size: 0.3, fill: red) = {
-  n-star(
-    pos,
-    5,
-    radius: size,
-    inner-radius: .4 * size,
-    fill: fill,
-    stroke: .5pt,
-    show-inner: false,
-  )
+  n-star(pos, 5, radius: size, inner-radius: .4 * size, fill: fill, stroke: .5pt, show-inner: false)
 }
 
-// Draw a triangle using polygon function
 #let triangle(pos, size: 0.275, fill: green) = {
   polygon(
     pos,
@@ -33,7 +24,6 @@
   let arrow-style = (mark: (end: "stealth", fill: black, scale: 0.7))
   let axis-length = 6
 
-  // Draw axes
   line(
     (0, 0),
     (axis-length, 0),
@@ -84,7 +74,6 @@
     name: "new-example",
   )
 
-  // Draw the k=3 and k=7 circles centered at the new example
   circle(
     "new-example.center",
     radius: 0.8,
@@ -101,7 +90,6 @@
   )
   content((rel: (0, -0.3), to: "k7-circle.south"), $k = 7$, anchor: "north")
 
-  // Add class labels in the upper right corner
   content(
     (rel: (-.6, 4.8), to: "x-axis.end"),
     text(fill: red, size: 12pt)[Class A],
@@ -112,7 +100,6 @@
     size: 12pt,
   )[Class B])
 
-  // Add arrow pointing to the new example
   content(
     (rel: (1, 3), to: "new-example"),
     [New example\ to classify],

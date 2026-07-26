@@ -2,32 +2,18 @@
 
 #set page(width: auto, height: auto, fill: none)
 
-#let saddle_func(x, y) = x * x - y * y
+#let domain-size = 2
 
-// Define a color function for the surface
-#let color_func(x, y, z, x_lo, x_hi, y_lo, y_hi, z_lo, z_hi) = {
-  return rgb("#00008B").transparentize(50%)
-}
-
-// Define domain and scaling
-#let domain_size = 2
-#let scale_factor = 0.2
-#let (x_scale, y_scale, z_scale) = (0.5, 0.3, 0.15)
-#let scale_dim = (
-  x_scale * scale_factor,
-  y_scale * scale_factor,
-  z_scale * scale_factor,
-)
-
-// Plot the 3D surface
+// F(T, V) = V^2 - T^2: convex along V, concave along T, so the origin is a saddle.
+// Without an explicit `scale-dim` the package default of (1, 1, 0.5) renders a page
+// roughly 12x too large, which is what left the committed asset out of date.
 #plot-3d-surface(
-  saddle_func,
-  color-func: color_func,
+  (v, t) => v * v - t * t,
+  color-func: (..) => rgb("#00008B").transparentize(50%),
   subdivisions: 8,
-  xdomain: (-domain_size, domain_size),
-  ydomain: (-domain_size, domain_size),
-  // axis-labels: ($V$, $T$, $F(T,V)$), // Compiler error: Unexpected argument
-  // axis-step: (1, 1, 2), // Adjust axis steps if needed
-  // axis-label-size: 1.2em, // Adjust label size if needed
-  // rotation-matrix: ((-2, 2, 4), (0, -1, 0)), // Optional: Adjust view angle
+  xdomain: (-domain-size, domain-size),
+  ydomain: (-domain-size, domain-size),
+  scale-dim: (0.1, 0.06, 0.03),
+  axis-labels: ($V$, $T$, $F(T,V)$),
+  axis-step: (1, 1, 2),
 )

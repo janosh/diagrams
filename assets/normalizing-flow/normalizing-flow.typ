@@ -22,12 +22,9 @@
 #let pi(x) = mixture(x, ((0.6, -0.3, 0.2), (0.4, 0.4, 0.25)))
 #let pk(x) = mixture(x, ((0.4, -0.4, 0.15), (0.3, 0, 0.12), (0.3, 0.4, 0.15)))
 
-// Helper function to draw distribution plots
 #let draw-distro(x, y, dist-fn, name: none) = {
-  // Draw circle outline
   circle((x, y + 0.3), radius: 1, stroke: (dash: "dashed"), name: name)
 
-  // Draw coordinate axes
   line((x - 0.8, y), (x + 0.8, y), mark: (end: ">", scale: 0.5, fill: black))
   line((x, y - 0.5), (x, y + 1.1), mark: (end: ">", scale: 0.5, fill: black))
 
@@ -76,7 +73,6 @@
   content((rel: (0.7, 0), to: "zi1"), $dots.c$, name: "dots2", padding: 4pt)
   content((rel: (0.9, 0), to: "zk"), $= x$)
 
-  // Draw arrows and labels
   let arrow-style = (end: ">", fill: black, scale: 0.8, offset: 0.1)
   line("z0", "z1", mark: arrow-style, name: "z0-z1")
   content("z0-z1.mid", $f_1(z_0)$, name: "f1", anchor: "south", padding: (
@@ -102,7 +98,6 @@
     bottom: 3pt,
   ))
 
-  // Draw distributions
   draw-distro(0, y-distro, p0, name: "d0")
   content("d0.south", $z_0 ~ p_0(z_0)$, anchor: "north", padding: (top: 3pt))
 

@@ -3,7 +3,6 @@
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
-// Constants
 #let arrow-style = (
   mark: (end: "stealth", fill: black, scale: 0.7),
   stroke: 0.8pt,
@@ -36,7 +35,6 @@
     ..arrow-style,
     name: "sigma-arc",
   )
-  // Labels
   content("tau1-arc.mid", $tau_1$, anchor: "east", padding: 2pt)
   content("tau2-arc.mid", $tau_2$, anchor: "east", padding: 2pt)
   content("sigma-arc.mid", $sigma$, anchor: "east", padding: 2pt)
@@ -81,7 +79,6 @@
     name: "sigma-arrow",
   )
 
-  // Labels
   content("sigma-arrow.mid", $sigma$, anchor: "north-east", padding: 1pt)
   content("tau1-circle.-15%", $tau_1$, anchor: "south-west")
   content("tau2-circle.-15%", $tau_2$, anchor: "south-west")

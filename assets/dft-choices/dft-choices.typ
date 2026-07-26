@@ -5,7 +5,6 @@
 #set text(size: 15pt)
 
 #canvas({
-  // Define styles and constants
   let node-sep = 1.7 // Reduced horizontal separation
   let arrow-style = (
     mark: (end: "stealth", fill: black, offset: 4pt),
@@ -14,8 +13,6 @@
   let node-height = 1.6 // Shorter boxes
   let node-width = 1.2 // Increased for larger text
 
-  // Helper function to create rounded rectangle nodes
-  // @typstyle off
   let node(pos, text, fill: none, name: none, width: node-width, height: node-height) = {
     rect(
       (rel: (-width, -height / 2), to: pos),
@@ -27,8 +24,6 @@
     )
     content(name, scale(140%, text))
   }
-
-  // Create main equation nodes
 
   node(
     (0, 0),
@@ -103,13 +98,11 @@
     name: "phi2",
   ) // Wavefunction 2
 
-  // Add comment boxes and arrows
   let comment(pos, text, target-name, name: none) = {
     content(pos, align(center, text), name: name)
     line(name, target-name, ..arrow-style)
   }
 
-  // Add comments with arrows
   comment(
     (node-sep, 3),
     [non-rel. Schrödinger equation\

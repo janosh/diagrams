@@ -12,7 +12,6 @@
   let node-r = .48
 
   // === graph on the left ===
-  // @typstyle off
   let vertex(pos, label, color, radius: node-r, weight: 1.4pt, name: none, label-shift: (0, 0)) = {
     circle(pos, radius: radius, stroke: color + weight, name: name)
     content(

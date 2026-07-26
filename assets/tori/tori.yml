@@ -3,4 +3,8 @@ tags:
   - physics
   - string theory
   - topology
-description: null
+description: >-
+  A torus built as the plane modulo a lattice spanned by the two vectors $2\pi u$ and $2\pi v$,
+  with the shaded parallelogram as the fundamental cell. Rotating and rescaling so that
+  $u = (1,0)$ costs nothing, since the two tori are conformally equivalent, and leaves a single
+  complex parameter $v$ — the modular parameter that labels the torus.

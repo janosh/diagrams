@@ -4,25 +4,21 @@
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #canvas({
-  // Define coordinates
   let acc = (0, 4)
   let speed = (-3.464, -2) // -2*sqrt(3), -2
   let transfer = (3.464, -2) // 2*sqrt(3), -2
   let origin = (0, 0)
 
-  // Helper function to draw dotted triangles
   let draw-dotted-triangle(r) = {
     let x = 0.866 * r // sqrt(3)/2 * r
     let y = -0.5 * r
     line((0, r), (-x, y), (x, y), (0, r), stroke: (dash: "dotted", paint: gray))
   }
 
-  // Draw gray axes
   line(origin, acc, stroke: gray)
   line(origin, speed, stroke: gray)
   line(origin, transfer, stroke: gray)
 
-  // Draw dotted triangles
   for r in range(1, 5) {
     draw-dotted-triangle(r)
   }
@@ -32,7 +28,6 @@
   content(speed, "Speed", anchor: "north-east")
   content(transfer, "Transferability", anchor: "north-west")
 
-  // Draw colored regions
   // Classical Force Fields (red)
   let cff-acc = (0, 2)
   let cff-color = rgb("#ff0000")

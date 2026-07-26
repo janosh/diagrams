@@ -23,7 +23,6 @@
   // Dashed line forming angle
   line((0, 0), phi-point, style: "dashed")
   line(phi-point, vec-a, style: "dashed")
-  // Axes
   let arrow-extend = 1.15
   line((0, 0), (-rad / 5 * 1.2, -rad / 3 * 1.2), mark: mark, name: "x1")
   content("x1.end", [$x_1$], anchor: "north")

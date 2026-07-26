@@ -8,21 +8,16 @@
 #let arrow-style = (end: "stealth", fill: black, scale: 0.5)
 
 #canvas({
-  // Axes
-  // Real axis with zigzag decoration
-  // TODO: add arrow at the end, requireshttps://github.com/cetz-package/cetz/issues/446
+  // cetz decorations can't carry a mark (cetz-package/cetz#446), so the zigzag stops
+  // short of the end and a straight stub carries the arrowhead
+  let tip = 0.4
   decorations.zigzag(
-    line(
-      (-re-range, 0),
-      (re-range, 0),
-    ),
+    line((-re-range, 0), (re-range - tip, 0)),
     amplitude: 0.1,
     segment-length: 0.2,
-    name: "x-axis",
   )
-  content("x-axis.end", $"Re"(omega)$, anchor: "north-east", padding: (
-    top: 5pt,
-  ))
+  line((re-range - tip, 0), (re-range, 0), mark: arrow-style, name: "x-axis")
+  content("x-axis.end", $"Re"(omega)$, anchor: "north-east", padding: (top: 5pt))
 
   // Imaginary axis
   line(

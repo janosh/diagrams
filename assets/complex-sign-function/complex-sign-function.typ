@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw, matrix, vector
+#import "@preview/cetz:0.5.2": canvas, draw, matrix
 #import draw: content, group, line, rect, scale, set-transform
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
@@ -58,7 +58,6 @@
     ))
   })
 
-  // Draw grid lines
   for x in range(-1, 2) {
     let style = if x == 0 { arrow-style } else { () }
     draw.line((x, -1, 0), (x, 1, 0), stroke: gray + .3pt, ..style)

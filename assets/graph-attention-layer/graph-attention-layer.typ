@@ -31,13 +31,7 @@
   let decorate(kind, body, paint, thickness) = {
     let deco = (wave: wave, zigzag: zigzag).at(kind, default: none)
     if deco == none { body } else {
-      deco(
-        body,
-        amplitude: .07,
-        segment-length: .2,
-        segments: none,
-        stroke: paint + thickness,
-      )
+      deco(body, amplitude: .07, segment-length: .2, segments: none, stroke: paint + thickness)
     }
   }
 

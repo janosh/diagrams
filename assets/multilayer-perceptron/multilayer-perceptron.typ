@@ -1,5 +1,6 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: bezier, circle, content, line
+#import "../_shared/network.typ": node-stroke
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
@@ -7,7 +8,7 @@
   let arrow = (mark: (end: "stealth", fill: black, scale: .55), stroke: .8pt)
   let perceptron-radius = .48
   let small(name, pos, label: none, radius: .18) = {
-    circle(pos, radius: radius, fill: white, stroke: .65pt, name: name)
+    circle(pos, radius: radius, fill: white, stroke: node-stroke, name: name)
     if label != none { content(name, label) }
   }
   let right-rim(pos, radius: .18) = (pos.at(0) + radius, pos.at(1))
@@ -23,7 +24,7 @@
     (0, 0),
     radius: perceptron-radius,
     fill: white,
-    stroke: .8pt,
+    stroke: node-stroke,
     name: "perceptron",
   )
   content("perceptron", $Sigma sigma$)

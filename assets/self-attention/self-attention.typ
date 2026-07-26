@@ -13,17 +13,17 @@
 
   // Input nodes
   let y1 = 6
-  let y_dots_1 = y1 - spacing.vertical
-  let yj = y_dots_1 - spacing.vertical
-  let y_dots_2 = yj - spacing.vertical
-  let yn = y_dots_2 - spacing.vertical
-  let arrow_style = (end: "stealth", fill: black, scale: 0.7)
+  let y-dots-1 = y1 - spacing.vertical
+  let yj = y-dots-1 - spacing.vertical
+  let y-dots-2 = yj - spacing.vertical
+  let yn = y-dots-2 - spacing.vertical
+  let arrow-style = (end: "stealth", fill: black, scale: 0.7)
 
   // First column (input vectors)
   content((0, y1), $arrow(e)_1$, name: "arrow1", padding: 2pt)
-  content((0, y_dots_1), $dots$)
+  content((0, y-dots-1), $dots$)
   content((0, yj), $arrow(e)_j$, name: "arrowj", padding: 2pt)
-  content((0, y_dots_2), $dots$)
+  content((0, y-dots-2), $dots$)
   content((0, yn), $arrow(e)_n$, name: "arrown", padding: 2pt)
 
   // Second column (attention nodes)
@@ -111,28 +111,17 @@
   let x6 = x5 + 1
   content((x6, yj), $arrow(e)'_j$, name: "output", padding: 2pt)
 
-  // Draw connections
-  line("arrow1.east", "attn1", mark: arrow_style)
-  line("arrowj.east", "attnj", mark: arrow_style)
-  line("arrown.east", "attnn", mark: arrow_style)
-  line("arrowj.east", "attn1", mark: arrow_style)
-  line("arrowj.east", "attnn", mark: arrow_style)
+  // every token takes the same route: input, attention score, weight, product, sum
+  for row in ("1", "j", "n") {
+    line("arrow" + row + ".east", "attn" + row, mark: arrow-style)
+    line("attn" + row + ".east", "alpha" + row + "j", mark: arrow-style)
+    line("alpha" + row + "j.east", "times" + row, mark: arrow-style)
+    line("times" + row, "sum", mark: arrow-style)
+  }
+  // query j is the one being updated, so it also scores against the first and last tokens
+  for key in ("attn1", "attnn") { line("arrowj.east", key, mark: arrow-style) }
+  line("sum.east", "output.west", mark: arrow-style)
 
-  line("attn1.east", "alpha1j", mark: arrow_style)
-  line("attnj.east", "alphajj", mark: arrow_style)
-  line("attnn.east", "alphanj", mark: arrow_style)
-
-  line("alpha1j.east", "times1", mark: arrow_style)
-  line("alphajj.east", "timesj", mark: arrow_style)
-  line("alphanj.east", "timesn", mark: arrow_style)
-
-  line("times1", "sum", mark: arrow_style)
-  line("timesj", "sum", mark: arrow_style)
-  line("timesn", "sum", mark: arrow_style)
-
-  line("sum.east", "output.west", mark: arrow_style)
-
-  // Draw f_psi connections with labels
   for (idx, (start, end)) in (
     ("arrow1.east", "times1.south-west"),
     ("arrowj.east", "timesj.south-west"),
@@ -150,7 +139,7 @@
         start,
         end,
       ),
-      mark: arrow_style,
+      mark: arrow-style,
       stroke: 1pt,
       name: "fpsi" + str(idx),
     )

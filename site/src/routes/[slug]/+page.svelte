@@ -53,8 +53,8 @@
 </script>
 
 <svelte:head>
-  <title>{title} | TikZ Diagrams</title>
-  <meta property="og:title" content="{title} | TikZ Diagrams" />
+  <title>{title} | Scientific Diagrams</title>
+  <meta property="og:title" content="{title} | Scientific Diagrams" />
   {#if plain_description}
     <meta name="description" content={plain_description} />
     <meta property="og:description" content={plain_description} />

@@ -2,4 +2,9 @@ title: Momentum Shell
 tags:
   - physics
   - statistical mechanics
-description: See also <https://diagrams.janosh.dev/ergodic>.
+description: >-
+  Energy shell of a harmonic oscillator in phase space. Every microstate of fixed energy $E$
+  lies on the ellipse, whose semi-axes $\sqrt{2E/m}$ and $\sqrt{2E/k}$ are set by the mass and
+  the spring constant. Counting the states in a thin shell around this curve is what defines
+  the microcanonical entropy. See also
+  [ergodic](https://diagrams.janosh.dev/ergodic), which adds a trajectory filling the shell.

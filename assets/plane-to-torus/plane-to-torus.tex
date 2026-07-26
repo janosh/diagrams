@@ -1,144 +1,150 @@
 \documentclass[tikz]{standalone}
 
-\usetikzlibrary{decorations.markings,arrows}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, decorations.markings}
+
+% Each edge pair keeps its color through every stage, so it stays visible which edge of
+% the square becomes which circle on the torus.
+\definecolor{rimcolor}{HTML}{0B5FA5}  % vertical edges -> cylinder rims -> short circle
+\definecolor{seamcolor}{HTML}{C2570A} % horizontal edges -> the seam -> long circle
+\definecolor{annotation}{HTML}{4A5560}
+\definecolor{hairline}{HTML}{78828C}
+\definecolor{meshgray}{HTML}{8B97A6}
+\definecolor{tubeinside}{HTML}{8E959D}
+
+% Camera shared by both 3D panels. The azimuth matters: viewed square-on, a tube's rims
+% collapse to straight lines.
+\def\viewh{-27}
+\def\viewv{20}
+\def\tuber{0.62}
+\def\cylhalf{1.35}
+\def\ringr{1.32}
+\def\torusr{0.5}
+
+% Lambert term for a tube, from its surface normal and a fixed light, fed to point meta
+% raw. Arithmetic on it is not worth attempting: a comma inside point meta ends the key,
+% and a comparison silently evaluates to a constant, either of which flattens the surface
+% to a single tone. The colormap below does the clamping instead.
+\def\cyldot{-0.66*cos(y) + 0.62*sin(y)}
+\def\torusdot{-0.42*cos(y)*cos(x) - 0.66*cos(y)*sin(x) + 0.62*sin(y)}
+
+\pgfplotsset{
+  % quad edges double as the surface mesh, carrying the square's grid onto the rolled
+  % up shapes. Leave point meta to auto-scale: pinning it flattens the shading.
+  tube surface/.style={surf, shader=faceted, z buffer=sort, faceted color=meshgray},
+  % colormap belongs on the axis. Set per plot it is ignored and the surface comes out
+  % one flat tone, mesh and all.
+  panel/.style={
+    hide axis, axis equal image, anchor=center, view={\viewh}{\viewv},
+    clip=false, scale only axis,
+    % holding the first half flat clamps the unlit side, so only faces turned toward the
+    % light brighten, the way a Lambert term with a floor would
+    colormap={shade}{rgb(0cm)=(.640,.665,.695); rgb(1cm)=(.640,.665,.695);
+      rgb(2cm)=(.885,.910,.945)},
+  },
+}
+
+\tikzset{
+  % one or two chevrons partway along a path: the usual shorthand for which edge is glued
+  % to which, and in which direction
+  midarrow/.style={postaction={decorate}, decoration={markings,
+        mark=at position #1 with {\arrow{Stealth[length=8pt,width=7pt]}}}},
+  midarrow/.default=.5,
+  doublearrow/.style={postaction={decorate}, decoration={markings,
+        mark=at position #1 with {\arrow{Stealth[length=8pt,width=7pt]}},
+        mark=at position #1+.08 with {\arrow{Stealth[length=8pt,width=7pt]}}}},
+  doublearrow/.default=.47,
+  edge/.style={line width=2.2pt},
+  cycle line/.style={line width=1.8pt},
+}
+
+% A labeled arrow marking one gluing step.
+\newcommand{\steparrow}[3]{%
+  \draw[annotation, -{Stealth[length=5pt]}, line width=.9pt] (#1,0) -- (#1+1.45,0);
+  \node[#2, align=center, font=\small, anchor=south] at (#1+.725,.2) {#3};
+}
+\newcommand{\panelcaption}[2]{%
+  \node[annotation, font=\small, anchor=north] at (#1,-2.35) {#2};
+}
 
 \begin{document}
-
 \begin{tikzpicture}
-  % lattice
-  \draw[->,ultra thick] (-2,0) -- (2,0);
-  \draw[->,ultra thick] (0,-2) -- (0,2);
-  \draw (-2,-2) grid (2,2);
-  \node [draw,ultra thick,rectangle,minimum width=1cm,minimum height=1cm,label=below:$2 \pi$,label=right:$2 \pi$] at (0.5,0.5) {};
 
-  % square
-  \begin{scope}[xshift=4cm,yshift=1cm]
-    \draw[postaction={decorate},decoration={
-          markings,
-          mark=at position .145 with {\arrow{latex}},
-          mark=at position .375 with {\arrow{latex}},
-          mark=at position .635 with {\arrowreversed{latex}},
-          mark=at position .875 with {\arrowreversed{latex}},
-        }
-    ]
-    (0,-1) -- +(2,0) -- +(2,2) -- +(0,2) -- cycle;
-  \end{scope}
+  % ===== 1. the periodic plane =====
+  % every vertical lattice line is a rim edge and every horizontal one a seam edge, so
+  % tinting the whole lattice shows the identification repeating across the plane
+  \foreach \i in {-1,0,1} {
+    \draw[rimcolor!22, line width=.9pt] (1.3*\i,-1.95) -- (1.3*\i,1.95);
+    \draw[seamcolor!22, line width=.9pt] (-1.95,1.3*\i) -- (1.95,1.3*\i);
+  }
+  \draw[annotation, -{Stealth[length=5pt]}, line width=.7pt] (-2.4,0) -- (2.4,0);
+  \draw[annotation, -{Stealth[length=5pt]}, line width=.7pt] (0,-2.4) -- (0,2.4);
+  % shifting this cell by 2pi in either direction lands on a copy of itself
+  \fill[seamcolor!10] (0,0) rectangle (1.3,1.3);
+  \draw[seamcolor, line width=1.5pt] (0,0) -- (1.3,0) (0,1.3) -- (1.3,1.3);
+  \draw[rimcolor, line width=1.5pt] (0,0) -- (0,1.3) (1.3,0) -- (1.3,1.3);
+  \node[font=\small, anchor=north] at (.65,-.22) {$2\pi$};
+  \node[font=\small, anchor=west] at (1.46,.65) {$2\pi$};
+  \panelcaption{0}{plane with $2\pi$ periodicity}
 
-  % bracelet
-  \begin{scope}[xshift=9.5cm,yshift=1cm]
-    \draw[postaction={decorate},decoration={
-          markings,
-          mark=at position .5 with {\arrow{latex}}
-        }
-    ]
-    (0,.25) -- ++(2,0);
-    \draw[postaction={decorate},decoration={
-          markings,
-          mark=at position .5 with {\arrow{latex}}
-        }
-    ]
-    (0,-.25) -- ++(2,0);
-    \draw[postaction={decorate},decoration={
-          markings,
-          mark=at position .5 with {\arrow{latex}},
-        }
-    ] (0,-.25) to[out=-120,in=0] (-.35,-.75) to[out=180,in=180] (-.35,.75) to[out=0,in=120] (0,.25);
-    \draw (2,.25) to[out=120,in=0] (1.65,.75) -- (-.35,.75) (-.35,-.75) -- (1.65,-.75) to[out=0,in=-120] (2,-.25);
-    \begin{scope}
-      \clip (0,.25) rectangle (2,-.25);
-      \draw[postaction={decorate},decoration={
-            markings,
-            mark=at position .5 with {\arrowreversed{latex}},
-          }
-      ] (1.65,.75) to[out=180,in=180] (1.65,-.75);
-    \end{scope}
-  \end{scope}
+  % ===== 2. the fundamental domain and its two identifications =====
+  \steparrow{2.55}{annotation}{one cell}
 
-  % cylinder
-  \begin{scope}[xshift=14.7cm,yshift=1cm]
-    \draw[postaction={decorate},decoration={
-          markings,
-          mark=at position .5 with {\arrow{latex}},
-        }
-    ] (0,0) -- (2,0);
-    \draw[postaction={decorate},decoration={
-          markings,
-          mark=at position .5 with {\arrow{latex}},
-        }
-    ] (0,0) arc[start angle=0,delta angle=-360,x radius=.35,y radius=.75];
-    \draw (2,0) arc[start angle=0,delta angle=-90,x radius=.35,y radius=.75] -- ++(-2,0);
-    \draw (2,0) arc[start angle=0,delta angle=90,x radius=.35,y radius=.75] -- ++(-2,0);
+  \begin{scope}[xshift=4.75cm, yshift=-1.075cm]
+    \draw[hairline!42, line width=.35pt, step=.5375] (0,0) grid (2.15,2.15);
+    \draw[seamcolor, edge, midarrow] (0,0) -- (2.15,0);
+    \draw[seamcolor, edge, midarrow] (0,2.15) -- (2.15,2.15);
+    \draw[rimcolor, edge, doublearrow] (0,0) -- (0,2.15);
+    \draw[rimcolor, edge, doublearrow] (2.15,0) -- (2.15,2.15);
+    \node[rimcolor, font=\small, anchor=east] at (-.24,1.075) {$a$};
+    \node[seamcolor, font=\small, anchor=north] at (1.075,-.16) {$b$};
   \end{scope}
+  \panelcaption{5.825}{fundamental domain}
 
-  % long cylinder
-  \begin{scope}[xshift=4cm,yshift=-1.2cm]
-    \draw[postaction={decorate},decoration={
-          markings,
-          mark=at position .5 with {\arrow{latex}},
-        }
-    ] (0,0) -- (3,0);
-    \draw[postaction={decorate},decoration={
-          markings,
-          mark=at position .6 with {\arrow{latex}},
-        }
-    ] (0,0) arc[start angle=0,delta angle=-360,x radius=.15,y radius=.35];
-    \draw (3,0) arc[start angle=0,delta angle=-90,x radius=.15,y radius=.35] -- ++(-3,0);
-    \draw (3,0) arc[start angle=0,delta angle=90,x radius=.15,y radius=.35] -- ++(-3,0);
-  \end{scope}
+  % ===== 3. glue the horizontal pair -> cylinder =====
+  \steparrow{7.6}{seamcolor}{glue\\top \& bottom}
 
-  % open torus
-  \begin{scope}[xshift=9cm,yshift=-1.7cm]
-    \draw[postaction={decorate},decoration={
-          markings,
-          mark=at position .5 with {\arrow{latex}},
-        }
-    ] (1,0) arc[start angle=0,delta angle=-360,x radius=.15,y radius=.35];
-    \draw (1,0) ++(-.15,-.35) .. controls +(170:1) and +(-90:.5) .. ++(-1.5,1) .. controls +(90:.5) and +(180:1) .. ++(2,1) .. controls +(0:1) and +(90:.5) .. ++(2,-1) .. controls +(-90:.5) and +(10:1) .. ++(-1.5,-1) coordinate (a);
-    \draw[postaction={decorate},decoration={
-          markings,
-          mark=at position .5 with {\arrow{latex}},
-        }
-    ] (a) ++(-.15,.35) arc[start angle=0,delta angle=-360,x radius=-.15,y radius=.35];
-    \draw (1,0) ++(-.15,.35) .. controls +(170:.5) and +(-60:.25) .. ++(-.9,.5) coordinate (b);
-    \draw (a) ++(0,.7) .. controls +(10:.5) and +(240:.25) .. ++(.9,.5) coordinate (c);
-    \begin{scope}
-      \clip (1,0) ++(-.15,.35) .. controls +(170:.5) and +(-60:.25) .. ++(-.9,.5) -- ++(0,2) -| (c) .. controls +(240:.25) and +(10:.5) .. ++(-.9,-.5);
-      \draw (1,0) ++(-.15,-.35) ++(0,-.7) .. controls +(170:1) and +(-90:.5) .. ++(-1.5,.8) .. controls +(90:.5) and +(180:1) .. ++(2,1.2) .. controls +(0:1) and +(90:.5) .. ++(2,-1.2) .. controls +(-90:.5) and +(10:1) .. ++(-1.5,-.8);
-      \draw[postaction={decorate},decoration={
-            markings,
-            mark=at position .5 with {\arrow{latex}},
-          }
-      ] (1,0) ++(-.15,-.35) ++(0,-.8) .. controls +(170:1) and +(-90:.5) .. ++(-1.5,.8) .. controls +(90:.5) and +(180:1.2) .. ++(2,1.5) .. controls +(0:1.2) and +(90:.5) .. ++(2,-1.5) .. controls +(-90:.5) and +(10:1) .. ++(-1.5,-.8);
-    \end{scope}
-    \begin{scope}
-      \clip (a) ++(-.15,.35) arc[start angle=0,delta angle=-360,x radius=-.15,y radius=.35];
-      \draw (a) ++(-.15,.35) .. controls +(10:1) and +(-90:.5) .. ++(1.5,.8);
-    \end{scope}
-    \begin{scope}
-      \clip (1,0) arc[start angle=0,delta angle=-360,x radius=.15,y radius=.35];
-      \draw (1,0) .. controls +(170:1) and +(-90:.5) .. ++(-1.5,.8);
-    \end{scope}
-  \end{scope}
+  \begin{axis}[panel, at={(11.3cm,0cm)}, width=4.3cm, height=4.3cm]
+    \addplot3[tube surface, samples=20, samples y=18,
+      domain=-\cylhalf:\cylhalf, y domain=0:360, point meta={\cyldot}]
+      ({x}, {\tuber*cos(y)}, {\tuber*sin(y)});
+    % looking into the open near end you see the far inner wall. pgfplots shades back
+    % faces as if they were outside, so fill that disc with the shade the inside carries.
+    \addplot3[fill=tubeinside, draw=none, samples=40, domain=0:360]
+      ({-\cylhalf}, {\tuber*cos(x)}, {\tuber*sin(x)});
+    % the glued pair is now a single seam running the length of the tube
+    % swept from the far end back, so the chevron points the same way as the square's
+    \addplot3[seamcolor, cycle line, midarrow=.45, samples=2, domain=\cylhalf:-\cylhalf]
+      ({x}, {0}, {\tuber});
+    % the rims are still open: they are the two vertical edges of the square. The whole
+    % near rim bounds the opening we look into, but only 68:248 of the far one clears the
+    % tube body; past that its normal turns away from the camera.
+    \addplot3[rimcolor, cycle line, doublearrow=.52, samples=40, domain=0:360]
+      ({-\cylhalf}, {\tuber*cos(x)}, {\tuber*sin(x)});
+    \addplot3[rimcolor, cycle line, doublearrow=.30, samples=40, domain=68:248]
+      ({\cylhalf}, {\tuber*cos(x)}, {\tuber*sin(x)});
+  \end{axis}
+  \panelcaption{11.3}{cylinder}
 
-  % torus
-  \begin{scope}[xshift=14cm,yshift=-1.7cm]
-    \draw[postaction={decorate},decoration={
-          markings,
-          mark=at position .5 with {\arrowreversed{latex}},
-        }
-    ] (1.5,.35) arc[start angle=90,end angle=-90,y radius=.35,x radius=.1];
-    \draw (1.5,-.35) .. controls +(180:1) and +(-90:.65) .. ++(-2,1) .. controls +(90:.65) and +(180:1) .. ++(2,1) .. controls +(0:1) and +(90:.65) .. ++(2,-1) .. controls +(-90:.65) and +(0:1) .. ++(-2,-1); \draw (1.5,.35) .. controls +(180:.5) and +(-50:.25) .. ++(-1.3,.35) coordinate (b);
-    \draw (1.5,.35) .. controls +(0:.5) and +(230:.25) .. ++(1.3,.35) coordinate (c);
-    \begin{scope}
-      \clip (1.5,.35) .. controls +(180:.5) and +(-50:.25) .. ++(-1.3,.35) -- ++(0,2) -| (c) .. controls +(230:.25) and +(0:.5) .. ++(-1.3,-.35);
-      \draw (1.5,-.35) ++(0,-.7) .. controls +(180:1) and +(-90:.65) .. ++(-1.5,1) .. controls +(90:.65) and +(180:1) .. ++(1.5,1) .. controls +(0:1) and +(90:.65) .. ++(1.5,-1) .. controls +(-90:.65) and +(0:1) .. ++(-1.5,-1);
-      \draw[postaction={decorate},decoration={
-            markings,
-            mark=at position .5 with {\arrow{latex}},
-          }
-      ] (1.5,-.35) ++(0,-.6) .. controls +(180:1) and +(-90:.65) .. ++(-1.5,1) .. controls +(90:.65) and +(180:1) .. ++(1.5,1) .. controls +(0:1) and +(90:.65) .. ++(1.5,-1) .. controls +(-90:.65) and +(0:1) .. ++(-1.5,-1);
-    \end{scope}
-  \end{scope}
+  % ===== 4. bend it round and glue the rims -> torus =====
+  \steparrow{13.5}{rimcolor}{glue\\rim to rim}
+
+  \begin{axis}[panel, at={(17.1cm,0cm)}, width=4.7cm, height=4.7cm]
+    \addplot3[tube surface, samples=40, samples y=16,
+      domain=0:360, y domain=0:360, point meta={\torusdot}]
+      ({(\ringr+\torusr*cos(y))*cos(x)}, {(\ringr+\torusr*cos(y))*sin(x)}, {\torusr*sin(y)});
+    % the seam closed into the long way round; the two rims fused into one short circle
+    \addplot3[seamcolor, cycle line, midarrow=.62, samples=60, domain=0:360]
+      ({\ringr*cos(x)}, {\ringr*sin(x)}, {\torusr});
+    % likewise 24:203 for a meridian sitting at azimuth -18, on the right of the ring
+    \addplot3[rimcolor, cycle line, doublearrow=.62, samples=40, domain=24:203]
+      ({(\ringr+\torusr*cos(x))*cos(-18)}, {(\ringr+\torusr*cos(x))*sin(-18)},
+       {\torusr*sin(x)});
+    \node[seamcolor, font=\small, anchor=south] at (axis cs:0,0,1.05) {$b$};
+    \node[rimcolor, font=\small, anchor=north west] at (axis cs:2.0,-.65,-.35) {$a$};
+  \end{axis}
+  \panelcaption{17.1}{torus}
 
 \end{tikzpicture}
 \end{document}

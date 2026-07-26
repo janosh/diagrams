@@ -4,17 +4,17 @@
 
 #let transition(coords, name: none, content: none, color: black) = {
   cetz.draw.group(name: name, {
-    let top_pos = (rel: (0, 0.5), to: coords)
-    let bottom_pos = (rel: (0, -0.5), to: coords)
+    let top-pos = (rel: (0, 0.5), to: coords)
+    let bottom-pos = (rel: (0, -0.5), to: coords)
 
-    cetz.draw.line(top_pos, bottom_pos, stroke: (thickness: 4pt, paint: color))
+    cetz.draw.line(top-pos, bottom-pos, stroke: (thickness: 4pt, paint: color))
 
     cetz.draw.anchor("default", coords)
     cetz.draw.anchor("center", coords)
     cetz.draw.anchor("left", coords)
     cetz.draw.anchor("right", coords)
-    cetz.draw.anchor("top", top_pos)
-    cetz.draw.anchor("bottom", bottom_pos)
+    cetz.draw.anchor("top", top-pos)
+    cetz.draw.anchor("bottom", bottom-pos)
 
     if content != none {
       cetz.draw.content((rel: (-0, -1.0), to: coords))[
@@ -72,25 +72,25 @@
     }
   })
 }
-#let calc_bend_pt(a, b, e) = {
-  let mid_pt = (0, 0, 0)
-  mid_pt.at(0) = (a.at(0) + b.at(0)) / 2
-  mid_pt.at(1) = (a.at(1) + b.at(1)) / 2
-  mid_pt.at(2) = (a.at(2) + b.at(2)) / 2
+#let calc-bend-pt(a, b, e) = {
+  let mid-pt = (0, 0, 0)
+  mid-pt.at(0) = (a.at(0) + b.at(0)) / 2
+  mid-pt.at(1) = (a.at(1) + b.at(1)) / 2
+  mid-pt.at(2) = (a.at(2) + b.at(2)) / 2
 
-  let orth_vec = (0, 0, 0)
-  orth_vec.at(0) = a.at(1) - b.at(1)
-  orth_vec.at(1) = b.at(0) - a.at(0)
+  let orth-vec = (0, 0, 0)
+  orth-vec.at(0) = a.at(1) - b.at(1)
+  orth-vec.at(1) = b.at(0) - a.at(0)
 
-  let scaled_orth_vec = cetz.vector.scale(orth_vec, e)
+  let scaled-orth-vec = cetz.vector.scale(orth-vec, e)
 
-  return cetz.vector.add(mid_pt, scaled_orth_vec)
+  return cetz.vector.add(mid-pt, scaled-orth-vec)
 }
 #let curve(a, b, mark: none, bend: 0) = {
-  cetz.draw.bezier(a, b, ((a, b) => calc_bend_pt(a, b, bend), a, b), mark: mark)
+  cetz.draw.bezier(a, b, ((a, b) => calc-bend-pt(a, b, bend), a, b), mark: mark)
 }
-#let bent_line(a, b, mark: none, bend: 0) = {
-  let s = ((a, b) => calc_bend_pt(a, b, bend), a, b)
+#let bent-line(a, b, mark: none, bend: 0) = {
+  let s = ((a, b) => calc-bend-pt(a, b, bend), a, b)
   cetz.draw.line(a, s)
   cetz.draw.line(s, b, mark: mark)
 }
@@ -122,21 +122,16 @@
       token: true,
     )
 
-    cetz.draw.line("t0.right", "p02.left", mark: (end: ">"))
-    cetz.draw.line("p02.right", "t2in.left", mark: (end: ">"))
-    cetz.draw.line("t2in.right", "pr2.left", mark: (end: ">"))
-    curve("t2in.right", "p22.left", mark: (end: ">"), bend: 0.3)
-    cetz.draw.line("pr2.right", "t2out.left", mark: (end: ">"))
-    curve("p22.right", "t2out.left", mark: (end: ">"), bend: 0.3)
-    cetz.draw.line("t2out.right", "p21.left", mark: (end: ">"))
-    cetz.draw.line("p21.right", "t1in.left", mark: (end: ">"))
-    cetz.draw.line("t1in.right", "pr1.left", mark: (end: ">"))
-    curve("t1in.right", "p11.left", mark: (end: ">"), bend: 0.3)
-    cetz.draw.line("pr1.right", "t1out.left", mark: (end: ">"))
-    curve("p11.right", "t1out.left", mark: (end: ">"), bend: 0.3)
-    cetz.draw.line("t1out.right", "p16.left", mark: (end: ">"))
-    cetz.draw.line("p16.right", "t6.left", mark: (end: ">"))
-    bent_line("t6.right", "p61.right", mark: (end: ">"), bend: 0.2)
-    bent_line("p61.left", "t0.left", mark: (end: ">"), bend: 0.18)
+    // the critical path threads every node left to right in one chain
+    let chain = ("t0", "p02", "t2in", "pr2", "t2out", "p21", "t1in", "pr1", "t1out", "p16", "t6")
+    for (from, to) in chain.zip(chain.slice(1)) {
+      cetz.draw.line(from + ".right", to + ".left", mark: (end: ">"))
+    }
+    // holding places branch off each input transition and rejoin at its output
+    for (from, to) in (("t2in", "p22"), ("p22", "t2out"), ("t1in", "p11"), ("p11", "t1out")) {
+      curve(from + ".right", to + ".left", mark: (end: ">"), bend: 0.3)
+    }
+    bent-line("t6.right", "p61.right", mark: (end: ">"), bend: 0.2)
+    bent-line("p61.left", "t0.left", mark: (end: ">"), bend: 0.18)
   })
 });

@@ -1,410 +1,131 @@
 #import "@preview/cetz:0.5.2": canvas, draw
-#import draw: circle, content, mark
+#import draw: circle, content, line
+#import "../_shared/feynman.typ" as fey
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
-// Define styles and constants
 #let radius = 1.25 // \lrad in original
-#let small-rad = 0.1 * radius
 #let med-rad = 0.13 * radius
-#let arrow-style = (
-  mark: (
-    end: "barbed",
-    fill: black,
-    scale: .5,
-    width: .25,
-    length: .2,
-    angle: 60deg,
-  ),
-  stroke: (thickness: 0.75pt),
+#let vertex = fey.dressed-vertex.with(radius: 0.1 * radius)
+#let q-arrow = (
+  mark: (end: "barbed", fill: black, scale: .5, width: .25, length: .2, angle: 60deg),
+  stroke: .5pt,
 )
-#let hatched = tiling(size: (.1cm, .1cm))[
-  #place(rect(width: 100%, height: 100%, fill: white, stroke: none))
-  #place(line(start: (0%, 100%), end: (100%, 0%), stroke: 0.4pt))
-]
 
-// Helper functions
-#let cross(pos, label: none, rel-label: (0, 5pt), name: none, ..rest) = {
-  let txt = text(size: 16pt)[$times.o$]
-  content(
-    pos,
-    txt,
-    stroke: none,
-    fill: white,
-    frame: "circle",
-    padding: -2.5pt,
-    name: name,
-    ..rest,
-  )
-  if label != none {
-    content((rel: rel-label, to: pos), $#label$)
+#let at(pos) = (rel: pos, to: "main-loop")
+// Point on the loop at `turn` around it, measured counter-clockwise from 3 o'clock.
+#let on-loop(turn) = at((radius * calc.cos(turn), radius * calc.sin(turn)))
+
+// Barbed momentum arrows around the loop, indexed clockwise from the top.
+#let loop-momenta = fey.loop-momenta.with(
+  loop: "main-loop",
+  label-distance: 0.75 * radius,
+  symbol: "barbed",
+  angle: 70deg,
+  span: 0.1deg,
+  fill: none,
+)
+
+// Straight external legs meeting the loop at 9 and 3 o'clock, each capped by a vertex.
+#let side-legs() = {
+  for (name, side, turn, label) in (
+    ("left-external", -1, 180deg, $phi_a$),
+    ("right-external", 1, 0deg, $phi_b$),
+  ) {
+    line(on-loop(turn), at((side * 2 * radius, 0)), stroke: 1pt, name: name)
+    content((rel: (side * 0.2, -0.3), to: name + ".mid"), label)
+  }
+  for (side, name) in ((-1, "left"), (1, "right")) {
+    vertex(at((side * radius, 0)), radius: med-rad, name: "vertex-" + name + "-external")
   }
 }
 
-// @typstyle off
-#let dressed-vertex(pos, label: none, rel-label: none, name: none, radius: small-rad, ..rest) = {
-  circle(pos, radius: radius, fill: hatched, name: name, stroke: 0.5pt)
-  if label != none {
-    let label-pos = if rel-label != none { (rel: rel-label, to: pos) } else {
-      pos
-    }
-    content(label-pos, $#label$, ..rest)
+// Incoming q_1 and outgoing q_2, both pointing right, at height `y`.
+#let external-momenta(inner, outer, y: 0.15) = {
+  for (idx, x-start, x-end) in ((1, -outer, -inner), (2, inner, outer)) {
+    let name = "q" + str(idx) + "-arrow"
+    line(at((x-start, y)), at((x-end, y)), ..q-arrow, name: name)
+    content(name + ".mid", $q_#idx$, anchor: "south", padding: (0, 0, 2pt))
   }
 }
 
-/// Place $p_i$ labels and barbed marks around `main-loop` at fractional anchors.
-#let draw-momenta(pairs) = {
-  for (ii, pos) in pairs {
-    let angle = pos * 360
-    let label-angle = (angle - 3) * 1deg
-    let rel-pos = (
-      0.75 * radius * calc.cos(label-angle),
-      0.75 * radius * calc.sin(label-angle),
-    )
-    content(
-      (rel: rel-pos, to: "main-loop"),
-      $p_#ii$,
-      size: 8pt,
-      name: "momentum-point-" + str(ii),
-    )
-    mark(
-      symbol: "barbed",
-      (name: "main-loop", anchor: angle * 1deg),
-      (name: "main-loop", anchor: (angle + 0.1) * 1deg),
-      ..(width: .25, length: .15, stroke: .7pt, angle: 70deg, scale: .7),
-    )
-  }
+// Off-diagram Gamma^(3) label tied to the vertex it names by a hairline.
+#let gamma-callout(name, pos, label, target) = {
+  content(at(pos), label, name: name)
+  line(name, target, stroke: fey.leader)
 }
 
-// First diagram
+// Regulator at the top, dressed propagators at 3, 9 and 6 o'clock
 #canvas({
   circle((0, 0), radius: radius, stroke: 1pt, name: "main-loop")
-  draw-momenta((
-    (6, 0.0625),
-    (1, 0.1875),
-    (2, 0.3125),
-    (3, 0.4375),
-    (4, 0.625),
-    (5, 0.875),
-  ))
+  loop-momenta(((6, 0.0625), (1, 0.1875), (2, 0.3125), (3, 0.4375), (4, 0.625), (5, 0.875)))
 
-  cross(
-    (rel: (0, radius), to: "main-loop"),
+  fey.cross(
+    at((0, radius)),
     label: $partial_k R_(k,i j) (p_1,p_2)$,
     rel-label: (0, 0.5),
     name: "regulator",
   )
+  vertex(on-loop(135deg), label: $G_(k,j k)(p_2,p_3)$, rel-label: (-1.2, 0.3))
+  vertex(on-loop(45deg), label: $G_(k,n i)(p_6,p_1)$, rel-label: (1.2, 0.3))
+  vertex(at((0, -radius)), label: $G_(k,l m) (p_4,p_5)$, rel-label: (0, -.8))
 
-  dressed-vertex(
-    (
-      rel: (
-        -radius * calc.cos(45deg),
-        radius * calc.cos(45deg),
-      ),
-      to: "main-loop",
-    ),
-    label: $G_(k,j k)(p_2,p_3)$,
-    rel-label: (-1.2, 0.3),
-    name: "vertex-top-left",
-  )
-
-  dressed-vertex(
-    (
-      rel: (
-        radius * calc.cos(45deg),
-        radius * calc.cos(45deg),
-      ),
-      to: "main-loop",
-    ),
-    label: $G_(k,n i)(p_6,p_1)$,
-    rel-label: (1.2, 0.3),
-    name: "vertex-top-right",
-  )
-
-  dressed-vertex(
-    (rel: (0, -radius), to: "main-loop"),
-    label: $G_(k,l m) (p_4,p_5)$,
-    rel-label: (0, -.8),
-    name: "vertex-bottom",
-  )
-
-  // External lines with names
-  draw.line(
-    (rel: (-radius, 0), to: "main-loop"),
-    (rel: (-2 * radius, 0), to: "main-loop"),
-    stroke: 1pt,
-    name: "left-external",
-  )
-  draw.line(
-    (rel: (radius, 0), to: "main-loop"),
-    (rel: (2 * radius, 0), to: "main-loop"),
-    stroke: 1pt,
-    name: "right-external",
-  )
-
-  // Add dressed vertices at external line connections
-  dressed-vertex(
-    (rel: (-radius, 0), to: "main-loop"),
-    name: "vertex-left-external",
-    radius: med-rad,
-  )
-  dressed-vertex(
-    (rel: (radius, 0), to: "main-loop"),
-    name: "vertex-right-external",
-    radius: med-rad,
-  )
-
-  // External line labels relative to their lines
-  content(
-    (rel: (-0.2, -0.3), to: "left-external.mid"),
-    $phi_a$,
-    name: "left-phi",
-  )
-  content(
-    (rel: (0.2, -0.3), to: "right-external.mid"),
-    $phi_b$,
-    name: "right-phi",
-  )
-
-  // External momentum arrows relative to their lines
-  draw.line(
-    (rel: (-2.3, 0.15), to: "main-loop"),
-    (rel: (-1.4, 0.15), to: "main-loop"),
-    ..arrow-style,
-    stroke: .5pt,
-    name: "q1-arrow",
-  )
-  content("q1-arrow.mid", $q_1$, anchor: "south", padding: (0, 0, 2pt))
-
-  draw.line(
-    (rel: (1.4, 0.15), to: "main-loop"),
-    (rel: (2.3, 0.15), to: "main-loop"),
-    ..arrow-style,
-    stroke: .5pt,
-    name: "q2-arrow",
-  )
-  content("q2-arrow.mid", $q_2$, anchor: "south", padding: (0, 0, 2pt))
-
-  // Vertex labels with connecting lines relative to vertices
-  let label-style = (stroke: gray + 0.3pt)
-  content(
-    (rel: (-2, -1.5), to: "main-loop"),
-    $Gamma_(k,a k l)^((3))(q_1,p_3,-p_4)$,
-    name: "left-gamma",
-  )
-  draw.line(
-    "left-gamma",
-    (rel: (-radius, 0), to: "main-loop"),
-    ..label-style,
-    name: "left-connector",
-  )
-
-  content(
-    (rel: (2, -1.5), to: "main-loop"),
-    $Gamma_(k,b m n)^((3))(-q_2,p_5,-p_6)$,
-    name: "right-gamma",
-  )
-  draw.line(
-    "right-gamma",
-    (rel: (radius, 0), to: "main-loop"),
-    ..label-style,
-    name: "right-connector",
-  )
+  side-legs()
+  external-momenta(1.4, 2.3)
+  gamma-callout("gamma-left", (-2, -1.5), $Gamma_(k,a k l)^((3))(q_1,p_3,-p_4)$, at((-radius, 0)))
+  gamma-callout("gamma-right", (2, -1.5), $Gamma_(k,b m n)^((3))(-q_2,p_5,-p_6)$, at((radius, 0)))
 })
 
 #pagebreak()
 
-// Second diagram
+// Regulator moved to the bottom, propagators at 4, 8 and 12 o'clock
 #canvas({
   circle((0, 0), radius: radius, stroke: 1pt, name: "main-loop")
-  draw-momenta((
-    (6, 0.125),
-    (3, 0.375),
-    (4, 0.5625),
-    (1, 0.6875),
-    (2, 0.8125),
-    (5, 0.9375),
-  ))
+  loop-momenta(((6, 0.125), (3, 0.375), (4, 0.5625), (1, 0.6875), (2, 0.8125), (5, 0.9375)))
 
-  cross(
-    (rel: (0, -radius), to: "main-loop"),
-    label: $partial_k R_(k,i j)(p_1,p_2)$,
-    rel-label: (0, -0.5),
-  )
+  fey.cross(at((0, -radius)), label: $partial_k R_(k,i j)(p_1,p_2)$, rel-label: (0, -0.5))
+  vertex(on-loop(-45deg), label: $G_(k,j m)(p_2,p_5)$, rel-label: (1.2, -0.3))
+  vertex(on-loop(225deg), label: $G_(k,l i)(p_4,p_1)$, rel-label: (-1.2, -0.3))
+  vertex(at((0, radius)), label: $G_(k,n k)(p_6,p_3)$, rel-label: (0, 0.3))
 
-  // Add dressed vertices
-  dressed-vertex(
-    (
-      rel: (radius * calc.cos(45deg), -radius * calc.sin(45deg)),
-      to: "main-loop",
-    ),
-    label: $G_(k,j m)(p_2,p_5)$,
-    rel-label: (1.2, -0.3),
-  )
-
-  dressed-vertex(
-    (
-      rel: (-radius * calc.cos(45deg), -radius * calc.sin(45deg)),
-      to: "main-loop",
-    ),
-    label: $G_(k,l i)(p_4,p_1)$,
-    rel-label: (-1.2, -0.3),
-  )
-
-  dressed-vertex(
-    (rel: (0, radius), to: "main-loop"),
-    label: $G_(k,n k)(p_6,p_3)$,
-    rel-label: (0, 0.3),
-  )
-
-  // External lines and labels
-  draw.line(
-    (rel: (-radius, 0), to: "main-loop"),
-    (rel: (-2 * radius, 0), to: "main-loop"),
-    stroke: 1pt,
-    name: "left-external",
-  )
-  draw.line(
-    (rel: (radius, 0), to: "main-loop"),
-    (rel: (2 * radius, 0), to: "main-loop"),
-    stroke: 1pt,
-    name: "right-external",
-  )
-
-  // External vertices
-  dressed-vertex(
-    (rel: (-radius, 0), to: "main-loop"),
-    radius: med-rad,
-    name: "vertex-left-external",
-  )
-  dressed-vertex(
-    (rel: (radius, 0), to: "main-loop"),
-    radius: med-rad,
-    name: "vertex-right-external",
-  )
-
-  // Labels and momentum arrows
-  content(
-    (rel: (-0.2, -0.3), to: "left-external.mid"),
-    $phi_a$,
-  )
-  content(
-    (rel: (0.2, -0.3), to: "right-external.mid"),
-    $phi_b$,
-  )
-
-  draw.line(
-    (rel: (-2.4, 0.15), to: "main-loop"),
-    (rel: (-1.6, 0.15), to: "main-loop"),
-    ..arrow-style,
-    stroke: .5pt,
-    name: "q1-arrow",
-  )
-  content("q1-arrow.mid", $q_1$, anchor: "south", padding: (0, 0, 2pt))
-
-  draw.line(
-    (rel: (1.6, 0.15), to: "main-loop"),
-    (rel: (2.4, 0.15), to: "main-loop"),
-    ..arrow-style,
-    stroke: .5pt,
-    name: "q2-arrow",
-  )
-  content("q2-arrow.mid", $q_2$, anchor: "south", padding: (0, 0, 2pt))
-
-  // Vertex labels - Adjust positions to match reference
-  let label-style = (stroke: gray + 0.3pt)
-  content(
-    (rel: (-2.4, 1.1), to: "main-loop"), // Move left to avoid overlap
+  side-legs()
+  external-momenta(1.6, 2.4)
+  // pushed further out than in the first diagram to clear the propagator labels
+  gamma-callout(
+    "gamma-left",
+    (-2.4, 1.1),
     $Gamma_(k,a k l)^((3))(q_1,p_3,-p_4)$,
-    name: "left-gamma",
-  )
-  draw.line(
-    "left-gamma",
     "vertex-left-external",
-    ..label-style,
   )
-
-  content(
-    (rel: (2.5, 1.1), to: "main-loop"), // Move right to avoid overlap
+  gamma-callout(
+    "gamma-right",
+    (2.5, 1.1),
     $Gamma_(k,b m n)^((3))(-q_2,p_5,-p_6)$,
-    name: "right-gamma",
-  )
-  draw.line(
-    "right-gamma",
     "vertex-right-external",
-    ..label-style,
   )
 })
 
 #pagebreak()
 
-// Third diagram
+// Gamma^(4) tadpole: the loop rides on a single external line
 #canvas({
   circle((0, 0), radius: radius, stroke: 1pt, name: "main-loop")
-  draw-momenta(((1, 0.125), (2, 0.375), (3, 0.625), (4, 0.875)))
+  loop-momenta(((1, 0.125), (2, 0.375), (3, 0.625), (4, 0.875)))
 
-  cross(
-    (rel: (0, radius), to: "main-loop"),
-    label: $partial_k R_(k,i j)(p_1,p_2)$,
-    rel-label: (0, 0.4),
-  )
+  fey.cross(at((0, radius)), label: $partial_k R_(k,i j)(p_1,p_2)$, rel-label: (0, 0.4))
+  vertex(at((-radius, 0)), label: $G_(k,j k)(p_2,p_3)$, rel-label: (-1.2, 0))
+  vertex(at((radius, 0)), label: $G_(k,l i)(p_4,p_1)$, rel-label: (1.2, 0))
 
-  // Add dressed vertices
-  dressed-vertex(
-    (rel: (-radius, 0), to: "main-loop"),
-    label: $G_(k,j k)(p_2,p_3)$,
-    rel-label: (-1.2, 0),
-  )
-
-  dressed-vertex(
-    (rel: (radius, 0), to: "main-loop"),
-    label: $G_(k,l i)(p_4,p_1)$,
-    rel-label: (1.2, 0),
-  )
-
-  // External lines
-  draw.line(
-    (rel: (-2.2 * radius, -radius), to: "main-loop"),
-    (rel: (2.2 * radius, -radius), to: "main-loop"),
+  line(
+    at((-2.2 * radius, -radius)),
+    at((2.2 * radius, -radius)),
     stroke: 1pt,
     name: "external-line",
   )
+  vertex(at((0, -radius)), radius: med-rad)
+  content(at((0, -2)), $Gamma_(k,a b k l)^((4))(q_1,-q_2,p_3,-p_4)$)
+  content(at((-2, -1.5)), $phi_a$)
+  content(at((2, -1.5)), $phi_b$)
 
-  // Four-vertex
-  dressed-vertex(
-    (rel: (0, -radius), to: "main-loop"),
-    radius: med-rad,
-  )
-  content(
-    (rel: (0, -2), to: "main-loop"), // Move down more to avoid overlap
-    $Gamma_(k,a b k l)^((4))(q_1,-q_2,p_3,-p_4)$,
-  )
-
-  // External labels - Move down to avoid overlap with vertex label
-  content(
-    (rel: (-2, -1.5), to: "main-loop"), // Move down more
-    $phi_a$,
-  )
-  content(
-    (rel: (2, -1.5), to: "main-loop"), // Move down more
-    $phi_b$,
-  )
-
-  draw.line(
-    (rel: (-2.3, -radius + 0.15), to: "main-loop"),
-    (rel: (-1.3, -radius + 0.15), to: "main-loop"),
-    ..arrow-style,
-    stroke: .5pt,
-    name: "q1-arrow",
-  )
-  content("q1-arrow.mid", $q_1$, anchor: "south", padding: (0, 0, 2pt))
-
-  draw.line(
-    (rel: (1.3, -radius + 0.15), to: "main-loop"),
-    (rel: (2.3, -radius + 0.15), to: "main-loop"),
-    ..arrow-style,
-    stroke: .5pt,
-    name: "q2-arrow",
-  )
-  content("q2-arrow.mid", $q_2$, anchor: "south", padding: (0, 0, 2pt))
+  external-momenta(1.3, 2.3, y: -radius + 0.15)
 })

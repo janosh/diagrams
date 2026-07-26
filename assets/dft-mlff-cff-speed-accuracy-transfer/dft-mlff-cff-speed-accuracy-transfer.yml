@@ -12,7 +12,8 @@ description: |
   2. Speed: The computational efficiency and time required for simulations.
   3. Transferability: The ability to be applied across diverse chemical systems and material classes.
 
-  - Classical Force Fields (red): Highest speed, medium accuracy, lowest transferability.
+  - Classical Force Fields (red): Highest speed, but the lowest accuracy and
+  transferability of the three.
   - DFT (green): Highest accuracy and transferability, but lowest speed.
   - Foundational ML Force Fields (blue): Balanced performance across all attributes, positioned between classical methods and DFT.
 

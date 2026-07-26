@@ -1,5 +1,10 @@
 title: Harmonic Oscillator Energy vs Angular Frequency
 tags:
   - physics
-description: |
-  Harmonic oscillator energy $\langle E\rangle/k_\text{B} T$ vs angular frequency $\omega = \sqrt{k/m}$
+description: >-
+  Mean energy of a harmonic oscillator in units of $k_\text{B}T$, against angular frequency
+  $\omega = \sqrt{k/m}$ at fixed temperature. The oscillator is classical at low frequency and
+  the ratio starts from its equipartition value, dips through a shallow minimum, then climbs
+  linearly once $\hbar\omega$ outgrows $k_\text{B}T$ and the zero-point term
+  $\hbar\omega/2$ dominates. Compare
+  [energy vs inverse temperature](https://janosh.github.io/diagrams/harmonic-oscillator-energy-vs-inv-temp).

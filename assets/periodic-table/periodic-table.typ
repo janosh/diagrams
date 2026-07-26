@@ -1,5 +1,5 @@
 #import "@preview/cetz:0.5.2": canvas, draw
-#import draw: content, line, rect
+#import draw: content, rect
 
 #set page(width: auto, height: auto, margin: 15pt, fill: none)
 
@@ -21,14 +21,14 @@
   // Period 1
   (
     (1, 1.0079, "H", "Hydrogen", colors.nonmetal),
-    ..range(16).map(idx => none),
+    ..(none,) * 16,
     (2, 4.0025, "He", "Helium", colors.noble-gas),
   ),
   // Period 2
   (
     (3, 6.941, "Li", "Lithium", colors.alkali-metal),
     (4, 9.0122, "Be", "Beryllium", colors.alkaline-earth),
-    ..range(10).map(idx => none),
+    ..(none,) * 10,
     (5, 10.811, "B", "Boron", colors.metalloid),
     (6, 12.011, "C", "Carbon", colors.nonmetal),
     (7, 14.007, "N", "Nitrogen", colors.nonmetal),
@@ -40,7 +40,7 @@
   (
     (11, 22.990, "Na", "Sodium", colors.alkali-metal),
     (12, 24.305, "Mg", "Magnesium", colors.alkaline-earth),
-    ..range(10).map(idx => none),
+    ..(none,) * 10,
     (13, 26.982, "Al", "Aluminum", colors.metal),
     (14, 28.086, "Si", "Silicon", colors.metalloid),
     (15, 30.974, "P", "Phosphorus", colors.nonmetal),
@@ -172,7 +172,6 @@
   (103, 262, "Lr", "Lawrencium"),
 )
 
-// Helper function to create an element box
 #let element(number, mass, symbol, name, fill: white, text-color: black) = {
   box(width: 3cm, height: 3cm, fill: fill, stroke: 0.7pt, inset: 4pt)[
     #set align(center)
@@ -182,11 +181,6 @@
     #v(1fr)
     #text(size: 13pt)[#name]
   ]
-}
-
-// Helper function to create a synthetic element (gray text)
-#let synthetic-element(number, mass, symbol, name, fill: white) = {
-  element(number, mass, symbol, name, fill: fill, text-color: colors.synthetic)
 }
 
 #canvas({
@@ -202,17 +196,12 @@
     (x, y)
   }
 
-  // Function to calculate lanthanide/actinide position
+  // The f-block rows hang below the main table, starting under group 3
   let special-pos(num, is-actinide: false) = {
-    let row = if is-actinide { 9 } else { 8 }
-    let col = num - (if is-actinide { 89 } else { 57 }) + 3
-    let y-offset = lanthanide-gap
-    let x = start-x + (col - 1) * cell-size
-    let y = start-y - (row - 1) * cell-size - y-offset
-    (x, y)
+    let (row, first) = if is-actinide { (9, 89) } else { (8, 57) }
+    pos(num - first + 3, row)
   }
 
-  // Draw main table elements
   for period in range(1, elements.len() + 1) {
     for group in range(1, 19) {
       let data = elements.at(period - 1).at(group - 1)
@@ -232,11 +221,12 @@
 
   // Actinides
   for (idx, data) in actinides.enumerate() {
-    content(special-pos(89 + idx, is-actinide: true), if idx <= 3 {
-      element(..data, fill: colors.lanthanide)
-    } else {
-      synthetic-element(..data, fill: colors.lanthanide)
-    })
+    // Ac through U occur naturally; everything past uranium is man-made, shown in gray
+    let text-color = if idx <= 3 { black } else { colors.synthetic }
+    content(
+      special-pos(89 + idx, is-actinide: true),
+      element(..data, fill: colors.lanthanide, text-color: text-color),
+    )
   }
 
   // Title
@@ -260,10 +250,10 @@
 
   // Find first element in each column
   for (num, label) in groups.enumerate(start: 1) {
-    let first_period = if num == 1 { 1 } else if num == 2 { 2 } else if (
+    let first-period = if num == 1 { 1 } else if num == 2 { 2 } else if (
       num <= 12
     ) { 4 } else { 2 }
-    let (x, y) = pos(num, first_period)
+    let (x, y) = pos(num, first-period)
     content((x, y + cell-size * 0.7), box(width: 3cm)[
       #text(size: 14pt, weight: "bold")[#num #h(1fr) #label]
     ])

@@ -1,25 +1,22 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.2": canvas
 #import "@preview/cetz-plot:0.1.4": plot
-#import draw: content, line
+#import "../_shared/plot.typ": legend-box, style-axes
+#import "../_shared/theme.typ": series
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
-// Constants
-#let gas_constant = 8.31 // Gas constant
+#let gas-constant = 8.31 // Gas constant
 #let temperature = 300 // Temperature
 #let B1 = 1000 // First virial coefficient
 #let B2 = -1000 // Second virial coefficient
 
 // Pressure functions
-#let p0(v) = gas_constant * temperature / v
+#let p0(v) = gas-constant * temperature / v
 #let p1(v) = p0(v) + B1 / calc.pow(v, 2)
 #let p2(v) = p1(v) + B2 / calc.pow(v, 3)
 
 #canvas({
-  draw.set-style(axes: (
-    y: (label: (anchor: "north-west", offset: -0.2)),
-    x: (label: (anchor: "south-east", offset: -0.25)),
-  ))
+  style-axes(x-label: (anchor: "south-east", offset: -0.25))
 
   plot.plot(
     size: (8, 7),
@@ -30,12 +27,12 @@
     x-tick-step: 1,
     y-tick-step: 1000,
     axis-style: "left",
-    legend: (5.2, 7.5),
-    legend-style: (item: (spacing: 0.2), padding: 0.15, stroke: .5pt),
+    legend: "inner-north-east",
+    legend-style: legend-box,
     {
       // Plot p0 (ideal gas)
       plot.add(
-        style: (stroke: red + 1.5pt),
+        style: (stroke: series(0)),
         domain: (0.5, 5.5),
         samples: 100,
         p0,
@@ -44,7 +41,7 @@
 
       // Plot p1 (first virial correction)
       plot.add(
-        style: (stroke: blue + 1.5pt),
+        style: (stroke: series(1)),
         domain: (0.5, 5.5),
         samples: 100,
         p1,
@@ -53,7 +50,7 @@
 
       // Plot p2 (second virial correction)
       plot.add(
-        style: (stroke: orange + 1.5pt),
+        style: (stroke: series(2)),
         domain: (0.5, 5.5),
         samples: 100,
         p2,

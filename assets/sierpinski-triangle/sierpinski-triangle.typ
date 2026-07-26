@@ -5,32 +5,32 @@
 
 // Sierpiński triangle with Au(100) surface background
 #box({
-  let triangle_size = 128pt
+  let triangle-size = 128pt
   let margin = 12pt
-  let canvas_width = triangle_size + 2 * margin
-  let canvas_height = triangle_size * calc.pow(3, 0.5) / 2 + 2 * margin
+  let canvas-width = triangle-size + 2 * margin
+  let canvas-height = triangle-size * calc.pow(3, 0.5) / 2 + 2 * margin
 
   rect(
-    width: canvas_width,
-    height: canvas_height,
+    width: canvas-width,
+    height: canvas-height,
     fill: rgb(50, 50, 50),
     {
       // Gold atoms in hexagonal close-packed arrangement
-      let horizontal_spacing = 2.5pt
-      let vertical_spacing = 2.2pt
-      let dot_radius = 1pt
-      let rows = int(canvas_height / vertical_spacing)
-      let cols = int(canvas_width / horizontal_spacing)
+      let horizontal-spacing = 2.5pt
+      let vertical-spacing = 2.2pt
+      let dot-radius = 1pt
+      let rows = int(canvas-height / vertical-spacing)
+      let cols = int(canvas-width / horizontal-spacing)
 
       for y in range(-3, rows + 3) {
-        let offset = if calc.odd(y) { horizontal_spacing / 2 } else { 0pt }
+        let offset = if calc.odd(y) { horizontal-spacing / 2 } else { 0pt }
 
         for x in range(-3, cols + 3) {
           place(
-            dx: x * horizontal_spacing + offset,
-            dy: y * vertical_spacing,
+            dx: x * horizontal-spacing + offset,
+            dy: y * vertical-spacing,
             circle(
-              radius: dot_radius,
+              radius: dot-radius,
               fill: rgb(200, 50, 50),
               stroke: none,
             ),
@@ -55,23 +55,23 @@
       )
 
       // 10nm scale bar
-      let scale_bar_width = horizontal_spacing * 8
-      let (scale_bar_height, scale_bar_margin) = (2pt, 12pt)
+      let scale-bar-width = horizontal-spacing * 8
+      let (scale-bar-height, scale-bar-margin) = (2pt, 12pt)
 
       place(
-        dx: canvas_width - scale_bar_width - scale_bar_margin,
-        dy: scale_bar_margin / 5,
-        rect(width: scale_bar_width, height: scale_bar_height, fill: white),
+        dx: canvas-width - scale-bar-width - scale-bar-margin,
+        dy: scale-bar-margin / 5,
+        rect(width: scale-bar-width, height: scale-bar-height, fill: white),
       )
 
       place(
-        dx: canvas_width - scale_bar_width - scale_bar_margin + scale_bar_width / 2 - 7pt,
-        dy: scale_bar_margin / 5 + scale_bar_height + 2pt,
+        dx: canvas-width - scale-bar-width - scale-bar-margin + scale-bar-width / 2 - 7pt,
+        dy: scale-bar-margin / 5 + scale-bar-height + 2pt,
         [10 nm],
       )
 
       // Legend
-      let color_square_size = 4pt
+      let color-square-size = 4pt
 
       place(
         block(
@@ -80,28 +80,28 @@
           fill: rgb(30, 30, 30),
           {
             grid(
-              columns: (color_square_size, auto),
+              columns: (color-square-size, auto),
               column-gutter: 2.5pt,
               row-gutter: 3pt,
               rect(
-                width: color_square_size,
-                height: color_square_size,
+                width: color-square-size,
+                height: color-square-size,
                 fill: rgb(200, 50, 50),
                 radius: 1pt,
               ),
               [Au(100)],
 
               rect(
-                width: color_square_size,
-                height: color_square_size,
+                width: color-square-size,
+                height: color-square-size,
                 fill: rgb(255, 230, 100),
                 radius: 1pt,
               ),
               [Fe/C3PC],
 
               rect(
-                width: color_square_size,
-                height: color_square_size,
+                width: color-square-size,
+                height: color-square-size,
                 fill: rgb(200, 140, 0),
                 radius: 1pt,
               ),

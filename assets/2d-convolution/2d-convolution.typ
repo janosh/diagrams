@@ -10,7 +10,6 @@
   let kernel-color = rgb("#9ae7e1") // teal!30
   let result-color = rgb(200, 200, 255) // blue!30
 
-  // Helper to draw a matrix cell
   let draw-cell(pos, value, fill: none, name: none) = {
     rect(
       pos,
@@ -27,7 +26,6 @@
     }
   }
 
-  // Helper to draw a matrix
   let draw-matrix(origin, shape, values, highlights: (), name: none) = {
     let (rows, cols) = shape
     for ii in range(rows) {
@@ -45,11 +43,10 @@
     }
   }
 
-  let cell-anchor(matrix_name, ii, jj, anchor) = (
-    matrix_name + "-" + str(ii) + "-" + str(jj) + "." + anchor
+  let cell-anchor(matrix-name, ii, jj, anchor) = (
+    matrix-name + "-" + str(ii) + "-" + str(jj) + "." + anchor
   )
 
-  // Draw input matrix I
   let input-origin = (0, 4)
   let input-values = (
     ..(0, 1, 1, 1, 0, 0, 0),
@@ -83,10 +80,8 @@
     name: "I-label",
   )
 
-  // Draw multiplication symbol
   content((rel: (1, 0), to: "I-3-6"), text(size: 18pt)[$*$], name: "times")
 
-  // Draw kernel matrix K
   let kernel-origin = (
     input-origin.at(0) + 7 * cell-size + matrix-sep,
     input-origin.at(1) - 2 * cell-size,
@@ -113,10 +108,8 @@
     name: "K-label",
   )
 
-  // Draw equals sign
   content((rel: (1, 0), to: "K-1-2"), text(size: 18pt)[$=$], name: "equals")
 
-  // Draw result matrix
   let result-origin = (
     kernel-origin.at(0) + 3 * cell-size + matrix-sep,
     input-origin.at(1) - cell-size,
@@ -129,7 +122,6 @@
     ..(3, 3, 1, 1, 0),
   )
   draw-matrix(result-origin, (5, 5), result-values, name: "R")
-  // Draw highlighted cell in result matrix
   on-layer(-1, rect(
     cell-anchor("R", 0, 3, "north-west"),
     cell-anchor("R", 0, 3, "south-east"),
@@ -142,32 +134,28 @@
     name: "R-label",
   )
 
-  // Draw connection lines
-  let dash-style = (stroke: (dash: "dashed", paint: rgb(150, 220, 200)))
-  line(
-    cell-anchor("I", 0, 5, "north-east"),
-    cell-anchor("K", 0, 0, "north-west"),
-    ..dash-style,
-  )
-  line(
-    cell-anchor("I", 2, 5, "south-east"),
-    cell-anchor("K", 2, 0, "south-west"),
-    ..dash-style,
-  )
+  // dashed guides tie the input patch to the kernel, then the kernel to the cell it produces
+  for (paint, ends) in (
+    (
+      rgb(150, 220, 200),
+      (
+        (("I", 0, 5, "north-east"), ("K", 0, 0, "north-west")),
+        (("I", 2, 5, "south-east"), ("K", 2, 0, "south-west")),
+      ),
+    ),
+    (
+      rgb(150, 150, 220),
+      (
+        (("K", 0, 2, "north-east"), ("R", 0, 3, "north-west")),
+        (("K", 2, 2, "south-east"), ("R", 0, 3, "south-west")),
+      ),
+    ),
+  ) {
+    for (from, to) in ends {
+      line(cell-anchor(..from), cell-anchor(..to), stroke: (dash: "dashed", paint: paint))
+    }
+  }
 
-  let result-style = (stroke: (dash: "dashed", paint: rgb(150, 150, 220)))
-  line(
-    cell-anchor("K", 0, 2, "north-east"),
-    cell-anchor("R", 0, 3, "north-west"),
-    ..result-style,
-  )
-  line(
-    cell-anchor("K", 2, 2, "south-east"),
-    cell-anchor("R", 0, 3, "south-west"),
-    ..result-style,
-  )
-
-  // Add small multiplication symbols in highlighted region
   for ii in range(3) {
     for jj in (3, 4, 5) {
       content(

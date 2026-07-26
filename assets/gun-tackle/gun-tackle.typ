@@ -6,7 +6,7 @@
 #set page(width: auto, height: auto, margin: 5mm, fill: none)
 #set text(0.9em)
 
-#let block(coord, (w, h), ..args) = {
+#let tackle-block(coord, (w, h), ..args) = {
   // use the given coord as the center of the rect
   let tl = (rel: (-w / 2, -h / 2), to: coord)
   let br = (rel: (w, h))
@@ -25,6 +25,12 @@
   cetz.draw.line(coord, (rel: direction), stroke: 4pt, mark: mark, ..args)
 }
 
+// every force arrow is captioned with its magnitude just to its right
+#let labeled-force(coord, angle, label, name: none, offset: 0.7) = {
+  force(coord, (angle, 0.8), name: name)
+  content((rel: (offset, 0), to: name))[#label]
+}
+
 #let gun-tackle = cetz.canvas({
   // the pulleys; on the default layer
   pulley(name: "pulley1", (1, 4))
@@ -34,8 +40,8 @@
   on-layer(
     1,
     {
-      block(name: "block1", "pulley1", (0.4, 2.4))
-      block(name: "block2", "pulley2", (0.4, 2.4))
+      tackle-block(name: "block1", "pulley1", (0.4, 2.4))
+      tackle-block(name: "block2", "pulley2", (0.4, 2.4))
       line(
         stroke: 2pt,
         (rel: (-1.4, 0), to: "block1.north"),
@@ -59,22 +65,15 @@
       content((rel: (-0.1, -2), to: "pulley1"))[50N]
       content((rel: (1.7, -1.5), to: "pulley1"))[50N]
 
-      force(
-        (rel: (0, 0.4), to: "pulley1.north"),
-        (90deg, 0.8),
-        name: "f-ceiling",
+      labeled-force((rel: (0, 0.4), to: "pulley1.north"), 90deg, [150N], name: "f-ceiling")
+      labeled-force((rel: (0, -0.4), to: "pulley2.south"), -90deg, [100N], name: "f-load")
+      labeled-force(
+        (rel: (1.54, -2.7), to: "pulley1"),
+        -78deg,
+        [50N],
+        name: "f-rope",
+        offset: 0.65,
       )
-      content((rel: (0.7, 0), to: "f-ceiling"))[150N]
-
-      force(
-        (rel: (0, -0.4), to: "pulley2.south"),
-        (-90deg, 0.8),
-        name: "f-load",
-      )
-      content((rel: (0.7, 0), to: "f-load"))[100N]
-
-      force((rel: (1.54, -2.7), to: "pulley1"), (-78deg, 0.8), name: "f-rope")
-      content((rel: (0.65, 0), to: "f-rope"))[50N]
     },
   )
 })
@@ -115,22 +114,15 @@
       content((rel: (1.4, -2), to: "pulley1"))[50N]
       content((rel: (-1.7, -1.5), to: "pulley1"))[50N]
 
-      force(
-        (rel: (1.5, 0.4), to: "pulley1.north"),
-        (90deg, 0.8),
-        name: "f-ceiling",
+      labeled-force((rel: (1.5, 0.4), to: "pulley1.north"), 90deg, [150N], name: "f-ceiling")
+      labeled-force((rel: (0, -0.4), to: "pulley2.south"), -90deg, [100N], name: "f-load")
+      labeled-force(
+        (rel: (-1.54, -2.7), to: "pulley1"),
+        -102deg,
+        [50N],
+        name: "f-rope",
+        offset: 0.65,
       )
-      content((rel: (0.7, 0), to: "f-ceiling"))[150N]
-
-      force(
-        (rel: (0, -0.4), to: "pulley2.south"),
-        (-90deg, 0.8),
-        name: "f-load",
-      )
-      content((rel: (0.7, 0), to: "f-load"))[100N]
-
-      force((rel: (-1.54, -2.7), to: "pulley1"), (-102deg, 0.8), name: "f-rope")
-      content((rel: (0.65, 0), to: "f-rope"))[50N]
     },
   )
 })

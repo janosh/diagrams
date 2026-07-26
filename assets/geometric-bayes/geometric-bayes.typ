@@ -1,24 +1,21 @@
 #import "@preview/cetz:0.5.2": canvas, draw
-#import draw: content, line, rect
+#import draw: content, rect
 
 #set page(width: auto, height: auto, margin: 3pt, fill: none)
 
 #set text(fill: white)
 
 #canvas({
-  // Define dimensions
   let width = 8
   let height = 5
   let left-col-width = 2
   let right-col-width = 2
-  let mid-col-width = width - left-col-width - right-col-width
   let gap = 1 // Gap between middle and right column
 
   let left-x = 0
   let mid-x = left-col-width
   let right-x = width - right-col-width
 
-  // Define vertical divisions
   let p-e-height = height / 2
   let p-h-e-height = height * 3 / 8
 

@@ -12,21 +12,11 @@
     stroke: 0.7pt,
   )
 
-  // Helper to draw diamond node with its label
   let diamond(pos, name, label, fill: none) = {
-    polygon(
-      pos,
-      4,
-      radius: 0.7,
-      angle: 90deg,
-      stroke: 0.7pt,
-      fill: fill,
-      name: name,
-    )
+    polygon(pos, 4, radius: 0.7, angle: 90deg, stroke: 0.7pt, fill: fill, name: name)
     content(pos, label, anchor: "center")
   }
 
-  // Helper to draw circle node with its label
   let circle-node(pos, name, label) = {
     circle(
       pos,
@@ -52,7 +42,6 @@
   // Middle node
   let m1-pos = (spacing.node / 2, -spacing.row / 2)
 
-  // Draw forward pass nodes
   diamond(z1-pos, "z1", $arrow(z)_(1:d)$, fill: rgb("#cce5ff"))
   circle-node(eq1-pos, "eq1", "=")
   diamond(x1-pos, "x1", $arrow(x)_(1:d)$, fill: rgb("#cce5ff"))
@@ -62,12 +51,16 @@
   circle-node(m1-pos, "m1", "m")
 
   // Forward pass arrows
-  line("z1", "eq1", ..arrow-style)
-  line("eq1", "x1", ..arrow-style)
-  line("z2", "g1", ..arrow-style)
-  line("g1", "x2", ..arrow-style)
-  line("z1", "m1", ..arrow-style)
-  line("m1", "g1", ..arrow-style)
+  for (from, to) in (
+    ("z1", "eq1"),
+    ("eq1", "x1"),
+    ("z2", "g1"),
+    ("g1", "x2"),
+    ("z1", "m1"),
+    ("m1", "g1"),
+  ) {
+    line(from, to, ..arrow-style)
+  }
 
   // Label under g1
   content(
@@ -92,7 +85,6 @@
   // Middle node
   let m2-pos = (right-x + 1.5 * spacing.node, -spacing.row / 2)
 
-  // Draw inverse pass nodes
   diamond(z1r-pos, "z1r", $arrow(z)_(1:d)$, fill: rgb("#cce5ff"))
   circle-node(eq2-pos, "eq2", "=")
   diamond(x1r-pos, "x1r", $arrow(x)_(1:d)$, fill: rgb("#cce5ff"))
@@ -102,12 +94,16 @@
   circle-node(m2-pos, "m2", "m")
 
   // Inverse pass arrows (reversed direction)
-  line("eq2", "z1r", ..arrow-style)
-  line("x1r", "eq2", ..arrow-style)
-  line("g2", "z2r", ..arrow-style)
-  line("x2r", "g2", ..arrow-style)
-  line("x1r", "m2", ..arrow-style)
-  line("m2", "g2", ..arrow-style)
+  for (from, to) in (
+    ("eq2", "z1r"),
+    ("x1r", "eq2"),
+    ("g2", "z2r"),
+    ("x2r", "g2"),
+    ("x1r", "m2"),
+    ("m2", "g2"),
+  ) {
+    line(from, to, ..arrow-style)
+  }
 
   // Label under g2
   content(

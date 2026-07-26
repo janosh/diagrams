@@ -1,6 +1,9 @@
 \documentclass[tikz]{standalone}
 
 \pgfmathdeclarerandomlist{colors}{{red!80}{teal}{blue!80}{orange}{blue!20}}
+% fixed seed so re-rendering reproduces the committed asset instead of a fresh
+% random arrangement every run
+\pgfmathsetseed{42}
 
 \begin{document}
 \begin{tikzpicture}

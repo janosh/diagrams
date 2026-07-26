@@ -4,7 +4,6 @@
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #canvas({
-  // Define styles and constants
   let radius = 1.5
   let dark-blue = rgb("#4040d9")
   let arrow-style = (
@@ -12,14 +11,11 @@
     stroke: (paint: dark-blue, thickness: 0.75pt),
   )
 
-  // Draw loop circle
   circle((0, 0), radius: radius, name: "loop")
 
-  // Add labels for masses/widths
   content("loop.0%", $m_1^2, gamma_1^2$, anchor: "south", padding: 3pt)
   content("loop.50%", $m_2^2, gamma_2^2$, anchor: "north", padding: 3pt)
 
-  // Draw momentum arrow on loop
   arc(
     (rel: (.23, 0), to: "loop.15%"),
     radius: 0.85 * radius,
@@ -34,7 +30,6 @@
     anchor: "north",
   )
 
-  // Draw external lines
   let ext-len = 2.2 * radius
 
   // Left external line
@@ -45,7 +40,6 @@
   circle("loop.75%", radius: 2pt, fill: black, name: "right-vertex")
   line("right-vertex", (ext-len, 0), stroke: 1pt, name: "right-line")
 
-  // Add momentum arrows on external lines
   line(
     (rel: (0.15, 0.15), to: "left-line.start"),
     (rel: (-0.15, 0.15), to: "left-line.end"),

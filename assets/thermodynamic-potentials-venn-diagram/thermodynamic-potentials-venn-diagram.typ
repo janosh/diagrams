@@ -7,7 +7,6 @@
   // Scale up the diagram
   scale(2.5)
 
-  // Create Venn diagram with three overlapping circles
   let mechanical-center = (-0.65, 0.375)
   let thermal-center = (0.65, 0.375)
   let chemical-center = (0, -0.75)
@@ -77,7 +76,6 @@
     })
   }
 
-  // Add outer labels for main potentials
   content((-0.992, 0.573), [Mechanical\ $F_[mu] = -P V$], anchor: "center")
   content((-0.95, 0.28), text(.8em)[(Grand potential)], anchor: "center")
 
@@ -85,7 +83,6 @@
 
   content((0, -1.146), [Chemical\ $G = mu N$], anchor: "center")
 
-  // Add labels for overlapping regions
   content((0, 0.523), align(center, $U_[mu] =\ T S - P V$), anchor: "center")
 
   content((0, 0), text(.8em, align(center, $U = T S -\ P V + mu N$)))
@@ -94,7 +91,6 @@
 
   content((0.496, -0.336), align(center, $H =\ T S + mu N$), anchor: "center")
 
-  // Add outer circle label
   content((0, 1.6), $G_[mu]$)
   content((0, 1.4), text(.8em)[(Gibbs-Duhem)])
   circle((0, 0), radius: 1.75, fill: rgb(70%, 70%, 90%, 20%), stroke: rgb(

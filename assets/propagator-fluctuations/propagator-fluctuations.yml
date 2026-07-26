@@ -2,4 +2,9 @@ title: Propagator Fluctuations
 tags:
   - physics
   - quantum field theory
-description: null
+description: >-
+  The three one-loop diagrams contributing to the flow of the two-point function. The first two
+  place the regulator insertion $\partial_k R_k$ above and below a loop closed by two dressed
+  three-point vertices $\Gamma_k^3$; the third is a tadpole carrying a single four-point vertex
+  $\Gamma_k^4$. Their sum is the right-hand side of the flow equation for the inverse
+  propagator, and the regulator is what makes each momentum integral converge.

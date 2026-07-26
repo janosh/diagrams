@@ -4,7 +4,6 @@
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #canvas({
-  // Draw dashed enclosure
   rect(
     (-4, -6),
     (4, 3.25),
@@ -104,7 +103,6 @@
     padding: (4pt, 2em, 1pt),
   )
 
-  // Draw connecting arrows
   line("initial", "potential", ..arrow-style)
   line("potential", "hamiltonian", ..arrow-style)
   line("hamiltonian", "schrodinger-eq", ..arrow-style)

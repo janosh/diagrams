@@ -1,5 +1,5 @@
 #import "@preview/cetz:0.5.2": canvas, draw
-#import draw: circle, content, line, on-layer
+#import draw: circle, line, on-layer
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
@@ -22,8 +22,6 @@
 }
 
 #canvas({
-  // Define styles and constants
-  let grid-size = 2 // number of points in each direction
   let spacing = 0.6 // spacing between points
   let dot-radius = 0.1
 
@@ -58,7 +56,6 @@
     }
   }
 
-  // Add arrows to show basis vectors
   let arrow-style = (
     mark: (end: "stealth", fill: black, scale: .5),
     stroke: 1pt,

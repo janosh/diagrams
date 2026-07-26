@@ -8,9 +8,7 @@
   let plot-size = 6
   let plot-sep = 8
 
-  // Helper to draw coordinate axes
   let draw-axes(origin, label) = {
-    // Draw axes
     line(
       (origin.at(0) - plot-size / 2, origin.at(1)),
       (origin.at(0) + plot-size / 2, origin.at(1)),
@@ -24,7 +22,6 @@
       name: label + "-y",
     )
 
-    // Add axis labels
     content(
       (rel: (0, -0.3), to: label + "-x.end"),
       eval(lower(label) + "_1", mode: "math"),
@@ -36,7 +33,6 @@
       name: label + "-y-label",
     )
 
-    // Add plot label
     content(
       (origin.at(0) - plot-size / 2, origin.at(1) + plot-size / 2),
       text(size: 1.2em)[#eval(label, mode: "math")],
@@ -49,7 +45,6 @@
   let z-origin = (0, 0)
   draw-axes(z-origin, "Z")
 
-  // Draw blue square in Z space
   rect(
     (z-origin.at(0), z-origin.at(1)),
     (z-origin.at(0) + 1, z-origin.at(1) + 1),
@@ -61,7 +56,6 @@
   let x-origin = (plot-sep, 0)
   draw-axes(x-origin, "X")
 
-  // Draw transformed squares in X space
   rect(
     (x-origin.at(0), x-origin.at(1)),
     (x-origin.at(0) + 2, x-origin.at(1) + 2),
@@ -75,7 +69,6 @@
     name: "x-square-2",
   )
 
-  // Draw mapping arrows
   let mid-x = plot-sep / 2
   line(
     (mid-x - 0.3, 2.7),
@@ -100,7 +93,6 @@
     padding: (top: 4pt),
   )
 
-  // Draw dotted transformation arrows with determinant labels
   line(
     "z-square.north-east",
     "x-square-1.north-east",

@@ -6,7 +6,6 @@
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #canvas({
-  // Draw axes
   draw.line(
     (-size / 2, 0),
     (size / 2 + axes-extend, 0),
@@ -20,7 +19,6 @@
     name: "y-axis",
   )
 
-  // Add axis labels
   draw.content((rel: (.4, .2), to: "x-axis.end"), $"Re"(p_0)$)
   draw.content((rel: (.7, 0), to: "y-axis.end"), $"Im"(p_0)$)
 
@@ -30,14 +28,12 @@
     (1, -1, blue),
     (-1, -1, red),
   ) {
-    // Draw squares with gap
     draw.rect(
       (gap * s1, gap * s2),
       (s1 * size / 2, s2 * size / 2),
       fill: color.lighten(80%),
       stroke: color.darken(40%),
     )
-    // Add labels
     draw.content((size / 4 * s1, size / 4 * s2), $s(p_0) = #calc.quo(s1, s2)$)
   }
 })

@@ -36,11 +36,9 @@
     bezier(start, end, ctrl-1, ctrl-2, ..heavy)
     content(label-pos, label, anchor: "east", fill: white, padding: 2pt)
   }
-  // @typstyle off
   let state(x, idx, q, action, reward, reward-label, mark-pos, wiggle-x, dollar-pos) = {
     let id = "s" + str(idx)
     let mid = x + panel-w / 2
-    let marker = (x + mark-pos.at(0), y-box + mark-pos.at(1))
     let panel = ((x, y-box), (x + panel-w, y-box + panel-w))
     let panel-name = id + "-panel"
     let panel-sw = panel-name + ".south-west"

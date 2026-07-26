@@ -84,10 +84,10 @@
   <meta name="description" content={meta_description} />
   <meta property="og:title" content="Scientific Diagrams" />
   <meta property="og:description" content={meta_description} />
-  <meta property="og:image" content="{homepage}/index-page-2021-08-04.png" />
+  <meta property="og:image" content="{homepage}/index-page-2026-07-26.png" />
   <meta property="og:image:alt" content="Scientific Diagrams index page" />
   <meta property="og:url" content={homepage} />
-  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:card" content="summary_large_image" />
 </svelte:head>
 
 <svelte:window bind:innerWidth onkeyup={handle_keyup} />

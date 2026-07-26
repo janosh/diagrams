@@ -220,65 +220,50 @@
     str(infinity): (coordinates: (45.2, 63), line: ((45.5, 63.6), 64.1)),
   )
 
-  // Generate labels for all Mach numbers
-  let label-plots = (
-    mach-numbers
-      .map(M => {
-        let maximum-shock-angle = max-shock-angle(M)
-        let deflection-angle = shock-polar(M, maximum-shock-angle).deg()
-        let align = if M in highlighted-mach-numbers { top + left } else {
-          bottom + left
-        }
-        let label = if M == infinity { $#sym.infinity$ } else { [#M] }
-        if M in highlighted-mach-numbers { label = strong(label) }
+  // One label per Mach number, sitting at that curve's maximum-deflection tip unless
+  // `custom-label-placements` moves it aside, in which case a leader line is added.
+  let mach-label(M) = {
+    let highlighted = M in highlighted-mach-numbers
+    let custom = custom-label-placements.at(str(M), default: none)
+    let ((x, y), pad-x, pad-y) = if custom == none {
+      // only the un-nudged labels need the (expensive) maximum-deflection search
+      let tip = max-shock-angle(M)
+      ((shock-polar(M, tip).deg(), deg(tip)), 0.07em, 0.3em)
+    } else { (custom.coordinates, 0em, 0em) }
 
-        let (x, y, pad-x, pad-y) = if str(M) not in custom-label-placements {
-          (deflection-angle, deg(maximum-shock-angle), 0.07em, 0.3em)
-        } else {
-          (
-            custom-label-placements.at(str(M)).at("coordinates"),
-            0em,
-            0em,
-          ).flatten()
-        }
+    let label = if M == infinity { $#sym.infinity$ } else { [#M] }
+    if highlighted { label = strong(label) }
+    let body = pad(x: pad-x, y: pad-y, text(size: label-text-size)[$#label$])
+    let labels = (
+      lq.place(x, y, align: if highlighted { top + left } else { bottom + left }, body),
+    )
 
-        let labels = (
-          lq.place(x, y, align: align, pad(x: pad-x, y: pad-y)[#text(
-            size: label-text-size,
-          )[$#label$]])
-        )
+    if custom != none {
+      let ((leader-x, leader-y), target-angle) = custom.line
+      labels.push(lq.plot(
+        (leader-x, shock-polar(M, rad(target-angle)).deg()),
+        (leader-y, target-angle),
+        color: black,
+        stroke: (thickness: 0.5pt),
+        mark: none,
+      ))
+    }
+    labels
+  }
 
-        if str(M) in custom-label-placements {
-          let line = custom-label-placements.at(str(M)).at("line")
-          let y = (line.at(0).at(1), line.at(1))
-          let x = (line.at(0).at(0), shock-polar(M, rad(y.at(1))).deg())
-          labels = (
-            labels,
-            lq.plot(x, y, color: black, stroke: (thickness: 0.5pt), mark: none),
-          )
-        }
+  // hat(M) = 1 label, pinned to where that locus crosses the M = 1.4 polar
+  let mach-1-label = {
+    let M = 1.4
+    let shock-angle = deg(secant(angle => mach-1-residual(M, angle), rad(60), rad(70)))
+    lq.place(
+      shock-polar(M, rad(shock-angle)).deg(),
+      shock-angle,
+      align: top + right,
+      pad(0.2em, text(size: label-text-size)[$hat(M) = 1$]),
+    )
+  }
 
-        labels
-      })
-      .flatten()
-      // hat(M) = 1 label
-      + (63,).map(_ => {
-        let M = 1.4
-        let shock-angle = deg(secant(
-          shock-angle => mach-1-residual(M, shock-angle),
-          rad(60),
-          rad(70),
-        ))
-        let deflection-angle = shock-polar(M, rad(shock-angle)).deg()
-
-        lq.place(
-          deflection-angle,
-          shock-angle,
-          align: top + right,
-          pad(0.2em)[#text(size: label-text-size)[$hat(M) = 1$]],
-        )
-      })
-  )
+  let label-plots = mach-numbers.map(mach-label).flatten() + (mach-1-label,)
 
   // Geometry drawing
   let geometry-drawing = cetz.canvas(
@@ -321,7 +306,6 @@
 
       let strong-stroke = (thickness: 1.2pt)
 
-      // arrows
       line(
         (-M-length, 0),
         (0, 0),

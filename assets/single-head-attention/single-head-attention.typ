@@ -3,8 +3,9 @@
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
+#let mid-gray = rgb(50%, 50%, 50%)
+
 #canvas({
-  // Define spacing variables
   let spacing = (horizontal: 1.2, vertical: 0.8)
 
   // Helper function for drawing a matrix with colored dimension indicators
@@ -14,18 +15,22 @@
   // color for top dimension line
   // color for left dimension line
   // matrix style
-  // @typstyle off
-  let matrix(pos, size, label, top-color: none, left-color: none, style: (stroke: rgb(50%, 50%, 50%), fill: white, thickness: 1.5pt)) = {
+  let matrix(
+    pos,
+    size,
+    label,
+    top-color: none,
+    left-color: none,
+    style: (stroke: mid-gray, fill: white, thickness: 1.5pt),
+  ) = {
     let (x, y) = pos
     let (w, h) = size
     let offset = 0.1 // offset for dimension lines to avoid overlap
 
-    // Draw matrix rectangle
     rect(pos, (x + w, y - h), ..style, name: label)
     // eval label as math so matrix names render italic (matching the formula below)
     content(label, eval(label, mode: "math"))
 
-    // Draw dimension indicators if colors specified
     if top-color != none {
       line((x - 0.02, y + offset), (x + w + 0.02, y + offset), stroke: (
         paint: top-color,
@@ -40,22 +45,11 @@
     }
   }
 
-  // Define styles
-  let value-style = (
-    stroke: rgb(50%, 50%, 50%),
-    fill: white,
-    thickness: 1.5pt,
-  )
-
-  let operation-style = (
-    stroke: rgb(50%, 50%, 50%),
-    fill: rgb(30%, 80%, 80%, 30%),
-    thickness: 1.5pt,
-  )
+  let value-style = (stroke: mid-gray, fill: white, thickness: 1.5pt)
 
   let edge-style = (
     mark: (start: "|", offset: 0.075, scale: 1.3),
-    stroke: rgb(50%, 50%, 50%),
+    stroke: mid-gray,
     thickness: 1.5pt,
   )
 
@@ -63,9 +57,9 @@
     mark: (
       start: (symbol: "|", offset: 0.075, scale: 1.3),
       end: (symbol: "stealth", offset: 0.15, scale: 0.45),
-      fill: rgb(50%, 50%, 50%),
+      fill: mid-gray,
     ),
-    stroke: rgb(50%, 50%, 50%),
+    stroke: mid-gray,
     thickness: 1.5pt,
   )
 
@@ -114,7 +108,7 @@
     (spacing.horizontal + 0.4, 0),
     $dot.op^top$,
     frame: "rect",
-    stroke: rgb(50%, 50%, 50%) + .75pt,
+    stroke: mid-gray + .75pt,
     fill: rgb(30%, 80%, 80%, 30%),
     padding: (5pt, 3pt, 1pt),
     name: "att",
@@ -124,7 +118,7 @@
     (2 * spacing.horizontal + 0.6, 0),
     [softmax],
     frame: "rect",
-    stroke: rgb(50%, 50%, 50%) + .75pt,
+    stroke: mid-gray + .75pt,
     fill: rgb(30%, 80%, 80%, 30%),
     padding: (2pt, 3pt, 3pt),
     name: "softmax",
@@ -143,7 +137,7 @@
     (4 * spacing.horizontal + 1, 0),
     $dot.op$,
     frame: "rect",
-    stroke: rgb(50%, 50%, 50%),
+    stroke: mid-gray,
     fill: rgb(30%, 80%, 80%, 30%),
     padding: (1pt, 4pt, 2pt),
     name: "prod",
@@ -181,13 +175,8 @@
   )
 
   // Other straight connections
-  line(
-    "att.east",
-    "softmax.west",
-    stroke: rgb(50%, 50%, 50%),
-    name: "att-to-sm",
-  )
+  line("att.east", "softmax.west", stroke: mid-gray, name: "att-to-sm")
   line("softmax.east", "A.west", ..arrow-style, name: "sm-to-a")
-  line("A.east", "prod.west", stroke: rgb(50%, 50%, 50%), name: "a-to-prod")
+  line("A.east", "prod.west", stroke: mid-gray, name: "a-to-prod")
   line("prod.east", "Y.west", ..arrow-style, name: "prod-to-y")
 })

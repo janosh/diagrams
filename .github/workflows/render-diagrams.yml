@@ -66,5 +66,14 @@ jobs:
           git config user.email janosh.riebesell@gmail.com
           git checkout ${{ github.head_ref }}
           git add -A -- 'assets/**/*.pdf' 'assets/**/*.svg' 'assets/**/*.png'
-          git diff --cached --quiet || git commit -m 'Update rendered diagram assets'
-          git push
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Update rendered diagram assets'
+          # the branch can move while this job renders. without the rebase the push is
+          # rejected and the freshly rendered assets are thrown away, leaving the PR to
+          # merge with stale images and nothing on main to notice
+          for attempt in 1 2 3; do
+            git pull --rebase origin ${{ github.head_ref }} && git push && exit 0
+            echo "push attempt $attempt failed, retrying"
+            sleep 5
+          done
+          exit 1

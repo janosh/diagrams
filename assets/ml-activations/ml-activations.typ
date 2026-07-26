@@ -1,5 +1,7 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.2": canvas
 #import "@preview/cetz-plot:0.1.4": plot
+#import "../_shared/plot.typ": legend-box, style-axes
+#import "../_shared/theme.typ": series
 
 #let vector(v) = $bold(#v)$
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
@@ -8,39 +10,31 @@
 #let gelu(x) = (
   0.5 * x * (1 + calc.tanh(calc.sqrt(2 / calc.pi) * (x + 0.044715 * calc.pow(x, 3))))
 )
-#let leaky_relu(x) = if x < 0 { 0.01 * x } else { x }
+#let leaky-relu(x) = if x < 0 { 0.01 * x } else { x }
 #let sigmoid(x) = 1 / (1 + calc.exp(-x))
 #let tanh(x) = (calc.exp(x) - calc.exp(-x)) / (calc.exp(x) + calc.exp(-x))
 
 #canvas({
-  let arrow-style = (end: "stealth", fill: black)
-  draw.set-style(axes: (
-    y: (label: (anchor: "north-west", offset: -0.2), mark: arrow-style),
-    x: (mark: arrow-style),
-  ))
+  style-axes(x-label: none)
   plot.plot(
     size: (8, 5),
     y-tick-step: 1,
     x-tick-step: 2,
     legend: "inner-north-west",
-    legend-style: (item: (spacing: 0.1), padding: 0.1, stroke: .5pt),
+    legend-style: legend-box,
     axis-style: "left",
     x-grid: true,
     y-grid: true,
     {
-      for (key, (func, color)) in (
-        "ReLU": (relu, red),
-        "GELU": (gelu, blue),
-        "Leaky ReLU": (leaky_relu, green),
-        "Sigmoid": (sigmoid, orange),
-        "Tanh": (tanh, purple),
-      ).pairs() {
-        plot.add(
-          style: (stroke: color + 1.5pt),
-          domain: (-4, 4),
-          func,
-          label: key,
-        )
+      let curves = (
+        "ReLU": relu,
+        "GELU": gelu,
+        "Leaky ReLU": leaky-relu,
+        "Sigmoid": sigmoid,
+        "Tanh": tanh,
+      )
+      for (idx, (key, func)) in curves.pairs().enumerate() {
+        plot.add(style: (stroke: series(idx)), domain: (-4, 4), func, label: key)
       }
     },
   )

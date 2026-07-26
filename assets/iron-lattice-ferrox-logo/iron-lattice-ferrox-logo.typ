@@ -9,7 +9,7 @@
 #let nr = 0.1
 
 // === Gradient Definitions ===
-// Each: (name, ((r_base, r_scale), (g_base, g_scale), (b_base, b_scale)))
+// Each: (name, ((r-base, r-scale), (g-base, g-scale), (b-base, b-scale)))
 #let gradients = (
   ("Brown → Orange", ((80, 160), (15, 120), (0, 15))),
   ("Blue → Magenta", ((20, 220), (80, -50), (220, 35))),
@@ -160,12 +160,7 @@
 }
 
 // === Output ===
-#set page(
-  width: auto,
-  height: auto,
-  margin: if show-grid { 12pt } else { 8pt },
-  fill: none,
-)
+#set page(width: auto, height: auto, margin: if show-grid { 12pt } else { 8pt }, fill: none)
 
 #if show-grid {
   grid(

@@ -26,11 +26,7 @@
 #let bwt-str = rotations.map(((rot, _)) => rot.last()).join()
 #let orig-row = rotations.position(((_, shift)) => shift == 0) + 1
 
-#let serif-italic(body) = text(
-  font: "New Computer Modern",
-  style: "italic",
-  body,
-)
+#let serif-italic(body) = text(font: "New Computer Modern", style: "italic", body)
 
 #canvas({
   let arrow = (

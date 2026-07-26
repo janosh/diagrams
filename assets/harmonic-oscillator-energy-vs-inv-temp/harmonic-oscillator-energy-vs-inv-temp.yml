@@ -2,5 +2,9 @@ title: Harmonic Oscillator Energy vs inverse Temperature
 tags:
   - physics
   - thermodynamics
-description: |
-  Harmonic oscillator energy vs inverse temperature beta = 1/(kB T)
+description: >-
+  Mean energy of a quantum harmonic oscillator in units of $\hbar\omega$, against inverse
+  temperature $\beta = 1/k_\text{B}T$. As $\beta$ grows the thermal occupation dies off
+  exponentially and the curve flattens onto $1/2$, the zero-point energy $\hbar\omega/2$ that
+  survives at $T = 0$. Compare
+  [energy vs frequency](https://janosh.github.io/diagrams/harmonic-oscillator-energy-vs-freq).

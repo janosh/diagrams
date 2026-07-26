@@ -1,35 +1,37 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.2": canvas
 #import "@preview/cetz-plot:0.1.4": plot
+#import "../_shared/plot.typ": stealth, style-axes
+#import "../_shared/theme.typ": line-weight, neutral, series
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 // ROC curve functions for different classifiers
-#let clamp_unit_interval(x, interior_value) = {
+#let clamp-unit-interval(x, interior-value) = {
   if x <= 0 { return 0 }
   if x >= 1 { return 1 }
-  interior_value
+  interior-value
 }
 
-#let perfect_classifier(x) = {
+#let perfect-classifier(x) = {
   if x == 0 { return 0 }
   if x == 1 { return 1 }
   if x > 0 { return 0.99 }
   return 0
 }
 
-#let excellent_classifier(x) = clamp_unit_interval(x, calc.pow(x, 0.15))
-#let good_classifier(x) = clamp_unit_interval(x, calc.pow(x, 0.3))
-#let fair_classifier(x) = clamp_unit_interval(x, calc.pow(x, 0.6))
-#let poor_classifier(x) = clamp_unit_interval(x, 0.2 * x + 0.8 * x * x)
+#let excellent-classifier(x) = clamp-unit-interval(x, calc.pow(x, 0.15))
+#let good-classifier(x) = clamp-unit-interval(x, calc.pow(x, 0.3))
+#let fair-classifier(x) = clamp-unit-interval(x, calc.pow(x, 0.6))
+#let poor-classifier(x) = clamp-unit-interval(x, 0.2 * x + 0.8 * x * x)
 
-#let random_classifier(x) = x
+#let random-classifier(x) = x
 
 #canvas({
-  let mark = (end: "stealth", fill: black, scale: 0.7)
-  draw.set-style(axes: (
-    y: (label: (anchor: "south-east", offset: 1.2, angle: 90deg), mark: mark),
-    x: (label: (anchor: "south-east", offset: 1.2), mark: mark),
-  ))
+  style-axes(
+    x-label: (anchor: "south-east", offset: 1.2),
+    y-label: (anchor: "south-east", offset: 1.2, angle: 90deg),
+    mark: (..stealth, scale: 0.7),
+  )
 
   plot.plot(
     size: (8, 8),
@@ -53,50 +55,50 @@
     ),
     {
       plot.add(
-        style: (stroke: gray),
+        style: (stroke: (paint: neutral.annotation, dash: "dashed", thickness: line-weight.thin)),
         domain: (0, 1),
         samples: 2,
-        random_classifier,
+        random-classifier,
         label: "Random Guess (AUC = 0.5)",
       )
 
       plot.add(
-        style: (stroke: green),
+        style: (stroke: series(0)),
         domain: (0, 1),
         samples: 50,
-        perfect_classifier,
+        perfect-classifier,
         label: "Near-Perfect Classifier (AUC = 0.99)",
       )
 
       plot.add(
-        style: (stroke: blue),
+        style: (stroke: series(1)),
         domain: (0, 1),
         samples: 100,
-        excellent_classifier,
+        excellent-classifier,
         label: "Excellent Classifier (AUC = 0.93)",
       )
 
       plot.add(
-        style: (stroke: purple),
+        style: (stroke: series(2)),
         domain: (0, 1),
         samples: 100,
-        good_classifier,
+        good-classifier,
         label: "Good Classifier (AUC = 0.85)",
       )
 
       plot.add(
-        style: (stroke: orange),
+        style: (stroke: series(3)),
         domain: (0, 1),
         samples: 100,
-        fair_classifier,
+        fair-classifier,
         label: "Fair Classifier (AUC = 0.73)",
       )
 
       plot.add(
-        style: (stroke: red),
+        style: (stroke: series(4)),
         domain: (0, 1),
         samples: 100,
-        poor_classifier,
+        poor-classifier,
         label: "Poor Classifier (AUC = 0.65)",
       )
     },

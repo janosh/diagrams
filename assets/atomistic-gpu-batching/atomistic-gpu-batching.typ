@@ -1,510 +1,245 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: content, line, rect
+#import "../_shared/theme.typ": annotation-size
 
 #set page(width: auto, height: auto, margin: 15pt, fill: none)
 
+// Ionic steps each structure needs before it converges. Every other number in this
+// figure -- batch spans, idle slots, utilization, total runtime -- is derived from this
+// one array, so the three strategies are compared on identical work.
+#let steps-needed = (2, 6, 4, 3, 6, 5, 2, 4, 3, 2)
+#let slots = 5
+#let window = 16 // steps of timeline drawn; unbatched runs off the end
+
+// Vega category10: ten hues that stay distinct, unlike shades of one hue.
+#let struct-colors = (
+  rgb("#4C78A8"),
+  rgb("#F58518"),
+  rgb("#54A24B"),
+  rgb("#E45756"),
+  rgb("#B279A2"),
+  rgb("#72B7B2"),
+  rgb("#B8A02E"),
+  rgb("#9D755D"),
+  rgb("#D6698E"),
+  rgb("#7F7F7F"),
+)
+
+// Each schedule is a list of steps, each step listing which structure occupies each
+// slot, or -1 for an idle slot.
+
+// One structure at a time: four slots always idle.
+#let unbatched-schedule = {
+  let timeline = ()
+  for (idx, needed) in steps-needed.enumerate() {
+    for _ in range(needed) { timeline.push((idx,) + (-1,) * (slots - 1)) }
+  }
+  timeline
+}
+
+// Fixed batches: every slot is held until the batch's slowest member converges, so a
+// finished structure leaves a hole rather than making room for the next one.
+#let binning-schedule = {
+  let timeline = ()
+  for first in range(0, steps-needed.len(), step: slots) {
+    let batch = steps-needed.slice(first, first + slots)
+    for step in range(calc.max(..batch)) {
+      timeline.push(range(slots).map(s => if batch.at(s) > step { first + s } else { -1 }))
+    }
+  }
+  timeline
+}
+
+// In-flight: a converged structure is replaced immediately, so slots stay busy until
+// the queue runs dry.
+#let inflight-schedule = {
+  let occupant = range(slots)
+  let left = steps-needed.slice(0, slots)
+  let next = slots
+  let timeline = ()
+  while occupant.any(idx => idx != -1) {
+    timeline.push(occupant)
+    for slot in range(slots) {
+      if occupant.at(slot) == -1 { continue }
+      left.at(slot) -= 1
+      if left.at(slot) > 0 { continue }
+      if next == steps-needed.len() {
+        occupant.at(slot) = -1
+        continue
+      }
+      occupant.at(slot) = next
+      left.at(slot) = steps-needed.at(next)
+      next += 1
+    }
+  }
+  timeline
+}
+
+// Share of slot-steps that did useful work over the whole run.
+#let utilization(timeline) = {
+  let busy = timeline.map(step => step.filter(s => s != -1).len()).sum()
+  calc.round(100 * busy / (timeline.len() * slots))
+}
+
 #canvas({
-  // === Layout constants ===
-  let plot_width = 24
-  let timeline_width = 16
-  let time_tick_spacing = 1.0
-  let cell = time_tick_spacing - 0.1
-  let box_width_factor = 0.9
-  let rect_height = 0.3
-  let border_radius = 0.05
-  let gap = 0.15
-  let strategy_y_positions = (11, 6.5, 2.0)
+  let dark-gray = rgb("#5D6B7A")
+  let section-bg = rgb("#F7FAFC")
+  let idle-stroke = rgb("#C7D0D9")
+  let good = rgb("#2E7D32")
+  let bad = rgb("#C62828")
 
-  // === Palette ===
-  let dark_gray = rgb("#5D6B7A")
-  let cpu_color = rgb("#8899AA")
-  let gpu_color = rgb("#6A7A8A")
-  let section_bg = rgb("#F7FAFC")
-  let cpu_light_gray = cpu_color.lighten(70%)
-  let mid_blue = rgb("#90CAF9")
-  let dark_blue = rgb("#64B5F6")
-  let light_green = rgb("#C8E6C9")
-  let mid_green = rgb("#A5D6A7")
-  let dark_green = rgb("#81C784")
-  let light_orange = rgb("#FFE0B2")
-  let mid_orange = rgb("#FFCC80")
-  let dark_orange = rgb("#FFB74D")
-  let light_red = rgb("#FFCDD2")
-  let mid_red = rgb("#EF9A9A")
-  let dark_red = rgb("#E57373")
+  let plot-width = 24
+  let x0 = 5.0 // left edge of step 0
+  let cell = 1.0 // one step per tick, so the grid never drifts off the axis
+  let box-width = 0.88
+  let row-height = 0.3
+  let row-gap = 0.14
+  let radius = 0.05
 
-  // structure colors/labels shared by the binning and in-flight GPU grids
-  let struct_colors = (
-    dark_blue,
-    dark_green,
-    dark_orange,
-    dark_red,
-    dark_blue.darken(10%),
-    dark_green.darken(10%),
-    dark_orange.darken(10%),
-    dark_red.darken(10%),
-    dark_blue.darken(20%),
-    dark_green.darken(20%),
+  // step i spans [x0 + i, x0 + i + 1]; its tick and label sit under the center
+  let step-center(i) = x0 + (i + 0.5) * cell
+
+  let slot-y(base, slot) = base + slot * (row-height + row-gap)
+
+  let panels = (
+    (11.2, "Unbatched\nSimulations", unbatched-schedule),
+    (6.0, "Binning\nAutoBatcher", binning-schedule),
+    (0.8, "InFlight\nAutoBatcher", inflight-schedule),
   )
-  let struct_labels = range(1, 11).map(n => "S" + str(n))
 
-  // === Helpers ===
-  // @typstyle off
-  let draw_sim_block(x_pos, y_pos, width, color, label, task_label: "", opacity: 100%) = {
-    rect(
-      (x_pos, y_pos - rect_height / 2),
-      (x_pos + width, y_pos + rect_height / 2),
-      fill: color.transparentize(100% - opacity),
-      stroke: color.darken(10%),
-      radius: border_radius,
-      name: "block-" + label,
-    )
-    if task_label != "" {
-      content(
-        (x_pos + width / 2, y_pos),
-        text(size: 8pt)[#task_label],
-        name: "label-" + label,
-      )
-    }
-  }
-
-  let draw_structure_rect(x_pos, y_pos, width, color, label, struct_name) = {
-    rect(
-      (x_pos, y_pos),
-      (x_pos + 0.95 * width, y_pos + 0.1),
-      fill: color.transparentize(20%),
-      stroke: none,
-      name: "block-" + struct_name,
-    )
-    content(
-      (x_pos + width / 2, y_pos + 0.15),
-      text(size: 8pt)[#label],
-      name: "label-" + struct_name,
-      anchor: "south",
-    )
-  }
-
-  let draw_util_bar(x_pos, y_pos, percentage, label, is_bad: false) = {
-    let (width, height) = (2.8, 0.4)
-    rect(
-      (x_pos, y_pos - height / 2),
-      (x_pos + width, y_pos + height / 2),
-      fill: rgb("#E2E8F0"),
-      stroke: 0.5pt,
-      radius: 0.1,
-      name: "bar-bg-" + label,
-    )
-    let fill_color = if is_bad { light_red.darken(20%) } else if (
-      percentage < 30
-    ) { light_red } else if percentage < 70 { light_orange } else {
-      light_green
-    }
-    rect(
-      (x_pos, y_pos - height / 2),
-      (x_pos + width * percentage / 100, y_pos + height / 2),
-      fill: fill_color,
-      stroke: none,
-      radius: (north-west: 0.1, south-west: 0.1),
-      name: "bar-fill-" + label,
-    )
-    content(
-      (rel: (0.03, 0), to: "bar-bg-" + label),
-      text(size: 8pt, weight: "bold")[#label #percentage%],
-      name: "bar-label-" + label,
-      anchor: "center",
-    )
-  }
-
-  // one GPU grid slot: filled box with label when color != none, else a dotted idle placeholder
-  let draw_cell(x_start, y, w, name, color: none, label: none) = {
-    let empty = color == none
-    rect(
-      (x_start, y - rect_height / 2),
-      (x_start + w, y + rect_height / 2),
-      fill: if empty { light_red.transparentize(90%) } else { color },
-      stroke: if empty {
-        (dash: "dotted", paint: light_red.transparentize(30%))
-      } else { color.darken(20%) },
-      radius: border_radius,
-      name: if empty { name + "-empty" } else { name },
-    )
-    if not empty {
-      content(
-        (x_start + w / 2, y),
-        text(size: 7pt)[#label],
-        anchor: "center",
-        name: name + "-label",
-      )
-    }
-  }
-
-  // === Title and subtitle ===
   content(
-    (plot_width / 2, 15.0),
-    text(
-      weight: "bold",
-      size: 16pt,
-    )[GPU Batching Strategies for Atomistic Simulations],
+    (plot-width / 2, 14.6),
+    text(weight: "bold", size: 16pt)[GPU Batching Strategies for Atomistic Simulations],
     name: "main-title",
   )
   content(
-    (rel: (0, -1), to: "main-title"),
-    text(
-      size: 12pt,
-    )[Comparison of Unbatched vs. BinningAutoBatcher vs. InFlightAutoBatcher],
-    name: "subtitle",
+    (rel: (0, -0.85), to: "main-title"),
+    text(size: 11pt, fill: dark-gray)[
+      Ten structures needing #steps-needed.map(str).join(", ") ionic steps, on #slots GPU slots
+    ],
   )
 
-  // === Per-strategy backgrounds, labels, utilization meters, timelines ===
-  let strategies = (
-    (strategy_y_positions.at(0), "Unbatched\nSimulations", (80, 5)),
-    (strategy_y_positions.at(1), "Binning\nAutoBatcher", (40, 60)),
-    (strategy_y_positions.at(2), "InFlight\nAutoBatcher", (60, 90)),
-  )
-
-  for (idx, (y_pos, label, (cpu_util, gpu_util))) in strategies.enumerate() {
+  for (base-y, name, schedule) in panels {
+    let rows-bottom = base-y - 0.6
+    let axis-y = rows-bottom - 0.55
     rect(
-      (0.5, y_pos - 2.0),
-      (plot_width - 0.5, y_pos + 2.0),
-      fill: section_bg,
+      (0.5, axis-y - 0.75),
+      (plot-width - 0.5, slot-y(rows-bottom, slots - 1) + 0.75),
+      fill: section-bg,
       stroke: none,
-      radius: border_radius * 3,
-      name: "section-bg-" + str(idx),
+      radius: radius * 3,
     )
+    content((2.3, base-y + 0.9), text(weight: "bold", size: 12pt)[#name])
+
+    // occupancy meter, sized to its own text so the label cannot overflow it
+    let busy = utilization(schedule)
+    let meter = 2.6
+    rect(
+      (1.0, base-y - 0.55),
+      (1.0 + meter, base-y - 0.15),
+      fill: rgb("#E2E8F0"),
+      stroke: 0.5pt,
+      radius: 0.08,
+      name: "meter-" + name,
+    )
+    rect(
+      (1.0, base-y - 0.55),
+      (1.0 + meter * busy / 100, base-y - 0.15),
+      fill: if busy < 40 { bad.lighten(60%) } else if busy < 75 {
+        rgb("#F9A825").lighten(55%)
+      } else { good.lighten(60%) },
+      stroke: none,
+      radius: (west: 0.08),
+    )
+    content("meter-" + name, text(size: annotation-size, weight: "bold")[#busy% slots busy])
     content(
-      (2, y_pos + 1.0),
-      text(weight: "bold", size: 12pt)[#label],
-      name: "scenario-label-" + str(idx),
+      (1.0, base-y - 0.95),
+      text(size: annotation-size, fill: dark-gray)[#schedule.len() steps to finish all 10],
+      anchor: "west",
     )
 
-    draw_util_bar(.8, y_pos - 0.1, cpu_util, "CPU Utilization")
-    draw_util_bar(.8, y_pos - 1, gpu_util, "GPU Utilization", is_bad: idx == 0)
-
-    content(
-      (4.6, y_pos + 1.3),
-      text(fill: cpu_color, size: 10pt, weight: "bold")[CPU],
-      anchor: "east",
-      name: "cpu-label-" + str(idx),
-    )
-    content(
-      (4.6, y_pos - 0.5),
-      text(fill: gpu_color, size: 10pt, weight: "bold")[GPU],
-      anchor: "east",
-      name: "gpu-label-" + str(idx),
-    )
+    // slot grid
+    for (step, occupants) in schedule.slice(0, calc.min(schedule.len(), window)).enumerate() {
+      for slot in range(slots) {
+        let who = occupants.at(slot)
+        let (x, y) = (step-center(step), slot-y(rows-bottom, slot))
+        let color = if who == -1 { none } else { struct-colors.at(who) }
+        rect(
+          (x - box-width / 2, y),
+          (x + box-width / 2, y + row-height),
+          fill: if color == none { none } else { color.lighten(60%) },
+          stroke: if color == none {
+            (dash: "dotted", paint: idle-stroke, thickness: 0.6pt)
+          } else { color },
+          radius: radius,
+        )
+        if who != -1 {
+          content((x, y + row-height / 2), text(size: annotation-size)[S#(who + 1)])
+        }
+      }
+    }
 
     line(
-      (4.8, y_pos - 1.5),
-      (4.8 + timeline_width, y_pos - 1.5),
+      (x0 - 0.2, axis-y),
+      (x0 + window * cell + 0.4, axis-y),
       stroke: 0.8pt,
       mark: (end: "stealth", fill: black, scale: 0.5),
-      name: "timeline-" + str(idx),
     )
-
-    for tick in range(1, 17) {
-      let x_pos = 4 + tick * time_tick_spacing
+    for step in range(window) {
       line(
-        (x_pos, y_pos - 1.55),
-        (x_pos, y_pos - 1.45),
+        (step-center(step), axis-y - 0.05),
+        (step-center(step), axis-y + 0.05),
         stroke: 0.8pt,
-        name: "tick-" + str(idx) + "-" + str(tick),
       )
       content(
-        (rel: (0, -0.2), to: "tick-" + str(idx) + "-" + str(tick)),
-        text(size: 8pt)[t=#tick],
+        (step-center(step), axis-y - 0.12),
+        text(size: annotation-size)[t=#(step + 1)],
         anchor: "north",
-        name: "tick-label-" + str(idx) + "-" + str(tick),
       )
     }
-
-    let separator_y = if idx == 0 { y_pos + 0.6 } else { y_pos + 0.95 }
-    line(
-      (4, separator_y),
-      (4 + timeline_width, separator_y),
-      stroke: (dash: "dotted", paint: dark_gray.lighten(30%)),
-      name: "separator-" + str(idx),
-    )
   }
 
-  // === 1. Unbatched: per-structure bars + sequential CPU/GPU blocks ===
-  let unbatched_cpu_y = strategy_y_positions.at(0) + 1.4
-  let unbatched_gpu_y = strategy_y_positions.at(0) - 0.5
-
-  let unbatched_structures = (
-    (5.0, 2.0, mid_blue, "Structure 1"),
-    (7.0, 2.3, mid_green, "Structure 2"),
-    (9.3, 1.8, mid_orange, "Structure 3"),
-    (11.1, 2.1, mid_red, "Structure 4"),
-    (13.2, 1.8, dark_green, "Structure 5"),
-    (15.0, 2.0, dark_green.darken(10%), "Structure 6"),
-    (17.0, 1.6, dark_green.darken(15%), "Structure 7"),
-    (18.6, 1.5, dark_green.darken(20%), "Structure 8"),
-  )
-  for (idx, (x_pos, width, color, label)) in unbatched_structures.enumerate() {
-    draw_structure_rect(
-      x_pos,
-      unbatched_cpu_y,
-      width,
-      color,
-      label,
-      "unbatched-" + str(idx + 1) + "-cpu",
-    )
-  }
+  // each panel's dead space on the right carries its own verdict
+  let (unbatched-y, binning-y, inflight-y) = panels.map(panel => panel.first())
+  let mid-rows(base-y) = slot-y(base-y - 0.6, 2) + row-height / 2
   content(
-    (21.8, unbatched_cpu_y - 1.9),
-    text(size: 10pt, weight: "bold")[... continues],
+    (step-center(16.9), slot-y(unbatched-y - 0.6, 0) + row-height / 2),
+    text(size: annotation-size, fill: bad)[
+      …#(unbatched-schedule.len() - window) more steps
+    ],
+    anchor: "west",
+  )
+  content(
+    (step-center(13.8), mid-rows(binning-y)),
+    text(size: annotation-size, fill: bad, style: "italic")[
+      #align(
+        center,
+      )[holes open up as a batch\ drains, and stay open until\ its slowest member converges]
+    ],
+    anchor: "center",
+  )
+  content(
+    (step-center(13.8), mid-rows(inflight-y)),
+    text(size: annotation-size, fill: good, style: "italic")[
+      #align(center)[all ten converged by t=#inflight-schedule.len()]
+    ],
     anchor: "center",
   )
 
-  for idx in range(22) {
-    draw_sim_block(
-      5.25 + idx * 0.7,
-      unbatched_cpu_y - 0.4,
-      0.4,
-      cpu_light_gray,
-      "unbatched-cpu-op-" + str(idx),
-      opacity: 90%,
-    )
-  }
-
-  let gpu_blocks = (
-    (1, dark_blue, (5.5, 6.5)),
-    (2, dark_green, (7.5, 8.5)),
-    (3, dark_orange, (9.8, 10.6)),
-    (4, dark_red, (11.5, 12.5)),
-    (5, dark_green, (13.8, 14.6, 15.4)),
-    (6, dark_green.darken(10%), (16.2, 16.8, 17.4, 18.0, 18.6)),
-    (7, dark_green.darken(15%), (19.2, 19.8)),
-  )
-  for (struct_num, color, positions) in gpu_blocks {
-    for (idx, pos) in positions.enumerate() {
-      draw_sim_block(
-        pos,
-        unbatched_gpu_y,
-        0.3 * box_width_factor,
-        color,
-        "unbatched-" + str(struct_num) + "-gpu-" + str(idx + 1),
-        task_label: "S" + str(struct_num),
-      )
-    }
-  }
-
-  // === 2. BinningAutoBatcher: two fixed batches; activity matrix marks active slots per step ===
-  let binning_cpu_y = strategy_y_positions.at(1) + 1.3
-  let binning_gpu_y = strategy_y_positions.at(1) - 0.85
-
-  for (idx, (x_pos, label)) in (
-    (5.0, "Prep batch"),
-    (10.4, "Prep batch"),
-  ).enumerate() {
-    draw_sim_block(
-      x_pos,
-      binning_cpu_y,
-      1.3,
-      cpu_light_gray,
-      "binning-op-" + str(idx),
-      task_label: label,
-    )
-  }
-
-  // each bin: (start_step, label_offset, per-step 5-slot activity; 1 = active, 0 = finished)
-  let bins = (
-    (
-      0,
-      0,
-      (
-        (1, 1, 1, 1, 1),
-        (1, 1, 1, 1, 1),
-        (0, 1, 1, 1, 1),
-        (0, 0, 1, 1, 1),
-        (0, 0, 0, 1, 0),
-        (0, 0, 0, 1, 0),
-      ),
-    ),
-    (
-      6,
-      5,
-      (
-        (1, 1, 1, 1, 1),
-        (1, 1, 1, 1, 1),
-        (0, 1, 0, 1, 1),
-        (0, 1, 0, 0, 1),
-        (0, 1, 0, 0, 0),
-        (0, 1, 0, 0, 0),
-      ),
-    ),
-  )
-
-  for (bin_idx, (start_step, label_offset, patterns)) in bins.enumerate() {
-    let box_width = cell * box_width_factor
-    for step in range(patterns.len()) {
-      let box_x_start = (
-        5.0 + (start_step + step) * cell + (cell - box_width) / 2
-      )
-      let active = patterns.at(step)
-
-      for slot in range(5) {
-        let block_y = binning_gpu_y - 0.3 + slot * (rect_height + gap)
-        let name = (
-          "binning-block-" + str(start_step) + "-" + str(step) + "-" + str(slot)
-        )
-        let on = active.at(slot) == 1
-        draw_cell(
-          box_x_start,
-          block_y,
-          box_width,
-          name,
-          color: if on { struct_colors.at(slot) },
-          label: if on { struct_labels.at(slot + label_offset) },
-        )
-      }
-
-      if step == patterns.len() - 1 {
-        content(
-          (box_x_start - 0.25, binning_gpu_y - 0.45),
-          text(
-            size: 8pt,
-            fill: dark_gray,
-            style: "italic",
-          )[Batch #(bin_idx + 1) Complete],
-          anchor: "center",
-          name: "batch-" + str(bin_idx + 1) + "-complete-label",
-        )
-      }
-    }
-  }
-
-  for (x_pos, percentage) in (
-    (5.6, 100),
-    (8.0, 60),
-    (9.8, 30),
-    (11, 100),
-    (13.5, 60),
-    (15.5, 20),
-  ) {
-    content(
-      (x_pos, binning_gpu_y + 2.7),
-      text(size: 8pt, fill: dark_gray)[#percentage% GPU],
-      anchor: "center",
-    )
-  }
-
   content(
-    (10.5, binning_gpu_y - 1.5),
-    text(
-      size: 7pt,
-      fill: dark_red,
-      style: "italic",
-    )[Must wait for batch to complete, resulting in underutilized GPU],
-    anchor: "center",
-    name: "must-wait",
-  )
-  line(
-    "must-wait.north",
-    (5.0 + 6 * cell, strategy_y_positions.at(1) - 1.5),
-    stroke: (dash: "dotted", paint: dark_red),
-    mark: (end: "stealth", fill: dark_red, scale: 0.4, offset: 0.05),
-    name: "must-wait-arrow",
-  )
-
-  // === 3. InFlightAutoBatcher: structures swapped in as others finish (-1 = idle slot) ===
-  let inflight_cpu_y = strategy_y_positions.at(2) + 1.3
-  let inflight_gpu_y = strategy_y_positions.at(2) - 0.9
-
-  let structures_by_step = (
-    (0, 1, 2, 3, 4),
-    (0, 1, 2, 3, 4),
-    (0, 6, 2, 3, 4),
-    (5, 6, 7, 3, 4),
-    (5, 6, 7, 8, 4),
-    (5, 6, 7, 8, 9),
-    (5, 6, 7, 8, 9),
-    (5, 6, 7, -1, -1),
-  )
-
-  for step in range(structures_by_step.len()) {
-    let prep_width = cell * box_width_factor * 0.7
-    let prep_x = 5.0 + step * cell + (cell - prep_width) * 0.1
-    draw_sim_block(
-      prep_x,
-      inflight_cpu_y,
-      prep_width,
-      cpu_light_gray,
-      "inflight-prep-" + str(step),
-      task_label: "Prep",
-    )
-
-    let box_width = cell * box_width_factor
-    let box_x_start = 5.0 + step * cell + (cell - box_width) / 2
-    let structures = structures_by_step.at(step)
-
-    for slot in range(5) {
-      let struct_idx = structures.at(slot)
-      let block_y = inflight_gpu_y - 0.3 + slot * (rect_height + gap)
-      let name = "inflight-block-" + str(step) + "-" + str(slot)
-
-      draw_cell(
-        box_x_start,
-        block_y,
-        box_width,
-        name,
-        color: if struct_idx != -1 { struct_colors.at(struct_idx) },
-        label: if struct_idx != -1 { struct_labels.at(struct_idx) },
-      )
-      // dotted indicator when this slot's structure changed from the previous step
-      if (
-        struct_idx != -1 and step > 0 and structures_by_step.at(step - 1).at(slot) != struct_idx
-      ) {
-        line(
-          (rel: (0, 0), to: name + ".south-west"),
-          (rel: (-0.25, -0.3), to: name + ".south-west"),
-          stroke: (dash: "dotted", paint: dark_green),
-          mark: (start: "stealth", fill: dark_green, scale: 0.3),
-          name: name + "-swap-indicator",
-        )
-      }
-    }
-
-    if step == structures_by_step.len() - 1 {
-      content(
-        (rel: (box_width + 1.7, 0.2), to: "inflight-block-" + str(step) + "-0"),
-        text(
-          size: 8pt,
-          fill: dark_gray,
-          style: "italic",
-        )[Final batch partially filled],
-        anchor: "center",
-        name: "final-batch-label",
-      )
-    }
-  }
-
-  // === Verdict + summary ===
-  content(
-    (plot_width / 2, -0.8),
-    text(
-      size: 9pt,
-      weight: "bold",
-      fill: dark_green,
-    )[In-flight batching achieves highest GPU utilization and maximizes predictions per unit time],
-    frame: "rect",
-    fill: light_green.transparentize(70%),
-    stroke: dark_green,
-    padding: 3pt,
-    radius: border_radius,
-  )
-
-  content(
-    (plot_width / 2, -3),
-    box(width: 50em)[
-      *Unbatched:* Each simulation runs sequentially with most calculations on CPU and minimal GPU utilization\
-      *Binning:* Fixed-size batches improve GPU utilization but can't adapt to varying simulation completion times\
-      *In-flight:* Dynamic reallocation eliminates GPU idle time by immediately adding new structures when others complete. Color changes indicate in-flight structure replacement.
+    (plot-width / 2, -3.4),
+    box(width: 46em)[
+      *Unbatched* runs one structure at a time, leaving four of five slots idle.
+      *Binning* fills a batch once and holds every slot until the batch's slowest member
+      converges, so the holes grow as the batch drains.
+      *In-flight* refills a slot the moment its structure converges — the color and label
+      changing mid-row is a new structure taking over — which finishes the same work in
+      #inflight-schedule.len() steps instead of #binning-schedule.len().
     ],
     frame: "rect",
-    fill: section_bg,
+    fill: section-bg,
     stroke: 0.5pt,
-    padding: (10pt, 10pt, 0pt),
-    radius: border_radius,
+    padding: 10pt,
+    radius: radius,
   )
 })

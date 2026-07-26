@@ -5,10 +5,8 @@
 
 #let rad = 0.8
 #canvas({
-  // Define styles
   let arrow-style = (stroke: (thickness: 0.5pt))
 
-  // Draw the loop using wave decoration
   decorations.wave(
     circle((0, 0), radius: rad),
     amplitude: .1,
@@ -23,7 +21,6 @@
   let loop-left = (-rad, 0)
   let loop-right = (rad, 0)
 
-  // Add vertices
   circle(loop-left, radius: 0.075, fill: black, name: "dot")
   content(
     loop-right,
@@ -35,7 +32,6 @@
     padding: -1.7pt,
   )
 
-  // Draw input line
   line((rel: (-1, 0), to: "dot"), "dot", name: "input", ..arrow-style)
 
   content(
@@ -45,19 +41,11 @@
     padding: (0, 5pt, 0),
   )
 
-  // Add momentum arrows
   let top-mark = (0, rad - 0.05)
   let bottom-mark = (0, -rad + 0.05)
-  let mark-style = (
-    length: .15,
-    stroke: .7pt,
-    angle: 60deg,
-    scale: .7,
-    fill: black,
-  )
+  let mark-style = (length: .15, stroke: .7pt, angle: 60deg, scale: .7, fill: black)
   mark(symbol: "stealth", top-mark, (0.1, rad - 0.05), ..mark-style)
   mark(symbol: "stealth", bottom-mark, (-0.1, -rad + 0.05), ..mark-style)
-  // Add momentum labels
   content(top-mark, $q$, anchor: "south-east", padding: (0, 0, 5pt))
   content(bottom-mark, $q$, anchor: "north", padding: (2pt, 0, 0))
 })
