@@ -1,5 +1,6 @@
 #import "@preview/cetz:0.5.2": canvas, draw
-#import draw: circle, content, hobby, line, rect, scale, set-origin
+#import draw: content, hobby, line, rect, scale, set-origin
+#import "../_shared/shading.typ": sphere
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
@@ -9,7 +10,6 @@
   let plot-width = 10
   let y-offset = 4.5
 
-  // Helper to draw axes
   let draw-axes(origin, width, height) = {
     line(
       (origin.at(0) - 0.3, origin.at(1)),
@@ -43,7 +43,6 @@
     stroke: 1.5pt,
   )
 
-  // Add "Free Energy" label
   content("y-axis.mid", [Free Energy], angle: 90deg, anchor: "south", padding: (
     0,
     0,
@@ -82,7 +81,6 @@
     name: "pos-label",
   )
 
-  // Draw linear polarization line
   line(
     (bottom-origin.at(0), bottom-origin.at(1)),
     (bottom-origin.at(0) + plot-width, bottom-origin.at(1) + plot-height),
@@ -90,7 +88,6 @@
     name: "polarization-line",
   )
 
-  // Add "Polarization" and "Ti Displacement" labels
   content(
     "y-axis.mid",
     [Polarization],
@@ -104,30 +101,12 @@
     0,
   ))
 
-  // Helper function to draw BaTiO3 unit cell
-  let atom(pos, radius: 0.20, fill: luma(50), ..args) = {
-    circle(
-      pos,
-      radius: radius,
-      stroke: none,
-      fill: fill,
-      ..args,
-    )
-    circle((), radius: radius, stroke: none, fill: gradient.radial(
-      fill.lighten(75%),
-      fill,
-      fill.darken(15%),
-      focal-center: (30%, 25%),
-      focal-radius: 5%,
-      center: (35%, 30%),
-    ))
-  }
+  let atom = sphere.with(radius: 0.20)
   let draw-unit-cell(center-x, center-y, ti-y, cell-name) = {
     let (x, y) = (center-x, center-y)
     let z-offset = -1.0 // Consistent offset for back face
     let cube-style = (stroke: 0.7pt)
 
-    // Draw unit cell cube with consistent offsets
     rect(
       (x - 1, y - 1, 0),
       (x + 1, y + 1, 0),
@@ -214,7 +193,6 @@
     O-atom((x, y, 0), "front")
   }
 
-  // Draw three unit cells with different Ti displacements
   scale(0.64)
   set-origin("potential-curve.mid")
   draw-unit-cell(-4.5, 2, -0.2, "cell1")

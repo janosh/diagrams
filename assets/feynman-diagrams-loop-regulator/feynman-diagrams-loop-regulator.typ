@@ -1,29 +1,16 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: arc, circle, content, group, line, translate
+#import "../_shared/feynman.typ": cross
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #canvas({
-  // Define styles and constants
   let radius = 1.5
   let dark-blue = rgb("#4040d9")
   let arrow-style = (
     mark: (end: "stealth", fill: dark-blue, scale: .5),
     stroke: (paint: dark-blue, thickness: 0.75pt),
   )
-
-  // Helper functions
-  let cross(pos, name: none) = {
-    content(
-      pos,
-      text(size: 16pt, baseline: -0.5pt)[$times.o$],
-      stroke: none,
-      fill: white,
-      frame: "circle",
-      padding: -2.5pt,
-      name: name,
-    )
-  }
 
   let vertex(pos, label: none, rel-label: (-0.2, -0.2)) = {
     circle(pos, radius: 2pt, fill: black)
@@ -68,7 +55,7 @@
       )
 
       // Cross marker
-      cross("loop." + cross-pos, name: "cross")
+      cross("loop." + cross-pos, baseline: -0.5pt, name: "cross")
       content("loop.50%", $m_2^2, gamma_2^2$, anchor: "north", padding: (
         top: 7pt,
       ))
@@ -94,7 +81,6 @@
     })
   }
 
-  // Draw diagrams
   draw-diagram()
   content((4, 0), text(size: 18pt)[$+$])
   draw-diagram(

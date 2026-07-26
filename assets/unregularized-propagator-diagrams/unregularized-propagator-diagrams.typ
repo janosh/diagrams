@@ -1,75 +1,43 @@
 #import "@preview/cetz:0.5.2": canvas, draw
-#import draw: circle, content
+#import draw: circle, content, line
+#import "../_shared/feynman.typ" as fey
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
-// Define styles and constants
 #let radius = 1 // \radius in original
-#let vertex-rad = 0.25 * radius
-
-// Create hatched pattern for vertices
-#let hatched = tiling(size: (.1cm, .1cm))[
-  #place(rect(width: 100%, height: 100%, fill: white, stroke: none))
-  #place(line(start: (0%, 100%), end: (100%, 0%), stroke: 0.4pt))
-]
-
-// Helper function for dressed vertices
-#let dressed-vertex(pos, label: none, rel-label: none, name: none, ..rest) = {
-  circle(pos, radius: vertex-rad, fill: hatched, name: name)
-  if label != none {
-    let label-pos = if rel-label != none { (rel: rel-label, to: pos) } else {
-      pos
-    }
-    content(label-pos, $#label$, ..rest)
-  }
-}
+#let vertex = fey.dressed-vertex.with(
+  radius: 0.25 * radius,
+  stroke: auto,
+  anchor: "south",
+)
 
 #canvas({
-  // First diagram
-  // Main loop
+  // Gamma^(3) loop: two dressed three-point vertices on the external legs
   circle((0, 0), radius: radius, stroke: 1pt, name: "loop")
-
-  // External lines
-  draw.line((-2 * radius, 0), (-radius, 0), stroke: 1pt, name: "left-external")
-  draw.line((radius, 0), (2 * radius, 0), stroke: 1pt, name: "right-external")
-
-  // Vertices with labels
-  dressed-vertex(
+  line((-2 * radius, 0), (-radius, 0), stroke: 1pt, name: "left-external")
+  line((radius, 0), (2 * radius, 0), stroke: 1pt, name: "right-external")
+  vertex(
     (-radius, 0),
     label: $Gamma_k^((3))$,
     rel-label: (-0.3, 0.3),
     name: "vertex-left",
-    anchor: "south",
   )
-  dressed-vertex(
+  vertex(
     (radius, 0),
     label: $Gamma_k^((3))$,
     rel-label: (0.3, 0.3),
     name: "vertex-right",
-    anchor: "south",
   )
 
-  // Add minus sign between diagrams
   content((3 * radius, 0), $-$)
 
-  // Second diagram
-  // Main loop
+  // Gamma^(4) tadpole: one dressed four-point vertex on a single external line
   circle((5 * radius, 0), radius: radius, stroke: 1pt, name: "loop2")
-
-  // External line
-  draw.line(
-    (5 * radius - 2 * radius, -radius),
-    (5 * radius + 2 * radius, -radius),
-    stroke: 1pt,
-    name: "external2",
-  )
-
-  // Four-vertex with label
-  dressed-vertex(
+  line((3 * radius, -radius), (7 * radius, -radius), stroke: 1pt, name: "external2")
+  vertex(
     (5 * radius, -radius),
     label: $Gamma_k^((4))$,
     rel-label: (0, 0.35),
     name: "vertex-four",
-    anchor: "south",
   )
 })

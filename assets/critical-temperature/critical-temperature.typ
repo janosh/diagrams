@@ -1,11 +1,11 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.2": canvas
 #import "@preview/cetz-plot:0.1.4": plot
+#import "../_shared/plot.typ": style-axes
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #let tc = 1
 
-// Define the three functions
 #let f1(x) = {
   if x == tc { return 0 }
   calc.sqrt(3) * calc.pow(tc / x - 1, 1 / 2)
@@ -19,16 +19,7 @@
 }
 
 #canvas({
-  draw.set-style(axes: (
-    y: (
-      label: (anchor: "north-west", offset: -0.2),
-      mark: (end: "stealth", fill: black),
-    ),
-    x: (
-      label: (anchor: "north", offset: 0.2),
-      mark: (end: "stealth", fill: black),
-    ),
-  ))
+  style-axes(x-label: (anchor: "north", offset: 0.2))
 
   plot.plot(
     size: (10, 8),

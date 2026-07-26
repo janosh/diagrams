@@ -1,5 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content, line, rect
+#import "../_shared/network.typ": fully-connect
+#import "../_shared/shading.typ": sphere
 
 #set page(width: auto, height: auto, margin: 5pt, fill: none)
 
@@ -18,16 +20,7 @@
 // @typstyle off
 #let atom(pos, element, color: white, text-color: black, padding: 6pt, name: none) = {
   let radius = padding + 7pt // approximates text size + padding
-  circle(pos, radius: radius, stroke: none, fill: color)
-  // radial gradient overlay for 3D shading
-  circle(pos, radius: radius, stroke: none, fill: gradient.radial(
-    color.lighten(75%),
-    color,
-    color.darken(15%),
-    focal-center: (30%, 25%),
-    focal-radius: 5%,
-    center: (35%, 30%),
-  ))
+  sphere(pos, radius: radius, fill: color)
   content(
     pos,
     text(fill: text-color, weight: "bold", size: 14pt)[#element],
@@ -48,6 +41,11 @@
   let component-spacing = 3.5
   let label-offset = 4
   let label-y = vertical-center - label-offset // shared y for all component labels
+  let caption(x, body) = content(
+    (x, label-y),
+    text(size: 14pt, weight: "bold", body),
+    anchor: "center",
+  )
 
   let molecule-y-offset = 0.5
   let matrix-y-offset = 0.3
@@ -76,58 +74,29 @@
     )
   }
 
-  atom(
-    struct-origin,
-    "C",
-    color: rgb("#404040"),
-    text-color: white,
-    name: "C1",
-    padding: 5pt,
-  )
-  atom(
-    (rel: (0, -1.5), to: struct-origin),
-    "C",
-    color: rgb("#404040"),
-    text-color: white,
-    name: "C2",
-    padding: 5pt,
-  )
-  atom(
-    (rel: (-0.5, 1.5), to: struct-origin),
-    "N",
-    color: rgb("#4444ff"),
-    name: "N1",
-    padding: 6pt,
-  )
-  atom(
-    (rel: (1.8, 0.5), to: struct-origin),
-    "O",
-    color: rgb("#ff4444"),
-    name: "O1",
-    padding: 7pt,
-  )
-  for (idx, off) in (
-    (1.5, -2.5),
-    (0, -3),
-    (-1.5, -2.5),
-    (-2, 0.75),
-    (1, 2),
-  ).enumerate() {
+  // (offset from the central carbon, element, fill, text fill, padding, name)
+  for (offset, element, color, text-color, padding, name) in (
+    ((0, 0), "C", rgb("#404040"), white, 5pt, "C1"),
+    ((0, -1.5), "C", rgb("#404040"), white, 5pt, "C2"),
+    ((-0.5, 1.5), "N", rgb("#4444ff"), black, 6pt, "N1"),
+    ((1.8, 0.5), "O", rgb("#ff4444"), black, 7pt, "O1"),
+    ((1.5, -2.5), "H", white, black, 2pt, "H1"),
+    ((0, -3), "H", white, black, 2pt, "H2"),
+    ((-1.5, -2.5), "H", white, black, 2pt, "H3"),
+    ((-2, 0.75), "H", white, black, 2pt, "H4"),
+    ((1, 2), "H", white, black, 2pt, "H5"),
+  ) {
     atom(
-      (rel: off, to: struct-origin),
-      "H",
-      color: white,
-      padding: 2pt,
-      name: "H" + str(idx + 1),
+      (rel: offset, to: struct-origin),
+      element,
+      color: color,
+      text-color: text-color,
+      padding: padding,
+      name: name,
     )
   }
 
-  content(
-    (struct-x, label-y),
-    text(size: 14pt, weight: "bold")[Molecular Structure],
-    anchor: "center",
-    name: "struct-label-text",
-  )
+  caption(struct-x, [Molecular Structure])
 
   let struct-right-x = struct-x + 3.5
 
@@ -175,12 +144,7 @@
     }
   }
 
-  content(
-    (desc-x + matrix-width / 2, label-y),
-    text(size: 14pt, weight: "bold")[Descriptor],
-    anchor: "center",
-    name: "desc-label-text",
-  )
+  caption(desc-x + matrix-width / 2, [Descriptor])
 
   let desc-right-x = desc-x + matrix-width
 
@@ -207,26 +171,18 @@
       )
     }
   }
-  for idx in range(layers.len() - 1) {
-    let (_, n1, _, prefix1) = layers.at(idx)
-    let (_, n2, _, prefix2) = layers.at(idx + 1)
-    for i in range(n1) {
-      for j in range(n2) {
-        line(
-          (prefix1 + "-" + str(i + 1)),
-          (prefix2 + "-" + str(j + 1)),
-          stroke: rgb("#aaa") + 0.5pt,
-        )
-      }
-    }
+  for (idx, (_, count, _, prefix)) in layers.slice(0, -1).enumerate() {
+    let (_, next-count, _, next-prefix) = layers.at(idx + 1)
+    fully-connect(
+      prefix + "-",
+      next-prefix + "-",
+      count,
+      next-count,
+      stroke: rgb("#aaa") + 0.5pt,
+    )
   }
 
-  content(
-    (model-x + layer-sep, label-y),
-    text(size: 14pt, weight: "bold")[Model],
-    anchor: "center",
-    name: "model-label-text",
-  )
+  caption(model-x + layer-sep, [Model])
 
   let model-right-x = model-x + 2 * layer-sep + 1.5
 
@@ -239,12 +195,7 @@
     anchor: "center",
     name: "property",
   )
-  content(
-    (property-x, label-y),
-    text(size: 14pt, weight: "bold")[Property],
-    anchor: "center",
-    name: "property-label-text",
-  )
+  caption(property-x, [Property])
 
   // === Connecting arrows, centered between components ===
   let arrow-length = 1.75

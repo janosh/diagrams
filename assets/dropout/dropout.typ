@@ -1,5 +1,6 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content, line
+#import "../_shared/network.typ": fully-connect
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
@@ -7,7 +8,6 @@
   let spacing = (layer: 2.5, node: 1.5)
   let arrow-style = (mark: (end: "stealth", scale: 0.7), fill: black)
 
-  // Helper function to draw a layer of nodes
   let draw-layer(x, nodes, prefix: "") = {
     for ii in range(nodes) {
       circle(
@@ -18,26 +18,13 @@
     }
   }
 
-  // Helper to connect all nodes between layers
-  let connect-layers(from-prefix, to-prefix, from-nodes, to-nodes) = {
-    for ii in range(from-nodes) {
-      for jj in range(to-nodes) {
-        line(
-          (from-prefix + str(ii + 1)),
-          (to-prefix + str(jj + 1)),
-          ..arrow-style,
-        )
-      }
-    }
-  }
+  let connect-layers = fully-connect.with(..arrow-style)
 
   // Left network (fully connected)
-  // Draw all layers
   draw-layer(0, 5, prefix: "i") // Input layer
   draw-layer(spacing.layer, 5, prefix: "h1") // First hidden layer
   draw-layer(2 * spacing.layer, 5, prefix: "h2") // Second hidden layer
 
-  // Draw output nodes
   circle((3 * spacing.layer, 2 * spacing.node), radius: 0.3, name: "o1")
   circle((3 * spacing.layer, 4 * spacing.node), radius: 0.3, name: "o2")
 
@@ -51,7 +38,6 @@
     line(("h2" + str(ii + 1)), "o2", ..arrow-style)
   }
 
-  // Draw dropout arrow
   let mid-x = 4 * spacing.layer
   line(
     (3.5 * spacing.layer, 3 * spacing.node),
@@ -67,12 +53,10 @@
   )
 
   // Right network (with dropout)
-  // Draw all layers
   draw-layer(mid-x + spacing.layer, 5, prefix: "di")
   draw-layer(mid-x + 2 * spacing.layer, 5, prefix: "dh1")
   draw-layer(mid-x + 3 * spacing.layer, 5, prefix: "dh2")
 
-  // Draw output nodes
   circle(
     (mid-x + 4 * spacing.layer, 2 * spacing.node),
     radius: 0.3,
@@ -84,7 +68,6 @@
     name: "do2",
   )
 
-  // Add dropout X marks
   let x-style = (fill: red, weight: "bold", size: 4em, baseline: -4pt)
   content("di1", text(..x-style)[×])
   content("di3", text(..x-style)[×])

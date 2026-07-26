@@ -1,24 +1,12 @@
 #import "@preview/cetz:0.5.2": canvas, draw
-#import draw: circle, content
+#import draw: content
+#import "../_shared/shading.typ": sphere
 
 #set page(width: auto, height: auto, margin: 5pt, fill: none)
 
-// Define the atom function with nice 3D shading
 #let atom(pos, color, radius: 0.3, element: none, name: none) = {
-  // Draw base circle with the main color
-  circle(pos, radius: radius, stroke: none, fill: color)
+  sphere(pos, radius: radius, fill: color)
 
-  // Draw gradient overlay for 3D shading effect
-  circle(pos, radius: radius, stroke: none, fill: gradient.radial(
-    color.lighten(75%),
-    color,
-    color.darken(15%),
-    focal-center: (30%, 25%),
-    focal-radius: 5%,
-    center: (35%, 30%),
-  ))
-
-  // Add element label if provided
   if element != none {
     content(
       pos,
@@ -52,7 +40,6 @@
   let y-factor = -0.18
   let z-spacing = 1.1
 
-  // Draw the alloy structure
   // This is equivalent to the nested foreach loops in the LaTeX code
   for i in range(12) {
     for j in range(4) {
@@ -88,7 +75,6 @@
   let legend-spacing = 0.8
 
   for (idx, (element, color)) in elements.enumerate() {
-    // Draw atom with element symbol
     atom(
       (2.5, legend-y-start - idx * legend-spacing),
       color,

@@ -1,5 +1,6 @@
 #import "@preview/cetz:0.5.2": canvas, draw
-#import draw: circle, line, on-layer
+#import draw: circle, on-layer
+#import "../_shared/network.typ": fully-connect
 #import "@preview/suiji:0.5.1"
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
@@ -28,7 +29,6 @@
   )
   let is-alive = uniform-values.map(x => x < sparsity)
 
-  // Draw neurons
   on-layer(1, {
     // Input layer
     for ii in range(n-input-neurons) {
@@ -65,17 +65,9 @@
     }
   })
 
-  // Draw connections
   on-layer(0, {
-    for ii in range(n-input-neurons) {
-      for jj in range(n-hidden-neurons) {
-        line("in-" + str(ii), "hidden-" + str(jj), stroke: gray + 1.5pt)
-      }
-    }
-    for ii in range(n-hidden-neurons) {
-      for jj in range(n-input-neurons) {
-        line("hidden-" + str(ii), "out-" + str(jj), stroke: gray + 1.5pt)
-      }
-    }
+    let wire = fully-connect.with(start: 0, stroke: gray + 1.5pt)
+    wire("in-", "hidden-", n-input-neurons, n-hidden-neurons)
+    wire("hidden-", "out-", n-hidden-neurons, n-input-neurons)
   })
 })

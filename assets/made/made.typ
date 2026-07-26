@@ -1,5 +1,6 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content, line, rect
+#import "../_shared/network.typ": fully-connect
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
@@ -23,13 +24,7 @@
     }
   }
 
-  let connect-layers(from-prefix, to-prefix, from-nodes, to-nodes) = {
-    for i in range(from-nodes) {
-      for j in range(to-nodes) {
-        line(from-prefix + str(i), to-prefix + str(j), ..arrow-style)
-      }
-    }
-  }
+  let connect-layers = fully-connect.with(start: 0, ..arrow-style)
 
   let fcnn-x = -5
   let mask-x = 0

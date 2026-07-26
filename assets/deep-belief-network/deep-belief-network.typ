@@ -1,5 +1,6 @@
 #import "@preview/cetz:0.5.2": canvas, draw
-#import draw: circle, content, line, rect
+#import draw: circle, content, rect
+#import "../_shared/network.typ": fully-connect
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
@@ -52,12 +53,8 @@
     mark: (start: "stealth", end: "stealth", fill: black, scale: .6),
     stroke: black + 1.2pt,
   )
-  for bot in range(9) {
-    for mid in range(5) { line("a" + str(bot), "b" + str(mid), ..arr) }
-  }
-  for mid in range(5) {
-    for top in range(5) { line("b" + str(mid), "c" + str(top), ..bi-arr) }
-  }
+  fully-connect("a", "b", 9, 5, start: 0, ..arr)
+  fully-connect("b", "c", 5, 5, start: 0, ..bi-arr)
 
   content((4.3, 2.0), text(size: 14pt, $bold(W)_1$))
   content((3.4, 5.8), text(size: 14pt, $bold(W)_2$))

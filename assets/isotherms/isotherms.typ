@@ -1,25 +1,21 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.2": canvas
 #import "@preview/cetz-plot:0.1.4": plot
-#import draw: content, line
+#import "../_shared/plot.typ": style-axes
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
-// Constants
-#let gas_constant = 8.31 // Gas constant
+#let gas-constant = 8.31 // Gas constant
 #let temperature = 300 // Temperature
 #let B1 = 1000 // First virial coefficient
 #let B2 = -1000 // Second virial coefficient
 
 // Pressure functions
-#let p0(v) = gas_constant * temperature / v
+#let p0(v) = gas-constant * temperature / v
 #let p1(v) = p0(v) + B1 / calc.pow(v, 2)
 #let p2(v) = p1(v) + B2 / calc.pow(v, 3)
 
 #canvas({
-  draw.set-style(axes: (
-    y: (label: (anchor: "north-west", offset: -0.2)),
-    x: (label: (anchor: "south-east", offset: -0.25)),
-  ))
+  style-axes(x-label: (anchor: "south-east", offset: -0.25), mark: none)
 
   plot.plot(
     size: (8, 7),

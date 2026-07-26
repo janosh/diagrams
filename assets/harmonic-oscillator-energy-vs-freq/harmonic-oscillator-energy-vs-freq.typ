@@ -1,19 +1,11 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.2": canvas
 #import "@preview/cetz-plot:0.1.4": plot
+#import "../_shared/plot.typ": style-axes
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #canvas({
-  draw.set-style(axes: (
-    y: (
-      label: (anchor: "north-west", offset: -0.2),
-      mark: (end: "stealth", fill: black),
-    ),
-    x: (
-      label: (anchor: "north", offset: 0.1),
-      mark: (end: "stealth", fill: black),
-    ),
-  ))
+  style-axes(x-label: (anchor: "north", offset: 0.1))
 
   plot.plot(
     size: (8, 5),
@@ -28,15 +20,14 @@
     {
       let (hbar, beta) = (1, 1)
 
-      // Add the energy expectation value curve
       plot.add(
         style: (stroke: blue + 1.5pt),
         domain: (0.01, 11), // Avoid x=0 due to division
         samples: 200, // More samples for smoother curve
         omega => {
           // E = (1/2)hω(1 + 4/(exp(βhω) - 1))
-          let exp_term = calc.exp(beta * hbar * omega)
-          (1 / 2) * hbar * omega * (1 + 4 / (exp_term - 1))
+          let exp-term = calc.exp(beta * hbar * omega)
+          (1 / 2) * hbar * omega * (1 + 4 / (exp-term - 1))
         },
       )
     },

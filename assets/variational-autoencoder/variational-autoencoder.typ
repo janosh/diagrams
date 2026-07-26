@@ -1,5 +1,6 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content, line, rect
+#import "../_shared/network.typ": fully-connect
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
@@ -11,7 +12,6 @@
     mark: (end: "stealth", fill: black, scale: .3),
   )
 
-  // Helper function to draw a layer of nodes
   let draw-layer(x, nodes, prefix: "") = {
     let top-y = nodes / 2
     let bottom-y = nodes / 2 - node-sep * (nodes - 1)
@@ -23,25 +23,12 @@
         name: prefix + str(ii + 1),
       )
     }
-    // Create named points for the layer bounds
     circle((x, top-y), radius: 0, name: prefix + "-top", fill: none)
     circle((x, bottom-y), radius: 0, name: prefix + "-bottom", fill: none)
   }
 
-  // Helper to connect all nodes between layers
-  let connect-layers(from-prefix, to-prefix, from-nodes, to-nodes) = {
-    for ii in range(from-nodes) {
-      for jj in range(to-nodes) {
-        line(
-          (from-prefix + str(ii + 1)),
-          (to-prefix + str(jj + 1)),
-          ..arrow-style,
-        )
-      }
-    }
-  }
+  let connect-layers = fully-connect.with(..arrow-style)
 
-  // Draw encoder
   draw-layer(0, 5, prefix: "e1") // Input layer
   draw-layer(layer-sep, 4, prefix: "e2") // Hidden layer
   draw-layer(layer-sep * 2, 3, prefix: "e3") // Output layer
@@ -50,7 +37,6 @@
   connect-layers("e1", "e2", 5, 4)
   connect-layers("e2", "e3", 4, 3)
 
-  // Draw mu nodes
   let mu-x = layer-sep * 3
   for ii in range(3) {
     circle((mu-x, 1.5 + ii), radius: 0.4, name: "mu" + str(ii + 1), fill: rgb(
@@ -61,7 +47,6 @@
     ))
   }
 
-  // Draw sigma nodes
   for ii in range(3) {
     circle(
       (mu-x, -1.5 - ii),
@@ -71,7 +56,6 @@
     )
   }
 
-  // Draw sample nodes
   let sample-x = mu-x + layer-sep
   for ii in range(3) {
     circle(
@@ -82,7 +66,6 @@
     )
   }
 
-  // Draw boxes around mu, sigma, sample nodes
   rect(
     (mu-x - 0.5, 1),
     (mu-x + 0.5, 4),
@@ -144,7 +127,6 @@
     }
   }
 
-  // Add input and output labels
   for ii in range(5) {
     content(
       "e1" + str(ii + 1) + ".west",
