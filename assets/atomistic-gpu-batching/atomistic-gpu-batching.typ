@@ -1,6 +1,6 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: content, line, rect
-#import "../_shared/theme.typ": size
+#import "../_shared/theme.typ": annotation-size
 
 #set page(width: auto, height: auto, margin: 15pt, fill: none)
 
@@ -62,7 +62,7 @@
     if task-label != "" {
       content(
         (x-pos + width / 2, y-pos),
-        text(size: size.caption)[#task-label],
+        text(size: annotation-size)[#task-label],
       )
     }
   }
@@ -76,7 +76,7 @@
     )
     content(
       (x-pos + width / 2, y-pos + 0.15),
-      text(size: size.caption)[#label],
+      text(size: annotation-size)[#label],
       anchor: "south",
     )
   }
@@ -103,7 +103,7 @@
     )
     content(
       (rel: (0.03, 0), to: "bar-bg-" + label),
-      text(size: size.caption, weight: "bold")[#label #percentage%],
+      text(size: annotation-size, weight: "bold")[#label #percentage%],
       anchor: "center",
     )
   }
@@ -124,7 +124,7 @@
     if not empty {
       content(
         (x-start + w / 2, y),
-        text(size: size.caption)[#label],
+        text(size: annotation-size)[#label],
         anchor: "center",
       )
     }
@@ -197,7 +197,7 @@
       )
       content(
         (rel: (0, -0.2), to: "tick-" + str(idx) + "-" + str(tick)),
-        text(size: size.caption)[t=#tick],
+        text(size: annotation-size)[t=#tick],
         anchor: "north",
       )
     }

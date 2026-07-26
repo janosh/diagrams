@@ -5,18 +5,19 @@
 // deficiency, so `series()` pairs each hue with a dash pattern; that also survives
 // grayscale printing.
 
-// Neutrals carry structure and annotation, never a data series.
+// Neutrals for anything that is not the subject of the diagram: structure, annotation,
+// and reference baselines like the roc-curve diagonal, which should recede rather than
+// compete with the curves being compared.
 #let neutral = (annotation: rgb("#4A5560"), hairline: rgb("#78828C"))
 
-// Type scale in pt, for keeping tiers consistent across diagrams. It is not a
-// legibility guarantee: what a reader can actually make out depends on point size
-// relative to the figure, since the gallery scales every figure to the same card
-// width. periodic-table's 13pt shrinks to ~1.1pt in a card while multilayer-perceptron's
-// 7pt survives at ~2.6pt, so a flat floor would flag the wrong diagrams. Dense
-// annotation layers may legitimately sit below `caption`; raising them can collide.
-#let size = (caption: 9pt, label: 11pt, heading: 14pt, title: 18pt)
+// Shared by the small labels in the three dense timeline and matrix diagrams so they
+// stay in step. Sized for those figures, not a collection-wide minimum: legibility
+// depends on point size relative to the rendered figure, and the figures vary too much
+// for one number to mean anything.
+#let annotation-size = 9pt
 
-// Stroke weights. `hairline` is the floor for anything meant to be seen.
+// Stroke weights for lines carrying meaning. Textures and deliberately faint grouping
+// boxes go thinner than `hairline` and are none the worse for it.
 #let line-weight = (hairline: 0.5pt, thin: 0.8pt, normal: 1.2pt, heavy: 2pt)
 
 // Ordered so the leading hues stay far apart under simulated deuteranopia and
