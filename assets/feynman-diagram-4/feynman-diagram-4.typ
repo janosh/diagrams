@@ -24,8 +24,8 @@
     (2, (0.15, 1.7), (0.15, 0.7), (0.3, 0.2)),
     (4, (0.15, -1.7), (0.15, -0.7), (0.3, 0.1)),
   ) {
-    line(rot45(..outer), rot45(..inner), ..arrow, name: "p")
-    content((rel: label-offset, to: "p"), $p_#idx$)
+    line(rot45(..outer), rot45(..inner), ..arrow, name: "p" + str(idx))
+    content((rel: label-offset, to: "p" + str(idx)), $p_#idx$)
   }
 
   circle(rot45(0, 0), radius: 0.25, fill: hatched, name: "vertex")

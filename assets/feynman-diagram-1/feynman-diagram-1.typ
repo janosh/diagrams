@@ -10,8 +10,8 @@
   content("a-to-b.end", $phi_b$, anchor: "west", padding: 3pt)
 
   for (idx, x-start) in ((1, -2), (2, 1)) {
-    line((x-start, 0.15), (x-start + 1, 0.15), ..fey.momentum-arrow, name: "p")
-    content((rel: (0, 0.3), to: "p.mid"), $p_#idx$)
+    line((x-start, 0.15), (x-start + 1, 0.15), ..fey.momentum-arrow)
+    content((x-start + 0.5, 0.45), $p_#idx$)
   }
 
   circle((0, 0), radius: 0.25, fill: fey.hatched, name: "vertex")

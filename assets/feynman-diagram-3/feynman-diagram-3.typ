@@ -20,8 +20,8 @@
     (2, (1.0, 1.2), (0.3, 0.5), (-0.3, 0.3)),
     (3, (1.4, -1.2), (0.6, -0.4), (0.3, 0.3)),
   ) {
-    line(start, end, ..arrow, name: "p")
-    content((rel: label-offset, to: "p"), $p_#idx$)
+    line(start, end, ..arrow, name: "p" + str(idx))
+    content((rel: label-offset, to: "p" + str(idx)), $p_#idx$)
   }
 
   circle((0, 0), radius: 0.25, fill: hatched, name: "vertex")
