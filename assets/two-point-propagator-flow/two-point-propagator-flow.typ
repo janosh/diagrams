@@ -28,9 +28,12 @@
 
 // Straight external legs meeting the loop at 9 and 3 o'clock, each capped by a vertex.
 #let side-legs() = {
-  for (side, turn, label) in ((-1, 180deg, $phi_a$), (1, 0deg, $phi_b$)) {
-    line(on-loop(turn), at((side * 2 * radius, 0)), stroke: 1pt, name: "external")
-    content((rel: (side * 0.2, -0.3), to: "external.mid"), label)
+  for (name, side, turn, label) in (
+    ("left-external", -1, 180deg, $phi_a$),
+    ("right-external", 1, 0deg, $phi_b$),
+  ) {
+    line(on-loop(turn), at((side * 2 * radius, 0)), stroke: 1pt, name: name)
+    content((rel: (side * 0.2, -0.3), to: name + ".mid"), label)
   }
   for (side, name) in ((-1, "left"), (1, "right")) {
     vertex(at((side * radius, 0)), radius: med-rad, name: "vertex-" + name + "-external")
@@ -40,15 +43,16 @@
 // Incoming q_1 and outgoing q_2, both pointing right, at height `y`.
 #let external-momenta(inner, outer, y: 0.15) = {
   for (idx, x-start, x-end) in ((1, -outer, -inner), (2, inner, outer)) {
-    line(at((x-start, y)), at((x-end, y)), ..q-arrow, name: "q-arrow")
-    content("q-arrow.mid", $q_#idx$, anchor: "south", padding: (0, 0, 2pt))
+    let name = "q" + str(idx) + "-arrow"
+    line(at((x-start, y)), at((x-end, y)), ..q-arrow, name: name)
+    content(name + ".mid", $q_#idx$, anchor: "south", padding: (0, 0, 2pt))
   }
 }
 
 // Off-diagram Gamma^(3) label tied to the vertex it names by a hairline.
-#let gamma-callout(pos, label, target) = {
-  content(at(pos), label, name: "gamma")
-  line("gamma", target, ..fey.callout)
+#let gamma-callout(name, pos, label, target) = {
+  content(at(pos), label, name: name)
+  line(name, target, ..fey.callout)
 }
 
 // Regulator at the top, dressed propagators at 3, 9 and 6 o'clock
@@ -68,8 +72,8 @@
 
   side-legs()
   external-momenta(1.4, 2.3)
-  gamma-callout((-2, -1.5), $Gamma_(k,a k l)^((3))(q_1,p_3,-p_4)$, at((-radius, 0)))
-  gamma-callout((2, -1.5), $Gamma_(k,b m n)^((3))(-q_2,p_5,-p_6)$, at((radius, 0)))
+  gamma-callout("gamma-left", (-2, -1.5), $Gamma_(k,a k l)^((3))(q_1,p_3,-p_4)$, at((-radius, 0)))
+  gamma-callout("gamma-right", (2, -1.5), $Gamma_(k,b m n)^((3))(-q_2,p_5,-p_6)$, at((radius, 0)))
 })
 
 #pagebreak()
@@ -87,8 +91,18 @@
   side-legs()
   external-momenta(1.6, 2.4)
   // pushed further out than in the first diagram to clear the propagator labels
-  gamma-callout((-2.4, 1.1), $Gamma_(k,a k l)^((3))(q_1,p_3,-p_4)$, "vertex-left-external")
-  gamma-callout((2.5, 1.1), $Gamma_(k,b m n)^((3))(-q_2,p_5,-p_6)$, "vertex-right-external")
+  gamma-callout(
+    "gamma-left",
+    (-2.4, 1.1),
+    $Gamma_(k,a k l)^((3))(q_1,p_3,-p_4)$,
+    "vertex-left-external",
+  )
+  gamma-callout(
+    "gamma-right",
+    (2.5, 1.1),
+    $Gamma_(k,b m n)^((3))(-q_2,p_5,-p_6)$,
+    "vertex-right-external",
+  )
 })
 
 #pagebreak()

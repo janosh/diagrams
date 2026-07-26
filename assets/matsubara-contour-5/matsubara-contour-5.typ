@@ -20,11 +20,11 @@
   ms.origin(padding: 2pt, anchor: "north-east")
   ms.split-contour(main-radius, offset: y-offset)
 
-  for (pos, label, anchor) in (
-    ((x-range / 2, y-range / 4), $E$, "west"),
-    ((-x-range / 2, -y-range / 4), $-E$, "east"),
+  for (name, pos, label, anchor) in (
+    ("pole-e", (x-range / 2, y-range / 4), $E$, "west"),
+    ("pole-minus-e", (-x-range / 2, -y-range / 4), $-E$, "east"),
   ) {
-    circle(pos, radius: 0.05, fill: black, name: "pole")
-    content("pole", label, anchor: anchor, padding: 2pt)
+    circle(pos, radius: 0.05, fill: black, name: name)
+    content(name, label, anchor: anchor, padding: 2pt)
   }
 })

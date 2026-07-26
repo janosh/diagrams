@@ -12,13 +12,14 @@
 // Momentum arrow of length 0.6*radius, drawn just above height `y`.
 #let momentum(idx, x-center, y) = {
   let half = 0.3 * radius
+  let name = "q" + str(idx)
   line(
     (x-center - half, y + 0.15),
     (x-center + half, y + 0.15),
     ..fey.momentum-arrow,
-    name: "q",
+    name: name,
   )
-  content((rel: (0, 0.3), to: "q.mid"), $q_#idx$)
+  content((rel: (0, 0.3), to: name + ".mid"), $q_#idx$)
 }
 
 // Gamma^(3) box: loop closed by two dressed propagators, one on each side
@@ -48,12 +49,12 @@
   momentum(1, -1.6 * radius, 0)
   momentum(2, 1.6 * radius, 0)
 
-  for (side, label) in (
-    (-1, $Gamma_(k,a j k)^((3))(q_1,p_2,-p_3)$),
-    (1, $Gamma_(k,b l i)^((3))(-q_2,-p_1,p_4)$),
+  for (name, side, label) in (
+    ("gamma-left", -1, $Gamma_(k,a j k)^((3))(q_1,p_2,-p_3)$),
+    ("gamma-right", 1, $Gamma_(k,b l i)^((3))(-q_2,-p_1,p_4)$),
   ) {
-    content((side * 2.1 * radius, radius), label, name: "gamma")
-    line("gamma", (side * radius, 0), ..fey.callout)
+    content((side * 2.1 * radius, radius), label, name: name)
+    line(name, (side * radius, 0), ..fey.callout)
     vertex((side * radius, 0), radius: med-rad)
   }
 })
