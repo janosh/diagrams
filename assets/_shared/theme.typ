@@ -8,8 +8,12 @@
 // Neutrals carry structure and annotation, never a data series.
 #let neutral = (annotation: rgb("#4A5560"), hairline: rgb("#78828C"))
 
-// Type scale in pt. Nothing below `caption` should reach the page: at the sizes these
-// diagrams render, smaller than this is unreadable in the gallery grid.
+// Type scale in pt, for keeping tiers consistent across diagrams. It is not a
+// legibility guarantee: what a reader can actually make out depends on point size
+// relative to the figure, since the gallery scales every figure to the same card
+// width. periodic-table's 13pt shrinks to ~1.1pt in a card while multilayer-perceptron's
+// 7pt survives at ~2.6pt, so a flat floor would flag the wrong diagrams. Dense
+// annotation layers may legitimately sit below `caption`; raising them can collide.
 #let size = (caption: 9pt, label: 11pt, heading: 14pt, title: 18pt)
 
 // Stroke weights. `hairline` is the floor for anything meant to be seen.
