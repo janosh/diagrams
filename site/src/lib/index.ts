@@ -106,7 +106,7 @@ export const diagrams = Object.entries(yaml_data)
 // the prerendered server load (avoids coupling those to the client filter state). Fixed
 // `en` collator so build (Node) and client agree, avoiding a hydration reorder
 const diagram_collator = new Intl.Collator(`en`, { numeric: true })
-export const sorted_diagrams = [...diagrams].sort(
+export const sorted_diagrams = [...diagrams].toSorted(
   (d1, d2) =>
     diagram_collator.compare(d1.title, d2.title) ||
     diagram_collator.compare(d1.slug, d2.slug),
