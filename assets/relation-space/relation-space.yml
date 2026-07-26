@@ -2,5 +2,10 @@ title: Relation Space
 tags:
   - info-graphics
   - marine bio-chemistry
-description: null
+description: >-
+  Trait space locating marine plankton functional types (diatoms, diazotrophs, phaeocystis,
+  coccolithophores and picoplankton) along three axes: how similar their functional responses
+  are, how widely their sizes vary, and whether they fill a single or multiple functional roles.
+  The curved surface divides the volume into regions of high and low functional redundancy, the
+  property that decides whether losing one group can be compensated for by the others.
 hide: true

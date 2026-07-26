@@ -2,4 +2,8 @@ title: Feynman Diagram 3
 tags:
   - physics
   - quantum field theory
-description: null
+description: >-
+  Dressed three-point vertex $\Gamma^{(3)}_{k,abc}(p_1,p_2,p_3)$ joining the external fields
+  $\varphi_a$, $\varphi_b$ and $\varphi_c$, with all three momenta flowing inward. The hatched
+  blob marks the full momentum-dependent vertex of the effective action rather than the bare
+  coupling, so it already carries every quantum correction generated down to the scale $k$.

@@ -4,4 +4,9 @@ tags:
   - thermodynamics
   - statistical physics
   - entropy
-description: null
+description: >-
+  The three thermodynamic state functions that decide whether a reaction proceeds, and the
+  physical quantity each pair controls: enthalpy $H$ accounts for the heat exchanged, entropy
+  $S$ for the disorder produced, and the Gibbs free energy $G = H - TS$ combines them into the
+  reactivity. A process runs spontaneously at fixed temperature and pressure when $G$ decreases,
+  so raising the temperature lets an entropy gain outweigh an unfavorable enthalpy change.

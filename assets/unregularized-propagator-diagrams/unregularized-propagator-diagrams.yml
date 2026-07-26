@@ -3,4 +3,9 @@ tags:
   - physics
   - quantum field theory
   - renormalization
-description: null
+description: >-
+  The two one-loop diagrams renormalizing the two-point function before any regulator is
+  introduced: a loop closed by two dressed three-point vertices $\Gamma_k^{(3)}$, minus a
+  tadpole carrying one four-point vertex $\Gamma_k^{(4)}$. Without a regulator insertion these
+  momentum integrals diverge, which is exactly what the cutoff in the regularized version
+  cures.

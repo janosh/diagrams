@@ -207,7 +207,7 @@ def check_missing_descriptions(yaml_files: list[str]) -> list[str]:
 
     for yaml_file in yaml_files:
         data = load_yaml(yaml_file)
-        if data and data.get("description") is None:
+        if data and not str(data.get("description") or "").strip():
             missing_desc.append(yaml_file)
 
     if missing_desc:
@@ -227,6 +227,4 @@ if __name__ == "__main__":
     report_similar_tags(yaml_files)
     remove_duplicate_tags(yaml_files)
     missing = check_missing_descriptions(yaml_files)
-    # TODO remove missing allowance once all diagrams have descriptions
-    raise_missing = len(missing) > 10
-    raise SystemExit(errors or raise_missing)  # Exit with error if any checks fail
+    raise SystemExit(errors or bool(missing))  # Exit with error if any checks fail

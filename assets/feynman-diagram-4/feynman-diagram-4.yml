@@ -2,4 +2,8 @@ title: Feynman Diagram 4
 tags:
   - physics
   - quantum field theory
-description: null
+description: >-
+  Dressed four-point vertex $\Gamma^{(4)}_{k,abcd}(p_1,p_2,p_3,p_4)$ joining four external
+  fields, drawn on axes rotated by 45° so the legs run diagonally. Vertices like this are why
+  the flow equations form an infinite tower: the scale derivative of any $n$-point function
+  depends on the $(n+1)$- and $(n+2)$-point functions, so the hierarchy has to be truncated.

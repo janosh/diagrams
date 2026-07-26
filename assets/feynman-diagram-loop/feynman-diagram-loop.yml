@@ -3,4 +3,8 @@ tags:
   - physics
   - quantum field theory
   - renormalization
-description: null
+description: >-
+  One-loop flow equation for the first field derivative of the effective potential. A single
+  external leg meets a vertex from which a propagator loop carrying momentum $q$ closes back on
+  itself, cut open by the regulator insertion (circled cross). This tadpole is the simplest
+  non-trivial diagram in the functional renormalization group hierarchy.
