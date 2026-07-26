@@ -3,4 +3,9 @@ tags:
   - physics
   - quantum field theory
   - renormalization
-description: null
+description: >-
+  One-loop flow equation for the second field derivative of the effective potential. The
+  right-hand side pairs a loop closed by two three-point vertices with a tadpole carrying a
+  single four-point vertex. Each loop is cut open by a regulator insertion (the crossed
+  circle), which is what makes the momentum integral finite and restricts the flow to a thin
+  shell around the scale being integrated out.
