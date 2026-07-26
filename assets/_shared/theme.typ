@@ -1,30 +1,22 @@
-// Shared design tokens so diagrams look like one collection rather than 164 one-offs.
-//
-// The series hues clear WCAG 1.4.11 (3:1 against white for graphical objects). Hue alone
-// stops separating reliably past about four series under red-green color vision
-// deficiency, so `series()` pairs each hue with a dash pattern; that also survives
-// grayscale printing.
+// Shared design tokens, so diagrams read as one collection rather than 164 one-offs.
 
-// Neutrals for anything that is not the subject of the diagram: structure, annotation,
-// and reference baselines like the roc-curve diagonal, which should recede rather than
-// compete with the curves being compared.
+// For anything that is not the subject of the diagram: structure, annotation, and
+// reference baselines like the roc-curve diagonal, which should recede.
 #let neutral = (annotation: rgb("#4A5560"), hairline: rgb("#78828C"))
 
-// Shared by the small labels in the three dense timeline and matrix diagrams so they
-// stay in step. Sized for those figures, not a collection-wide minimum: legibility
-// depends on point size relative to the rendered figure, and the figures vary too much
-// for one number to mean anything.
+// Keeps the small labels in the dense timeline and matrix diagrams in step. Sized for
+// those figures, not a collection-wide minimum: legibility depends on point size
+// relative to the rendered figure, which varies far too much for one number to fit.
 #let annotation-size = 9pt
 
-// Stroke weights for lines carrying meaning. Textures and deliberately faint grouping
-// boxes go thinner than `hairline` and are none the worse for it.
-#let line-weight = (hairline: 0.5pt, thin: 0.8pt, normal: 1.2pt, heavy: 2pt)
+// Textures and deliberately faint grouping boxes go thinner and are fine there.
+#let line-weight = (hairline: 0.5pt, thin: 0.8pt)
 
-// Ordered so the leading hues stay far apart under simulated deuteranopia and
-// protanopia: the first four are separated by at least 67 in sRGB, which is enough to
-// tell them apart by hue alone. The fifth drops to 53 and the sixth (orange against
-// red) to 15, so those two take a dash pattern as a second cue. Dashes cost real
-// legibility on crossing curves, so they start only where hue stops carrying the load.
+// All six clear WCAG 1.4.11 (3:1 on white), ordered by separation under simulated
+// deuteranopia and protanopia: the first four stay at least 67 apart in sRGB, enough to
+// tell apart by hue alone. The fifth drops to 53 and the sixth (orange against red) to
+// 15, so those two add a dash. Dashes cost legibility on crossing curves, so they start
+// only where hue stops carrying the load.
 #let _series = (
   (rgb("#0B5FA5"), none),
   (rgb("#C2570A"), none),
@@ -34,7 +26,6 @@
   (rgb("#C0182B"), "densely-dotted"),
 )
 
-// Stroke for the `idx`-th curve of a multi-series plot.
 #let series(idx, thickness: 1.5pt) = {
   let (paint, dash) = _series.at(calc.rem(idx, _series.len()))
   (paint: paint, dash: dash, thickness: thickness)
