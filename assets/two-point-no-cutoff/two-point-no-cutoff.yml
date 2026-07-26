@@ -3,5 +3,9 @@ tags:
   - physics
   - quantum field theory
   - renormalization
-description: |
-  Two-point propagator flow without cutoff derivative
+description: >-
+  Flow of the two-point function with the regulator insertion left out. The first diagram closes
+  a loop with two dressed three-point vertices $\Gamma^{(3)}_k$ and the full propagators
+  $G_k$; the second contracts a single four-point vertex $\Gamma^{(4)}_k$ into a tadpole.
+  Without the cutoff derivative $\partial_k R_k$ nothing restricts the loop momenta, so these
+  are the divergent integrals the regulator is introduced to tame.

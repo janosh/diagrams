@@ -1,5 +1,9 @@
 title: Heatmap
 tags:
   - info-graphics
-description: |
-  Posted as an answer to <https://tex.stackexchange.com/q/44868>.
+description: >-
+  A symmetric $9 \times 9$ matrix drawn as a heatmap, each cell shaded on a red-to-gold ramp by
+  its value. The coloring makes the block structure immediate: rows a–d are strongly coupled to
+  one another, while e–i carry large diagonal entries but almost no weight off it, so they are
+  nearly decoupled from the rest. Posted as an answer to
+  <https://tex.stackexchange.com/q/44868>.

@@ -3,5 +3,10 @@ tags:
   - Bayesian
   - probability
   - math
-description: |
-  3blue1brown-inspired geometric visualization of Bayes theorem <https://youtu.be/HZGCoVF3YvM>.
+description: >-
+  Bayes' theorem as an argument about areas. The square is the whole probability space, split
+  horizontally by the prior $p(H)$ against $p(\neg H)$ and vertically by the likelihoods, so
+  each of the four rectangles is a joint probability. Conditioning on the evidence $E$ keeps only
+  the two rectangles where $E$ occurred; rescaling those to full height renormalizes them into
+  the posterior $p(H|E)$ shown on the right. Following
+  [3blue1brown](https://youtu.be/HZGCoVF3YvM).

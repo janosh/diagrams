@@ -5,5 +5,10 @@ url: https://github.com/PetarV-/TikZ/tree/86aee049f5355d77c598b936399e42caf8941e
 tags:
   - machine learning
   - graphs
-description: |
-  Illustrating the attention mechanism from [arxiv:1706.03762](https://arxiv.org/abs/1706.03762).
+description: >-
+  Attention as a weighted sum over a set. Each input embedding $\vec e_i$ is scored against the
+  query $\vec e_j$ by the attention function $a_\varphi$, giving the weight $\alpha_{ij}$,
+  while $f_\psi$ maps the same input to the value being weighted. Multiplying and summing over
+  $i$ yields the updated embedding $\vec e_j'$. The sum is permutation-invariant, which is why
+  the mechanism applies to unordered sets as readily as to sequences. From
+  [arxiv:1706.03762](https://arxiv.org/abs/1706.03762).

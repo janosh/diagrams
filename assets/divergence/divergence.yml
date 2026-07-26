@@ -1,4 +1,7 @@
 title: Divergence
 tags:
   - math
-description: Plot of $-\ln(1-z)$ which diverges at $z = 1$.
+description: >-
+  Plot of $-\ln(1-z)$ on $0 \le z < 1$. The function grows without bound as $z \to 1$, but
+  only logarithmically, so it stays finite and gently curved across almost the whole interval
+  and turns up steeply only in the last few percent before the pole.

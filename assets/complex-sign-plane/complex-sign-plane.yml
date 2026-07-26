@@ -3,5 +3,9 @@ tags:
   - physics
   - quantum field theory
   - Matsubara
-description: |
-  Sign function in the complex plane.
+description: >-
+  The sign function $s(p_0)$ on the complex $p_0$ plane. It takes $+1$ in the first and third
+  quadrants and $-1$ in the second and fourth, so it is constant on each quadrant and flips
+  across both the real and the imaginary axis. See
+  [complex sign function](https://janosh.github.io/diagrams/complex-sign-function) for the same
+  function drawn as a lifted surface.
