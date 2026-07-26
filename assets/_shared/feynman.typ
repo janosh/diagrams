@@ -23,6 +23,8 @@
   (rel: rel-label, to: pos)
 }
 
+// Trailing arguments go to the *label*, not the vertex, so callers can anchor the
+// caption without disturbing the shape it hangs off.
 #let dressed-vertex(
   pos,
   label: none,
@@ -30,13 +32,15 @@
   name: none,
   radius: 0.2,
   stroke: 0.5pt,
-  ..rest,
+  ..label-args,
 ) = {
   circle(pos, radius: radius, fill: hatched, name: name, stroke: stroke)
-  if label != none { content(_label-at(pos, rel-label), $#label$, ..rest) }
+  if label != none { content(_label-at(pos, rel-label), $#label$, ..label-args) }
 }
 
-// Regulator insertion: a circled cross knocked out of whatever it sits on.
+// Regulator insertion: a circled cross knocked out of whatever it sits on. As with
+// `dressed-vertex`, trailing arguments style the label rather than the cross itself;
+// the cross's own geometry is set by `baseline` and `padding`.
 #let cross(
   pos,
   label: none,
@@ -44,7 +48,7 @@
   name: none,
   baseline: 0pt,
   padding: -2.5pt,
-  ..rest,
+  ..label-args,
 ) = {
   content(
     pos,
@@ -55,7 +59,7 @@
     padding: padding,
     name: name,
   )
-  if label != none { content(_label-at(pos, rel-label), $#label$, ..rest) }
+  if label != none { content(_label-at(pos, rel-label), $#label$, ..label-args) }
 }
 
 // Momentum labels p_i and orientation arrowheads spaced around a loop circle.
