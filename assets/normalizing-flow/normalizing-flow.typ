@@ -75,7 +75,7 @@
 
   let arrow-style = (end: ">", fill: black, scale: 0.8, offset: 0.1)
   line("z0", "z1", mark: arrow-style, name: "z0-z1")
-  content("z0-z1.mid", $f_1(z_0)$, name: "f1", anchor: "south", padding: (
+  content("z0-z1.mid", $f_(1)(z_0)$, name: "f1", anchor: "south", padding: (
     bottom: 3pt,
   ))
 
@@ -99,11 +99,11 @@
   ))
 
   draw-distro(0, y-distro, p0, name: "d0")
-  content("d0.south", $z_0 ~ p_0(z_0)$, anchor: "north", padding: (top: 3pt))
+  content("d0.south", $z_0 ~ p_(0)(z_0)$, anchor: "north", padding: (top: 3pt))
 
   draw-distro(2 * node-spacing, y-distro, pi, name: "di")
-  content("di.south", $z_i ~ p_i(z_i)$, anchor: "north", padding: (top: 3pt))
+  content("di.south", $z_i ~ p_(i)(z_i)$, anchor: "north", padding: (top: 3pt))
 
   draw-distro(4 * node-spacing, y-distro, pk, name: "dk")
-  content("dk.south", $z_k ~ p_k(z_k)$, anchor: "north", padding: (top: 3pt))
+  content("dk.south", $z_k ~ p_(k)(z_k)$, anchor: "north", padding: (top: 3pt))
 })

@@ -1,21 +1,11 @@
 import { building } from '$app/environment'
-import rehype_katex from 'rehype-katex'
-import rehype_stringify from 'rehype-stringify'
-import remark_math from 'remark-math'
-import remark_parse from 'remark-parse'
-import remark_rehype from 'remark-rehype'
-import { unified } from 'unified'
+// slug -> HTML, rendered at build time by vite-plugin-descriptions. Rendering here instead
+// drags mdsvex and katex into the client bundle, where their node builtins throw on load.
+import rendered_descriptions from 'virtual:descriptions'
 
 export { default as CodeBlock } from './CodeBlock.svelte'
 export { default as DiagramCard } from './DiagramCard.svelte'
 export { default as Tags } from './Tags.svelte'
-
-const md_processor = unified()
-  .use(remark_parse)
-  .use(remark_math)
-  .use(remark_rehype)
-  .use(rehype_katex)
-  .use(rehype_stringify)
 
 export type Diagram = {
   slug: string
@@ -58,7 +48,7 @@ const image_files = import.meta.glob<{ default: string }>(`$assets/**/*.png`, {
 })
 
 // Process YAML files to create figure data
-export const diagrams = Object.entries(yaml_data)
+export const diagrams: Diagram[] = Object.entries(yaml_data)
   .filter(([_path, metadata]) => !metadata.hide)
   .map(([path, metadata]): Diagram => {
     const slug = path.split(`/`)[2] ?? ``
@@ -80,16 +70,10 @@ export const diagrams = Object.entries(yaml_data)
       ]),
     ]
 
-    const description = metadata.description
-      ? md_processor.processSync(metadata.description).toString()
-      : metadata.description
-
-    const downloads = [
-      asset_files[`${figure_basename}-hd.png`]?.default,
-      asset_files[`${figure_basename}.png`]?.default,
-      asset_files[`${figure_basename}.pdf`]?.default,
-      asset_files[`${figure_basename}.svg`]?.default,
-    ].filter(Boolean)
+    // store extensions, not ?url paths — content hashes would break `.includes('-hd.png')`
+    const downloads = ([`.png`, `-hd.png`, `.pdf`, `.svg`] as const).filter(
+      (ext) => `${figure_basename}${ext}` in asset_files,
+    )
     // build-time data-quality signal (building guard keeps it out of the client bundle)
     if (building && downloads.length < 2) {
       console.warn(`Diagram '${slug}' has only ${downloads.length} download asset(s)`)
@@ -99,6 +83,7 @@ export const diagrams = Object.entries(yaml_data)
       hd: image_files[`${figure_basename}-hd.png`]?.default,
       sd: image_files[`${figure_basename}.png`]?.default,
     }
+    const description = rendered_descriptions[slug] ?? null
     return { ...metadata, slug, code, tags, description, downloads, images }
   })
 
@@ -112,13 +97,10 @@ export const sorted_diagrams = [...diagrams].toSorted(
     diagram_collator.compare(d1.slug, d2.slug),
 )
 
-export const tags = Object.entries(
-  diagrams
-    .flatMap((diagram) => diagram.tags)
-    .reduce<Record<string, number>>((acc, el) => {
-      acc[el] = (acc[el] ?? 0) + 1
-      return acc
-    }, {}),
-)
+const tag_counts = new Map<string, number>()
+for (const tag of diagrams.flatMap((diagram) => diagram.tags)) {
+  tag_counts.set(tag, (tag_counts.get(tag) ?? 0) + 1)
+}
+export const tags = [...tag_counts]
   .filter(([, count]) => count > 2)
   .toSorted(([t1], [t2]) => t1.localeCompare(t2))

@@ -1,10 +1,16 @@
-<script lang="ts">
-  import Iconify from '@iconify/svelte'
-  import { createStarryNight } from '@wooorm/starry-night'
+<script module lang="ts">
   import grammar_typst from '@wooorm/starry-night/source.typst'
   import grammar_latex from '@wooorm/starry-night/text.tex.latex'
-  import { toHtml } from 'hast-util-to-html'
-  import { CopyButton, Icon } from 'svelte-multiselect'
+  import { create_highlighter } from 'svelte-widgets/live-examples/create-highlighter'
+
+  // shared across all component instances, grammars load on first highlight.
+  // import the subpath, not the barrel, which eagerly awaits 34 common grammars
+  const highlighter = create_highlighter([grammar_latex, grammar_typst])
+</script>
+
+<script lang="ts">
+  import { CopyButton, Icon } from 'svelte-widgets'
+  import { GitHub, LaTeXFile, Typst } from 'svelte-widgets/icons'
   import type { HTMLAttributes } from 'svelte/elements'
 
   let {
@@ -21,27 +27,17 @@
   } & HTMLAttributes<HTMLDivElement> = $props()
 
   let ext = $derived(title?.split(`.`).pop() as `typ` | `tex`)
-  const icon = $derived({ typ: `simple-icons:typst`, tex: `file-icons:latex` }[ext])
-
-  const scope_map = { typ: `source.typst`, tex: `text.tex.latex` } as const
-
-  // Initialize starry-night once at module scope (shared across all component instances)
-  const starry_night = createStarryNight([grammar_latex, grammar_typst])
-
   let highlighted_code = $state(``)
 
   $effect(() => {
-    const scope = scope_map[ext] || `text.tex.latex`
-    starry_night.then((sn) => {
-      highlighted_code = toHtml(sn.highlight(code, scope))
-    })
+    highlighter.highlight(code, ext).then((html) => (highlighted_code = html))
   })
 </script>
 
 <div {...rest}>
   {#if title}
     <h3>
-      <Iconify {icon} inline />&nbsp;
+      <Icon icon={ext === `typ` ? Typst : LaTeXFile} />
       {title} <small>({code.split(`\n`).length} lines)</small>
     </h3>
   {/if}
@@ -49,7 +45,7 @@
     {#if repo_link}
       <a href={repo_link} target="_blank" rel="noreferrer noopener">
         <button>
-          <Icon icon="GitHub" />
+          <Icon icon={GitHub} />
         </button>
       </a>
     {/if}
@@ -77,6 +73,9 @@
     position: absolute;
     bottom: calc(100% - 1em);
     left: 1em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
     background: var(--button-bg);
     padding: 0 8pt;
     border-radius: 3pt 3pt 0 0;
@@ -106,5 +105,10 @@
     display: inline-flex;
     gap: 3pt;
     place-items: center;
+    background: var(--button-bg);
+    border: none;
+    border-radius: 3pt;
+    padding: 3pt 1ex;
+    cursor: pointer;
   }
 </style>

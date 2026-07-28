@@ -86,7 +86,7 @@
     set-style(fill: black)
     content((1.42, 0.6, 0.02), [$phi_1$], anchor: "west")
     content((-0.7, -0.95, -0.02), [$phi_2$], anchor: "north")
-    content((0.02, 0.02, 1.47), [$U_k(rho)$], anchor: "south")
+    content((0.02, 0.02, 1.47), [$U_(k)(rho)$], anchor: "south")
   })
 
   // Highlighted states.

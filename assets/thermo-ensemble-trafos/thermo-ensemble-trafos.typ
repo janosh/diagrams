@@ -10,8 +10,8 @@
   set-style(content: (frame: "rect", stroke: none, padding: 0.2))
 
   content((0, 0), [$Z_m (E)$], name: "Zm")
-  content((horizontal-dist, 0), [$Z_c(beta)$], name: "Zc")
-  content((2 * horizontal-dist, 0), [$Z_g(mu)$], name: "Zg")
+  content((horizontal-dist, 0), [$Z_(c)(beta)$], name: "Zc")
+  content((2 * horizontal-dist, 0), [$Z_(g)(mu)$], name: "Zg")
 
   content((0, -vertical-dist), [$sigma = frac(S_m, N)$], name: "Sm")
   content((horizontal-dist, -vertical-dist), [$f = frac(F, N)$], name: "F")

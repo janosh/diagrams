@@ -101,12 +101,12 @@
     cetz.draw.translate((-0.2, 0.3, 0))
     cetz.draw.set-origin((3, 0.3))
 
-    transition((0, 0), name: "t0", content: $T_frak(I)$)
+    transition((0, 0), name: "t0", content: $T_(frak(I))$)
     transition((4, 0), name: "t2in", content: $T_(2_frak(I))$)
     transition((8, 0), name: "t2out", content: $T_(2_frak(O))$)
     transition((12, 0), name: "t1in", content: $T_(1_frak(I))$)
     transition((16, 0), name: "t1out", content: $T_(1_frak(O))$)
-    transition((20, 0), name: "t6", content: $T_frak(O)$)
+    transition((20, 0), name: "t6", content: $T_(frak(O))$)
 
     place((rel: (2.3, 0), to: "t0.right"), name: "p02", content: $τ_(02)$)
     place((rel: (2.3, -1), to: "t2in.right"), name: "pr2", content: $ρ_(2)$)

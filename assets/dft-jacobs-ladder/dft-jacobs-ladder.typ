@@ -56,7 +56,7 @@
     3 * rung-sep,
     rgb("ffe599"),
     [3: *Meta-GGA*\ (r/r$""^2$)SCAN],
-    [$\ nabla^2rho(bold(r))$ \ $tau(bold(r))$],
+    [$\ nabla^(2) rho(bold(r))$ \ $tau(bold(r))$],
   )
 
   draw-rung(

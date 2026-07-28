@@ -2,8 +2,8 @@
   import { CodeBlock, type Diagram, DiagramCard, Tags } from '$lib'
   import { filters } from '$lib/state.svelte'
   import { homepage, repository } from '$root/package.json'
-  import Icon from '@iconify/svelte'
-  import { PrevNext } from 'svelte-multiselect'
+  import { Icon, PrevNext } from 'svelte-widgets'
+  import { Code, Download, LaTeX, Typst } from 'svelte-widgets/icons'
 
   let { data } = $props()
   let {
@@ -18,29 +18,28 @@
     url,
     downloads,
   } = $derived(data.diagram)
-  const labels = [
-    [`.png`, `PNG`],
-    [`-hd.png`, `PNG (HD)`],
-    [`.pdf`, `PDF`],
-    [`.svg`, `SVG`],
-    [`.tex`, `TeX`],
-  ] as const
+  const download_labels: Record<string, string> = {
+    [`.png`]: `PNG`,
+    [`-hd.png`]: `PNG (HD)`,
+    [`.pdf`]: `PDF`,
+    [`.svg`]: `SVG`,
+  }
   const code_tabs = [
-    [`typst`, `Typst`, `simple-icons:typst`],
-    [`tikz`, `TikZ`, `simple-icons:latex`],
+    [`typst`, `Typst`, Typst],
+    [`tikz`, `TikZ`, LaTeX],
   ] as const
 
-  // development server fetches files from local folder (specified by svelte.config.js kit.files.assets)
-  // production server fetches files from GitHub (so we don't need to re-upload with every build)
-  const raw_repo_url = `https://github.com/janosh/diagrams/raw/refs/heads/main/assets`
-  let base_uri = $derived(`${raw_repo_url}/${slug}/${slug}`)
-
+  // production serves downloads from GitHub so we don't re-upload assets with every build
+  let base_uri = $derived(`${repository}/raw/refs/heads/main/assets/${slug}/${slug}`)
   let plain_description = $derived(description?.replaceAll(/<[^>]*>/g, ``))
 
   // prev/next walks the active home-page filter; fall back to all diagrams when the current
   // one isn't in the filtered set (direct navigation, or the filter excludes it)
-  let in_filtered = $derived(filters.filtered.some((diagram) => diagram.slug === slug))
-  let nav_diagrams = $derived(in_filtered ? filters.filtered : data.diagrams)
+  let nav_diagrams = $derived(
+    filters.filtered.some((diagram) => diagram.slug === slug)
+      ? filters.filtered
+      : data.diagrams,
+  )
 
   // Prefer Typst when both Typst (CeTZ) and TeX (TikZ) sources exist
   let code_tab = $state<`typst` | `tikz`>(`typst`)
@@ -69,7 +68,7 @@
 <h1>{title}</h1>
 
 {#if creator || url}
-  <p class="flex">
+  <p>
     {#if creator}
       Creator: {#if creator_url}
         <a href={creator_url}>{creator}</a>
@@ -84,7 +83,7 @@
 {/if}
 
 <section class="description">
-  <Tags {tags} btn_props={{ style: `cursor: default` }} />
+  <Tags {tags} style="--tags-cursor: default" />
 
   {#if description}
     {@html description}
@@ -95,31 +94,29 @@
 <enhanced:img src={images.hd} alt={title} class="diagram" />
 
 <h2>
-  <Icon icon="octicon:download-16" inline />&nbsp; Download
+  <Icon icon={Download} /> Download
 </h2>
 <section>
-  {#each labels as [ext, label] (ext)}
-    {#if downloads?.some((filename) => filename.includes(ext))}
-      <a href="{base_uri}{ext}" target="_blank" rel="noreferrer" class="large-link">
-        {label}
-      </a>
-    {/if}
+  {#each downloads as ext (ext)}
+    <a href="{base_uri}{ext}" target="_blank" rel="noreferrer" class="large-link">
+      {download_labels[ext]}
+    </a>
   {/each}
 </section>
 
 <h2>
-  <Icon icon="octicon:code" inline />&nbsp; Code
+  <Icon icon={Code} /> Code
 </h2>
 {#if code.typst && code.tex}
   <div class="code-tabs" role="group" aria-label="Code language">
-    {#each code_tabs as [id, label, icon] (id)}
+    {#each code_tabs as [id, label, tab_icon] (id)}
       <button
         type="button"
         class:active={code_tab === id}
         aria-pressed={code_tab === id}
         onclick={() => (code_tab = id)}
       >
-        <Icon {icon} inline />&nbsp;{label}
+        <Icon icon={tab_icon} />{label}
       </button>
     {/each}
   </div>
@@ -140,7 +137,7 @@
 >
   {#snippet children({ item, kind })}
     {@const [slug, diagram] = item as [string, Diagram]}
-    <div>
+    <div style="text-align: center">
       <h3>
         <a href={slug}>
           {@html kind == `next` ? `Next &rarr;` : `&larr; Previous`}
@@ -164,6 +161,16 @@
     max-width: 12em;
     margin: 1em auto;
     padding-bottom: 8pt;
+    text-align: center;
+  }
+  h2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.35em;
+  }
+  p {
+    text-align: center;
   }
   section {
     max-width: var(--content-max-width);

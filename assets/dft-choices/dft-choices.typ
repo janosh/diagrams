@@ -27,7 +27,7 @@
 
   node(
     (0, 0),
-    $-frac(planck^2, 2m) arrow(nabla)_arrow(r)^2$,
+    $-frac(planck^2, 2m) arrow(nabla)_(arrow(r))^(2)$,
     fill: rgb("#ffd699"),
     name: "kinetic",
     width: 1.3 * node-width,

@@ -80,7 +80,7 @@
     )
     content(
       (rel: (-.55, -.8), to: policy + ".end"),
-      $pi_theta(s_#idx)$,
+      $pi_(theta)(s_#idx)$,
       anchor: "east",
     )
     content((rel: (0, .2), to: policy + ".end"), q, anchor: "south")

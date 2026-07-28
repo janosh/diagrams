@@ -1,0 +1,11 @@
+title: Magnetism Types
+tags:
+  - physics
+  - solid state physics
+  - magnetism
+  - altermagnetism
+  - symmetry
+  - band structure
+  - Fermi surface
+description: |
+  Altermagnetism against the rest, drawn throughout in the non-relativistic limit. The left column holds the three orders nobody mistakes for an altermagnet &mdash; diamagnetism, paramagnetism, ferrimagnetism &mdash; each with its field response. The three rows on the right are all collinear and share one lattice with two independent switches thrown: whether the spins alternate, and whether the ligand axes of the two sublattices agree. A magnetometer settles the first but not the second. The ferromagnet does not alternate, so it alone is hysteretic and split rigidly by the exchange field, same sign at every $\mathbf{k}$. The antiferromagnet and the altermagnet both compensate to $M = 0$ and give the same linear, remanence-free $M(H)$; what separates them is the symmetry relating the sublattices. A translation or inversion forces $E_\uparrow(\mathbf{k}) = E_\downarrow(\mathbf{k})$ everywhere, whereas the $C_4$ rotation left by turning the ligand axes $90°$ apart permits a $d_{xy}$ splitting $\Delta(\mathbf{k}) \propto \sin k_x \sin k_y$ that needs no spin-orbit coupling, flips sign between the $C_4$-related diagonals, and cuts the Fermi surface into two spin-polarized sheets that are $90°$ rotations of each other. This $d$-wave case has two nodal planes; $g$-wave ($\mathrm{MnTe}$, $\mathrm{CrSb}$) and $i$-wave altermagnets have four and six. The $M(H)$ panels share an axis box but not a scale.

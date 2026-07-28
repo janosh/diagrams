@@ -1,7 +1,6 @@
 <script lang="ts">
   import { page } from '$app/state'
   import { homepage, name } from '$root/package.json'
-  import { Icon } from 'svelte-multiselect'
 
   let online: boolean = $state(true)
 </script>
@@ -23,7 +22,7 @@
   {#if online === false}
     Looks like you're offline. If you think your connection is fine, check the
     <a href="https://githubstatus.com">GitHub status page</a>
-    as this site is hosted by &thinsp;<Icon icon="GitHub" />&thinsp; GitHub Pages.
+    as this site is hosted by GitHub Pages.
   {/if}
 
   <p>
@@ -40,6 +39,7 @@
     max-width: 45em;
     padding: 5em 3em 1em;
     margin: auto;
+    text-align: center;
   }
   p img {
     vertical-align: middle;

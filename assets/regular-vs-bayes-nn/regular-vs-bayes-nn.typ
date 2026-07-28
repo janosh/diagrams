@@ -82,7 +82,7 @@
       neuron(
         (x0, (ii + 1) * spacing.node + 1),
         fill: rgb("#90EE90"),
-        label: "ii" + str(ii + 1),
+        label: "i" + str(ii + 1),
         name: "ii" + str(ii + 1),
       )
     }

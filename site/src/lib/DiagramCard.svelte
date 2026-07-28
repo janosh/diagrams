@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { tooltip } from 'svelte-multiselect/attachments'
+  import { tooltip } from 'svelte-widgets/attachments'
   import type { HTMLAttributes } from 'svelte/elements'
   import { fade } from 'svelte/transition'
   import { type Diagram, Tags } from './index'
@@ -49,6 +49,7 @@
   h2 {
     margin: 1ex;
     line-height: 1.2;
+    text-align: center;
   }
   .diagram {
     background-color: var(--diagram-bg);
@@ -59,5 +60,18 @@
     padding: 1ex;
     border-radius: 4pt;
     height: auto;
+  }
+  /* Tooltip is portaled to body; compact HTML description spacing. */
+  :global(.custom-tooltip :is(p, ul, ol)) {
+    margin-block: 0.4em;
+  }
+  :global(.custom-tooltip :is(p, ul, ol):first-child) {
+    margin-block-start: 0;
+  }
+  :global(.custom-tooltip :is(p, ul, ol):last-child) {
+    margin-block-end: 0;
+  }
+  :global(.custom-tooltip :is(ul, ol)) {
+    padding-inline-start: 1.25em;
   }
 </style>

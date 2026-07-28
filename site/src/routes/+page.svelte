@@ -5,10 +5,10 @@
   import { DiagramCard, diagrams, tags } from '$lib'
   import { filters } from '$lib/state.svelte'
   import { homepage, repository } from '$root/package.json'
-  import Icon from '@iconify/svelte'
   import { tick } from 'svelte'
-  import MultiSelect, { type ObjectOption } from 'svelte-multiselect'
-  import { highlight_matches } from 'svelte-multiselect/attachments'
+  import { Icon, MultiSelect, type ObjectOption } from 'svelte-widgets'
+  import { highlight_matches } from 'svelte-widgets/attachments'
+  import { GitHub, LaTeX, License, Typst } from 'svelte-widgets/icons'
 
   let innerWidth: number = $state(0)
 
@@ -106,19 +106,19 @@
   </button>
   made with
   <a href="https://cetz-package.github.io/docs/">
-    <Icon icon="simple-icons:typst" inline />CeTZ
+    <Icon icon={Typst} />CeTZ
   </a>
   and
   <button onclick={() => filter_by_tag(`tikz`)}>
     {diagrams.filter((diagram) => diagram.code.tex).length}
   </button>
   made with
-  <a href="https://tikz.dev"><Icon icon="simple-icons:latex" inline />TikZ</a>.
+  <a href="https://tikz.dev"><Icon icon={LaTeX} />TikZ</a>.
 </p>
 <p>
-  <Icon icon="octicon:law" inline />&nbsp;
-  <a href="{repository}/blob/main/license">MIT licensed</a> (free to reuse)&ensp;
-  <a href={repository}><Icon icon="octicon:mark-github" inline />&nbsp;Repo</a>
+  <a href="{repository}/blob/main/license"><Icon icon={License} /> MIT licensed</a>
+  (free to reuse)&ensp;
+  <a href={repository}><Icon icon={GitHub} /> Repo</a>
 </p>
 <p style="margin: auto; max-width: 40em">
   Have a diagram you'd like to share with attribution?
@@ -141,9 +141,9 @@
     bind:selected={filters.tags}
     style="max-width: 34rem; --sms-bg: var(--input-bg); --sms-options-bg: var(--page-bg)"
   >
-    {#snippet option({ option }: { option: ObjectOption; idx: number })}
-      <span style="display: flex; gap: 5pt; align-items: center">
-        {option.label} <span style="flex: 1"></span>
+    {#snippet option({ option }: { option: ObjectOption })}
+      <span style="display: flex; justify-content: space-between; gap: 5pt; width: 100%">
+        {option.label}
         {option.count}
       </span>
     {/snippet}
@@ -176,10 +176,12 @@
 <style>
   h1 {
     font-size: clamp(2rem, 2rem + 2vw, 3.5rem);
+    text-align: center;
   }
   p {
     font-size: 2.2ex;
     line-height: 1.5;
+    text-align: center;
   }
   ul {
     list-style: none;
@@ -216,7 +218,11 @@
   }
   button {
     padding: 1pt 3pt;
-    background-color: var(--nav-bg);
+    background: var(--nav-bg);
+    border: none;
+    border-radius: 3pt;
+    color: inherit;
     font-size: inherit;
+    cursor: pointer;
   }
 </style>

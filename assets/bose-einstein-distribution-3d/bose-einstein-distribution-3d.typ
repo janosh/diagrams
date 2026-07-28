@@ -157,7 +157,7 @@
   )
   content(
     (x-max + 2.6, y-max, (z-min + z-max) / 2),
-    text(size: axis-label-font-size)[$n_upright(B) (p_0)$],
+    text(size: axis-label-font-size)[$n_(upright(B))(p_0)$],
     anchor: "west",
   )
 })

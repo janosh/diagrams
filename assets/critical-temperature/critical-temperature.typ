@@ -59,7 +59,7 @@
         samples: 125,
         domain: (0.01, 1),
         f3,
-        label: $m_c(T)$,
+        label: $m_(c)(T)$,
       )
     },
   )

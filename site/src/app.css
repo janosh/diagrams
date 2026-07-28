@@ -19,15 +19,11 @@ html[data-theme='dark'] {
   --light-text-secondary: #565e64;
   --light-link: #0c64e9;
   --light-link-hover: #fd7e14;
-  --light-code-bg: rgba(0, 123, 255, 0.1);
   --light-pre-bg: rgba(0, 0, 0, 0.03);
   --light-button-bg: #03eaa5;
-  --light-button-bg-hover: #02c78e;
   --light-border: rgba(0, 0, 0, 0.125);
   --light-highlight: #17a2b8;
-  --light-blockquote-bg: rgba(0, 0, 0, 0.05);
   --light-input-bg: rgba(0, 0, 0, 0.02);
-  --light-table-odd: rgba(0, 0, 0, 0.05);
   --light-nav-bg: rgba(0, 0, 0, 0.03);
   --light-card-bg: rgba(255, 255, 255, 0.8);
   --light-card-border: rgba(0, 0, 0, 0.1);
@@ -40,15 +36,11 @@ html[data-theme='dark'] {
   --dark-text-secondary: #bfb9b9;
   --dark-link: cornflowerblue;
   --dark-link-hover: orange;
-  --dark-code-bg: rgba(255, 255, 255, 0.1);
   --dark-pre-bg: rgba(255, 255, 255, 0.05);
   --dark-button-bg: teal;
-  --dark-button-bg-hover: rgb(89, 89, 117);
   --dark-border: rgba(255, 255, 255, 0.125);
   --dark-highlight: mediumaquamarine;
-  --dark-blockquote-bg: rgba(255, 255, 255, 0.1);
   --dark-input-bg: rgba(255, 255, 255, 0.1);
-  --dark-table-odd: black;
   --dark-nav-bg: rgba(255, 255, 255, 0.1);
   --dark-card-bg: rgb(89, 89, 117);
   --dark-card-border: rgba(255, 255, 255, 0.1);
@@ -61,25 +53,17 @@ html[data-theme='dark'] {
   --text-secondary: light-dark(var(--light-text-secondary), var(--dark-text-secondary));
   --link-color: light-dark(var(--light-link), var(--dark-link));
   --link-hover: light-dark(var(--light-link-hover), var(--dark-link-hover));
-  --code-bg: light-dark(var(--light-code-bg), var(--dark-code-bg));
   --pre-bg: light-dark(var(--light-pre-bg), var(--dark-pre-bg));
   --button-bg: light-dark(var(--light-button-bg), var(--dark-button-bg));
-  --button-bg-hover: light-dark(
-    var(--light-button-bg-hover),
-    var(--dark-button-bg-hover)
-  );
   --border: light-dark(var(--light-border), var(--dark-border));
   --highlight: light-dark(var(--light-highlight), var(--dark-highlight));
-  --blockquote-bg: light-dark(var(--light-blockquote-bg), var(--dark-blockquote-bg));
   --input-bg: light-dark(var(--light-input-bg), var(--dark-input-bg));
-  --table-odd: light-dark(var(--light-table-odd), var(--dark-table-odd));
   --nav-bg: light-dark(var(--light-nav-bg), var(--dark-nav-bg));
   --card-bg: light-dark(var(--light-card-bg), var(--dark-card-bg));
   --card-border: light-dark(var(--light-card-border), var(--dark-card-border));
   --shadow: light-dark(var(--light-shadow), var(--dark-shadow));
   --diagram-bg: light-dark(var(--light-diagram-bg), var(--dark-diagram-bg));
   --tooltip-bg: light-dark(var(--light-bg), var(--dark-card-bg));
-  --tooltip-text-color: light-dark(var(--light-text), var(--dark-text));
   --content-max-width: 55em;
 }
 
@@ -93,9 +77,6 @@ body {
     background-color 0.3s,
     color 0.3s;
 }
-:where(h1, h2, h3, h4, p, footer) {
-  text-align: center;
-}
 a {
   color: var(--link-color);
   text-decoration: none;
@@ -103,48 +84,7 @@ a {
 a:hover {
   color: var(--link-hover);
 }
-/* :where() needed to make less specific to not override svelte-multiselect button CSS */
-:where(button) {
-  background: var(--button-bg);
-  border: none;
-  outline: none;
-  padding: 3pt 1ex;
-  border-radius: 3pt;
-  transition:
-    transform 0.2s,
-    background-color 0.2s;
-  cursor: pointer;
-}
-:where(button:hover) {
-  background: var(--button-bg-hover);
-}
-:where(button.link) {
-  background: none;
-  border: none;
-  color: var(--link-color);
-  font: inherit;
-  cursor: pointer;
-  padding: 0;
-}
 ::highlight(highlight-match) {
   color: var(--highlight);
   text-decoration: underline;
-}
-
-/* Card tooltips: justify text (page centers `p`) and compact block spacing. */
-.custom-tooltip,
-.custom-tooltip :is(p, ul, ol) {
-  text-align: justify;
-}
-.custom-tooltip :is(p, ul, ol) {
-  margin-block: 0.4em;
-}
-.custom-tooltip :is(p, ul, ol):first-child {
-  margin-block-start: 0;
-}
-.custom-tooltip :is(p, ul, ol):last-child {
-  margin-block-end: 0;
-}
-.custom-tooltip :is(ul, ol) {
-  padding-inline-start: 1.25em;
 }
