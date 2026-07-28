@@ -3,7 +3,7 @@
   import { filters } from '$lib/state.svelte'
   import { homepage, repository } from '$root/package.json'
   import Icon from '@iconify/svelte'
-  import { PrevNext } from 'svelte-multiselect'
+  import { PrevNext } from 'svelte-widgets'
 
   let { data } = $props()
   let {
@@ -84,7 +84,7 @@
 {/if}
 
 <section class="description">
-  <Tags {tags} btn_props={{ style: `cursor: default` }} />
+  <Tags {tags} style="--tags-cursor: default" />
 
   {#if description}
     {@html description}

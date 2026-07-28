@@ -1,7 +1,7 @@
 <script lang="ts">
   import { page } from '$app/state'
   import { homepage, name } from '$root/package.json'
-  import { Icon } from 'svelte-multiselect'
+  import { Icon } from 'svelte-widgets'
 
   let online: boolean = $state(true)
 </script>

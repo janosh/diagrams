@@ -7,8 +7,8 @@
   import { homepage, repository } from '$root/package.json'
   import Icon from '@iconify/svelte'
   import { tick } from 'svelte'
-  import MultiSelect, { type ObjectOption } from 'svelte-multiselect'
-  import { highlight_matches } from 'svelte-multiselect/attachments'
+  import MultiSelect, { type ObjectOption } from 'svelte-widgets'
+  import { highlight_matches } from 'svelte-widgets/attachments'
 
   let innerWidth: number = $state(0)
 

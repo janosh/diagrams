@@ -1,10 +1,16 @@
-<script lang="ts">
-  import Iconify from '@iconify/svelte'
-  import { createStarryNight } from '@wooorm/starry-night'
+<script module lang="ts">
   import grammar_typst from '@wooorm/starry-night/source.typst'
   import grammar_latex from '@wooorm/starry-night/text.tex.latex'
-  import { toHtml } from 'hast-util-to-html'
-  import { CopyButton, Icon } from 'svelte-multiselect'
+  import { create_highlighter } from 'svelte-widgets/live-examples/create-highlighter'
+
+  // shared across all component instances, grammars load on first highlight.
+  // import the subpath, not the barrel, which eagerly awaits 34 common grammars
+  const highlighter = create_highlighter([grammar_latex, grammar_typst])
+</script>
+
+<script lang="ts">
+  import Iconify from '@iconify/svelte'
+  import { CopyButton, Icon } from 'svelte-widgets'
   import type { HTMLAttributes } from 'svelte/elements'
 
   let {
@@ -23,18 +29,10 @@
   let ext = $derived(title?.split(`.`).pop() as `typ` | `tex`)
   const icon = $derived({ typ: `simple-icons:typst`, tex: `file-icons:latex` }[ext])
 
-  const scope_map = { typ: `source.typst`, tex: `text.tex.latex` } as const
-
-  // Initialize starry-night once at module scope (shared across all component instances)
-  const starry_night = createStarryNight([grammar_latex, grammar_typst])
-
   let highlighted_code = $state(``)
 
   $effect(() => {
-    const scope = scope_map[ext] || `text.tex.latex`
-    starry_night.then((sn) => {
-      highlighted_code = toHtml(sn.highlight(code, scope))
-    })
+    highlighter.highlight(code, ext).then((html) => (highlighted_code = html))
   })
 </script>
 

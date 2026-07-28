@@ -4,7 +4,7 @@
   import { repository } from '$root/package.json'
   import Icon from '@iconify/svelte'
   import type { Snippet } from 'svelte'
-  import { CmdPalette, GitHubCorner, ThemeToggle } from 'svelte-multiselect'
+  import { CommandMenu, Footer, GitHubCorner, ThemeToggle } from 'svelte-widgets'
   // oxlint-disable-next-line import/no-unassigned-import -- global app styles
   import '../app.css'
 
@@ -17,17 +17,17 @@
   )
 </script>
 
-<CmdPalette {actions} placeholder="Go to..." />
+<CommandMenu {actions} placeholder="Go to..." />
 
 <GitHubCorner
   href={repository}
-  --gh-corner-bg="var(--text-color)"
-  --gh-corner-color="var(--page-bg)"
+  --github-corner-bg="var(--text-color)"
+  --github-corner-color="var(--page-bg)"
 />
 
 {@render children?.()}
 
-<footer style="margin: 6em 0 3em">
+<Footer style="margin: 6em 0 3em" --footer-padding="0">
   &copy; Janosh Riebesell 2021 &ensp;&mdash;&ensp;
   <Icon icon="octicon:law" inline />
   <a href="{repository}/blob/main/license">MIT License</a>
@@ -36,4 +36,4 @@
   <a href="{repository}/#--how-to-cite">How to cite</a>
   &ensp;&mdash;&ensp;
   <ThemeToggle tooltip={false} style="transform: scale(1.5); vertical-align: middle;" />
-</footer>
+</Footer>

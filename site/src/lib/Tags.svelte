@@ -1,49 +1,51 @@
 <script lang="ts">
+  import { ButtonGroup } from 'svelte-widgets'
   import type { HTMLAttributes } from 'svelte/elements'
   import { filters } from './state.svelte'
 
-  let {
-    tags = [],
-    btn_props = {},
-    ...rest
-  }: HTMLAttributes<HTMLParagraphElement> & {
-    tags: string[]
-    btn_props?: HTMLAttributes<HTMLButtonElement>
-  } = $props()
+  let { tags = [], ...rest }: HTMLAttributes<HTMLDivElement> & { tags: string[] } =
+    $props()
 </script>
 
-<p class="tags" {...rest}>
-  {#each tags as tag (tag)}
-    <button
-      onclick={(event) => {
-        event.preventDefault()
-        event.stopPropagation()
-        if (filters.tags.some((t) => t.label === tag)) {
-          filters.tags = filters.tags.filter((t) => t.label !== tag)
-        } else {
-          filters.tags = [...filters.tags, { label: tag, count: 0 }]
-        }
-      }}
-      {...btn_props}
-    >
-      {tag}
-    </button>
-  {/each}
-</p>
+<div class="tags" {...rest}>
+  <ButtonGroup
+    options={tags}
+    multiple
+    label="Filter by tag"
+    bind:selected={
+      () => filters.tags.map((tag) => tag.label),
+      // reuse existing entries so counts picked up from the tag MultiSelect survive a toggle
+      (labels) =>
+        (filters.tags = labels.map(
+          (label) =>
+            filters.tags.find((tag) => tag.label === label) ?? { label, count: 0 },
+        ))
+    }
+    onclick={(event) => {
+      // tag rows sit inside clickable diagram cards, keep clicks off the enclosing link
+      event.preventDefault()
+      event.stopPropagation()
+    }}
+  />
+</div>
 
 <style>
-  p.tags {
+  div.tags {
     display: flex;
-    flex-wrap: wrap;
     place-content: center;
-    gap: 4pt;
     margin: 1em;
-  }
-  p.tags button {
-    background-color: var(--nav-bg);
     font-size: 0.75em;
-    color: var(--text-secondary);
-    padding: 2pt 4pt;
-    border-radius: 3pt;
+    --btn-group-btn-bg: var(--nav-bg);
+    --btn-group-btn-hover-bg: var(--nav-bg);
+    --btn-group-btn-color: var(--text-secondary);
+    --btn-group-btn-padding: 2pt 4pt;
+    --btn-group-btn-radius: 3pt;
+  }
+  /* ButtonGroup exposes no hook for its inner row's alignment or the button cursor */
+  div.tags :global(.options) {
+    justify-content: center;
+  }
+  div.tags :global(button) {
+    cursor: var(--tags-cursor, pointer);
   }
 </style>

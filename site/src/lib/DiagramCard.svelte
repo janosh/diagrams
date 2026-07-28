@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { tooltip } from 'svelte-multiselect/attachments'
+  import { tooltip } from 'svelte-widgets/attachments'
   import type { HTMLAttributes } from 'svelte/elements'
   import { fade } from 'svelte/transition'
   import { type Diagram, Tags } from './index'

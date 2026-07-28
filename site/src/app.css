@@ -103,7 +103,7 @@ a {
 a:hover {
   color: var(--link-hover);
 }
-/* :where() needed to make less specific to not override svelte-multiselect button CSS */
+/* :where() needed to make less specific to not override svelte-widgets button CSS */
 :where(button) {
   background: var(--button-bg);
   border: none;
