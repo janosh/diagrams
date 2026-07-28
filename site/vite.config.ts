@@ -1,12 +1,12 @@
-import { config } from '@janosh/vite-config'
 import yaml from '@rollup/plugin-yaml'
 import { enhancedImages } from '@sveltejs/enhanced-img'
 import { sveltekit } from '@sveltejs/kit/vite'
 import { readFileSync } from 'node:fs'
 import { defineConfig } from 'vite-plus'
+import { make_config } from 'svelte-widgets/vite-config'
 
 export default defineConfig({
-  ...config, // shared lint/fmt/build from @janosh/vite-config (dotfiles)
+  ...make_config(), // shared lint/fmt/build/staged
   plugins: [
     {
       // serve .tex/.typ files as raw text so rolldown doesn't try to parse them as JS
