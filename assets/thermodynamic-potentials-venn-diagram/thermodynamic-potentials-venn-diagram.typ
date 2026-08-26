@@ -76,23 +76,18 @@
     })
   }
 
-  content((-0.992, 0.573), [Mechanical\ $F_[mu] = -P V$], anchor: "center")
-  content((-0.95, 0.28), text(.8em)[(Grand potential)], anchor: "center")
-
-  content((0.992, 0.573), [Thermal\ $H_[mu] = T S$], anchor: "center")
-
-  content((0, -1.146), [Chemical\ $G = mu N$], anchor: "center")
-
-  content((0, 0.523), align(center, $U_[mu] =\ T S - P V$), anchor: "center")
-
-  content((0, 0), text(.8em, align(center, $U = T S -\ P V + mu N$)))
-
-  content((-0.496, -0.336), align(center, $F =\ -P V + mu N$), anchor: "center")
-
-  content((0.496, -0.336), align(center, $H =\ T S + mu N$), anchor: "center")
-
-  content((0, 1.6), $G_[mu]$)
-  content((0, 1.4), text(.8em)[(Gibbs-Duhem)])
+  for spec in (
+    (pos: (-0.992, 0.573), body: [Mechanical\ $F_[mu] = -P V$], args: (anchor: "center")),
+    (pos: (-0.95, 0.28), body: text(.8em)[(Grand potential)], args: (anchor: "center")),
+    (pos: (0.992, 0.573), body: [Thermal\ $H_[mu] = T S$], args: (anchor: "center")),
+    (pos: (0, -1.146), body: [Chemical\ $G = mu N$], args: (anchor: "center")),
+    (pos: (0, 0.523), body: align(center, $U_[mu] =\ T S - P V$), args: (anchor: "center")),
+    (pos: (0, 0), body: text(.8em, align(center, $U = T S -\ P V + mu N$)), args: (:)),
+    (pos: (-0.496, -0.336), body: align(center, $F =\ -P V + mu N$), args: (anchor: "center")),
+    (pos: (0.496, -0.336), body: align(center, $H =\ T S + mu N$), args: (anchor: "center")),
+    (pos: (0, 1.6), body: $G_[mu]$, args: (:)),
+    (pos: (0, 1.4), body: text(.8em)[(Gibbs-Duhem)], args: (:)),
+  ) { content(spec.pos, spec.body, ..spec.args) }
   circle((0, 0), radius: 1.75, fill: rgb(70%, 70%, 90%, 20%), stroke: rgb(
     0%,
     0%,

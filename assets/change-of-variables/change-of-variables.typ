@@ -56,18 +56,14 @@
   let x-origin = (plot-sep, 0)
   draw-axes(x-origin, "X")
 
-  rect(
-    (x-origin.at(0), x-origin.at(1)),
-    (x-origin.at(0) + 2, x-origin.at(1) + 2),
-    fill: red.transparentize(60%),
-    name: "x-square-1",
-  )
-  rect(
-    (x-origin.at(0), x-origin.at(1)),
-    (x-origin.at(0) + 2, x-origin.at(1) - 2),
-    fill: green.transparentize(60%),
-    name: "x-square-2",
-  )
+  for (idx, y, paint) in ((1, 2, red), (2, -2, green)) {
+    rect(
+      (x-origin.at(0), x-origin.at(1)),
+      (x-origin.at(0) + 2, x-origin.at(1) + y),
+      fill: paint.transparentize(60%),
+      name: "x-square-" + str(idx),
+    )
+  }
 
   let mid-x = plot-sep / 2
   line(
@@ -93,33 +89,38 @@
     padding: (top: 4pt),
   )
 
-  line(
-    "z-square.north-east",
-    "x-square-1.north-east",
-    ..arrow-style,
-    stroke: (dash: "dotted", paint: red),
-    name: "det-arrow-1",
-  )
-  content(
-    (rel: (0.2, -0.2), to: "det-arrow-1.mid"),
-    [#text(red, $det J_f^(-1) = mat(delim: "|", 2, 0; 0, 2)^(-1) = 1 / 4$)],
-    anchor: "north",
-    angle: 5deg,
-    name: "det-label-1",
-  )
-
-  line(
-    "z-square.north-east",
-    "x-square-2.south-east",
-    ..arrow-style,
-    stroke: (dash: "dotted", paint: green),
-    name: "det-arrow-2",
-  )
-  content(
-    (rel: (0.2, -0.3), to: "det-arrow-2.mid"),
-    [#text(green, $det J_f^(-1) = mat(delim: "|", 2, 0; 0, -2)^(-1) = -1 / 4$)],
-    anchor: "north",
-    angle: -19deg,
-    name: "det-label-2",
-  )
+  for spec in (
+    (
+      idx: 1,
+      target: "x-square-1.north-east",
+      paint: red,
+      rel: (0.2, -0.2),
+      angle: 5deg,
+      label: $det J_f^(-1) = mat(delim: "|", 2, 0; 0, 2)^(-1) = 1 / 4$,
+    ),
+    (
+      idx: 2,
+      target: "x-square-2.south-east",
+      paint: green,
+      rel: (0.2, -0.3),
+      angle: -19deg,
+      label: $det J_f^(-1) = mat(delim: "|", 2, 0; 0, -2)^(-1) = -1 / 4$,
+    ),
+  ) {
+    let arrow-name = "det-arrow-" + str(spec.idx)
+    line(
+      "z-square.north-east",
+      spec.target,
+      ..arrow-style,
+      stroke: (dash: "dotted", paint: spec.paint),
+      name: arrow-name,
+    )
+    content(
+      (rel: spec.rel, to: arrow-name + ".mid"),
+      text(spec.paint, spec.label),
+      anchor: "north",
+      angle: spec.angle,
+      name: "det-label-" + str(spec.idx),
+    )
+  }
 })

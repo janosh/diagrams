@@ -13,7 +13,7 @@ jobs:
     if: github.repository_owner == 'janosh' && github.event.pull_request.head.repo.fork == false
     steps:
       - name: Check out repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           # get full history to include BASE_REF commit where PR branched off
           fetch-depth: 0
@@ -61,10 +61,12 @@ jobs:
 
       - name: Push changes if any
         if: steps.render-diagrams.outcome == 'success'
+        env:
+          HEAD_REF: ${{ github.head_ref }}
         run: |
           git config user.name 'Janosh Riebesell'
           git config user.email janosh.riebesell@gmail.com
-          git checkout ${{ github.head_ref }}
+          git checkout "$HEAD_REF"
           git add -A -- 'assets/**/*.pdf' 'assets/**/*.svg' 'assets/**/*.png'
           if git diff --cached --quiet; then exit 0; fi
           git commit -m 'Update rendered diagram assets'
@@ -72,7 +74,7 @@ jobs:
           # rejected and the freshly rendered assets are thrown away, leaving the PR to
           # merge with stale images and nothing on main to notice
           for attempt in 1 2 3; do
-            git pull --rebase origin ${{ github.head_ref }} && git push && exit 0
+            git pull --rebase origin "$HEAD_REF" && git push && exit 0
             echo "push attempt $attempt failed, retrying"
             sleep 5
           done

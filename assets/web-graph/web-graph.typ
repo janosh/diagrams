@@ -63,19 +63,21 @@
     )
   }
 
-  curved("d2", "d0", (dx / 2, 1.0)) // top arc, arrow into d0
-  curved("d0", "d2", (dx / 2, -1.0)) // bottom arc, arrow into d2
-  curved("d1", "d2", (dx * .85, -dy * .85))
-  straight("d2", "d3")
-  straight("d6", "d3")
-  straight("d5", "d6")
-  curved("d3", "d4", (2.35 * dx, -dy * .9))
-  curved("d4", "d6", (3 * dx + .85, -dy / 2)) // right arc, arrow into d6
-  curved("d6", "d4", (3 * dx - .85, -dy / 2)) // left arc, arrow into d4
+  for (from, to, ctrl) in (
+    ("d2", "d0", (dx / 2, 1.0)),
+    ("d0", "d2", (dx / 2, -1.0)),
+    ("d1", "d2", (dx * .85, -dy * .85)),
+  ) { curved(from, to, ctrl) }
+  for (from, to) in (("d2", "d3"), ("d6", "d3"), ("d5", "d6")) {
+    straight(from, to)
+  }
+  for (from, to, ctrl) in (
+    ("d3", "d4", (2.35 * dx, -dy * .9)),
+    ("d4", "d6", (3 * dx + .85, -dy / 2)),
+    ("d6", "d4", (3 * dx - .85, -dy / 2)),
+  ) { curved(from, to, ctrl) }
 
-  self-loop("d1", 180deg)
-  self-loop("d2", 90deg)
-  self-loop("d3", 90deg)
-  self-loop("d5", 0deg)
-  self-loop("d6", 0deg)
+  for (name, angle) in (("d1", 180deg), ("d2", 90deg), ("d3", 90deg), ("d5", 0deg), ("d6", 0deg)) {
+    self-loop(name, angle)
+  }
 })

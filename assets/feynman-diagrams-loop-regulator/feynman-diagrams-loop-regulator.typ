@@ -61,22 +61,19 @@
 
       // External lines and vertices
       let ext-len = 2 * radius
-      vertex((-radius, 0), label: "g")
-      vertex((radius, 0), label: "g", rel-label: (0.2, -0.2))
-      line((-ext-len, 0), (-radius, 0), stroke: 1pt)
-      line((radius, 0), (ext-len, 0), stroke: 1pt)
-
-      // External momentum arrows
-      momentum-arrow(
-        (-ext-len + 0.2, 0.15),
-        (-radius - 0.2, 0.15),
-        (-1.5 * radius, 0.3),
-      )
-      momentum-arrow(
-        (radius + 0.2, 0.15),
-        (ext-len - 0.2, 0.15),
-        (1.5 * radius, 0.3),
-      )
+      for (x, rel-label) in ((-radius, (-0.2, -0.2)), (radius, (0.2, -0.2))) {
+        vertex((x, 0), label: "g", rel-label: rel-label)
+      }
+      for (start, end) in (
+        ((-ext-len, 0), (-radius, 0)),
+        ((radius, 0), (ext-len, 0)),
+      ) { line(start, end, stroke: 1pt) }
+      for (start, end, label-pos) in (
+        ((-ext-len + 0.2, 0.15), (-radius - 0.2, 0.15), (-1.5 * radius, 0.3)),
+        ((radius + 0.2, 0.15), (ext-len - 0.2, 0.15), (1.5 * radius, 0.3)),
+      ) {
+        momentum-arrow(start, end, label-pos)
+      }
     })
   }
 

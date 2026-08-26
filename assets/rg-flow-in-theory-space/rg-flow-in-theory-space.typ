@@ -16,17 +16,16 @@
   let r2 = (0.4 * unit, 0.1 * unit) // regulator 2
   let r3 = (0.5 * unit, -0.2 * unit) // regulator 3
 
-  line((0, 0), (0, 0.67 * unit), ..arrow-style, name: "lambda_1")
-  content("lambda_1.end", $lambda_1$, anchor: "south")
-
-  line((0, 0), (-0.5 * unit, -0.5 * unit), ..arrow-style, name: "lambda_2")
-  content("lambda_2.end", $lambda_2$, anchor: "north-east")
-
-  line((0, 0), (0.14 * unit, -0.67 * unit), ..arrow-style, name: "lambda_3")
-  content("lambda_3.end", $lambda_3$, anchor: "north")
-
-  line((0, 0), (0.83 * unit, -0.5 * unit), ..arrow-style, name: "lambda_4")
-  content("lambda_4.end", $lambda_4$, anchor: "north-west")
+  for (idx, end, anchor) in (
+    (1, (0, 0.67 * unit), "south"),
+    (2, (-0.5 * unit, -0.5 * unit), "north-east"),
+    (3, (0.14 * unit, -0.67 * unit), "north"),
+    (4, (0.83 * unit, -0.5 * unit), "north-west"),
+  ) {
+    let name = "lambda_" + str(idx)
+    line((0, 0), end, ..arrow-style, name: name)
+    content(name + ".end", $lambda_#idx$, anchor: anchor)
+  }
 
   line((0, 0), (unit, 0), ..arrow-style)
 
@@ -40,14 +39,14 @@
     ),
   )
 
-  hobby(ma1, r1, (0, -.8), qea, stroke: (dash: "dashed"))
-  content(r1, $R_1$, anchor: "north-west")
-
-  hobby(ma2, r2, (0, -1.7), qea, stroke: (dash: "dashed"))
-  content(r2, $R_2$, anchor: "north-west")
-
-  hobby(ma3, r3, qea, stroke: (dash: "dashed"))
-  content(r3, $R_3$, anchor: "north-west")
+  for (idx, points, regulator) in (
+    (1, (ma1, r1, (0, -.8), qea), r1),
+    (2, (ma2, r2, (0, -1.7), qea), r2),
+    (3, (ma3, r3, qea), r3),
+  ) {
+    hobby(..points, stroke: (dash: "dashed"))
+    content(regulator, $R_#idx$, anchor: "north-west")
+  }
 
   let dark-red = rgb("8B0000")
   circle(qea, radius: 0.1, fill: dark-red, stroke: none)
@@ -58,24 +57,12 @@
   )
 
   let dark-blue = rgb("00008B")
-  circle(ma1, radius: 0.1, fill: dark-blue, stroke: none)
-  content(
-    (rel: (0, 0.2), to: ma1),
-    text(fill: dark-blue)[$Gamma_(k=Lambda_1) = S_1$],
-    anchor: "south",
-  )
-
-  circle(ma2, radius: 0.1, fill: dark-blue, stroke: none)
-  content(
-    (rel: (0, 0.2), to: ma2),
-    text(fill: dark-blue)[$Gamma_(k=Lambda_2) = S_2$],
-    anchor: "south",
-  )
-
-  circle(ma3, radius: 0.1, fill: dark-blue, stroke: none)
-  content(
-    (rel: (0, 0.2), to: ma3),
-    text(fill: dark-blue)[$Gamma_(k=Lambda_3) = S_3$],
-    anchor: "south",
-  )
+  for (idx, pos) in ((1, ma1), (2, ma2), (3, ma3)) {
+    circle(pos, radius: 0.1, fill: dark-blue, stroke: none)
+    content(
+      (rel: (0, 0.2), to: pos),
+      text(fill: dark-blue)[$Gamma_(k=Lambda_#idx) = S_#idx$],
+      anchor: "south",
+    )
+  }
 })

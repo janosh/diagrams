@@ -1,6 +1,8 @@
 import yaml from '@rollup/plugin-yaml'
+import adapter from '@sveltejs/adapter-static'
 import { enhancedImages } from '@sveltejs/enhanced-img'
 import { sveltekit } from '@sveltejs/kit/vite'
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
 import { load as load_yaml } from 'js-yaml'
 import { compile } from 'mdsvex'
 import { globSync, readFileSync } from 'node:fs'
@@ -8,6 +10,14 @@ import { basename, dirname, resolve } from 'node:path'
 import { katex_preprocess } from 'svelte-widgets/katex'
 import { make_config } from 'svelte-widgets/vite-config'
 import { defineConfig } from 'vite-plus'
+
+// passed inline to sveltekit() (Kit >= 2.62) so no separate svelte.config.ts is needed;
+// kit options (adapter, alias) sit at the top level rather than under `kit`
+const svelte_config = {
+  preprocess: vitePreprocess(),
+  adapter: adapter(),
+  alias: { $root: `.`, $assets: `../assets` },
+}
 
 const DESCRIPTIONS_ID = `virtual:descriptions`
 const RESOLVED_ID = `\0${DESCRIPTIONS_ID}`
@@ -68,7 +78,7 @@ export default defineConfig({
       },
     },
     enhancedImages(),
-    sveltekit(),
+    sveltekit(svelte_config),
     yaml(),
   ],
   server: {

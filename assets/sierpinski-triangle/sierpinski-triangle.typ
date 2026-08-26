@@ -72,6 +72,11 @@
 
       // Legend
       let color-square-size = 4pt
+      let legend-items = (
+        (rgb(200, 50, 50), [Au(100)]),
+        (rgb(255, 230, 100), [Fe/C3PC]),
+        (rgb(200, 140, 0), [BPyB]),
+      )
 
       place(
         block(
@@ -83,29 +88,17 @@
               columns: (color-square-size, auto),
               column-gutter: 2.5pt,
               row-gutter: 3pt,
-              rect(
-                width: color-square-size,
-                height: color-square-size,
-                fill: rgb(200, 50, 50),
-                radius: 1pt,
-              ),
-              [Au(100)],
-
-              rect(
-                width: color-square-size,
-                height: color-square-size,
-                fill: rgb(255, 230, 100),
-                radius: 1pt,
-              ),
-              [Fe/C3PC],
-
-              rect(
-                width: color-square-size,
-                height: color-square-size,
-                fill: rgb(200, 140, 0),
-                radius: 1pt,
-              ),
-              [BPyB],
+              ..legend-items
+                .map(((fill, label)) => (
+                  rect(
+                    width: color-square-size,
+                    height: color-square-size,
+                    fill: fill,
+                    radius: 1pt,
+                  ),
+                  label,
+                ))
+                .flatten(),
             )
           },
         ),

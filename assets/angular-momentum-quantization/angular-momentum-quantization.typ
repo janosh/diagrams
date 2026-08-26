@@ -9,9 +9,9 @@
 
 #canvas({
   let zmax = 2.5
-  let l = 2
-  let h = 0.85 // Spacing between quantized levels
-  let R = calc.sqrt(l * (l + 1)) * h // total angular momentum radius
+  let angular-number = 2
+  let level-spacing = 0.85
+  let angular-radius = calc.sqrt(angular-number * (angular-number + 1)) * level-spacing
 
   let arrow-style = (mark: (end: "stealth", fill: black))
   let vector-style = (
@@ -19,48 +19,45 @@
     stroke: green-color + 1.1pt,
   )
 
-  // Draw axes - z-axis first (to position things relative to it)
-  line(
-    (0, -2.7 * h),
-    (0, zmax),
-    stroke: black + 1pt,
-    ..arrow-style,
-    name: "z-axis",
+  let axes = (
+    (
+      start: (0, -2.7 * level-spacing),
+      end: (0, zmax),
+      name: "z-axis",
+      label: $L_z$,
+      label-args: (anchor: "west", padding: (left: 3pt), size: 13pt),
+    ),
+    (
+      start: (0, 0),
+      end: (zmax, 0),
+      name: "y-axis",
+      label: $L_y$,
+      label-args: (anchor: "south", padding: (bottom: 3pt), size: 13pt),
+    ),
+    (
+      start: (0, 0),
+      end: (-0.62 * zmax, -0.55 * zmax),
+      name: "x-axis",
+      label: $L_x$,
+      label-args: (anchor: "south", padding: (bottom: 6pt, left: -9pt), size: 13pt),
+    ),
   )
-  line((0, 0), (zmax, 0), stroke: black + 1pt, ..arrow-style, name: "y-axis")
-  line(
-    (0, 0),
-    (-0.62 * zmax, -0.55 * zmax),
-    stroke: black + 1pt,
-    ..arrow-style,
-    name: "x-axis",
-  )
-
-  content("z-axis.end", $L_z$, anchor: "west", padding: (left: 3pt), size: 13pt)
-  content(
-    "y-axis.end",
-    $L_y$,
-    anchor: "south",
-    padding: (bottom: 3pt),
-    size: 13pt,
-  )
-  content(
-    "x-axis.end",
-    $L_x$,
-    anchor: "south",
-    padding: (bottom: 6pt, left: -9pt),
-    size: 13pt,
-  )
+  for axis in axes {
+    line(axis.start, axis.end, stroke: black + 1pt, ..arrow-style, name: axis.name)
+  }
+  for axis in axes {
+    content(axis.name + ".end", axis.label, ..axis.label-args)
+  }
 
   // Draw blue dashed ellipse to the left of the z-axis (matching target)
   // This needs to be fully to the left of the z-axis
-  let ellipse-center-x = -R
-  let ellipse-center-y = h // Position at m=1 level
-  let ellipse-height = 0.55 * h
+  let ellipse-center-x = -angular-radius
+  let ellipse-center-y = level-spacing // Position at m=1 level
+  let ellipse-height = 0.55 * level-spacing
 
   arc(
     (ellipse-center-x, ellipse-center-y),
-    radius: (R * 0.955, ellipse-height),
+    radius: (angular-radius * 0.955, ellipse-height),
     start: 0deg,
     stop: 360deg,
     stroke: (dash: "dashed", paint: blue-color, thickness: 0.6pt),
@@ -78,23 +75,35 @@
     name: "origin",
   ))
 
-  for m in range(-l, l + 1) {
+  for magnetic-number in range(-angular-number, angular-number + 1) {
     // Calculate coordinates
-    let y = m * h
-    let rx = calc.sqrt(R * R - (m * h) * (m * h))
+    let y-pos = magnetic-number * level-spacing
+    let radial-component = calc.sqrt(
+      angular-radius * angular-radius - calc.pow(magnetic-number * level-spacing, 2),
+    )
 
     // Draw blue horizontal line from z-axis to endpoint
-    line((0, y), (rx, y), stroke: blue-color + 0.6pt, name: "level-" + str(m))
+    line(
+      (0, y-pos),
+      (radial-component, y-pos),
+      stroke: blue-color + 0.6pt,
+      name: "level-" + str(magnetic-number),
+    )
 
     content(
-      (0, y),
-      $#m thin ħ$,
+      (0, y-pos),
+      $#magnetic-number thin ħ$,
       anchor: "east",
       padding: (right: 6pt),
       size: 15pt,
     )
 
-    line((0, 0), (rx, y), ..vector-style, name: "vector-" + str(m))
+    line(
+      (0, 0),
+      (radial-component, y-pos),
+      ..vector-style,
+      name: "vector-" + str(magnetic-number),
+    )
   }
 
   // Draw the green half-circle (after vectors to ensure it aligns)
@@ -102,14 +111,14 @@
     (0, 0),
     start: 90deg,
     stop: -90deg,
-    radius: R,
+    radius: angular-radius,
     stroke: green-color + .8pt,
     name: "L-circle",
     anchor: "origin",
   )
 
-  let L_position_x = 0.95 * R
-  let L_position_y = 1.45 * h // Slightly above the m=1 level
+  let L_position_x = 0.95 * angular-radius
+  let L_position_y = 1.45 * level-spacing // Slightly above the m=1 level
 
   content(
     (L_position_x, L_position_y),

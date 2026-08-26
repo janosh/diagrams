@@ -31,38 +31,25 @@
   )
 
   let ext-len = 2.2 * radius
-
-  // Left external line
-  circle("loop.25%", radius: 2pt, fill: black, name: "left-vertex")
-  line((-ext-len, 0), "left-vertex", stroke: 1pt, name: "left-line")
-
-  // Right external line
-  circle("loop.75%", radius: 2pt, fill: black, name: "right-vertex")
-  line("right-vertex", (ext-len, 0), stroke: 1pt, name: "right-line")
-
-  line(
-    (rel: (0.15, 0.15), to: "left-line.start"),
-    (rel: (-0.15, 0.15), to: "left-line.end"),
-    ..arrow-style,
-    name: "left-momentum",
+  let external-lines = (
+    (side: "left", vertex: "loop.25%", ends: ((-ext-len, 0), "left-vertex")),
+    (side: "right", vertex: "loop.75%", ends: ("right-vertex", (ext-len, 0))),
   )
-  content(
-    "left-momentum",
-    text(fill: dark-blue)[$q_0$],
-    anchor: "south",
-    padding: 3pt,
-  )
-
-  line(
-    (rel: (0.15, 0.15), to: "right-line.start"),
-    (rel: (-0.15, 0.15), to: "right-line.end"),
-    ..arrow-style,
-    name: "right-momentum",
-  )
-  content(
-    "right-momentum",
-    text(fill: dark-blue)[$q_0$],
-    anchor: "south",
-    padding: 3pt,
-  )
+  for spec in external-lines {
+    circle(spec.vertex, radius: 2pt, fill: black, name: spec.side + "-vertex")
+  }
+  for spec in external-lines {
+    line(..spec.ends, stroke: 1pt, name: spec.side + "-line")
+  }
+  for spec in external-lines {
+    let line-name = spec.side + "-line"
+    let momentum-name = spec.side + "-momentum"
+    line(
+      (rel: (0.15, 0.15), to: line-name + ".start"),
+      (rel: (-0.15, 0.15), to: line-name + ".end"),
+      ..arrow-style,
+      name: momentum-name,
+    )
+    content(momentum-name, text(fill: dark-blue)[$q_0$], anchor: "south", padding: 3pt)
+  }
 })

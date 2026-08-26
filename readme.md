@@ -10,7 +10,7 @@
 
 [![155 with Typst](https://img.shields.io/badge/155%20with-Typst-1f425f.svg?logo=typst)](https://diagrams.janosh.dev?tag=cetz)
 [![133 with LaTeX](https://img.shields.io/badge/133%20with-LaTeX-1f425f.svg?logo=latex)](https://diagrams.janosh.dev?tag=tikz)
-[![Site](https://github.com/janosh/diagrams/actions/workflows/gh-pages.yml/badge.svg)](https://github.com/janosh/diagrams/actions/workflows/gh-pages.yml)
+[![Site](https://github.com/janosh/diagrams/actions/workflows/ci.yml/badge.svg)](https://github.com/janosh/diagrams/actions/workflows/ci.yml)
 [![Pull Requests Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?logo=github)](https://github.com/janosh/diagrams/pulls)
 [![DOI](https://img.shields.io/badge/10.5281%2Fzenodo.7486911-blue?logo=doi&logoColor=white)](https://zenodo.org/badge/latestdoi/286220365)
 

@@ -10,7 +10,7 @@
 
 <script lang="ts">
   import { CopyButton, Icon } from 'svelte-widgets'
-  import { GitHub, LaTeXFile, Typst } from 'svelte-widgets/icons'
+  import { GitHub, LaTeXFile, Overleaf, Typst } from 'svelte-widgets/icons'
   import type { HTMLAttributes } from 'svelte/elements'
 
   let {
@@ -43,19 +43,27 @@
   {/if}
   <aside>
     {#if repo_link}
-      <a href={repo_link} target="_blank" rel="noreferrer noopener">
-        <button>
-          <Icon icon={GitHub} />
-        </button>
+      <a
+        href={repo_link}
+        target="_blank"
+        rel="noreferrer noopener"
+        title="View source on GitHub"
+        aria-label="View source on GitHub"
+      >
+        <Icon icon={GitHub} />
       </a>
     {/if}
     <!-- https://github.com/typst/webapp-issues/issues/516 tracks Typst web app API for opening code files -->
     {#if tex_file_uri}
       {@const href = `https://overleaf.com/docs?snip_uri=${tex_file_uri}`}
-      <a {href} target="_blank" rel="noreferrer noopener">
-        <button>
-          <img src="/overleaf.svg" alt="Overleaf Logo" height="16" />
-        </button>
+      <a
+        {href}
+        target="_blank"
+        rel="noreferrer noopener"
+        title="Open in Overleaf"
+        aria-label="Open in Overleaf"
+      >
+        <Icon icon={Overleaf} />
       </a>
     {/if}
     <CopyButton content={code} />
@@ -92,23 +100,24 @@
     display: flex;
     gap: 1ex;
   }
-  aside a button {
-    height: 100%;
-  }
   pre {
     padding: 1em;
     background: var(--pre-bg);
     overflow-x: scroll;
     border-radius: 3pt;
   }
-  button {
-    display: inline-flex;
-    gap: 3pt;
+  aside a,
+  aside :global([data-sms-copy]) {
     place-items: center;
     background: var(--button-bg);
     border: none;
     border-radius: 3pt;
     padding: 3pt 1ex;
+    color: var(--text-color);
+    font: inherit;
     cursor: pointer;
+  }
+  aside a {
+    display: inline-flex;
   }
 </style>

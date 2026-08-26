@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: typst-community/setup-typst@v5
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Install site dependencies
+        # pinned pnpm via corepack; --ignore-scripts skips sharp's build script
+        # (it ships prebuilt @img binaries) so pnpm doesn't fail on it
+        run: corepack enable && pnpm install --ignore-scripts
+        working-directory: site
+      - name: Run prek
+        uses: j178/prek-action@v3.0.0
+
+  link-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Discover broken links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          # increase max-redirects needed for some journal links
+          # ${...} becomes $%7B...%7D once lychee percent-encodes the extracted URL
+          args: --accept 100..=103,200..=299,403,429,500,503 --max-redirects 10 --timeout 30 --exclude-all-private --exclude '\$(\{.*\}|%7B.*%7D)' --exclude 'chemicalaid\.com' --exclude 'janosh\.github\.io/diagrams' --exclude 'diagrams\.janosh\.dev' --exclude 'arxiv\.org' --exclude 'sciencedirect\.com' --exclude 'rolandwanner\.com' --exclude 'tikz\.dev' -- ./**/*.{typ,tex,md,svelte,ts,yml}
+
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - uses: actions/cache@v6
+        with:
+          path: site/node_modules/.cache/imagetools
+          key: imagetools-${{ hashFiles('assets/**/*.png') }}
+          restore-keys: imagetools-
+      - name: Install site dependencies
+        run: corepack enable && pnpm install --ignore-scripts
+        working-directory: site
+      - run: pnpm exec vp build
+        working-directory: site
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: site/build
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v5
