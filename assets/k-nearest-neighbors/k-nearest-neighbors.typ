@@ -8,7 +8,7 @@
   n-star(pos, 5, radius: size, inner-radius: .4 * size, fill: fill, stroke: .5pt, show-inner: false)
 }
 
-#let triangle(pos, size: 0.275, fill: green) = {
+#let triangle(pos, fill: green) = {
   polygon(
     pos,
     3,
@@ -24,43 +24,29 @@
   let arrow-style = (mark: (end: "stealth", fill: black, scale: 0.7))
   let axis-length = 6
 
-  line(
-    (0, 0),
-    (axis-length, 0),
-    ..arrow-style,
-    name: "x-axis",
-  )
-  content(
-    (rel: (-0.1, 0.2), to: "x-axis.end"),
-    [$x$ axis],
-    anchor: "south-east",
-  )
+  for (end, name, label, rel, anchor) in (
+    ((axis-length, 0), "x-axis", [$x$ axis], (-0.1, 0.2), "south-east"),
+    ((0, axis-length), "y-axis", [$y$ axis], (0.2, -0.1), "north-west"),
+  ) {
+    line((0, 0), end, ..arrow-style, name: name)
+    content((rel: rel, to: name + ".end"), label, anchor: anchor)
+  }
 
-  line((0, 0), (0, axis-length), ..arrow-style, name: "y-axis")
-  content(
-    (rel: (0.2, -0.1), to: "y-axis.end"),
-    [$y$ axis],
-    anchor: "north-west",
-  )
-
-  // Draw Class A (red stars)
-  draw-star((1.6, 4.0))
-  draw-star((1.3, 3.5))
-  draw-star((2.3, 3.8))
-  draw-star((1.8, 3.0))
-  draw-star((1.6, 2.7))
-  draw-star((2.5, 2.5))
-  draw-star((2, 2.2))
-
-  // Draw Class B (green triangles)
-  triangle((4.2, 3.5))
-  triangle((3.6, 2.8))
-  triangle((3.4, 2.2))
-  triangle((4.0, 2.2))
-  triangle((5.2, 2.5))
-  triangle((4.7, 3.5))
-  triangle((4, 1.5))
-  triangle((4.7, 1.8))
+  for pos in ((1.6, 4.0), (1.3, 3.5), (2.3, 3.8), (1.8, 3.0), (1.6, 2.7), (2.5, 2.5), (2, 2.2)) {
+    draw-star(pos)
+  }
+  for pos in (
+    (4.2, 3.5),
+    (3.6, 2.8),
+    (3.4, 2.2),
+    (4.0, 2.2),
+    (5.2, 2.5),
+    (4.7, 3.5),
+    (4, 1.5),
+    (4.7, 1.8),
+  ) {
+    triangle(pos)
+  }
 
   // Draw the new example to classify (yellow square with question mark)
   content(
@@ -74,21 +60,11 @@
     name: "new-example",
   )
 
-  circle(
-    "new-example.center",
-    radius: 0.8,
-    stroke: (dash: "dashed"),
-    name: "k3-circle",
-  )
-  content((rel: (0, -0.3), to: "k3-circle.south"), $k = 3$, anchor: "north")
-
-  circle(
-    "new-example.center",
-    radius: 2.0,
-    stroke: (dash: "dashed"),
-    name: "k7-circle",
-  )
-  content((rel: (0, -0.3), to: "k7-circle.south"), $k = 7$, anchor: "north")
+  for (neighbors, radius) in ((3, 0.8), (7, 2.0)) {
+    let name = "k" + str(neighbors) + "-circle"
+    circle("new-example.center", radius: radius, stroke: (dash: "dashed"), name: name)
+    content((rel: (0, -0.3), to: name + ".south"), $k = #neighbors$, anchor: "north")
+  }
 
   content(
     (rel: (-.6, 4.8), to: "x-axis.end"),

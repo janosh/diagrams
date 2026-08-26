@@ -6,10 +6,7 @@
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
-// Fermi-Dirac distribution function
-#let n-F(x, beta, mu: 1) = {
-  1 / (calc.exp(beta * (x - mu)) + 1)
-}
+#let n-F(x, beta, mu: 1) = 1 / (calc.exp(beta * (x - mu)) + 1)
 
 #canvas({
   style-axes(x-label: (anchor: "north-east"), y-label: (anchor: "south-west"))
@@ -31,23 +28,15 @@
     {
       let chem-pot = 1
 
-      // T = μ/5k_B (red curve)
-      plot.add(
-        style: (stroke: series(0)),
-        domain: (0, 2.3),
-        samples: 150,
-        x => n-F(x, 5),
-        label: $k_"B" T = 1 / 5 mu$,
-      )
-
-      // T = μ/25k_B (orange curve)
-      plot.add(
-        style: (stroke: series(1)),
-        domain: (0, 2.3),
-        samples: 150,
-        x => n-F(x, 25),
-        label: $k_"B" T = 1 / 25 mu$,
-      )
+      for (idx, beta) in (5, 25).enumerate() {
+        plot.add(
+          style: (stroke: series(idx)),
+          domain: (0, 2.3),
+          samples: 150,
+          x => n-F(x, beta),
+          label: $k_"B" T = 1 / #beta mu$,
+        )
+      }
 
       // T = 0 (blue step function)
       let points = ((0, 1), (chem-pot, 1), (chem-pot, 0), (2.3, 0))
@@ -67,9 +56,5 @@
     },
   )
 
-  content(
-    (3.5, 6.5),
-    $prop 1 / beta$,
-    anchor: "south",
-  )
+  content((3.5, 6.5), $prop 1 / beta$, anchor: "south")
 })

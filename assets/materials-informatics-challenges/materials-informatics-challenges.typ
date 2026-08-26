@@ -26,9 +26,7 @@
 
 #let challenge-item(center, base-radius, angle, txt, center-name, name) = {
   // Adjust distance based on text length - continuous scaling
-  let text-length = txt.len()
-  let extra-distance = base-offset + text-length * length-factor
-  let actual-radius = base-radius + extra-distance
+  let actual-radius = base-radius + base-offset + txt.len() * length-factor
 
   let pos = (
     center.at(0) + calc.cos(angle) * actual-radius,
@@ -119,39 +117,25 @@
     circles.at(2),
   )
 
-  // Data → Descriptor (bend down)
-  let s1 = (
-    data-pos.at(0) + calc.cos(-70deg) * main-r,
-    data-pos.at(1) + calc.sin(-70deg) * main-r,
-  )
-  let e1 = (
-    desc-pos.at(0) + calc.cos(-110deg) * main-r,
-    desc-pos.at(1) + calc.sin(-110deg) * main-r,
-  )
-  bezier(
-    s1,
-    e1,
-    (s1.at(0) + arrow-offset, s1.at(1) - arrow-offset),
-    (e1.at(0) - arrow-offset, e1.at(1) - arrow-offset),
-    stroke: arrow-stroke + item-border,
-    mark: (end: "stealth", scale: arrow-scale, fill: item-border),
-  )
-
-  // Descriptor → Model (bend up)
-  let s2 = (
-    desc-pos.at(0) + calc.cos(70deg) * main-r,
-    desc-pos.at(1) + calc.sin(70deg) * main-r,
-  )
-  let e2 = (
-    model-pos.at(0) + calc.cos(110deg) * main-r,
-    model-pos.at(1) + calc.sin(110deg) * main-r,
-  )
-  bezier(
-    s2,
-    e2,
-    (s2.at(0) + arrow-offset, s2.at(1) + arrow-offset),
-    (e2.at(0) - arrow-offset, e2.at(1) + arrow-offset),
-    stroke: arrow-stroke + item-border,
-    mark: (end: "stealth", scale: arrow-scale, fill: item-border),
-  )
+  for (start-center, end-center, direction) in (
+    (data-pos, desc-pos, -1),
+    (desc-pos, model-pos, 1),
+  ) {
+    let start = (
+      start-center.at(0) + calc.cos(direction * 70deg) * main-r,
+      start-center.at(1) + calc.sin(direction * 70deg) * main-r,
+    )
+    let end = (
+      end-center.at(0) + calc.cos(direction * 110deg) * main-r,
+      end-center.at(1) + calc.sin(direction * 110deg) * main-r,
+    )
+    bezier(
+      start,
+      end,
+      (start.at(0) + arrow-offset, start.at(1) + direction * arrow-offset),
+      (end.at(0) - arrow-offset, end.at(1) + direction * arrow-offset),
+      stroke: arrow-stroke + item-border,
+      mark: (end: "stealth", scale: arrow-scale, fill: item-border),
+    )
+  }
 })

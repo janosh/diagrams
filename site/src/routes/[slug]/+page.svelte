@@ -2,8 +2,17 @@
   import { CodeBlock, type Diagram, DiagramCard, Tags } from '$lib'
   import { filters } from '$lib/state.svelte'
   import { homepage, repository } from '$root/package.json'
-  import { Icon, PrevNext } from 'svelte-widgets'
-  import { Code, Download, LaTeX, Typst } from 'svelte-widgets/icons'
+  import { FullscreenButton, Icon, PrevNext, Tabs, type IconData } from 'svelte-widgets'
+  import {
+    Code,
+    Download,
+    FilePDF,
+    FilePNG,
+    FileXML,
+    HomeOutline,
+    LaTeX,
+    Typst,
+  } from 'svelte-widgets/icons'
 
   let { data } = $props()
   let {
@@ -18,16 +27,17 @@
     url,
     downloads,
   } = $derived(data.diagram)
-  const download_labels: Record<string, string> = {
-    [`.png`]: `PNG`,
-    [`-hd.png`]: `PNG (HD)`,
-    [`.pdf`]: `PDF`,
-    [`.svg`]: `SVG`,
+  const download_options: Record<string, { icon: IconData; label: string }> = {
+    [`.png`]: { icon: FilePNG, label: `PNG` },
+    [`-hd.png`]: { icon: FilePNG, label: `PNG (HD)` },
+    [`.pdf`]: { icon: FilePDF, label: `PDF` },
+    [`.svg`]: { icon: FileXML, label: `SVG` },
   }
   const code_tabs = [
-    [`typst`, `Typst`, Typst],
-    [`tikz`, `TikZ`, LaTeX],
+    { label: `Typst`, value: `typst` },
+    { label: `TikZ`, value: `tikz` },
   ] as const
+  const code_tab_icons = { tikz: LaTeX, typst: Typst }
 
   // production serves downloads from GitHub so we don't re-upload assets with every build
   let base_uri = $derived(`${repository}/raw/refs/heads/main/assets/${slug}/${slug}`)
@@ -43,6 +53,7 @@
 
   // Prefer Typst when both Typst (CeTZ) and TeX (TikZ) sources exist
   let code_tab = $state<`typst` | `tikz`>(`typst`)
+  let diagram_wrapper = $state<HTMLDivElement>()
   let selected_source = $derived.by(() => {
     if (code.typst && (code_tab === `typst` || !code.tex)) {
       return { code: code.typst, ext: `typ` as const }
@@ -64,7 +75,9 @@
   <meta name="twitter:card" content="summary" />
 </svelte:head>
 
-<a href="." class="large-link">&laquo; home</a>
+<a href="." class="large-link" data-sveltekit-preload-code="eager">
+  <Icon icon={HomeOutline} /> home
+</a>
 <h1>{title}</h1>
 
 {#if creator || url}
@@ -91,15 +104,25 @@
   {/if}
 </section>
 
-<enhanced:img src={images.hd} alt={title} class="diagram" />
+<div class="diagram-wrapper" bind:this={diagram_wrapper}>
+  <enhanced:img src={images.hd} alt={title} class="diagram" />
+  <FullscreenButton
+    wrapper={diagram_wrapper}
+    placement="corner"
+    bg_css_var="--page-bg"
+    style="border: 0; font-size: 18pt; transition: color 0.2s"
+  />
+</div>
 
 <h2>
   <Icon icon={Download} /> Download
 </h2>
 <section>
   {#each downloads as ext (ext)}
+    {@const { icon, label } = download_options[ext]}
     <a href="{base_uri}{ext}" target="_blank" rel="noreferrer" class="large-link">
-      {download_labels[ext]}
+      <Icon {icon} />
+      {label}
     </a>
   {/each}
 </section>
@@ -108,20 +131,22 @@
   <Icon icon={Code} /> Code
 </h2>
 {#if code.typst && code.tex}
-  <div class="code-tabs" role="group" aria-label="Code language">
-    {#each code_tabs as [id, label, tab_icon] (id)}
-      <button
-        type="button"
-        class:active={code_tab === id}
-        aria-pressed={code_tab === id}
-        onclick={() => (code_tab = id)}
-      >
-        <Icon icon={tab_icon} />{label}
-      </button>
-    {/each}
-  </div>
-{/if}
-{#if selected_source}
+  <Tabs items={code_tabs} bind:value={code_tab} label="Code language" class="code-tabs">
+    {#snippet tab({ item })}
+      <Icon icon={code_tab_icons[item.value]} />{item.label}
+    {/snippet}
+    {#snippet panel({ selected })}
+      {#if selected && selected_source}
+        <CodeBlock
+          code={selected_source.code}
+          title="{slug}.{selected_source.ext}"
+          repo_link={`${repository}/blob/main/assets/${slug}/${slug}.${selected_source.ext}`}
+          tex_file_uri={selected_source.ext === `tex` ? `${base_uri}.tex` : ``}
+        />
+      {/if}
+    {/snippet}
+  </Tabs>
+{:else if selected_source}
   <CodeBlock
     code={selected_source.code}
     title="{slug}.{selected_source.ext}"
@@ -181,19 +206,45 @@
   section.description :global(ul) {
     text-align: left;
   }
+  .diagram-wrapper {
+    position: relative;
+    width: fit-content;
+    max-width: min(850px, 90vw);
+    margin: 2em auto;
+    --fullscreen-btn-bg: transparent;
+    --fullscreen-btn-hover-bg: transparent;
+    --fullscreen-btn-color: var(--text-secondary);
+    --fullscreen-btn-padding: 4pt;
+  }
+  :global(.diagram-wrapper .fullscreen-btn:hover) {
+    color: var(--link-hover);
+  }
   .diagram {
-    background-color: light-dark(transparent, rgba(255, 255, 255, 0.3));
+    background-color: var(--diagram-bg);
     padding: 1em;
     box-sizing: border-box;
-    max-width: min(850px, 90vw);
+    max-width: 100%;
     height: auto;
     max-height: 90vh;
     object-fit: scale-down;
-    margin: 2em auto;
     border-radius: 1ex;
     display: block;
   }
+  .diagram-wrapper:fullscreen {
+    display: grid;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    margin: 0;
+    place-items: center;
+  }
+  .diagram-wrapper:fullscreen .diagram {
+    max-height: 100%;
+  }
   a.large-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
     background: var(--nav-bg);
     padding: 0 7pt;
     border-radius: 4pt;
@@ -206,16 +257,12 @@
   a.large-link:hover {
     background: var(--card-bg);
   }
-  a.large-link[target='_blank'] {
-    display: inline-flex;
-    place-items: center;
-  }
   a.large-link[href='.'] {
     position: absolute;
     top: 2em;
     left: 2em;
   }
-  .code-tabs {
+  :global(.code-tabs .tabs-list) {
     display: flex;
     max-width: fit-content;
     margin: -0.5em auto 0;
@@ -224,7 +271,7 @@
     background: var(--nav-bg);
     border: 1px solid var(--border);
   }
-  .code-tabs button {
+  :global(.code-tabs .tabs-tab) {
     display: inline-flex;
     place-items: center;
     gap: 2pt;
@@ -240,14 +287,14 @@
       color 0.2s,
       background-color 0.2s;
   }
-  .code-tabs button:hover {
+  :global(.code-tabs .tabs-tab:hover) {
     color: var(--text-color);
   }
-  .code-tabs button:focus-visible {
+  :global(.code-tabs .tabs-tab:focus-visible) {
     outline: 2px solid var(--link-color);
     outline-offset: 2px;
   }
-  .code-tabs button.active {
+  :global(.code-tabs .tabs-tab[data-state='active']) {
     color: var(--text-color);
     background: var(--button-bg);
   }

@@ -6,60 +6,50 @@
 #canvas({
   let node-sep = 2.5 // Horizontal separation between nodes
   let arrow-style = (mark: (end: "stealth", fill: black, scale: 0.5))
+  let box-node(pos, body, name, fill: none, padding: (0, 3pt)) = content(
+    pos,
+    body,
+    fill: fill,
+    name: name,
+    frame: "rect",
+    padding: padding,
+    stroke: none,
+  )
 
-  content(
+  box-node(
     (0, 0),
     [layer 1],
+    "l1",
     fill: rgb("#ffd699"),
-    name: "l1",
-    frame: "rect",
     padding: (3pt, 6pt),
-    stroke: none,
   ) // orange!50
-  content(
-    (node-sep, 0),
-    $a(arrow(x))$,
-    name: "act1",
-    frame: "rect",
-    padding: (0, 3pt),
-    stroke: none,
-  )
-  content((rel: (0, -0.3), to: "act1.south"), "activation")
-  content(
+  box-node((node-sep, 0), $a(arrow(x))$, "act1")
+  box-node(
     (2 * node-sep, 0),
     [layer 2],
+    "l2",
     fill: rgb("#7dc3c3"),
-    name: "l2",
-    frame: "rect",
     padding: (3pt, 6pt),
-    stroke: none,
   ) // teal!50
-  content(
-    (3 * node-sep, 0),
-    text(size: 1.8em)[$plus.o$],
-    name: "add",
-  )
+  content((3 * node-sep, 0), text(size: 1.8em)[$plus.o$], name: "add")
   content((rel: (0, -0.3), to: "add.south"), "add")
-  content(
-    (3.75 * node-sep, 0),
-    $a(arrow(x))$,
-    name: "act2",
-    frame: "rect",
-    padding: (0, 3pt),
-    stroke: none,
-  )
-  content((rel: (0, -0.3), to: "act2.south"), "activation")
+  box-node((3.75 * node-sep, 0), $a(arrow(x))$, "act2")
+  for name in ("act1", "act2") {
+    content((rel: (0, -0.3), to: name + ".south"), "activation")
+  }
 
-  line("l1", "act1", ..arrow-style)
-  line("act1", "l2", ..arrow-style)
-  line("l2", "add.west", ..arrow-style)
-  line("add.east", "act2", ..arrow-style)
+  for (start, end) in (
+    ("l1", "act1"),
+    ("act1", "l2"),
+    ("l2", "add.west"),
+    ("add.east", "act2"),
+  ) { line(start, end, ..arrow-style) }
 
   line(
     (rel: (-2, 0), to: "l1"),
     "l1",
     name: "input",
-    mark: (end: "stealth", fill: black, scale: 0.5),
+    ..arrow-style,
   )
   content((rel: (0, -0.2), to: "input.10%"), $arrow(x)$)
 

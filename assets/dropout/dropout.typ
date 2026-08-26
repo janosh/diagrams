@@ -21,13 +21,17 @@
 
   let connect-layers = fully-connect.with(..arrow-style)
 
-  // Left network (fully connected)
-  draw-layer(0, 5, prefix: "i") // Input layer
-  draw-layer(spacing.layer, 5, prefix: "h1") // First hidden layer
-  draw-layer(2 * spacing.layer, 5, prefix: "h2") // Second hidden layer
-
-  circle((3 * spacing.layer, 2 * spacing.node), radius: 0.3, stroke: node-stroke, name: "o1")
-  circle((3 * spacing.layer, 4 * spacing.node), radius: 0.3, stroke: node-stroke, name: "o2")
+  for (layer-idx, prefix) in ((0, "i"), (1, "h1"), (2, "h2")) {
+    draw-layer(layer-idx * spacing.layer, 5, prefix: prefix)
+  }
+  for (output-idx, y-idx) in ((1, 2), (2, 4)) {
+    circle(
+      (3 * spacing.layer, y-idx * spacing.node),
+      radius: 0.3,
+      stroke: node-stroke,
+      name: "o" + str(output-idx),
+    )
+  }
 
   // Connect all layers
   connect-layers("i", "h1", 5, 5)
@@ -53,30 +57,21 @@
     padding: 3pt,
   )
 
-  // Right network (with dropout)
-  draw-layer(mid-x + spacing.layer, 5, prefix: "di")
-  draw-layer(mid-x + 2 * spacing.layer, 5, prefix: "dh1")
-  draw-layer(mid-x + 3 * spacing.layer, 5, prefix: "dh2")
-
-  circle(
-    (mid-x + 4 * spacing.layer, 2 * spacing.node),
-    radius: 0.3,
-    name: "do1",
-  )
-  circle(
-    (mid-x + 4 * spacing.layer, 4 * spacing.node),
-    radius: 0.3,
-    name: "do2",
-  )
+  for (layer-idx, prefix) in ((1, "di"), (2, "dh1"), (3, "dh2")) {
+    draw-layer(mid-x + layer-idx * spacing.layer, 5, prefix: prefix)
+  }
+  for (output-idx, y-idx) in ((1, 2), (2, 4)) {
+    circle(
+      (mid-x + 4 * spacing.layer, y-idx * spacing.node),
+      radius: 0.3,
+      name: "do" + str(output-idx),
+    )
+  }
 
   let x-style = (fill: red, weight: "bold", size: 4em, baseline: -4pt)
-  content("di1", text(..x-style)[×])
-  content("di3", text(..x-style)[×])
-  content("dh11", text(..x-style)[×])
-  content("dh13", text(..x-style)[×])
-  content("dh14", text(..x-style)[×])
-  content("dh22", text(..x-style)[×])
-  content("dh24", text(..x-style)[×])
+  for name in ("di1", "di3", "dh11", "dh13", "dh14", "dh22", "dh24") {
+    content(name, text(..x-style)[×])
+  }
 
   // Connect remaining nodes (after dropout)
   for ii in (2, 4, 5) {

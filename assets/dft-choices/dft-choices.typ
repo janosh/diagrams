@@ -13,7 +13,7 @@
   let node-height = 1.6 // Shorter boxes
   let node-width = 1.2 // Increased for larger text
 
-  let node(pos, text, fill: none, name: none, width: node-width, height: node-height) = {
+  let node(pos, body, fill: none, name: none, width: node-width, height: node-height) = {
     rect(
       (rel: (-width, -height / 2), to: pos),
       (rel: (2 * width, height)),
@@ -22,7 +22,7 @@
       radius: 0.2,
       name: name,
     )
-    content(name, scale(140%, text))
+    content(name, scale(140%, body))
   }
 
   node(
@@ -41,31 +41,24 @@
 
   content((rel: (1.6 * node-width, 0), to: "kinetic"), $+$, name: "plus-1")
 
-  node(
-    (rel: (1.4 * node-width, 0), to: "plus-1"),
-    $v_"ext" (arrow(r))$,
-    fill: rgb("#ffb3b3"),
-    name: "ext",
-  ) // External potential
-
-  content((rel: (1.4 * node-width, 0), to: "ext"), $+$, name: "plus-2")
-
-  node(
-    (rel: (1.4 * node-width, 0), to: "plus-2"),
-    $v_H (arrow(r))$,
-    fill: rgb("#ffb3b3"),
-    name: "hartree",
-  ) // Hartree potential
-
-  content((rel: (1.4 * node-width, 0), to: "hartree"), $+$, name: "plus-3")
-
-  node(
-    (rel: (1 * node-width, 0), to: "plus-3"),
-    $v_"xc"$,
-    fill: rgb("#ffb3b3"),
-    name: "xc",
-    width: .6 * node-width,
-  ) // Exchange-correlation
+  let plus-name = "plus-1"
+  for (idx, name, label, offset, width) in (
+    (0, "ext", $v_"ext" (arrow(r))$, 1.4, node-width),
+    (1, "hartree", $v_H (arrow(r))$, 1.4, node-width),
+    (2, "xc", $v_"xc"$, 1, .6 * node-width),
+  ) {
+    node(
+      (rel: (offset * node-width, 0), to: plus-name),
+      label,
+      fill: rgb("#ffb3b3"),
+      name: name,
+      width: width,
+    )
+    if idx < 2 {
+      plus-name = "plus-" + str(idx + 2)
+      content((rel: (1.4 * node-width, 0), to: name), $+$, name: plus-name)
+    }
+  }
 
   content(
     (rel: (1 * node-width, 0.1), to: "xc"),
@@ -103,43 +96,33 @@
     line(name, target-name, ..arrow-style)
   }
 
-  comment(
-    (node-sep, 3),
-    [non-rel. Schrödinger equation\
-      or relativistic Dirac equation],
-    "kinetic",
-    name: "kinetic-comment",
-  )
-
-  comment(
-    (rel: (-2, -3), to: "ext"),
-    [pseudopotential\
-      (ultrasoft/PAW/norm-conserving)\ or all-electron],
-    "ext",
-    name: "ext-comment",
-  )
-
-  comment(
-    (4.9 * node-sep, -3),
-    [Hartree potential\ from solving Poisson eq.\
-      or integrating charge density],
-    "hartree",
-    name: "hartree-comment",
-  )
-
-  comment(
-    (5 * node-sep, 3),
-    [LDA or GGA\ or hybrids],
-    "xc",
-    name: "xc-comment",
-  )
-
-  comment(
-    (rel: (2, 3), to: "phi1"),
-    [physical orbitals or not\ mesh density and basis set],
-    "phi1",
-    name: "phi-comment",
-  )
+  for spec in (
+    (
+      pos: (node-sep, 3),
+      body: [non-rel. Schrödinger equation\ or relativistic Dirac equation],
+      target: "kinetic",
+      name: "kinetic-comment",
+    ),
+    (
+      pos: (rel: (-2, -3), to: "ext"),
+      body: [pseudopotential\ (ultrasoft/PAW/norm-conserving)\ or all-electron],
+      target: "ext",
+      name: "ext-comment",
+    ),
+    (
+      pos: (4.9 * node-sep, -3),
+      body: [Hartree potential\ from solving Poisson eq.\ or integrating charge density],
+      target: "hartree",
+      name: "hartree-comment",
+    ),
+    (pos: (5 * node-sep, 3), body: [LDA or GGA\ or hybrids], target: "xc", name: "xc-comment"),
+    (
+      pos: (rel: (2, 3), to: "phi1"),
+      body: [physical orbitals or not\ mesh density and basis set],
+      target: "phi1",
+      name: "phi-comment",
+    ),
+  ) { comment(spec.pos, spec.body, spec.target, name: spec.name) }
   line("phi-comment", "phi2", ..arrow-style)
 
   comment(

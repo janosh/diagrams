@@ -4,7 +4,7 @@
   import { repository } from '$root/package.json'
   import type { Snippet } from 'svelte'
   import { CommandMenu, Footer, GitHubCorner, Icon, ThemeToggle } from 'svelte-widgets'
-  import { License, Quote } from 'svelte-widgets/icons'
+  import { DataCite, License } from 'svelte-widgets/icons'
   // oxlint-disable-next-line import/no-unassigned-import -- KaTeX styles for description math
   import 'katex/dist/katex.min.css'
   // oxlint-disable-next-line import/no-unassigned-import -- global app styles
@@ -31,7 +31,7 @@
   &copy; Janosh Riebesell 2021 &ensp;&mdash;&ensp;
   <a href="{repository}/blob/main/license"><Icon icon={License} /> MIT License</a>
   &ensp;&mdash;&ensp;
-  <a href="{repository}/#--how-to-cite"><Icon icon={Quote} /> How to cite</a>
+  <a href="{repository}/#--how-to-cite"><Icon icon={DataCite} /> How to cite</a>
   &ensp;&mdash;&ensp;
-  <ThemeToggle tooltip={false} style="transform: scale(1.5); vertical-align: middle;" />
+  <ThemeToggle tooltip={false} />
 </Footer>

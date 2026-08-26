@@ -9,60 +9,35 @@
 #canvas({
   style-axes(x-label: (anchor: "north", offset: 0.1))
 
-  // First plot (Bose fluctuations)
-  plot.plot(
+  let fluctuation-plot(statistics, y-label, y-tick-step, name, y-max: auto) = plot.plot(
     size: size,
     x-min: 0,
     x-max: 4.2,
     y-min: 0,
+    y-max: y-max,
     x-label: $T$,
-    y-label: $Delta n_k^+$,
+    y-label: y-label,
     x-tick-step: 1,
-    y-tick-step: 10,
+    y-tick-step: y-tick-step,
     axis-style: "left",
-    name: "bose-plot",
-    {
-      let (ek, mu) = (1, 0)
-      plot.add(
-        style: (stroke: blue + 1.5pt),
-        domain: (0.01, 4.2), // Avoid x=0 due to division
-        samples: 200, // More samples for smoother curve
-        x => {
-          let beta = 1 / x
-          let sinh-term = calc.sinh(beta / 2 * (ek - mu))
+    name: name,
+    plot.add(
+      style: (stroke: blue + 1.5pt),
+      domain: (0.01, 4.2), // avoid T = 0
+      samples: 200,
+      x => {
+        let beta = 1 / x
+        if statistics == "bose" {
+          let sinh-term = calc.sinh(beta / 2)
           1 / (2 * sinh-term * sinh-term)
-        },
-      )
-    },
+        } else {
+          1 / (2 + 2 * calc.cosh(beta))
+        }
+      },
+    ),
   )
 
-  // Second plot (Fermi fluctuations)
+  fluctuation-plot("bose", $Delta n_k^+$, 10, "bose-plot")
   draw.translate((size.at(0) + 2.5, 0))
-
-  plot.plot(
-    size: size,
-    x-min: 0,
-    x-max: 4.2,
-    y-min: 0,
-    y-max: 0.28,
-    x-label: $T$,
-    y-label: $Delta n_k^-$,
-    x-tick-step: 1,
-    y-tick-step: 0.05,
-    axis-style: "left",
-    name: "fermi-plot",
-    {
-      let (ek, mu) = (1, 0)
-      plot.add(
-        style: (stroke: blue + 1.5pt),
-        domain: (0.01, 4.2), // Avoid x=0 due to division
-        samples: 200, // More samples for smoother curve
-        x => {
-          let beta = 1 / x
-          let cosh-term = calc.cosh(beta * (ek - mu))
-          1 / (2 + 2 * cosh-term)
-        },
-      )
-    },
-  )
+  fluctuation-plot("fermi", $Delta n_k^-$, 0.05, "fermi-plot", y-max: 0.28)
 })

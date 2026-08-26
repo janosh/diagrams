@@ -14,24 +14,30 @@
     stroke: 0.8pt,
     mark: (end: "stealth", scale: 0.4, fill: black),
   )
+  let annotated-arrow(start, end, name, formula, caption: none, caption-padding: 0.1) = {
+    line(start, end, ..arrow-style, name: name)
+    content(name + ".mid", formula, anchor: "south", padding: 0.1)
+    if caption != none {
+      content(
+        name + ".mid",
+        text(size: 0.8em, caption),
+        anchor: "north",
+        padding: caption-padding,
+      )
+    }
+  }
 
   let (y-real, y-fake) = (2, 0)
 
-  // z_in node
-  circle((0, y-fake), name: "zin", ..node-style)
-  content("zin", $arrow(z)_"in"$)
-
-  // x_fake node
-  circle((3, y-fake), name: "fake", ..node-style)
-  content("fake", $arrow(x)_"fake"$)
-
-  // x_real node
-  circle((3, y-real), name: "real", ..node-style)
-  content("real", $arrow(x)_"real"$)
-
-  // x node (discriminator input)
-  circle((6, y-real / 2), name: "D", ..node-style, radius: 0.4)
-  content("D", $arrow(x)$)
+  for (pos, name, label, radius) in (
+    ((0, y-fake), "zin", $arrow(z)_"in"$, 0.53),
+    ((3, y-fake), "fake", $arrow(x)_"fake"$, 0.53),
+    ((3, y-real), "real", $arrow(x)_"real"$, 0.53),
+    ((6, y-real / 2), "D", $arrow(x)$, 0.4),
+  ) {
+    circle(pos, name: name, ..node-style, radius: radius)
+    content(name, label)
+  }
 
   // Output node
   content(
@@ -41,33 +47,14 @@
     padding: 2pt,
   )
 
-  // Generator input arrow
-  line((-2.5, y-fake), "zin", ..arrow-style, name: "zin-line")
-  content("zin-line.mid", $p_theta (arrow(z))$, anchor: "south", padding: 0.1)
-  content(
-    "zin-line.mid",
-    text(size: 0.8em)[latent noise],
-    anchor: "north",
-    padding: 0.1,
-  )
-
-  // Generator arrow
-  line("zin", "fake", ..arrow-style, name: "fake-line")
-  content("fake-line.mid", $G(arrow(x))$, anchor: "south", padding: 0.1)
-  content(
-    "fake-line.mid",
-    text(size: 0.8em)[generator],
-    anchor: "north",
-    padding: 0.1,
-  )
-
-  // Real data arrow
-  line((-2, y-real), "real", ..arrow-style, name: "real-line")
-  content("real-line.mid", $p_"data" (arrow(x))$, anchor: "south", padding: 0.1)
+  annotated-arrow((-2.5, y-fake), "zin", "zin-line", $p_theta (arrow(z))$, caption: [latent noise])
+  annotated-arrow("zin", "fake", "fake-line", $G(arrow(x))$, caption: [generator])
+  annotated-arrow((-2, y-real), "real", "real-line", $p_"data" (arrow(x))$)
 
   // Connection points with names
-  circle((4.5, y-fake), radius: 0.06, fill: black, name: "dot1")
-  circle((4.5, y-real), radius: 0.06, fill: black, name: "dot2")
+  for (idx, y) in ((1, y-fake), (2, y-real)) {
+    circle((4.5, y), radius: 0.06, fill: black, name: "dot" + str(idx))
+  }
   on-layer(1, circle(
     (4.25, 2 * y-real / 3),
     radius: 0.12,
@@ -76,9 +63,9 @@
     name: "dot3",
   ))
 
-  line("fake", "dot1", ..arrow-style, name: "conn1")
-  line("real", "dot2", ..arrow-style, name: "conn2")
-  line("dot3", "D", ..arrow-style, name: "conn3")
+  for (idx, start, end) in ((1, "fake", "dot1"), (2, "real", "dot2"), (3, "dot3", "D")) {
+    line(start, end, ..arrow-style, name: "conn" + str(idx))
+  }
 
   hobby(
     "dot1",
@@ -89,13 +76,12 @@
     name: "dashed-curve",
   )
 
-  // Discriminator arrow and labels
-  line("D", "out", ..arrow-style, name: "disc-line")
-  content("disc-line.mid", $D(arrow(x))$, anchor: "south", padding: 0.1)
-  content(
-    "disc-line.mid",
-    text(size: 0.8em)[discriminator],
-    anchor: "north",
-    padding: 0.15,
+  annotated-arrow(
+    "D",
+    "out",
+    "disc-line",
+    $D(arrow(x))$,
+    caption: [discriminator],
+    caption-padding: 0.15,
   )
 })

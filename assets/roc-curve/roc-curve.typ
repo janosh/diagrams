@@ -12,12 +12,7 @@
   interior-value
 }
 
-#let perfect-classifier(x) = {
-  if x == 0 { return 0 }
-  if x == 1 { return 1 }
-  if x > 0 { return 0.99 }
-  return 0
-}
+#let perfect-classifier(x) = if x == 0 { 0 } else if x == 1 { 1 } else if x > 0 { 0.99 } else { 0 }
 
 #let excellent-classifier(x) = clamp-unit-interval(x, calc.pow(x, 0.15))
 #let good-classifier(x) = clamp-unit-interval(x, calc.pow(x, 0.3))
@@ -54,53 +49,53 @@
       offset: (7.8, 0.3),
     ),
     {
-      plot.add(
-        style: (stroke: (paint: neutral.annotation, dash: "dashed", thickness: line-weight.thin)),
-        domain: (0, 1),
-        samples: 2,
-        random-classifier,
-        label: "Random Guess (AUC = 0.5)",
+      let curves = (
+        (
+          func: random-classifier,
+          samples: 2,
+          stroke: (paint: neutral.annotation, dash: "dashed", thickness: line-weight.thin),
+          label: "Random Guess (AUC = 0.5)",
+        ),
+        (
+          func: perfect-classifier,
+          samples: 50,
+          stroke: series(0),
+          label: "Near-Perfect Classifier (AUC = 0.99)",
+        ),
+        (
+          func: excellent-classifier,
+          samples: 100,
+          stroke: series(1),
+          label: "Excellent Classifier (AUC = 0.93)",
+        ),
+        (
+          func: good-classifier,
+          samples: 100,
+          stroke: series(2),
+          label: "Good Classifier (AUC = 0.85)",
+        ),
+        (
+          func: fair-classifier,
+          samples: 100,
+          stroke: series(3),
+          label: "Fair Classifier (AUC = 0.73)",
+        ),
+        (
+          func: poor-classifier,
+          samples: 100,
+          stroke: series(4),
+          label: "Poor Classifier (AUC = 0.65)",
+        ),
       )
-
-      plot.add(
-        style: (stroke: series(0)),
-        domain: (0, 1),
-        samples: 50,
-        perfect-classifier,
-        label: "Near-Perfect Classifier (AUC = 0.99)",
-      )
-
-      plot.add(
-        style: (stroke: series(1)),
-        domain: (0, 1),
-        samples: 100,
-        excellent-classifier,
-        label: "Excellent Classifier (AUC = 0.93)",
-      )
-
-      plot.add(
-        style: (stroke: series(2)),
-        domain: (0, 1),
-        samples: 100,
-        good-classifier,
-        label: "Good Classifier (AUC = 0.85)",
-      )
-
-      plot.add(
-        style: (stroke: series(3)),
-        domain: (0, 1),
-        samples: 100,
-        fair-classifier,
-        label: "Fair Classifier (AUC = 0.73)",
-      )
-
-      plot.add(
-        style: (stroke: series(4)),
-        domain: (0, 1),
-        samples: 100,
-        poor-classifier,
-        label: "Poor Classifier (AUC = 0.65)",
-      )
+      for curve in curves {
+        plot.add(
+          style: (stroke: curve.stroke),
+          domain: (0, 1),
+          samples: curve.samples,
+          curve.func,
+          label: curve.label,
+        )
+      }
     },
   )
 })

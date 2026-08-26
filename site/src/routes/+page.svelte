@@ -1,22 +1,16 @@
 <script lang="ts">
-  import { building } from '$app/environment'
   import { goto } from '$app/navigation'
   import { page } from '$app/state'
   import { DiagramCard, diagrams, tags } from '$lib'
+  import { gallery_batch_size, gallery_count_for } from '$lib/gallery'
   import { filters } from '$lib/state.svelte'
   import { homepage, repository } from '$root/package.json'
   import { tick } from 'svelte'
-  import { Icon, MultiSelect, type ObjectOption } from 'svelte-widgets'
+  import { Icon, Masonry, MultiSelect, type ObjectOption } from 'svelte-widgets'
   import { highlight_matches } from 'svelte-widgets/attachments'
   import { GitHub, LaTeX, License, Typst } from 'svelte-widgets/icons'
 
-  let innerWidth: number = $state(0)
-
-  const clamp = (num: number, min: number, max: number) =>
-    Math.min(Math.max(num, min), max)
-
   const meta_description = `${diagrams.length} Diagrams on Physics, Chemistry, Computer Science, and Machine Learning`
-
   const update_tag_query = (label?: string) => {
     const url = new URL(page.url)
     if (label) {
@@ -51,8 +45,25 @@
   // track the active card by slug (not index) so the highlight follows the diagram
   // across filter changes instead of pointing at a stale position
   let active_slug = $state<string>()
+  let visible_count = $derived(
+    gallery_count_for(gallery_batch_size, filters.filtered.length),
+  )
+
+  const observe_gallery_end = (element: HTMLElement) => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          visible_count = gallery_count_for(visible_count + 1, filters.filtered.length)
+        }
+      },
+      { rootMargin: `800px` },
+    )
+    observer.observe(element)
+    return () => observer.disconnect()
+  }
 
   async function handle_keyup(event: KeyboardEvent) {
+    if (event.target instanceof HTMLInputElement) return
     // filters.filtered is the shared, title-sorted view shown in the grid, so keyboard
     // nav stays in sync with what's on screen
     const shown = filters.filtered
@@ -72,12 +83,12 @@
     }[event.key]
     // if not arrow or escape key, return early for browser default behavior
     if (to === undefined) return
+    if (to >= visible_count) visible_count = gallery_count_for(to + 1, count)
     active_slug = to >= 0 ? shown[to].slug : undefined // Escape (-1) clears the selection
     // wait for the active class to apply before scrolling the selected card into view
     await tick()
-    document.querySelector(`ul > li.active`)?.scrollIntoView({ block: `nearest` })
+    document.querySelector(`.diagram-item.active`)?.scrollIntoView({ block: `nearest` })
   }
-  let cols = $derived(clamp(Math.floor(innerWidth / 300), 1, 6))
 </script>
 
 <svelte:head>
@@ -90,7 +101,7 @@
   <meta name="twitter:card" content="summary_large_image" />
 </svelte:head>
 
-<svelte:window bind:innerWidth onkeyup={handle_keyup} />
+<svelte:window onkeyup={handle_keyup} />
 
 <h1>Scientific Diagrams</h1>
 <p>
@@ -159,19 +170,31 @@
   </MultiSelect>
 </div>
 
-{#if cols || building}
-  <ul
-    style:column-count={cols}
-    style="column-gap: 1em"
-    {@attach highlight_matches({ query: filters.search, css_class: `highlight-match` })}
+<div
+  class="gallery"
+  {@attach highlight_matches({ query: filters.search, css_class: `highlight-match` })}
+>
+  <Masonry
+    items={filters.filtered.slice(0, visible_count)}
+    animate={false}
+    idKey="slug"
+    minColWidth={280}
+    gap={16}
+    order="column-balanced"
+    role="list"
   >
-    {#each filters.filtered as item (item.slug)}
-      <li class:active={item.slug === active_slug}>
-        <DiagramCard {item} style="break-inside: avoid; font-size: 14pt" />
-      </li>
-    {/each}
-  </ul>
-{/if}
+    {#snippet children({ item })}
+      <div class="diagram-item" class:active={item.slug === active_slug} role="listitem">
+        <DiagramCard {item} style="font-size: 14pt" />
+      </div>
+    {/snippet}
+  </Masonry>
+  {#if visible_count < filters.filtered.length}
+    {#key visible_count}
+      <div style="height: 1px" aria-hidden="true" {@attach observe_gallery_end}></div>
+    {/key}
+  {/if}
+</div>
 
 <style>
   h1 {
@@ -183,17 +206,15 @@
     line-height: 1.5;
     text-align: center;
   }
-  ul {
-    list-style: none;
-    padding: 0;
+  .gallery {
+    margin-top: 2em;
   }
-  ul > li {
-    margin-bottom: 1em;
+  .diagram-item {
     border-radius: 1ex;
     overflow: hidden;
     border: 1px solid var(--card-border);
   }
-  ul > li.active {
+  .diagram-item.active {
     border: 2px dashed;
   }
   input {
