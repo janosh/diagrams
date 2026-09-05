@@ -42,6 +42,7 @@ const render_description = async (source: string): Promise<string> => {
 }
 
 export default defineConfig({
+  resolve: { dedupe: [`svelte`] },
   ...make_config(), // shared lint/fmt/build/staged
   plugins: [
     {

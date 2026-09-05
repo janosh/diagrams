@@ -17,9 +17,10 @@ jobs:
         with:
           node-version: 24
       - name: Install site dependencies
-        # pinned pnpm via corepack; --ignore-scripts skips sharp's build script
-        # (it ships prebuilt @img binaries) so pnpm doesn't fail on it
-        run: corepack enable && pnpm install --ignore-scripts
+        run: |
+          corepack enable
+          printf 'allowBuilds:\n  svelte-widgets: true\n' > pnpm-workspace.yaml
+          pnpm install --config.strict-dep-builds=false
         working-directory: site
       - name: Run prek
         uses: j178/prek-action@v3.0.0
@@ -52,7 +53,10 @@ jobs:
           key: imagetools-${{ hashFiles('assets/**/*.png') }}
           restore-keys: imagetools-
       - name: Install site dependencies
-        run: corepack enable && pnpm install --ignore-scripts
+        run: |
+          corepack enable
+          printf 'allowBuilds:\n  svelte-widgets: true\n' > pnpm-workspace.yaml
+          pnpm install --config.strict-dep-builds=false
         working-directory: site
       - run: pnpm exec vp build
         working-directory: site

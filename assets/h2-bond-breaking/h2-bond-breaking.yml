@@ -1,0 +1,9 @@
+title: H2 Bond Breaking
+tags:
+  - physics
+  - quantum mechanics
+  - density functional theory
+  - computational chemistry
+  - electronic structure
+description: |
+  A visual explanation of static correlation in H2 covalent bond dissociation. A three-stage orbital storyboard follows H2 from a bonded molecule to separated neutral atoms. Calculated STO-3G restricted Hartree-Fock, unrestricted Hartree-Fock, and full configuration interaction curves show the energy error of a restricted determinant, while interacting natural occupations evolve toward one electron in each orbital. Separated-atom pair-probability maps expose the restricted reference's 50% ionic weight and show how a coherent combination of bonding and antibonding configurations cancels it. The diagram distinguishes the interacting state from the auxiliary Kohn-Sham determinant, which can remain doubly occupied when the exact exchange-correlation functional supplies the missing correlation.

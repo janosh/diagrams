@@ -21,7 +21,7 @@
     "mdsvex": "^0.12.8",
     "svelte": "^5.56.10",
     "svelte-check": "^4.7.6",
-    "svelte-widgets": "^1.6.1",
+    "svelte-widgets": "github:janosh/svelte-widgets#main",
     "svelte2tsx": "^0.7.61",
     "vite": "8.2.2",
     "vite-plus": "^0.3.0"

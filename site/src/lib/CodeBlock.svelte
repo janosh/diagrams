@@ -9,7 +9,7 @@
 </script>
 
 <script lang="ts">
-  import { CopyButton, Icon } from 'svelte-widgets'
+  import { CodeBlock, CopyButton, Icon } from 'svelte-widgets'
   import { GitHub, LaTeXFile, Overleaf, Typst } from 'svelte-widgets/icons'
   import type { HTMLAttributes } from 'svelte/elements'
 
@@ -27,11 +27,6 @@
   } & HTMLAttributes<HTMLDivElement> = $props()
 
   let ext = $derived(title?.split(`.`).pop() as `typ` | `tex`)
-  let highlighted_code = $state(``)
-
-  $effect(() => {
-    highlighter.highlight(code, ext).then((html) => (highlighted_code = html))
-  })
 </script>
 
 <div {...rest}>
@@ -68,7 +63,13 @@
     {/if}
     <CopyButton content={code} />
   </aside>
-  <pre><code>{@html highlighted_code}</code></pre>
+  <CodeBlock
+    {code}
+    language={ext}
+    label={title}
+    highlight={highlighter.highlight}
+    style="--code-block-padding: 1em; --code-block-bg: var(--pre-bg); --code-block-radius: 3pt"
+  />
 </div>
 
 <style>
@@ -99,12 +100,6 @@
     right: 1em;
     display: flex;
     gap: 1ex;
-  }
-  pre {
-    padding: 1em;
-    background: var(--pre-bg);
-    overflow-x: scroll;
-    border-radius: 3pt;
   }
   aside a,
   aside :global([data-sms-copy]) {
