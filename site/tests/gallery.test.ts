@@ -1,4 +1,4 @@
-import { expect, it } from 'vite-plus/test'
+import { expect, it } from 'vitest'
 import { gallery_count_for } from '../src/lib/gallery'
 
 it.each([

@@ -8,6 +8,9 @@
   "author": "Janosh Riebesell <janosh.riebesell@gmail.com>",
   "repository": "https://github.com/janosh/diagrams",
   "type": "module",
+  "scripts": {
+    "test": "vitest run"
+  },
   "devDependencies": {
     "@rollup/plugin-yaml": "^5.0.0",
     "@sveltejs/adapter-static": "^3.0.10",
@@ -21,10 +24,11 @@
     "mdsvex": "^0.12.8",
     "svelte": "^5.56.10",
     "svelte-check": "^4.7.6",
-    "svelte-widgets": "github:janosh/svelte-widgets#main",
+    "svelte-widgets": "1.7.0",
     "svelte2tsx": "^0.7.61",
     "vite": "8.2.2",
-    "vite-plus": "^0.3.0"
+    "vite-plus": "^0.3.0",
+    "vitest": "5.0.0"
   },
   "packageManager": "pnpm@11.9.0"
 }

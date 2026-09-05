@@ -104,12 +104,17 @@
   {/if}
 </section>
 
-<div class="diagram-wrapper" bind:this={diagram_wrapper}>
+<div
+  class="diagram-wrapper"
+  bind:this={diagram_wrapper}
+  role="region"
+  aria-label="{title} diagram"
+  tabindex="0"
+>
   <enhanced:img src={images.hd} alt={title} class="diagram" />
   <FullscreenButton
     wrapper={diagram_wrapper}
     placement="corner"
-    bg_css_var="--page-bg"
     style="border: 0; font-size: 18pt; transition: color 0.2s"
   />
 </div>
@@ -231,12 +236,15 @@
     display: block;
   }
   .diagram-wrapper:fullscreen {
+    background-color: var(--page-bg);
     display: grid;
     width: 100%;
     max-width: none;
     height: 100%;
     margin: 0;
     place-items: center;
+    overflow: auto;
+    --fullscreen-btn-position: fixed;
   }
   .diagram-wrapper:fullscreen .diagram {
     max-height: 100%;

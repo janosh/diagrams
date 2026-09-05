@@ -17,11 +17,12 @@ jobs:
         with:
           node-version: 24
       - name: Install site dependencies
-        run: |
-          corepack enable
-          printf 'allowBuilds:\n  svelte-widgets: true\n' > pnpm-workspace.yaml
-          pnpm install --config.strict-dep-builds=false
+        run: corepack enable && pnpm install --ignore-scripts --lockfile=false
         working-directory: site
+      - name: Unit tests
+        run: pnpm test
+        working-directory: site
+
       - name: Run prek
         uses: j178/prek-action@v3.0.0
 
@@ -53,10 +54,7 @@ jobs:
           key: imagetools-${{ hashFiles('assets/**/*.png') }}
           restore-keys: imagetools-
       - name: Install site dependencies
-        run: |
-          corepack enable
-          printf 'allowBuilds:\n  svelte-widgets: true\n' > pnpm-workspace.yaml
-          pnpm install --config.strict-dep-builds=false
+        run: corepack enable && pnpm install --ignore-scripts --lockfile=false
         working-directory: site
       - run: pnpm exec vp build
         working-directory: site
