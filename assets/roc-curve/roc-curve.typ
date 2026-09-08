@@ -41,6 +41,7 @@
     axis-style: "left",
     legend: "inner-north",
     legend-style: (
+      fill: rgb("#cdd3da"),
       item: (spacing: 0.15),
       padding: 0.15,
       stroke: none,

@@ -12,7 +12,7 @@
   rgb(255, 255, 150),
   rgb(200, 200, 255),
 )
-#let (item-bg, item-border) = (white, black)
+#let (item-bg, item-border) = (rgb("#cdd3da"), black)
 #let (arrow-offset, arrow-scale) = (1.5, 1.2)
 #let (length-factor, base-offset) = (0.02, 0)
 

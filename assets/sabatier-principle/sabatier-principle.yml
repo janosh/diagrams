@@ -3,4 +3,4 @@ tags:
   - physics
   - chemistry
 description: |
-  Illustration of the Sabatier principle in heterogeneous catalysis. Inspired by [From the Sabatier principle to a predictive theory of transition-metal heterogeneous catalysis](https://www.sciencedirect.com/science/article/pii/S0021951714003686).
+  The Sabatier principle in heterogeneous catalysis: weak binding limits reactant activation, while strong binding limits product desorption. Intermediate binding balances these competing requirements. Inspired by [From the Sabatier principle to a predictive theory of transition-metal heterogeneous catalysis](https://www.sciencedirect.com/science/article/pii/S0021951714003686).

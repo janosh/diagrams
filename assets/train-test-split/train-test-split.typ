@@ -59,7 +59,7 @@
       height: full-data-height,
       label: "Full Dataset",
       headers: feature-headers + ("Y",),
-      fill: white,
+      fill: rgb("#cdd3da"),
       header-fill: rgb("#0099cc"),
     ),
     (

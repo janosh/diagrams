@@ -1,6 +1,0 @@
-title: Autoencoder
-tags:
-  - machine learning
-  - neural networks
-description: |
-  Autoencoder architecture with symmetric encoder-decoder layers. Made with <https://github.com/battlesnake/neural>.

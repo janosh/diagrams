@@ -39,11 +39,11 @@
     let (x0, y0) = pos(from)
     let (x1, y1) = pos(to)
     let mid = (x0 + (x1 - x0) * frac, y0 + (y1 - y0) * frac)
-    content(mid, label, frame: "rect", fill: white, stroke: none, padding: 1.5pt)
+    content(mid, label, frame: "rect", fill: rgb("#cdd3da"), stroke: none, padding: 1.5pt)
   }
 
   for (name, _) in nodes {
-    circle(pos(name), radius: node-r, fill: white, stroke: 1.7pt, name: name)
+    circle(pos(name), radius: node-r, fill: rgb("#cdd3da"), stroke: 1.7pt, name: name)
     content(pos(name), raw(name))
   }
 

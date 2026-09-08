@@ -18,7 +18,7 @@
     b-disc: ((4.6, 2.5), $arrow(b)$),
   )
   for (name, (pos, label)) in vertices.pairs() {
-    circle(pos, radius: r, fill: white, stroke: 1pt, name: name)
+    circle(pos, radius: r, fill: rgb("#cdd3da"), stroke: 1pt, name: name)
     content(name, label)
   }
 
@@ -74,13 +74,13 @@
   line((rel: (r, 0), to: "b-real"), (rel: (-.07, 0), to: pt2), ..arr)
 
   // dashed selector curve pt1 ↔ pt2, bowing left through the switch pivot pt3,
-  // which is drawn after the dash so its white fill occludes it
+  // which is drawn after the dash so its opaque fill occludes it
   bezier(pt1, pt2, (2.63, 2.85), stroke: (
     dash: "dashed",
     paint: black,
     thickness: 1pt,
   ))
-  circle(pt3, radius: .09, fill: white, stroke: .9pt)
+  circle(pt3, radius: .09, fill: rgb("#cdd3da"), stroke: .9pt)
   // switch output to the discriminator, starting at pt3's rim
   line(
     (rel: (.085, -.031), to: pt3),

@@ -111,7 +111,7 @@
       stroke: .7pt,
       padding: (3pt, 4pt),
       name: "fpsi",
-      fill: white,
+      fill: rgb("#cdd3da"),
     )
   }
 })

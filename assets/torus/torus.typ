@@ -63,7 +63,7 @@
   line((0, 0, -10), (0, 0, 0), stroke: ax-stroke)
 
   // Torus surface (painter's algorithm: far quads first).
-  set-style(stroke: rgb("#9a9a9a") + 0.22pt, fill: rgb("#f0f0f0"))
+  set-style(stroke: rgb("#9a9a9a") + 0.22pt, fill: rgb("#cdd3da"))
   for quad in quads.sorted(key: q => -q.depth) {
     line(quad.p1, quad.p2, quad.p3, quad.p4, close: true)
   }

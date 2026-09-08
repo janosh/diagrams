@@ -70,7 +70,7 @@
   node(
     (rel: (2.4 * node-width, 0), to: "xc"),
     $phi_i (arrow(r))$,
-    fill: rgb("#e6e6e6"),
+    fill: rgb("#cdd3da"),
     name: "phi1",
   ) // Wavefunction 1
 
@@ -87,7 +87,7 @@
   node(
     (rel: (1.9 * node-width, 0), to: "energy"),
     $phi_i (arrow(r))$,
-    fill: rgb("#e6e6e6"),
+    fill: rgb("#cdd3da"),
     name: "phi2",
   ) // Wavefunction 2
 

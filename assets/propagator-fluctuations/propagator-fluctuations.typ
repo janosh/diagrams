@@ -3,17 +3,17 @@
 
 // Diagonal hatching marking a vertex as dressed rather than bare.
 #let hatched = tiling(size: (.1cm, .1cm))[
-  #place(std.rect(width: 100%, height: 100%, fill: white, stroke: none))
+  #place(std.rect(width: 100%, height: 100%, fill: rgb("#cdd3da"), stroke: none))
   #place(std.line(start: (0%, 100%), end: (100%, 0%), stroke: 0.4pt))
 ]
 
-// Regulator insertion: a circled cross on an opaque white disc.
+// Regulator insertion: a circled cross on an opaque gray disc.
 #let cross(pos, label, offset, name: none) = {
   content(
     pos,
     text(size: 16pt)[$times.o$],
     stroke: none,
-    fill: white,
+    fill: rgb("#cdd3da"),
     frame: "circle",
     padding: -2.5pt,
     name: name,

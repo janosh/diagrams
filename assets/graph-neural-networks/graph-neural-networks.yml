@@ -1,0 +1,20 @@
+title: Graph Neural Networks
+tags:
+- machine learning
+- neural networks
+- graph neural networks
+- message passing
+- node aggregation
+- deep learning
+- information flow
+- receptive field
+- attention
+description: 'A node learns from its neighborhood. These views connect the local operation, the growth of its receptive field, and two ways to construct the information being combined.
+
+
+  Sources: [Neural Message Passing for Quantum Chemistry](https://arxiv.org/abs/1704.01212) and [Graph Attention Networks](https://arxiv.org/abs/1710.10903).
+
+
+  Original illustrations: [Graph Convolution](https://github.com/PetarV-/TikZ/tree/86aee049f5355d77c598b936399e42caf8941e60/Graph%20convolution), [Message Passing Neural Network](https://github.com/PetarV-/TikZ/tree/86aee049f5355d77c598b936399e42caf8941e60/Message%20passing%20neural%20network), [Graph Attention Layer](https://github.com/PetarV-/TikZ/tree/86aee049f5355d77c598b936399e42caf8941e60/GAT%20layer).'
+creator: Petar Veličković
+source: '[Graph Attention Networks](http://petar-v.com/GAT/) blog post; Lectures on graph representation learning; [Graph Attention Networks](https://arxiv.org/abs/1710.10903), ICLR 2018'

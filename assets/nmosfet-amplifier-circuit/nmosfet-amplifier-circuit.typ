@@ -262,7 +262,7 @@
   )
 }
 
-#let node(position, name, radius: 0.05, fill: white, ..opts) = {
+#let node(position, name, radius: 0.05, fill: rgb("#cdd3da"), ..opts) = {
   let diag = radius * calc.cos(45deg)
   symbol(
     position,

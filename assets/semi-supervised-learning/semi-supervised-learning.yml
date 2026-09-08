@@ -10,4 +10,6 @@ tags:
   - semi-supervised learning
   - classification
 description: |
-  Unlabeled samples can reveal data density and shift the decision boundary away from high-density regions between labeled classes.
+  The same labeled and unlabeled samples shown with two illustrative decision boundaries. The first uses only the labeled examples; the second follows low-density structure revealed by the unlabeled samples. A legend distinguishes samples and boundaries, and the caption states the required cluster assumption.
+
+  Gray samples are displayed in both panels for comparison but only inform the second boundary. This assumes that nearby, densely connected samples tend to share a class. Unlabeled data can hurt when that assumption fails; the boundaries are illustrative, not fitted model results.

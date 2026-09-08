@@ -11,8 +11,6 @@ import yaml
 
 # Special exceptions where folder name doesn't need to match param-cased title
 IGNORE_SET: Final[set[str]] = {
-    "harmonic-oscillator-energy-vs-freq",
-    "harmonic-oscillator-energy-vs-inv-temp",
     "qm-cost-vs-acc",
     "pie-physics-chemistry-ml",
 }

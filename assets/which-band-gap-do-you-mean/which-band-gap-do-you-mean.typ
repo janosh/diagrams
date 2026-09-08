@@ -8,13 +8,13 @@
 // Sources: Perdew & Levy, PRL 51, 1884 (1983), doi:10.1103/PhysRevLett.51.1884;
 // Sham & Schlüter, PRL 51, 1888 (1983), doi:10.1103/PhysRevLett.51.1888;
 // Onida, Reining & Rubio, RMP 74, 601 (2002), doi:10.1103/RevModPhys.74.601.
-#set page(width: auto, height: auto, margin: 0pt, fill: white)
+#set page(width: auto, height: auto, margin: 0pt, fill: none)
 #set text(font: "Avenir Next", size: 14pt, fill: rgb("#19304E"))
 #set par(leading: 0.55em)
 #set math.equation(numbering: none)
 
 #let ink = rgb("#19304E")
-#let muted = rgb("#617087")
+#let muted = rgb("#344257")
 #let blue = rgb("#2764C3")
 #let teal = rgb("#087F7C")
 #let orange = rgb("#BC502D")
@@ -54,16 +54,15 @@
   circle(
     (center_x, -center_y),
     radius: 8,
-    fill: if hole { white } else { color },
+    fill: if hole { rgb("#cdd3da") } else { color },
     stroke: 1.5pt + color,
   )
   if hole { symbol(center_x, center_y, [+], size: 12pt, color: color) }
 }
 
 #canvas(length: 1pt, {
-  rect((0, 0), (1000, -1063), fill: white, stroke: none)
-  rect((0, 0), (1000, -7), fill: teal, stroke: none)
-  label(28, 25, 944, [Which “band gap” do you mean?], size: 34pt, weight: "bold")
+  rect((0, -49), (1000, -1063), fill: none, stroke: none)
+  rect((0, -49), (1000, -56), fill: teal, stroke: none)
   label(
     30,
     74,
@@ -83,19 +82,19 @@
   for (left, tint, heading, subtitle, accent) in (
     (
       24,
-      rgb("#EFF5FD"),
+      rgb("#c7d3e1"),
       [1  READ THE ORBITALS],
       [Kohn–Sham (KS) gap: auxiliary levels],
       blue,
     ),
     (
       346,
-      rgb("#EFF8F5"),
+      rgb("#c7d8d1"),
       [2  ADD / REMOVE CHARGE],
       [Fundamental gap: many-electron energies],
       teal,
     ),
-    (668, rgb("#FFF4ED"), [3  SHINE LIGHT], [Optical gap: a neutral excitation], orange),
+    (668, rgb("#e1d2c7"), [3  SHINE LIGHT], [Optical gap: a neutral excitation], orange),
   ) {
     panel(left, 150, 308, 258, tint)
     label(left + 16, 166, 276, heading, size: 16pt, color: accent, weight: "bold")
@@ -123,7 +122,7 @@
 
   // N +/- 1 refer to distinct charged systems, not an orbital promotion.
   for (center_x, count, name) in ((400, 2, $N-1$), (500, 3, $N$), (600, 4, $N+1$)) {
-    circle((center_x, -270), radius: 30, fill: white, stroke: 1.3pt + teal.lighten(50%))
+    circle((center_x, -270), radius: 30, fill: rgb("#cdd3da"), stroke: 1.3pt + teal.lighten(50%))
     for idx in range(count) {
       let angle = 360deg * idx / count
       electron(center_x + 13 * calc.cos(angle), 270 + 13 * calc.sin(angle), color: teal)
@@ -205,7 +204,7 @@
   label(405, 710, 190, [separated charges], size: 14pt, color: teal, centered: true)
   label(710, 710, 190, [bound electron–hole pair], size: 13pt, color: orange, centered: true)
 
-  panel(24, 751, 468, 121, rgb("#F4EFF9"))
+  panel(24, 751, 468, 121, rgb("#d2cbdc"))
   label(42, 767, 432, [$E_"g" = E_"KS" + Delta_"xc"$], size: 23pt, color: purple, centered: true)
   label(
     42,
@@ -214,7 +213,7 @@
     [*Derivative discontinuity:* the exact exchange–correlation (XC) potential jumps at an integer electron count. Even exact KS orbital energies need this correction.],
     size: 13pt,
   )
-  panel(508, 751, 468, 121, rgb("#FFF4ED"))
+  panel(508, 751, 468, 121, rgb("#e1d2c7"))
   label(526, 767, 432, [$E_"opt" = E_"g" - E_"bind"$], size: 23pt, color: orange, centered: true)
   label(
     526,

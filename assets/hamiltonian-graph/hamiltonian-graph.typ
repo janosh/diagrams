@@ -11,7 +11,7 @@
       circle(
         (idx * 2.4, row-y),
         radius: .42,
-        fill: white,
+        fill: rgb("#cdd3da"),
         stroke: 1pt,
         name: name,
       )

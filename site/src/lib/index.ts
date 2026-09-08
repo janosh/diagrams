@@ -23,6 +23,7 @@ export type YamlMetadata = {
   url?: string
   date?: string
   hide?: boolean
+  preserve_colors?: boolean
 }
 
 // YAML imports already contain descriptions rendered to HTML by the Vite plugin.
@@ -35,14 +36,17 @@ const code_files = import.meta.glob<{ default: string }>(
   { eager: true, query: `?raw` },
 )
 const asset_files = import.meta.glob<{ default: string }>(
-  [`$assets/**/*.png`, `$assets/**/*.pdf`, `$assets/**/*.svg`],
+  [`$assets/**/*.png`, `$assets/**/*.pdf`, `$assets/**/*.svg`, `!$assets/**/*-dark.png`],
   { eager: true, query: `?url` },
 )
-const image_files = import.meta.glob<{ default: string }>(`$assets/**/*.png`, {
-  eager: true,
-  // Density descriptors are lost by imagetools' cache; use stable width descriptors.
-  query: { enhanced: true, basePixels: 0 },
-})
+const image_files = import.meta.glob<{ default: string }>(
+  [`$assets/**/*.png`, `!$assets/**/*-dark.png`],
+  {
+    eager: true,
+    // Density descriptors are lost by imagetools' cache; use stable width descriptors.
+    query: { enhanced: true, basePixels: 0 },
+  },
+)
 
 // Process YAML files to create figure data
 export const diagrams: Diagram[] = Object.entries(yaml_data)

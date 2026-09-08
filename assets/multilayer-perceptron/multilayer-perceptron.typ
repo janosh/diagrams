@@ -10,7 +10,7 @@
   let arrow = (mark: (end: "stealth", fill: black, scale: .55), stroke: .8pt)
   let perceptron-radius = .48
   let small(name, pos, label: none, radius: .18) = {
-    circle(pos, radius: radius, fill: white, stroke: node-stroke, name: name)
+    circle(pos, radius: radius, fill: rgb("#cdd3da"), stroke: node-stroke, name: name)
     if label != none { content(name, label) }
   }
   let right-rim(pos, radius: .18) = (pos.at(0) + radius, pos.at(1))
@@ -25,7 +25,7 @@
   circle(
     (0, 0),
     radius: perceptron-radius,
-    fill: white,
+    fill: rgb("#cdd3da"),
     stroke: node-stroke,
     name: "perceptron",
   )
@@ -67,7 +67,7 @@
   content(
     (rel: (0, .42), to: "perceptron-out.mid"),
     $sigma(w_0 + sum_(i=1)^n w_i x_i)$,
-    fill: white,
+    fill: rgb("#cdd3da"),
     padding: 1pt,
   )
 

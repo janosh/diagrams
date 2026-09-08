@@ -23,7 +23,7 @@
 
   plot.plot(
     size: (8, 5),
-    x-label: $T / T_c$,
+    x-label: $T \/ T_c$,
     y-label: $m(0,T)$,
     y-max: 1.5,
     x-tick-step: 0.5,

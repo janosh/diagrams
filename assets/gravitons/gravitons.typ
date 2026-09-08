@@ -11,7 +11,7 @@
 #let regulator(pos) = {
   let radius = .18
   let arm = radius / calc.sqrt(2)
-  circle(pos, radius: radius, fill: white, stroke: .8pt)
+  circle(pos, radius: radius, fill: rgb("#cdd3da"), stroke: .8pt)
   for direction in (-1, 1) {
     line(
       (rel: (-arm, direction * arm), to: pos),

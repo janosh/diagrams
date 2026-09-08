@@ -25,6 +25,7 @@
       src={item.images.sd}
       alt={title}
       class="diagram"
+      data-preserve-colors={item.preserve_colors || undefined}
       {@attach tooltip({ content: tooltip_content, allow_html: true })}
     />
   {/if}
@@ -51,7 +52,6 @@
     text-align: center;
   }
   .diagram {
-    background-color: var(--diagram-bg);
     box-sizing: border-box;
     width: calc(100% - 2ex);
     display: block;

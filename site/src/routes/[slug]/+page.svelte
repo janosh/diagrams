@@ -112,7 +112,12 @@
   aria-label="{title} diagram"
   tabindex="0"
 >
-  <enhanced:img src={images.hd} alt={title} class="diagram" />
+  <enhanced:img
+    src={images.hd}
+    alt={title}
+    class="diagram"
+    data-preserve-colors={data.diagram.preserve_colors || undefined}
+  />
   <FullscreenButton
     wrapper={diagram_wrapper}
     placement="corner"
@@ -230,7 +235,6 @@
     color: var(--link-hover);
   }
   .diagram {
-    background-color: var(--diagram-bg);
     padding: 1em;
     box-sizing: border-box;
     max-width: 100%;

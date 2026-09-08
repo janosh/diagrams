@@ -1,18 +1,18 @@
-/* starry-night syntax highlighting (GitHub-style, light/dark auto-switch) */
-@import '@wooorm/starry-night/style/both';
-/* Ensure starry-night token colors follow explicit theme toggle, not only OS preference. */
-html[data-theme='dark'] {
-  --color-prettylights-syntax-comment: #9198a1;
-  --color-prettylights-syntax-constant: #79c0ff;
-  --color-prettylights-syntax-entity: #d2a8ff;
-  --color-prettylights-syntax-entity-tag: #7ee787;
-  --color-prettylights-syntax-keyword: #ff7b72;
-  --color-prettylights-syntax-storage-modifier-import: #f0f6fc;
-  --color-prettylights-syntax-string: #a5d6ff;
-  --color-prettylights-syntax-variable: #ffa657;
-}
-
+/* Typst/LaTeX syntax colors follow the site theme, including overrides of the OS theme. */
+@import '@wooorm/starry-night/style/core';
 :root {
+  --color-prettylights-syntax-comment: light-dark(#59636e, #9198a1);
+  --color-prettylights-syntax-constant: light-dark(#0550ae, #79c0ff);
+  --color-prettylights-syntax-entity: light-dark(#6639ba, #d2a8ff);
+  --color-prettylights-syntax-invalid-illegal-bg: light-dark(#82071e, #8e1519);
+  --color-prettylights-syntax-invalid-illegal-text: light-dark(#f6f8fa, #f0f6fc);
+  --color-prettylights-syntax-keyword: light-dark(#cf222e, #ff7b72);
+  --color-prettylights-syntax-markup-heading: light-dark(#0550ae, #1f6feb);
+  --color-prettylights-syntax-string: light-dark(#0a3069, #a5d6ff);
+  --color-prettylights-syntax-variable: light-dark(#953800, #ffa657);
+  --color-prettylights-syntax-markup-bold: light-dark(#1f2328, #f0f6fc);
+  --color-prettylights-syntax-markup-italic: light-dark(#1f2328, #f0f6fc);
+  --color-prettylights-syntax-storage-modifier-import: light-dark(#1f2328, #f0f6fc);
   /* Light theme colors */
   --light-bg: #f8f9fa;
   --light-text: #212529;
@@ -28,7 +28,6 @@ html[data-theme='dark'] {
   --light-card-bg: rgba(255, 255, 255, 0.8);
   --light-card-border: rgba(0, 0, 0, 0.1);
   --light-shadow: rgba(0, 0, 0, 0.1);
-  --light-diagram-bg: rgba(0, 0, 0, 0.03);
 
   /* Dark theme colors */
   --dark-bg: #090019;
@@ -42,10 +41,9 @@ html[data-theme='dark'] {
   --dark-highlight: mediumaquamarine;
   --dark-input-bg: rgba(255, 255, 255, 0.1);
   --dark-nav-bg: rgba(255, 255, 255, 0.1);
-  --dark-card-bg: rgb(89, 89, 117);
+  --dark-card-bg: #191326;
   --dark-card-border: rgba(255, 255, 255, 0.1);
   --dark-shadow: rgba(0, 0, 0, 0.3);
-  --dark-diagram-bg: rgba(255, 255, 255, 0.3);
 
   /* Resolved theme tokens via light-dark() */
   --page-bg: light-dark(var(--light-bg), var(--dark-bg));
@@ -62,11 +60,13 @@ html[data-theme='dark'] {
   --card-bg: light-dark(var(--light-card-bg), var(--dark-card-bg));
   --card-border: light-dark(var(--light-card-border), var(--dark-card-border));
   --shadow: light-dark(var(--light-shadow), var(--dark-shadow));
-  --diagram-bg: light-dark(var(--light-diagram-bg), var(--dark-diagram-bg));
   --tooltip-bg: light-dark(var(--light-bg), var(--dark-card-bg));
   --content-max-width: 55em;
 }
-
+/* Keep this filter in sync with finalize_pngs() for GitHub's README previews. */
+:root[data-theme='dark'] img.diagram:not([data-preserve-colors]) {
+  filter: invert(0.9) hue-rotate(180deg);
+}
 body {
   background: var(--page-bg);
   padding: 2vw;

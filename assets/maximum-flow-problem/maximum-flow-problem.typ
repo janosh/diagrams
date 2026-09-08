@@ -19,7 +19,7 @@
     circle(
       pos,
       radius: .26,
-      fill: fills.at(name, default: white),
+      fill: fills.at(name, default: rgb("#cdd3da")),
       stroke: .9pt,
       name: name,
     )
@@ -48,7 +48,7 @@
     content(
       name + ".mid",
       text(fill: color, size: .85em, raw(label)),
-      fill: white,
+      fill: rgb("#cdd3da"),
       frame: "rect",
       stroke: none,
       padding: 1.5pt,

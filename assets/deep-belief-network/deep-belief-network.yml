@@ -10,4 +10,4 @@ tags:
   - neural networks
   - generative modeling
 description: |
-  A deep belief network stacks restricted Boltzmann machines: directed weights map the visible layer to the first hidden layer while the top two hidden layers form an undirected associative memory.
+  A compact generative deep belief network: the top hidden pair forms an undirected restricted Boltzmann machine, while downward directed connections generate the visible variables. Based on [Hinton et al. (2006)](https://www.cs.toronto.edu/~hinton/absps/fastnc.pdf).

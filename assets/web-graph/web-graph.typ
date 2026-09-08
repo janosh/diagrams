@@ -19,7 +19,7 @@
     circle(
       pos,
       radius: r,
-      fill: white.transparentize(40%),
+      fill: rgb("#cdd3da").transparentize(40%),
       stroke: 1.1pt,
       name: name,
     )

@@ -35,7 +35,7 @@
   }
 
   // sample-time tick labels
-  for (idx, label) in ((1, $1 / f_s$), (2, $2 / f_s$), (3, $3 / f_s$)) {
+  for (idx, label) in ((1, $1 \/ f_s$), (2, $2 \/ f_s$), (3, $3 \/ f_s$)) {
     content((idx * sample-period * scale-x, -.25), label, anchor: "north")
   }
   content((4 * sample-period * scale-x, -.35), $dots$, anchor: "north")

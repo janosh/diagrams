@@ -12,7 +12,7 @@
     fill: gray,
   )
 
-  let neuron(pos, fill: white, label: none, name: none) = {
+  let neuron(pos, fill: rgb("#cdd3da"), label: none, name: none) = {
     content(
       pos,
       if label != none { $#label$ },
@@ -44,7 +44,7 @@
       (mid-x + shift.at(0), mid-y + shift.at(1)),
       [#calc.round(0.35 * ii - jj * 0.15, digits: 2)],
       frame: "rect",
-      fill: white,
+      fill: rgb("#cdd3da"),
       stroke: none,
       padding: 1.5pt,
     )

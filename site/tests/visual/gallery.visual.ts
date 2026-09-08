@@ -52,19 +52,23 @@ for (const theme of [`light`, `dark`] as const) {
   }) => {
     const wrapper = await open_diagram(page, `euler-angles`)
     await set_theme(page, theme)
-    // Crop at a fixed origin, independent of font metrics in the preceding prose.
-    await expect(wrapper).toHaveScreenshot(`euler-page-${theme}.png`, {
-      stylePath: `${import.meta.dirname}/diagram-crop.css`,
-    })
+    await expect(wrapper.locator(`img`)).toHaveCSS(
+      `filter`,
+      theme === `dark` ? `invert(0.9) hue-rotate(180deg)` : `none`,
+    )
+    await expect(wrapper.locator(`img`)).toHaveCSS(`background-color`, `rgba(0, 0, 0, 0)`)
     await enter_fullscreen(wrapper)
     await expect(wrapper).toHaveJSProperty(`scrollTop`, 0)
-    await expect(page).toHaveScreenshot(`euler-fullscreen-${theme}.png`)
     for (const next_theme of [theme === `light` ? `dark` : `light`, theme] as const) {
       await set_theme(page, next_theme)
       const page_bg = await page
         .locator(`body`)
         .evaluate((body) => getComputedStyle(body).backgroundColor)
       await expect(wrapper).toHaveCSS(`background-color`, page_bg)
+      await expect(wrapper.locator(`img`)).toHaveCSS(
+        `filter`,
+        next_theme === `dark` ? `invert(0.9) hue-rotate(180deg)` : `none`,
+      )
     }
     await wrapper.getByRole(`button`, { name: `Exit fullscreen` }).click()
     await expect.poll(() => page.evaluate(() => document.fullscreenElement)).toBeNull()
@@ -122,6 +126,37 @@ for (const theme of [`light`, `dark`] as const) {
   })
 }
 
+test(`theme overrides apply to cards while atom surface colors stay fixed`, async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: `dark` })
+  await page.addInitScript(() => localStorage.setItem(`theme`, `dark`))
+  await page.goto(`/`)
+  // The persisted mode is applied during hydration; wait before overriding it.
+  await expect(page.getByRole(`button`, { name: `Switch to light theme` })).toBeVisible()
+  await page
+    .getByPlaceholder(`Search...`, { exact: true })
+    .fill(`Feynman Building Blocks`)
+  const artwork = page.locator(`a[href='feynman-building-blocks'] img`)
+  await page.getByRole(`button`, { name: `Switch to light theme` }).click()
+  await page.getByRole(`button`, { name: `Switch to system (auto) theme` }).click()
+  await expect(artwork).toHaveCSS(`filter`, `invert(0.9) hue-rotate(180deg)`)
+  await page.emulateMedia({ colorScheme: `light` })
+  await expect(artwork).toHaveCSS(`filter`, `none`)
+  await page.emulateMedia({ colorScheme: `dark` })
+  await expect(artwork).toHaveCSS(`filter`, `invert(0.9) hue-rotate(180deg)`)
+  for (const theme of [`light`, `dark`] as const) {
+    await set_theme(page, theme)
+    await expect(artwork).toHaveCSS(
+      `filter`,
+      theme === `dark` ? `invert(0.9) hue-rotate(180deg)` : `none`,
+    )
+  }
+  const wrapper = await open_diagram(page, `sierpinski-triangle`)
+  await set_theme(page, `dark`)
+  await expect(wrapper.locator(`img`)).toHaveCSS(`filter`, `none`)
+})
+
 test(`a diagram that fits remains centered`, async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 2000 })
   const wrapper = await open_diagram(page, `xc-functional`)
@@ -134,18 +169,52 @@ test(`a diagram that fits remains centered`, async ({ page }) => {
   expect(await wrapper.evaluate((element) => element.scrollHeight)).toBe(2000)
 })
 
-for (const slug of [`xc-functional`, `matsubara-contour-deformation`]) {
-  test(`mobile source controls never cover code (${slug})`, async ({ page }) => {
+for (const slug of [`xc-functional`, `regulated-and-unregulated-propagators`]) {
+  test(`mobile source stays readable across themes (${slug})`, async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 720 })
+    await page.addInitScript(() => localStorage.setItem(`theme`, `dark`))
     await open_diagram(page, slug)
     const code = page.locator(`pre`)
+    // Explicit site themes must win over either OS preference, including after toggling.
+    for (const color_scheme of [`dark`, `light`] as const) {
+      await page.emulateMedia({ colorScheme: color_scheme })
+      for (const theme of [`light`, `dark`] as const) {
+        if (theme === `dark`)
+          await page
+            .getByRole(`button`, { name: `Switch to system (auto) theme` })
+            .click()
+        await page.getByRole(`button`, { name: `Switch to ${theme} theme` }).click()
+        await expect(code.locator(`.pl-smi`).first()).toHaveCSS(
+          `color`,
+          theme === `light` ? `rgb(31, 35, 40)` : `rgb(240, 246, 252)`,
+        )
+        await expect(code.locator(`.pl-k`).first()).toHaveCSS(
+          `color`,
+          theme === `light` ? `rgb(207, 34, 46)` : `rgb(255, 123, 114)`,
+        )
+      }
+    }
     const header = page.locator(`header`).filter({ has: page.locator(`aside`) })
-    await header.scrollIntoViewIfNeeded()
-    const header_bounds = await header.boundingBox()
+    const filename = header.locator(`h3`)
+    await filename.scrollIntoViewIfNeeded()
+    const title_bounds = await filename.boundingBox()
     const code_bounds = await code.boundingBox()
-    if (!header_bounds || !code_bounds)
+    const toolbar_bounds = await header.locator(`aside`).boundingBox()
+    if (!title_bounds || !code_bounds || !toolbar_bounds)
       throw new Error(`Missing source header or code bounds on ${slug}`)
-    expect(header_bounds.y + header_bounds.height).toBeLessThanOrEqual(code_bounds.y)
+    // The badge straddles the background; controls occupy their own row above code.
+    const backdrop_top = await header.evaluate((element) => {
+      const block = element.parentElement
+      if (!block) throw new Error(`Missing code block`)
+      const first_row = Number(getComputedStyle(block).gridTemplateRows.split(`px`)[0])
+      return block.getBoundingClientRect().top + first_row
+    })
+    expect(backdrop_top).toBeCloseTo(title_bounds.y + title_bounds.height / 2, 0)
+    expect(toolbar_bounds.y).toBeGreaterThanOrEqual(title_bounds.y + title_bounds.height)
+    expect(toolbar_bounds.y + toolbar_bounds.height).toBeLessThanOrEqual(code_bounds.y)
+    expect(
+      code_bounds.x + code_bounds.width - toolbar_bounds.x - toolbar_bounds.width,
+    ).toBeCloseTo(16, 0)
     const control_bounds = []
     for (const control of await header.locator(`h3, aside a, aside button`).all()) {
       const bounds = await control.boundingBox()

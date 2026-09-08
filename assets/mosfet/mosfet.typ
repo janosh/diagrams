@@ -19,7 +19,7 @@
   rect(
     (start-x, start-y),
     (end-x, end-y),
-    fill: white,
+    fill: rgb("#cdd3da"),
     stroke: rgb("#f00"),
     name: "dielectric-box",
   )
@@ -60,7 +60,7 @@
     [dielectric],
     frame: "rect",
     padding: 2pt,
-    fill: white,
+    fill: rgb("#cdd3da"),
     stroke: (thickness: .5pt),
   )
 
@@ -69,12 +69,12 @@
     ((1.25, 2), (3, 2.5), "source-metal", [source]),
     ((8, 2), (9.75, 2.5), "drain-metal", [drain]),
   ) {
-    rect(start, end, fill: rgb("#e6e6ff"), name: name)
+    rect(start, end, fill: rgb("#c8c8e1"), name: name)
     content(name, label)
   }
 
   // Title
-  content("gate-metal.north", [$n$-type MOSFET], anchor: "south", padding: (
+  content("gate-metal.north", [$n$-type channel], anchor: "south", padding: (
     bottom: 2mm,
   ))
 })

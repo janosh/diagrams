@@ -10,6 +10,6 @@ tags:
   - geometry
   - coordinates
 description: |
-  Named after the mathematician Leonhard Euler, the 3 Euler angles describe arbitrary orientations in 3d w.r.t. to some coordinate system. They can also represent the orientation of a frame of reference in physics or of a general basis in 3d linear algebra.
+  Three ordered rotations describe the orientation of a frame in 3D. This diagram uses the intrinsic Z–Y–Z convention: precession $\psi$ about the original $z$ axis, nutation $\theta$ about the intermediate $v$ axis, and spin $\varphi$ about the tilted $z_1$ axis. Blue, orange, and teal distinguish the three stages; the final basis is $(x_1,y_1,z_1)$. Reordering the rotations generally changes the final orientation.
 
   See also [Cartesian vs Polar Coordinates](../cartesian-vs-polar-coordinates).

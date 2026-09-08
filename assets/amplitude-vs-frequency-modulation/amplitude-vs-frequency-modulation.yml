@@ -1,0 +1,11 @@
+title: Amplitude vs Frequency Modulation
+tags:
+- signal processing
+- communications
+- modulation
+description: 'Transmit the same message by changing one property of a fast carrier. Read each column from the message at the top to the transmitted signal at the bottom.
+
+
+  Original illustrations: [Amplitude Modulation](https://github.com/PetarV-/TikZ/tree/86aee049f5355d77c598b936399e42caf8941e60/Amplitude%20modulation), [Frequency Modulation](https://github.com/PetarV-/TikZ/tree/86aee049f5355d77c598b936399e42caf8941e60/Frequency%20modulation).'
+creator: Petar Veličković
+source: IQ sampling and FM demodulation using MATLAB, [mgcsweek v2.0](http://www.csnedelja.mg.edu.rs)

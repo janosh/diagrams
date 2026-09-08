@@ -1,0 +1,11 @@
+title: Normalizing Flows
+tags:
+- machine learning
+- generative modeling
+- probability
+- normalizing flows
+- statistics
+description: 'Build a complicated density by composing invertible transformations of a simple one. The Jacobian determinant keeps track of the volume change, so density stays normalized.
+
+
+  Sources: [Real NVP](https://arxiv.org/abs/1605.08803) and [Masked Autoregressive Flow](https://arxiv.org/abs/1705.07057).'

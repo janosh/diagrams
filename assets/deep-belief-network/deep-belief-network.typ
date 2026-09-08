@@ -1,73 +1,51 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content, line, rect
+#set page(width: 540pt, height: auto, margin: 20pt, fill: none)
+#set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
+#set par(leading: 0.55em)
+#show math.equation: set text(size: 14pt)
 
-// Edge from every node of one layer to every node of the next, addressing nodes by the
-// `<prefix><index>` names their layer gave them. `start` is that numbering's first index.
-#let fully-connect(from-prefix, to-prefix, from-count, to-count, start: 1, ..style) = {
-  for from-idx in range(start, from-count + start) {
-    for to-idx in range(start, to-count + start) {
-      line(from-prefix + str(from-idx), to-prefix + str(to-idx), ..style)
+// Hinton et al. (2006): https://www.cs.toronto.edu/~hinton/absps/fastnc.pdf
+#align(center)[#canvas(length: 1pt, {
+  rect((-26, 28), (166, -108), radius: 8pt, fill: rgb("#cdd3da"), stroke: none)
+  // Nine undirected edges in the top RBM, nine downward generative edges below it.
+  for upper in range(3) {
+    for lower in range(3) {
+      line((upper * 70, -13), (lower * 70, -67), stroke: rgb("#60768c") + 0.8pt)
+      line((upper * 70, -93), (lower * 70, -167), stroke: rgb("#0b5fa5") + 0.8pt, mark: (
+        end: "stealth",
+        scale: 0.55,
+      ))
     }
   }
-}
-
-// Outline weight of network units.
-#let node-stroke = 0.8pt
-
-#set page(width: auto, height: auto, margin: 8pt, fill: none)
-
-#let node-r = .32
-#let pill-h = 1.3
-#let light-gray = rgb(191, 191, 191)
-
-#canvas({
-  // capsule-shaped layer container
-  let pill(center, width, fill) = rect(
-    (center.at(0) - width / 2, center.at(1) - pill-h / 2),
-    (center.at(0) + width / 2, center.at(1) + pill-h / 2),
-    radius: pill-h / 2,
-    fill: fill,
-    stroke: 2.2pt,
-  )
-
-  let row(prefix, count, y) = {
-    for idx in range(count) {
-      let x-pos = (idx - (count - 1) / 2) * 1.0
-      circle(
-        (x-pos, y),
-        radius: node-r,
-        fill: white,
-        stroke: node-stroke,
-        name: prefix + str(idx),
-      )
-    }
-  }
-
-  for (center-y, width, fill, label, prefix, count) in (
-    (0, 9.2, white, $arrow(x)$, "a", 9),
-    (3.8, 5.15, light-gray, $arrow(h)_1$, "b", 5),
-    (7.6, 5.15, light-gray, $arrow(h)_2$, "c", 5),
+  for (height, label, fill) in (
+    (0, $h_2$, rgb("#b9c7d9")),
+    (-80, $h_1$, rgb("#b9c7d9")),
+    (-180, $x$, rgb("#c6d8d2")),
   ) {
-    pill((0, center-y), width, fill)
-    content(
-      (-width / 2 - .35, center-y),
-      text(size: 14pt, label),
-      anchor: "east",
-    )
-    row(prefix, count, center-y)
+    content((-44, height), label)
+    for idx in range(3) {
+      circle((idx * 70, height), radius: 13, fill: fill, stroke: rgb("#19324f") + 0.9pt)
+    }
   }
-
-  let arr = (
-    mark: (end: "stealth", fill: black, scale: .6),
-    stroke: rgb("#4A5560") + 0.5pt,
-  )
-  let bi-arr = (
-    mark: (start: "stealth", end: "stealth", fill: black, scale: .6),
-    stroke: rgb("#4A5560") + 0.5pt,
-  )
-  fully-connect("a", "b", 9, 5, start: 0, ..arr)
-  fully-connect("b", "c", 5, 5, start: 0, ..bi-arr)
-
-  content((4.3, 2.0), text(size: 14pt, $bold(W)_1$))
-  content((3.4, 5.8), text(size: 14pt, $bold(W)_2$))
-})
+  for (height, title, body) in (
+    (-35, [Undirected top pair], [RBM prior: $p(h_1,h_2)$]),
+    (-155, [Downward generation], [Conditional model: $p(x | h_1)$]),
+  ) {
+    content(
+      (205, height),
+      block(width: 225pt)[#text(size: 14pt, weight: "bold", title) #v(6pt) #body],
+      anchor: "west",
+      padding: 0pt,
+    )
+  }
+})]
+#v(12pt)
+#align(center, block(
+  inset: (x: 12pt, y: 8pt),
+  radius: 5pt,
+  fill: rgb("#cdd3da").transparentize(65%),
+  breakable: false,
+)[
+  $p(x,h_1,h_2) = p(h_1,h_2) p(x | h_1)$
+])

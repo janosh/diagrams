@@ -2,20 +2,46 @@ import os
 import shutil
 import subprocess
 
+import yaml
 
-def compress_png(png_path: str) -> None:
-    """Compress a PNG file with pngquant and zopflipng if available."""
-    if not os.path.isfile(png_path):
-        print(f"  skipping {png_path} (not found)")
+PNG_VARIANTS = ((".png", "200"), ("-hd.png", "400"))
+
+
+def finalize_pngs(base_path: str) -> None:
+    """Losslessly compress both PNG sizes and generate the themed README preview."""
+    for suffix, _ppi in PNG_VARIANTS:
+        png_path = f"{base_path}{suffix}"
+        if not os.path.isfile(png_path):
+            raise FileNotFoundError(png_path)
+        if shutil.which("zopflipng"):
+            subprocess.run(["zopflipng", "-y", png_path, png_path], check=True)
+
+    with open(f"{base_path}.yml") as file:
+        metadata = yaml.safe_load(file)
+    if metadata.get("hide") or metadata.get("preserve_colors"):
         return
-
-    if shutil.which("pngquant"):
-        # no check=True: --skip-if-larger exits non-zero when it keeps the original
-        subprocess.run(
-            ["pngquant", "32", "--skip-if-larger", "--ext", ".png", "--force", png_path]
-        )
-    if shutil.which("zopflipng"):
-        subprocess.run(["zopflipng", "-y", png_path, png_path])
+    # CSS invert(0.9) hue-rotate(180deg), operating on sRGB, with alpha untouched.
+    # The hue rotation restores the color families after inversion; brightness changes.
+    subprocess.run(
+        [
+            "magick",
+            f"{base_path}.png",
+            "-channel",
+            "RGB",
+            "-negate",
+            "-evaluate",
+            "Multiply",
+            "0.8",
+            "-evaluate",
+            "Add",
+            "10%",
+            "-color-matrix",
+            "-0.574 1.43 0.144 0.426 0.43 0.144 0.426 1.43 -0.856",
+            "+channel",
+            f"{base_path}-dark.png",
+        ],
+        check=True,
+    )
 
 
 def pdf_to_svg_png_compressed(pdf_path: str) -> str:
@@ -46,17 +72,22 @@ def pdf_to_svg_png_compressed(pdf_path: str) -> str:
             ["sudo", "sed", "-i", "/disable ghostscript format types/,+6d", xml_uri]
         )
 
-    magick_cmd = "magick" if shutil.which("magick") else "convert"
-    print(f"\n--- {magick_cmd}: convert PDF to PNG ---")
+    print("\n--- magick: convert PDF to PNG ---")
     # check=True: these PNGs are the assets the site renders, so fail loudly if missing
-    for density, suffix in (("200", ".png"), ("400", "-hd.png")):
+    for suffix, density in PNG_VARIANTS:
         subprocess.run(
-            [magick_cmd, "-density", density, f"{base_path}.pdf", f"{base_path}{suffix}"],
+            [
+                "magick",
+                "-density",
+                density,
+                "-background",
+                "none",
+                f"{base_path}.pdf",
+                f"{base_path}{suffix}",
+            ],
             check=True,
         )
 
-    print("\n--- compress PNGs ---")
-    compress_png(f"{base_path}.png")
-    compress_png(f"{base_path}-hd.png")
+    finalize_pngs(base_path)
 
     return base_path

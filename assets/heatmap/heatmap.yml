@@ -7,3 +7,4 @@ description: >-
   one another, while e–i carry large diagonal entries but almost no weight off it, so they are
   nearly decoupled from the rest. Posted as an answer to
   <https://tex.stackexchange.com/q/44868>.
+hide: true

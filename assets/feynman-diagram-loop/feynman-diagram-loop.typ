@@ -26,7 +26,7 @@
     loop-right,
     text(size: 10pt)[$times.o$],
     name: "regulator",
-    fill: white,
+    fill: rgb("#cdd3da"),
     frame: "circle",
     stroke: none,
     padding: -1.7pt,

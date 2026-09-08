@@ -31,7 +31,7 @@
     axis-style: "left",
     legend: "inner-north-east",
     // Compact legend with a thin border.
-    legend-style: (item: (spacing: 0.15), padding: 0.15, stroke: 0.5pt),
+    legend-style: (fill: rgb("#cdd3da"), item: (spacing: 0.15), padding: 0.15, stroke: 0.5pt),
     {
       // Plot p0 (ideal gas)
       plot.add(
@@ -39,7 +39,7 @@
         domain: (0.5, 5.5),
         samples: 100,
         p0,
-        label: $p_0 = (R T) / v$,
+        label: $p_0 = R T \/ v$,
       )
 
       // Plot p1 (first virial correction)
@@ -48,7 +48,7 @@
         domain: (0.5, 5.5),
         samples: 100,
         p1,
-        label: $p_1 = p_0 + B_1 / v^2$,
+        label: $p_1 = p_0 + B_1 \/ v^2$,
       )
 
       // Plot p2 (second virial correction)
@@ -57,7 +57,7 @@
         domain: (0.5, 5.5),
         samples: 100,
         p2,
-        label: $p_2 = p_1 + B_2 / v^3$,
+        label: $p_2 = p_1 + B_2 \/ v^3$,
       )
     },
   )

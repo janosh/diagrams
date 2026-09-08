@@ -5,6 +5,7 @@ import os
 import re
 from dataclasses import dataclass
 from glob import glob
+from html import escape
 from itertools import zip_longest
 
 import yaml
@@ -21,6 +22,7 @@ class DiagramInfo:
 
     name: str
     title: str
+    preserve_colors: bool = False
 
 
 def get_diagram_sources(ext: str) -> list[str]:
@@ -61,7 +63,13 @@ def collect_diagrams() -> list[DiagramInfo]:
             raise ValueError(f"Missing 'title' in {yaml_path}")
 
         if any(os.path.isfile(f"{dir_name}/{name}{ext}") for ext in (".typ", ".tex")):
-            diagrams.append(DiagramInfo(name=name, title=metadata["title"]))
+            diagrams.append(
+                DiagramInfo(
+                    name=name,
+                    title=metadata["title"],
+                    preserve_colors=metadata.get("preserve_colors", False),
+                )
+            )
 
     return sorted(diagrams, key=lambda diagram: diagram.name)
 
@@ -85,9 +93,20 @@ def table_cell(diagram: DiagramInfo | None) -> tuple[str, str]:
     if diagram is None:
         return "", ""
     name, title = diagram.name, diagram.title
+    base_path = f"assets/{name}/{name}"
+    suffixes = (".png",) if diagram.preserve_colors else (".png", "-dark.png")
+    for suffix in suffixes:
+        if not os.path.isfile(f"{ROOT}/{base_path}{suffix}"):
+            raise FileNotFoundError(f"Missing README preview: {base_path}{suffix}")
+    image = f'<img alt="{escape(title, quote=True)}" src="{base_path}.png">'
+    if not diagram.preserve_colors:
+        image = (
+            f'<picture><source media="(prefers-color-scheme: dark)" '
+            f'srcset="{base_path}-dark.png">{image}</picture>'
+        )
     return (
         f"[{title}]({SITE_URL}/{name}) {get_code_links(name)}",
-        f"![{title}](assets/{name}/{name}.png)",
+        image,
     )
 
 

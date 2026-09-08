@@ -66,7 +66,7 @@
     frame: "rect",
     stroke: none,
     padding: (left: 5pt),
-    fill: white,
+    fill: rgb("#cdd3da"),
     name: "hull-label",
   )
   line(
@@ -87,13 +87,13 @@
     anchor: "east",
   )
 
-  // First draw invisible lines to find intersections
-  line(
+  // Intersection helpers must not expand the visible diagram's bounds.
+  draw.hide(line(
     (rel: (0, 3), to: "a2x"),
     (rel: (0, -3), to: "a2x"),
     stroke: none,
     name: "a2x-vertical",
-  )
+  ))
   intersections("a2x-isect", "a2x-vertical", "hull-a-ax", "hull-ax-a2x5")
 
   line(
@@ -116,12 +116,12 @@
   )
 
   // Second arrow - find intersections first
-  line(
+  draw.hide(line(
     (rel: (0, 3), to: "a2x5"),
     (rel: (0, -3), to: "a2x5"),
     stroke: none,
     name: "a2x5-vertical",
-  )
+  ))
   intersections("a2x5-isect", "a2x5-vertical", "hyp-hull-ax-a2x7", "hyp-hull-a2x7-x")
 
   line(
@@ -187,6 +187,7 @@
 
   content((rel: (-0.5, 0), to: "y-axis-left.mid"), [#rotate(
     -90deg,
+    reflow: true,
   )[$Delta E_f$ (energy/atom)]])
   content((width / 2, -0.5), $x "in" A_(1-x)X_x$)
 })

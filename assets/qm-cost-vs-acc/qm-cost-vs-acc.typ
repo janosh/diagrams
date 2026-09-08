@@ -1,76 +1,43 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content, line
 
-#set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set page(width: auto, height: auto, margin: 14pt, fill: none)
+#set text(font: "Avenir Next", size: 12pt)
 
-#let range = 9
-#let xy-ratio = 2 / 3
+// Exponents describe conventional dense algorithms, not measured runtime.
+// Vertical coordinates are schematic, not benchmark accuracies or error estimates.
+#let methods = (
+  (name: "Semilocal DFT", exponent: 3, height: 3.4, color: rgb("#d24636")),
+  (name: "Hartree–Fock", exponent: 4, height: 1.7, color: rgb("#385da8")),
+  (name: "MP2", exponent: 5, height: 3.5, color: rgb("#385da8")),
+  (name: "CCSD", exponent: 6, height: 4.7, color: rgb("#385da8")),
+  (name: "CCSD(T)", exponent: 7, height: 5.7, color: rgb("#385da8")),
+)
+#let scope = "Single-reference molecular energies near equilibrium"
+#let qualification = "Schematic positions; accuracy depends on system, observable, and basis."
 
 #canvas({
-  let arrow-style = (mark: (end: "stealth", scale: .75), fill: black)
+  let plot_x(exponent) = (exponent - 2) * 2.3
+  content((0, 6.95), text(size: 11pt, scope), anchor: "west")
 
-  line((-0.5, 0), (range, 0), ..arrow-style) // x-axis
-  line((0, -0.5), (0, range * xy-ratio), ..arrow-style) // y-axis
+  let arrow = (mark: (end: "stealth", scale: 0.7), stroke: 0.9pt)
+  line((0, 0), (13.2, 0), ..arrow)
+  line((0, 0), (0, 6.4), ..arrow)
+  content((0.15, 6.25), [higher accuracy], anchor: "west")
+  content((0.15, 5.75), text(size: 10pt)[qualitative], anchor: "west")
 
-  content(
-    (range + 0.1, .15),
-    [computational complexity],
-    anchor: "south-east",
-  )
-  content(
-    (0.2, range * xy-ratio),
-    [accuracy],
-    anchor: "north-west",
-  )
-
-  // Add N^n labels below x-axis
-  for n in std.range(1, 9) {
-    content(
-      (n, -0.3),
-      $N^#n$,
-      anchor: "north",
-    )
+  for exponent in range(3, 8) {
+    let axis_x = plot_x(exponent)
+    line((axis_x, -0.08), (axis_x, 0.08), stroke: 0.7pt)
+    content((axis_x, -0.4), $O(N^#exponent)$)
   }
+  content((6.6, -1.0), [Conventional scaling · $N$ = basis functions])
 
-  line((0, 0), (range, range * xy-ratio), stroke: (
-    dash: "dashed",
-    paint: gray,
-    thickness: .75pt,
-  ))
-
-  // Data points with labels
-  let methods = (
-    (2, "semi-empirical", "SE"),
-    (4, "Hartree-Fock", "HF"),
-    (5, "Moller-Plesset 2nd order", "MP2"),
-    (6, "Configuration Interaction", "CISD"),
-    (7, "Coupled Cluster", "CCSD(T)"),
-  )
-
-  for (x, name, abbr) in methods {
-    circle(
-      (x, x * xy-ratio),
-      radius: 2pt,
-      fill: rgb("#393998"),
-      stroke: none,
-    )
-    content(
-      (x + 0.2, x * xy-ratio - 0.2),
-      [#name],
-      anchor: "north-west",
-    )
+  for method in methods {
+    let point = (plot_x(method.exponent), method.height)
+    circle(point, radius: 0.085, fill: method.color, stroke: none)
+    content((point.at(0), point.at(1) + 0.36), text(weight: "bold", method.name))
   }
-
-  // Special point for DFT
-  circle(
-    (3, 5 * xy-ratio),
-    radius: 2.4pt,
-    fill: rgb("#de2626"),
-    stroke: none,
-  )
-  content(
-    (2.7, 5 * xy-ratio),
-    [DFT],
-    anchor: "east",
-  )
+  content((plot_x(3), 2.95), text(size: 10pt)[functional-dependent])
+  content((6.6, -1.8), text(size: 10.5pt, qualification))
 })

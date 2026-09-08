@@ -17,7 +17,7 @@
     content(name + ".north", label, anchor: "north", padding: padding)
   }
 
-  circle((x, 0), anchor: "center", radius: dr, fill: white, name: "zero")
+  circle((x, 0), anchor: "center", radius: dr, fill: rgb("#cdd3da"), name: "zero")
   content("zero.south", $0$, anchor: "north", padding: padding)
 }
 

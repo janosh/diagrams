@@ -43,13 +43,13 @@
   let x-end = (x-range, -ratio * y-range)
 
   line(x-start, x-end, ..spacing-arrow, name: "x-spacing")
-  content("x-spacing.mid", $(2pi) / L_x$, anchor: "north", padding: 0.2)
+  content("x-spacing.mid", $2pi \/ L_x$, anchor: "north", padding: 0.2)
 
   let y-start = (x-range, -ratio * y-range)
   let y-end = (x-range, -ratio * y-range + ratio)
 
   line(y-start, y-end, ..spacing-arrow, name: "y-spacing")
-  content("y-spacing.mid", $(2pi) / L_y$, anchor: "west", padding: 0.2)
+  content("y-spacing.mid", $2pi \/ L_y$, anchor: "west", padding: 0.2)
 
   // Add N(k) label
   let angle = 130deg

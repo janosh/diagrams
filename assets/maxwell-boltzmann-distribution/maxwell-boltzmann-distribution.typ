@@ -27,7 +27,7 @@
     x-grid: true,
     y-grid: true,
     // Compact legend with a thin border.
-    legend-style: (item: (spacing: 0.15), padding: 0.15, stroke: 0.5pt),
+    legend-style: (fill: rgb("#cdd3da"), item: (spacing: 0.15), padding: 0.15, stroke: 0.5pt),
     {
       for (temp, color) in ((100, red), (300, orange), (1000, blue)) {
         plot.add(

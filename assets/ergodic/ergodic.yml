@@ -7,5 +7,7 @@ tags:
   - phase space
   - chaos theory
   - trajectories
-description: >-
-  Phase space diagram showing two types of trajectories in a 2D oscillator system: a non-ergodic trajectory R (in red) for rational frequency ratio ω = 2 which forms a closed orbit, and an ergodic region R (in orange) for irrational frequency ratio ω ∉ ℚ which densely fills the available phase space P (blue ellipse). The diagram illustrates how ergodicity depends on the rationality of frequency ratios.
+description: |
+  Energy contours, enclosed phase-space volume, and finite-width energy shells for a harmonic oscillator in canonical coordinates (q,p), followed by rational and irrational angle trajectories on a two-oscillator fixed-action torus. The guide distinguishes ergodicity on that torus from ergodicity on the full energy surface. Incorporates the former Momentum Shell entry. See [ergodic theory and statistical mechanics](https://pmc.ncbi.nlm.nih.gov/articles/PMC4343160/).
+
+  The interior counts states below E; the annulus counts a finite energy interval; exact-energy dynamics stays on the contour. Opposite edges of each angle plot are identified. An irrational frequency ratio produces a dense trajectory over infinite time, while the drawing shows only a finite segment. Uniform-angle ergodicity applies to the fixed-action torus: uncoupled oscillators conserve their individual actions, so this does not establish microcanonical ergodicity on the full energy surface.

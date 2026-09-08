@@ -34,7 +34,7 @@
   }
   let transition(start, end, ctrl-1, ctrl-2, label-pos, label) = {
     bezier(start, end, ctrl-1, ctrl-2, ..heavy)
-    content(label-pos, label, anchor: "east", fill: white, padding: 2pt)
+    content(label-pos, label, anchor: "east", fill: rgb("#cdd3da"), padding: 2pt)
   }
   let state(x, idx, q, action, reward, reward-label, mark-pos, wiggle-x, dollar-pos) = {
     let id = "s" + str(idx)
@@ -48,7 +48,7 @@
       panel.at(0),
       panel.at(1),
       stroke: none,
-      fill: rgb("#f5f5f5"),
+      fill: rgb("#cdd3da"),
       name: panel-name,
     )
     rect(

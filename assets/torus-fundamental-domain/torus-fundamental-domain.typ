@@ -13,7 +13,7 @@
 )
 #set text(size: 8pt)
 
-// TODO this figure needs revisiting to get the gray-shaded areas right without overlaying white fills once CetZ implements path clipping
+// TODO this figure needs revisiting to get the gray-shaded areas right without overlaying opaque fills once CetZ implements path clipping
 // https://github.com/cetz-package/cetz/discussions/813#discussioncomment-12218646
 #canvas({
   draw.set-style(stroke: (thickness: 0.4pt))
@@ -48,7 +48,7 @@
       stop: start + 90deg,
       mode: "PIE",
       stroke: (paint: green),
-      fill: white,
+      fill: rgb("#cdd3da"),
       name: name,
       anchor: arc-anchor,
     )
@@ -68,7 +68,7 @@
   line((xmin, 0), (xmax, 0), ..arrow-style, name: "x-axis")
   line((0, ymin), (0, ymax), ..arrow-style, name: "y-axis")
 
-  for (x, name, label) in ((-0.5, "x-minus-tick", $-1 / 2$), (0.5, "x-plus-tick", $1 / 2$)) {
+  for (x, name, label) in ((-0.5, "x-minus-tick", $-1 \/ 2$), (0.5, "x-plus-tick", $1 \/ 2$)) {
     line((x, -0.02), (x, 0.02), name: name)
     content((rel: (0, -0.08), to: name + ".mid"), label, anchor: "north")
   }

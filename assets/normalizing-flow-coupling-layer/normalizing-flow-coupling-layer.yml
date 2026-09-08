@@ -1,8 +1,0 @@
-title: Normalizing Flow Coupling Layer
-tags:
-  - machine learning
-  - generative modeling
-  - probability
-  - statistics
-description: |
-  Architecture of a normalizing flow coupling layer showing forward and inverse passes. The input is split into two parts: one passes through unchanged while the other is transformed by a learned function conditioned on the first part. Inspired by Ari Seff in <https://youtu.be/i7LjDvsLWCg?t=250>.

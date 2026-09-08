@@ -172,7 +172,7 @@
   (103, 262, "Lr", "Lawrencium"),
 )
 
-#let element(number, mass, symbol, name, fill: white, text-color: black) = {
+#let element(number, mass, symbol, name, fill: rgb("#cdd3da"), text-color: black) = {
   box(width: 3cm, height: 3cm, fill: fill, stroke: 0.7pt, inset: 4pt)[
     #set align(center)
     #text(size: 18pt, weight: "bold")[#number #h(1fr) #mass]\
@@ -228,12 +228,6 @@
       element(..data, fill: colors.lanthanide, text-color: text-color),
     )
   }
-
-  // Title
-  content((7 * cell-size, 0.2 * cell-size), text(
-    size: 76pt,
-    weight: "bold",
-  )[Periodic Table of Elements])
 
   // Period labels
   for period in range(1, 8) {

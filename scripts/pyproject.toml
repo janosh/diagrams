@@ -8,4 +8,5 @@ extend-ignore-words-re = [
   "\\bket\\b",    # Physics: bra-ket notation
   "\\bPN\\b",     # Acronym: PNG (in context of file formats)
   "\\bBA\\b",     # Math: $G_{BA}$ generator subscript in cyclegan
+  "\\bdscribe\\b", # Materials descriptor library
 ]

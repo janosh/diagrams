@@ -20,14 +20,14 @@
     stroke: color + .75pt,
   )
 
-  let vertex(name, fill: white) = {
+  let vertex(name, fill: rgb("#cdd3da")) = {
     circle(nodes.at(name), radius: .28, fill: fill, stroke: .7pt, name: name)
     content(name, $upright(#name)$)
   }
   let label(pos, value, color) = content(
     pos,
     text(fill: color)[$#value$],
-    fill: white,
+    fill: rgb("#cdd3da"),
     padding: 1pt,
   )
   let straight(from, to, weight, offset, shortest: false) = {
@@ -39,12 +39,12 @@
 
   for (name, fill) in (
     ("s", red.lighten(50%)),
-    ("a", white),
-    ("b", white),
-    ("c", white),
-    ("d", white),
-    ("e", white),
-    ("f", white),
+    ("a", rgb("#cdd3da")),
+    ("b", rgb("#cdd3da")),
+    ("c", rgb("#cdd3da")),
+    ("d", rgb("#cdd3da")),
+    ("e", rgb("#cdd3da")),
+    ("f", rgb("#cdd3da")),
     ("t", blue.lighten(50%)),
   ) { vertex(name, fill: fill) }
 

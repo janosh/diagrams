@@ -1,58 +1,53 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content, line
+#set page(width: 500pt, height: auto, margin: (x: 20pt, y: 8pt), fill: none)
+#set text(font: "Avenir Next", size: 12pt)
+#set par(leading: 0.55em)
 
-#set page(width: auto, height: auto, margin: 8pt, fill: none)
-
-#canvas({
-  let layout = (node: 1.5, level: 1.5, radius: 0.35)
-  let arrow-style = (
-    mark: (end: "stealth", fill: black, scale: 0.2, offset: 0.03),
-  )
-
-  let draw-node(pos, label, name: none) = {
-    circle(pos, radius: layout.radius, name: name)
-    content(pos, $#label$)
-  }
-
-  let draw-edge-label(from, to, label, left: true) = {
-    let anchor = if left { "east" } else { "west" }
-    content(
-      (rel: (if left { -0.3 } else { 0.3 }, 0), to: from + "-" + to + ".mid"),
-      $#label$,
-      anchor: anchor,
+#let objective(x, y) = 3 * x + 2 * y
+#let feasible(x, y) = x >= 0 and y >= 0 and 2 * x + y <= 4 and x + 2 * y <= 4
+// Root, x >= 2, x <= 1, then the two children of x <= 1.
+#let lp_points = ((4 / 3, 4 / 3), (2, 0), (1, 3 / 2), (1, 1), (0, 2))
+#align(center)[#box(inset: (x: 10pt, y: 7pt), radius: 5pt, fill: rgb("#cdd3da"))[
+    #grid(
+      columns: (auto, auto),
+      column-gutter: 10pt,
+      row-gutter: 5pt,
+      align: left + horizon,
+      [*Objective*], [$max z = 3x + 2y$],
+      [*Constraints*], [$2x+y <= 4, quad x+2y <= 4, quad x,y in ZZ_(>=0)$],
     )
+  ]
+]
+#v(4pt)
+#align(center)[#canvas(length: 1pt, {
+  let nodes = (
+    (name: "p0", pos: (0, 0), label: $P_0$, fill: none),
+    (name: "p1", pos: (-85, -105), label: $P_1$, fill: none),
+    (name: "p2", pos: (90, -105), label: $P_2$, fill: rgb("#c6d8d2")),
+    (name: "p3", pos: (-145, -220), label: $P_3$, fill: rgb("#c6d8d2")),
+    (name: "p4", pos: (-25, -220), label: $P_4$, fill: rgb("#ead3c5")),
+  )
+  for node in nodes {
+    circle(node.pos, radius: 19, fill: node.fill, stroke: 1.2pt, name: node.name)
+    content(node.pos, text(size: 21pt, node.label))
   }
-
-  // Root (level 0)
-  draw-node((0, 0), $P_0$, name: "p0")
-
-  // Level 1
-  draw-node((-layout.node, -layout.level), $P_1$, name: "p1")
-  draw-node((layout.node, -layout.level), $P_2$, name: "p2")
-
-  // Level 2
-  draw-node((0, -2 * layout.level), $P_3$, name: "p3")
-  draw-node((2 * layout.node, -2 * layout.level), $P_4$, name: "p4")
-
-  // Level 3
-  draw-node((-layout.node, -3 * layout.level), $P_5$, name: "p5")
-  draw-node((layout.node, -3 * layout.level), $P_6$, name: "p6")
-
-  for (parent, child) in (
-    ("p0", "p1"),
-    ("p0", "p2"),
-    ("p2", "p3"),
-    ("p2", "p4"),
-    ("p3", "p5"),
-    ("p3", "p6"),
+  for (parent, child, label, offset) in (
+    ("p0", "p1", $x <= 1$, (-23, 8)),
+    ("p0", "p2", $x >= 2$, (23, 8)),
+    ("p1", "p3", $y <= 1$, (-24, 0)),
+    ("p1", "p4", $y >= 2$, (24, 0)),
   ) {
-    line(parent, child, ..arrow-style, name: parent + "-" + child)
+    let edge_name = parent + "-" + child
+    line(parent, child, stroke: 1pt, mark: (end: "stealth", scale: 0.7), name: edge_name)
+    content((rel: offset, to: edge_name + ".mid"), label)
   }
 
-  draw-edge-label("p0", "p1", $x_1 <= 0$)
-  draw-edge-label("p0", "p2", $x_1 >= 1$, left: false)
-  draw-edge-label("p2", "p3", $x_2 <= 0$)
-  draw-edge-label("p2", "p4", $x_2 >= 1$, left: false)
-  draw-edge-label("p3", "p5", $x_3 <= 0$)
-  draw-edge-label("p3", "p6", $x_3 >= 1$, left: false)
-})
+  content((0, 44), align(center)[*LP relaxation*\ $(x,y)=(4 \/ 3,4 \/ 3), quad U=20 \/ 3$])
+  content((-114, -105), align(right)[$(1,3 \/ 2)$\ $U=6$], anchor: "east")
+  content((120, -105), [*3 Incumbent*\ $(2,0), quad L=6$], anchor: "west")
+  content((-145, -260), align(center)[*1 Integer*\ $(1,1), quad L=5$])
+  content((-15, -260), align(center)[*2 Prune*\ $(0,2), quad U=4 <= 5$])
+})]
+#v(12pt)
+#align(center)[*Optimal:* $(x,y)=(2,0), quad z^*=6$]

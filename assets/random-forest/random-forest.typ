@@ -44,7 +44,7 @@
     body,
     frame: "rect",
     stroke: 0.1pt,
-    fill: white,
+    fill: rgb("#cdd3da"),
     inset: 3pt,
     radius: 3pt,
     padding: (3pt, 5pt, 2pt),

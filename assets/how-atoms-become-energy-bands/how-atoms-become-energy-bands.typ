@@ -9,13 +9,13 @@
 // Sources: MIT OCW 3.23 (2007), lecture 10, Tight-Binding:
 // https://ocw.mit.edu/courses/3-23-electrical-optical-and-magnetic-properties-of-materials-fall-2007/resources/lec10/
 // Ashcroft & Mermin, Solid State Physics (1976), chapters 10 and 11.
-#set page(width: auto, height: auto, margin: 0pt, fill: white)
+#set page(width: auto, height: auto, margin: 0pt, fill: none)
 #set text(font: "Avenir Next", size: 14pt, fill: rgb("#19304E"))
 #set par(leading: 0.55em)
 #set math.equation(numbering: none)
 
 #let ink = rgb("#19304E")
-#let muted = rgb("#617087")
+#let muted = rgb("#344257")
 #let blue = rgb("#2764C3")
 #let teal = rgb("#087F7C")
 #let orange = rgb("#BC502D")
@@ -63,9 +63,8 @@
 }
 
 #canvas(length: 1pt, {
-  rect((0, 0), (1000, -1040), fill: white, stroke: none)
-  rect((0, 0), (1000, -7), fill: teal, stroke: none)
-  label(28, 25, 944, [How atoms become energy bands], size: 34pt, weight: "bold")
+  rect((0, -49), (1000, -1040), fill: none, stroke: none)
+  rect((0, -49), (1000, -56), fill: teal, stroke: none)
   label(
     30,
     74,
@@ -82,7 +81,7 @@
     size: 14pt,
   )
 
-  panel(24, 146, 952, 274, rgb("#EFF5FD"))
+  panel(24, 146, 952, 274, rgb("#c7d3e1"))
   label(
     42,
     163,
@@ -130,7 +129,7 @@
   label(310, 273, 111, [antibonding], size: 10pt, color: orange, centered: true)
   label(316, 365, 100, [bonding], size: 10pt, color: teal, centered: true)
 
-  panel(24, 435, 952, 60, rgb("#EFF8F5"))
+  panel(24, 435, 952, 60, rgb("#c7d8d1"))
   label(
     42,
     447,
@@ -182,7 +181,7 @@
     thickness: 0.8pt,
     dash: "dashed",
   ))
-  for (fraction, tick) in ((0, $-pi/a$), (0.5, $0$), (1, $pi/a$)) {
+  for (fraction, tick) in ((0, $-pi \/ a$), (0.5, $0$), (1, $pi \/ a$)) {
     symbol(plot_left + plot_width * fraction, 800, tick, size: 16pt)
   }
   symbol(52, energy_y(0), $epsilon_0$, size: 16pt, color: muted)
@@ -201,7 +200,7 @@
   )
 
   // Phase patterns at the band extrema: colors indicate sign, not electric charge.
-  label(651, 583, 300, [HIGH ENERGY  •  $k = pi/a$], size: 14pt, color: orange, weight: "bold")
+  label(651, 583, 300, [HIGH ENERGY  •  $k = pi \/ a$], size: 14pt, color: orange, weight: "bold")
   for idx in range(7) {
     atom(667 + idx * 42, 631, phase: if calc.rem(idx, 2) == 0 { 1 } else { -1 }, radius: 23)
   }
@@ -218,7 +217,7 @@
     color: muted,
   )
 
-  panel(24, 864, 952, 149, rgb("#F4EFF9"))
+  panel(24, 864, 952, 149, rgb("#d2cbdc"))
   label(
     42,
     880,

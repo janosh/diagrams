@@ -13,9 +13,9 @@
   content((horizontal-dist, 0), [$Z_(c)(beta)$], name: "Zc")
   content((2 * horizontal-dist, 0), [$Z_(g)(mu)$], name: "Zg")
 
-  content((0, -vertical-dist), [$sigma = frac(S_m, N)$], name: "Sm")
-  content((horizontal-dist, -vertical-dist), [$f = frac(F, N)$], name: "F")
-  content((2 * horizontal-dist, -vertical-dist), [$frac(Omega, V)$], name: "O")
+  content((0, -vertical-dist), [$sigma = S_m \/ N$], name: "Sm")
+  content((horizontal-dist, -vertical-dist), [$f = F \/ N$], name: "F")
+  content((2 * horizontal-dist, -vertical-dist), [$Omega \/ V$], name: "O")
 
   line("Zm", "Sm", mark: mark-style, name: "ZmSm")
   line("Zc", "F", mark: mark-style, name: "ZcF")
@@ -28,8 +28,8 @@
   content(("Zc", 2, "Zg"), [Laplace in $N$], anchor: "north")
 
   line("Sm", "F", mark: mark-style)
-  content(("Sm", 2, "F"), [Legendre in $epsilon = frac(E, N)$], anchor: "south")
+  content(("Sm", 2, "F"), [Legendre in $epsilon = E \/ N$], anchor: "south")
 
   line("F", "O", mark: mark-style)
-  content(("F", 2, "O"), [Legendre in $rho = frac(N, V)$], anchor: "south")
+  content(("F", 2, "O"), [Legendre in $rho = N \/ V$], anchor: "south")
 })

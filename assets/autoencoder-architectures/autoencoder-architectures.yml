@@ -1,0 +1,22 @@
+title: Autoencoder Architectures
+tags:
+- machine learning
+- neural networks
+- mechanistic interpretability
+- sparsity
+- unsupervised learning
+- autoencoder
+- feature learning
+- generative modeling
+- Bayesian
+- probability
+- computer vision
+description: 'Every autoencoder learns to reconstruct an input through an intermediate representation. Compare the changing constraint or architecture while the common data path stays fixed.
+
+
+  Variational formulation: [Auto-Encoding Variational Bayes](https://arxiv.org/abs/1312.6114).
+
+
+  Original illustrations: [Denoising Variational Autoencoder](https://github.com/PetarV-/TikZ/tree/86aee049f5355d77c598b936399e42caf8941e60/Variational%20denoising%20autoencoder), [Convolutional Autoencoder](https://github.com/PetarV-/TikZ/tree/86aee049f5355d77c598b936399e42caf8941e60/Convolutional%20autoencoder).'
+creator: Sergio Antonio Hernández Peralta; Petar Veličković
+source: 'Unsupervised methods: Diving deep into autoencoders, *Introduction to Deep Learning (COMPGI23), University College London*'

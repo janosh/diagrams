@@ -405,7 +405,7 @@
     (0, 0),
     text(size: 8pt, fill: ink.annotation)[$Gamma$],
     frame: "rect",
-    fill: if dark { page-fill } else { white },
+    fill: if dark { page-fill } else { rgb("#cdd3da") },
     stroke: none,
     padding: 0.5pt,
   )

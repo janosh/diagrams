@@ -80,7 +80,7 @@
     (diel-width, -0.03 * height),
     (width - diel-width, 1.08 * height),
     stroke: e-color,
-    fill: rgb("#fff8f0"), // very light orange
+    fill: rgb("#e1d8cb"), // muted orange
   )
   content((width / 2, 1.15 * height), text(fill: e-color)[$arrow(E)$])
   content(

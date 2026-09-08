@@ -158,7 +158,7 @@
         {option.count}
       </span>
     {/snippet}
-    {#snippet afterInput()}
+    {#snippet after_input()}
       {#if filters.tags?.length > 1}
         <label style="margin-inline: 2pt">
           {#each [`all`, `any`] as value (value)}
@@ -177,8 +177,8 @@
   <Masonry
     items={filters.filtered.slice(0, visible_count)}
     animate={false}
-    idKey="slug"
-    minColWidth={280}
+    id_key="slug"
+    min_col_width={280}
     gap={16}
     order="column-balanced"
     role="list"

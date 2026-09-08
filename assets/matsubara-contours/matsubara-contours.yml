@@ -1,0 +1,14 @@
+title: Matsubara Contours
+tags:
+- physics
+- quantum field theory
+- Matsubara
+- complex analysis
+- Green's function
+- thermal field theory
+- contour integration
+- frequency sums
+description: 'A thermal frequency sum can be rewritten as a contour integral. Follow which singularities are enclosed, and keep track of the orientation when the contour changes.
+
+
+  Context: [thermal field theory contour constructions](https://arxiv.org/abs/1712.09863).'

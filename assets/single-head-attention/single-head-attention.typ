@@ -21,7 +21,7 @@
     label,
     top-color: none,
     left-color: none,
-    style: (stroke: mid-gray, fill: white, thickness: 1.5pt),
+    style: (stroke: mid-gray, fill: rgb("#cdd3da"), thickness: 1.5pt),
   ) = {
     let (x, y) = pos
     let (w, h) = size
@@ -45,7 +45,7 @@
     }
   }
 
-  let value-style = (stroke: mid-gray, fill: white, thickness: 1.5pt)
+  let value-style = (stroke: mid-gray, fill: rgb("#cdd3da"), thickness: 1.5pt)
 
   let edge-style = (
     mark: (start: "|", offset: 0.075, scale: 1.3),
@@ -72,12 +72,7 @@
     name: name,
   )
 
-  // Title and equation
-  content(
-    (4, 2.5),
-    text(weight: "bold", size: 1.2em)[Single-head attention],
-    name: "title",
-  )
+  // Attention equation
   content(
     (4, -2.75),
     $"Attention"(Q, K, V) = "softmax"_"row" ( (Q K^top) / sqrt(d)) V$,

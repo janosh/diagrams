@@ -3,8 +3,5 @@ tags:
   - physics
   - string theory
   - topology
-description: >-
-  A torus built as the plane modulo a lattice spanned by the two vectors $2\pi u$ and $2\pi v$,
-  with the shaded parallelogram as the fundamental cell. Rotating and rescaling so that
-  $u = (1,0)$ costs nothing, since the two tori are conformally equivalent, and leaves a single
-  complex parameter $v$ — the modular parameter that labels the torus.
+description: |
+  A torus is obtained by identifying matching opposite edges of a lattice's fundamental cell. The blue and teal arrows show the two pairs of identified edges. The map $z \mapsto z/u$ rotates and uniformly scales both lattice generators, taking $2\pi u$ to $2\pi$ and $2\pi v$ to $2\pi\tau$, where $\tau = v/u$ and $\operatorname{Im}\tau > 0$. The two panels have the same conformal shape; the normalized lattice makes its complex parameter explicit.

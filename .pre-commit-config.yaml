@@ -36,7 +36,7 @@ repos:
       - id: codespell
         stages: [pre-commit, commit-msg]
         exclude_types: [svg]
-        args: [--ignore-words-list, 'Noe,ket,ba,te,nd', --check-filenames]
+        args: [--ignore-words-list, 'Noe,ket,ba,te,nd,dscribe', --check-filenames]
 
   - repo: https://github.com/igorshubovych/markdownlint-cli
     rev: v0.49.1

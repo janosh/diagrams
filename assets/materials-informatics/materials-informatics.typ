@@ -1,225 +1,146 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.2": canvas, draw, vector
 #import draw: circle, content, line, rect
 
-// The flat disc underneath is fully covered by the gradient, but drawing both
-// doubles up the antialiased rim so the sphere keeps a crisp edge.
-#let sphere(pos, radius: 0.25, fill: luma(50), ..args) = {
-  circle(pos, radius: radius, stroke: none, fill: fill, ..args)
-  circle(pos, radius: radius, stroke: none, fill: gradient.radial(
-    fill.lighten(75%),
-    fill,
-    fill.darken(15%),
-    // Offset the highlight to suggest a lit sphere.
-    focal-center: (30%, 25%),
-    focal-radius: 5%,
-    center: (35%, 30%),
-  ))
-}
+#set page(width: auto, height: auto, margin: 12pt, fill: none)
+#set text(font: "Avenir Next", size: 14pt)
 
-// Size of compact annotations.
-#let annotation-size = 9pt
-
-#set page(width: auto, height: auto, margin: 5pt, fill: none)
-
-#let neuron(pos, fill: white, text: none, name: none) = {
-  content(pos, text, frame: "circle", fill: fill, stroke: none, padding: 4pt, name: name)
-}
-
-#let atom(pos, element, color: white, text-color: black, padding: 6pt, name: none) = {
-  let radius = padding + 7pt // approximates text size + padding
-  sphere(pos, radius: radius, fill: color)
-  content(
-    pos,
-    text(fill: text-color, weight: "bold", size: 14pt)[#element],
-    anchor: "center",
-    name: name,
-  )
-}
+// Acetamide connectivity. Positions are an illustrative sketch, not optimized geometry.
+#let atoms = (
+  (element: "C", charge: 6, pos: (0, 0)),
+  (element: "C", charge: 6, pos: (0, -1.5)),
+  (element: "N", charge: 7, pos: (-0.5, 1.5)),
+  (element: "O", charge: 8, pos: (1.8, 0.5)),
+  (element: "H", charge: 1, pos: (1.5, -2.5)),
+  (element: "H", charge: 1, pos: (0, -3)),
+  (element: "H", charge: 1, pos: (-1.5, -2.5)),
+  (element: "H", charge: 1, pos: (-2, 0.75)),
+  (element: "H", charge: 1, pos: (1, 2)),
+)
+#let bonds = (
+  (0, 1, 1),
+  (0, 2, 1),
+  (0, 3, 2),
+  (1, 4, 1),
+  (1, 5, 1),
+  (1, 6, 1),
+  (2, 7, 1),
+  (2, 8, 1),
+)
+// Colors encode a Coulomb matrix computed from the same schematic coordinates.
+// A real descriptor uses physical 3D positions and consistent length units.
+#let matrix = (
+  atoms
+    .enumerate()
+    .map(((row_idx, left)) => atoms
+      .enumerate()
+      .map(((col_idx, right)) => {
+        if row_idx == col_idx { 0.5 * calc.pow(left.charge, 2.4) } else {
+          left.charge * right.charge / vector.dist(left.pos, right.pos)
+        }
+      }))
+)
+#let palette = (C: rgb("#404040"), N: rgb("#4444ff"), O: rgb("#ff4444"), H: rgb("#cdd3da"))
 
 #canvas({
-  let arrow-style = (
-    stroke: rgb("#888") + 5pt,
-    mark: (end: "stealth", size: 15pt),
-  )
-  let vertical-center = 0
+  let caption(center_x, body) = content((center_x, -3.75), text(weight: "bold", body))
+  let molecule_pos(pos) = (pos.at(0), pos.at(1) + 0.5)
 
-  let struct-desc-spacing = 2.5
-  let model-prop-spacing = 2.5
-  let component-spacing = 3.5
-  let label-offset = 4
-  let label-y = vertical-center - label-offset // shared y for all component labels
-  let caption(x, body) = content(
-    (x, label-y),
-    text(size: 14pt, weight: "bold", body),
-    anchor: "center",
-  )
-
-  let molecule-y-offset = 0.5
-  let matrix-y-offset = 0.3
-
-  let struct-x = -5.5
-  let struct-y = vertical-center + molecule-y-offset
-  let struct-origin = (struct-x, struct-y)
-
-  // === Molecular structure: bonds (behind), then atoms ===
-  let bonds = (
-    ((1.5, -2.5), (0, -1.5)),
-    ((0, -1.5), (0, 0)),
-    ((0, 0), (-0.5, 1.5)),
-    ((0, 0), (1.8, 0.5)),
-    ((0, -3), (0, -1.5)),
-    ((-1.5, -2.5), (0, -1.5)),
-    ((-0.5, 1.5), (-2, 0.75)),
-    ((-0.5, 1.5), (1, 2)),
-  )
-  for (idx, (a, b)) in bonds.enumerate() {
-    line(
-      (rel: a, to: struct-origin),
-      (rel: b, to: struct-origin),
-      stroke: rgb("#888") + 3pt,
-      name: "bond" + str(idx + 1),
-    )
+  // Draw bonds first so atom spheres conceal the endpoints.
+  for (left_idx, right_idx, order) in bonds {
+    let left = molecule_pos(atoms.at(left_idx).pos)
+    let right = molecule_pos(atoms.at(right_idx).pos)
+    let (delta_x, delta_y) = vector.sub(right, left)
+    let length = vector.dist(left, right)
+    let normal = (-delta_y / length, delta_x / length)
+    for strand in range(order) {
+      let offset = vector.scale(normal, (strand - (order - 1) / 2) * 0.16)
+      line(vector.add(left, offset), vector.add(right, offset), stroke: rgb("#888") + 2pt)
+    }
   }
-
-  // (offset from the central carbon, element, fill, text fill, padding, name)
-  for (offset, element, color, text-color, padding, name) in (
-    ((0, 0), "C", rgb("#404040"), white, 5pt, "C1"),
-    ((0, -1.5), "C", rgb("#404040"), white, 5pt, "C2"),
-    ((-0.5, 1.5), "N", rgb("#4444ff"), black, 6pt, "N1"),
-    ((1.8, 0.5), "O", rgb("#ff4444"), black, 7pt, "O1"),
-    ((1.5, -2.5), "H", white, black, 2pt, "H1"),
-    ((0, -3), "H", white, black, 2pt, "H2"),
-    ((-1.5, -2.5), "H", white, black, 2pt, "H3"),
-    ((-2, 0.75), "H", white, black, 2pt, "H4"),
-    ((1, 2), "H", white, black, 2pt, "H5"),
-  ) {
-    atom(
-      (rel: offset, to: struct-origin),
-      element,
-      color: color,
-      text-color: text-color,
-      padding: padding,
-      name: name,
+  for atom in atoms {
+    let color = palette.at(atom.element)
+    let pos = molecule_pos(atom.pos)
+    circle(
+      pos,
+      radius: if atom.element == "H" { 0.3 } else { 0.44 },
+      stroke: none,
+      fill: gradient.radial(
+        color.lighten(75%),
+        color,
+        color.darken(15%),
+        focal-center: (30%, 25%),
+        focal-radius: 5%,
+        center: (35%, 30%),
+      ),
     )
+    content(pos, text(
+      fill: if atom.element == "C" { white } else { black },
+      weight: "bold",
+      atom.element,
+    ))
   }
+  caption(0, [Molecular structure])
 
-  caption(struct-x, [Molecular Structure])
-
-  let struct-right-x = struct-x + 3.5
-
-  // === Descriptor matrix ===
-  let desc-x = struct-right-x + struct-desc-spacing
-  let desc-y = vertical-center + matrix-y-offset
-
-  let matrix-data = (
-    (74, 25, 39, 20, 3, 3, 3, 3, 3),
-    (25, 53, 31, 17, 7, 7, 2, 3, 2),
-    (39, 31, 37, 24, 3, 3, 3, 3, 3),
-    (20, 17, 24, 37, 2, 2, 6, 5, 5),
-    (3, 7, 3, 2, 0, 1, 0, 0, 0),
-    (3, 7, 3, 2, 1, 0, 0, 0, 0),
-    (3, 2, 3, 6, 0, 0, 0, 1, 1),
-    (3, 3, 3, 5, 0, 0, 1, 0, 1),
-    (3, 2, 3, 5, 0, 0, 1, 1, 0),
-  )
-  let cell-size = 0.6
-  let matrix-width = matrix-data.at(0).len() * cell-size
-  let max-value = 74
-
-  for (row-idx, row) in matrix-data.enumerate() {
-    for (col-idx, value) in row.enumerate() {
-      let x = desc-x + col-idx * cell-size
-      let y = desc-y - row-idx * cell-size + 2.7 * cell-size
+  // Rounded entries retain one decimal below one so small interactions stay visible.
+  let cell_size = 0.65
+  let matrix_top = atoms.len() * cell_size / 2
+  let matrix_left = 8.5 - matrix_top
+  let matrix_right = 8.5 + matrix_top
+  let maximum = calc.max(..matrix.flatten())
+  for (row_idx, row) in matrix.enumerate() {
+    for (col_idx, value) in row.enumerate() {
+      let intensity = calc.sqrt(value / maximum)
+      let cell_left = matrix_left + col_idx * cell_size
+      let cell_top = matrix_top - row_idx * cell_size
       rect(
-        (x, y),
-        (x + cell-size, y + cell-size),
-        // pastel red->green ramp with value (see heatmap.typ)
-        fill: rgb(
-          90%,
-          50% + value / max-value * 20%,
-          50% - value / max-value * 20%,
-        ),
+        (cell_left, cell_top),
+        (cell_left + cell_size, cell_top - cell_size),
         stroke: none,
-        name: "cell-" + str(row-idx) + "-" + str(col-idx),
+        fill: color.mix((rgb("#f6d9b8"), 1 - intensity), (rgb("#ba432d"), intensity)),
       )
       content(
-        (x + cell-size / 2, y + cell-size / 2),
-        text(fill: if value < 40 { white } else { black }, size: annotation-size)[#value],
-        anchor: "center",
-        name: "value-" + str(row-idx) + "-" + str(col-idx),
+        (cell_left + cell_size / 2, cell_top - cell_size / 2),
+        text(size: 9pt, fill: if intensity > 0.65 { white } else { black })[
+          #calc.round(value, digits: if value < 1 { 1 } else { 0 })
+        ],
       )
     }
   }
+  let grid_stroke = rgb("#888").transparentize(60%) + 0.2pt
+  for grid_idx in range(atoms.len() + 1) {
+    let grid_x = matrix_left + grid_idx * cell_size
+    let grid_y = matrix_top - grid_idx * cell_size
+    line((grid_x, -matrix_top), (grid_x, matrix_top), stroke: grid_stroke)
+    line((matrix_left, grid_y), (matrix_right, grid_y), stroke: grid_stroke)
+  }
+  caption(matrix_left + atoms.len() * cell_size / 2, [Coulomb matrix])
 
-  caption(desc-x + matrix-width / 2, [Descriptor])
-
-  let desc-right-x = desc-x + matrix-width
-
-  // === Neural network model ===
-  let model-x = desc-right-x + component-spacing
-  let layer-sep = 2.5
-
-  // (x-pos, neuron-count, fill, label-prefix)
+  // A schematic network: its displayed node counts are not input dimensions.
   let layers = (
-    (model-x, 3, rgb("#40d0d0"), "i"),
-    (model-x + layer-sep, 4, rgb("#8080ff"), "h"),
-    (model-x + 2 * layer-sep, 1, rgb("#f08040"), "o"),
+    (center_x: 14, count: 3, prefix: "i", color: rgb("#40caca")),
+    (center_x: 16.4, count: 4, prefix: "h", color: rgb("#8080ff")),
+    (center_x: 18.8, count: 1, prefix: "o", color: rgb("#f08040")),
   )
-
-  // neurons first so connections render behind nodes
-  for (x, count, fill, prefix) in layers {
-    for i in range(count) {
-      let y = vertical-center + (i - (count - 1) / 2) * 1.5
-      neuron(
-        (x, y),
-        fill: fill,
-        text: $#prefix#(i + 1)$,
-        name: prefix + "-" + str(i + 1),
-      )
-    }
-  }
-  for (idx, (_, count, _, prefix)) in layers.slice(0, -1).enumerate() {
-    let (_, next-count, _, next-prefix) = layers.at(idx + 1)
-    // Connect every unit in this layer to every unit in the next.
-    for from-idx in range(1, count + 1) {
-      for to-idx in range(1, next-count + 1) {
-        line(
-          prefix + "-" + str(from-idx),
-          next-prefix + "-" + str(to-idx),
-          stroke: rgb("#aaa") + 0.5pt,
-        )
+  let node_pos(layer, node_idx) = (layer.center_x, (node_idx - (layer.count - 1) / 2) * 1.5)
+  for (layer, next_layer) in layers.windows(2) {
+    for node_idx in range(layer.count) {
+      for next_idx in range(next_layer.count) {
+        line(node_pos(layer, node_idx), node_pos(next_layer, next_idx), stroke: rgb("#999") + 0.7pt)
       }
     }
   }
+  for layer in layers {
+    for node_idx in range(layer.count) {
+      circle(node_pos(layer, node_idx), radius: 0.4, fill: layer.color, stroke: none)
+      content(node_pos(layer, node_idx), text(size: 12pt)[#layer.prefix#(node_idx + 1)])
+    }
+  }
+  caption(16.4, [Trained model])
 
-  caption(model-x + layer-sep, [Model])
+  content((23.1, 0), text(size: 42pt)[$hat(alpha)_"iso"$])
+  caption(23.1, [Predicted property])
 
-  let model-right-x = model-x + 2 * layer-sep + 1.5
-
-  // === Property ===
-  let property-x = model-right-x + model-prop-spacing
-  let property-origin = (property-x, vertical-center)
-  content(
-    property-origin,
-    text(size: 50pt, baseline: -3pt)[$alpha$],
-    anchor: "center",
-    name: "property",
-  )
-  caption(property-x, [Property])
-
-  // === Connecting arrows, centered between components ===
-  let arrow-length = 1.75
-  let midpoints = (
-    (struct-right-x + (desc-x - 0.5)) / 2,
-    (desc-right-x + (model-x - 0.5)) / 2,
-    (model-right-x + (property-x - 1.5)) / 2,
-  )
-  for (idx, mid) in midpoints.enumerate() {
-    line(
-      (mid - arrow-length / 2, vertical-center),
-      (mid + arrow-length / 2, vertical-center),
-      ..arrow-style,
-      name: "arrow" + str(idx + 1),
-    )
+  for (start_x, end_x) in ((3.5, 5.1), (matrix_right + 0.6, 13.1), (20, 21.6)) {
+    line((start_x, 0), (end_x, 0), stroke: rgb("#888") + 3pt, mark: (end: "stealth", size: 12pt))
   }
 })

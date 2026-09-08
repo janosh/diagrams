@@ -22,7 +22,7 @@
     text(weight: "bold", size: 1.2em)[Kohn-Sham method],
     frame: "rect",
     stroke: .5pt,
-    fill: white,
+    fill: rgb("#cdd3da"),
     padding: 3pt,
   ))
 

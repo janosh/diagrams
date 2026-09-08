@@ -4,7 +4,7 @@
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #let hatched = tiling(size: (.2cm, .2cm))[
-  #place(rect(width: 100%, height: 100%, fill: white, stroke: none))
+  #place(rect(width: 100%, height: 100%, fill: rgb("#cdd3da"), stroke: none))
   #place(line(start: (0%, 100%), end: (100%, 0%), stroke: 0.4pt))
 ]
 
@@ -53,7 +53,7 @@
   }
   content((rel: (0, -.45), to: "blue-curve-label-pos.mid"), text(
     fill: blue,
-  )[$1 / alpha << ell$])
+  )[$1 \/ alpha << ell$])
 
   // Second curve (orange)
   let (A2, B2, alpha2) = (15, 120, 3)
@@ -72,5 +72,5 @@
   }
   content((rel: (0, .4), to: "orange-curve-label-pos.mid"), text(
     fill: orange,
-  )[$1 / alpha << ell$])
+  )[$1 \/ alpha << ell$])
 })

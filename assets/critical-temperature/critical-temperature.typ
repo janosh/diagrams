@@ -36,7 +36,7 @@
     y-tick-step: 0.5,
     legend: "inner-north-east",
     // Compact legend with a thin border.
-    legend-style: (item: (spacing: 0.15), padding: 0.15, stroke: 0.5pt),
+    legend-style: (fill: rgb("#cdd3da"), item: (spacing: 0.15), padding: 0.15, stroke: 0.5pt),
     {
       // First function (blue)
       plot.add(
@@ -44,7 +44,7 @@
         samples: 100,
         domain: (0.01, 1),
         f1,
-        label: $sqrt(3)(T_c \/ T - 1)^(1 / 2)$,
+        label: $sqrt(3)(T_c \/ T - 1)^(1 \/ 2)$,
       )
 
       // Second function (red)
@@ -53,7 +53,7 @@
         samples: 50,
         domain: (0, 1.1),
         f2,
-        label: $sqrt(3)(T \/ T_c)^(3 / 2)$,
+        label: $sqrt(3)(T \/ T_c)^(3 \/ 2)$,
       )
 
       // Third function (orange)

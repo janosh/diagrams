@@ -10,19 +10,19 @@
 // Sources: https://dft.uci.edu/teaching/lausanne/ABCDFT.pdf (chapters 7, 11-13),
 // https://dft.uci.edu/pubs/B97.pdf (XC holes),
 // https://www.bristol.ac.uk/physics/media/theory-theses/archer-aj-thesis.pdf (chapter 2).
-#set page(width: auto, height: auto, margin: 0pt, fill: white)
+#set page(width: auto, height: auto, margin: 0pt, fill: none)
 #set text(font: "Avenir Next", size: 14pt, fill: rgb("#22334B"))
 #set par(leading: 0.5em)
 #set math.equation(numbering: none)
 
 #let ink = rgb("#19304E")
-#let muted = rgb("#617087")
+#let muted = rgb("#344257")
 #let blue = rgb("#2764C3")
 #let orange = rgb("#B94F2C")
 #let purple = rgb("#7948AD")
 #let teal = rgb("#087F7C")
-#let pale_blue = rgb("#F0F5FE")
-#let pale_orange = rgb("#FFF5EF")
+#let pale_blue = rgb("#c8d3e2")
+#let pale_orange = rgb("#e1d3c9")
 
 #let label(left, top, width, body, size: 14pt, color: ink, weight: "regular", centered: false) = {
   content(
@@ -150,9 +150,8 @@
 }
 
 #canvas(length: 1pt, {
-  rect((0, 0), (1100, -1225), fill: white, stroke: none)
-  rect((0, 0), (1100, -8), fill: teal, stroke: none)
-  label(30, 26, 1040, [Exchange & correlation], size: 37pt, weight: "bold")
+  rect((0, -51), (1100, -1225), fill: none, stroke: none)
+  rect((0, -51), (1100, -59), fill: teal, stroke: none)
   label(
     32,
     77,
@@ -310,8 +309,8 @@
 
   // Static correlation: the two separated-atom spin configurations of a singlet.
   for (row_y, first_spin, second_spin) in ((424, "up", "down"), (469, "down", "up")) {
-    circle((759, -row_y), radius: 17, fill: white, stroke: 0.8pt + orange.lighten(65%))
-    circle((829, -row_y), radius: 17, fill: white, stroke: 0.8pt + orange.lighten(65%))
+    circle((759, -row_y), radius: 17, fill: rgb("#cdd3da"), stroke: 0.8pt + orange.lighten(65%))
+    circle((829, -row_y), radius: 17, fill: rgb("#cdd3da"), stroke: 0.8pt + orange.lighten(65%))
     line((779, -row_y), (809, -row_y), stroke: (paint: muted, thickness: 0.8pt, dash: "dashed"))
     electron(759, row_y, spin: first_spin, color: orange, radius: 10)
     electron(829, row_y, spin: second_spin, color: orange, radius: 10)
@@ -416,7 +415,7 @@
   )
 
   // === The sum rule: the picture to remember ===
-  panel(28, 900, 1044, 69, rgb("#F4F0FA"))
+  panel(28, 900, 1044, 69, rgb("#d2ccde"))
   label(45, 914, 275, [ONE REFERENCE ELECTRON], size: 13pt, color: purple, weight: "bold")
   label(45, 941, 275, [Only $N - 1$ others remain.], size: 12pt, color: purple)
   label(336, 916, 397, [$n_"cond" = n + h_x + h_c$], size: 26pt, color: purple, centered: true)

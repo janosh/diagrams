@@ -79,5 +79,4 @@
     thickness: 1.8pt,
     dash: "dashed",
   ))
-  content((-.55, 4.3), text(size: 14pt, weight: "bold")[LSTM])
 })

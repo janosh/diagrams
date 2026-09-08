@@ -10,7 +10,7 @@
   // use the given coord as the center of the rect
   let tl = (rel: (-w / 2, -h / 2), to: coord)
   let br = (rel: (w, h))
-  cetz.draw.rect(tl, br, fill: white, ..args)
+  cetz.draw.rect(tl, br, fill: rgb("#cdd3da"), ..args)
 }
 #let fixing(coord, len, ..args) = {
   cetz.draw.line(stroke: 3pt, coord, (rel: len, to: coord))

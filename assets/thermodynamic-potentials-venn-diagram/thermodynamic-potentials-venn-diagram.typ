@@ -27,7 +27,7 @@
     abc: gray.transparentize(70%), // Center
   )
 
-  rect((-2.428, 2.153), (2.428, -2.528), fill: none, stroke: auto)
+  rect((-1.95, 1.95), (1.95, -1.95), fill: none, stroke: auto)
 
   for (region, angle) in (("ab", 0deg), ("ac", 120deg), ("bc", 240deg)) {
     scope({

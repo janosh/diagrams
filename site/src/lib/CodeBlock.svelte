@@ -73,16 +73,15 @@
 
 <style>
   div {
+    --controls-inset: 1rem;
     max-width: var(--content-max-width);
     margin: 3em auto;
   }
   header {
+    position: relative;
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5em;
-    padding: 0.5em 1em;
+    padding: 0 1em;
+    z-index: 1;
   }
   h3 {
     margin: 0;
@@ -95,19 +94,22 @@
     padding: 0 8pt;
     border-radius: 3pt;
     font-size: medium;
+    transform: translateY(50%);
   }
   h3 small {
     font-weight: 200;
     padding-left: 6pt;
   }
   aside {
-    margin-left: auto;
+    position: absolute;
+    top: calc(100% + var(--controls-inset));
+    right: var(--controls-inset);
     display: flex;
     gap: 1ex;
   }
   pre {
     margin: 0;
-    padding: 1em;
+    padding: 1.75em 1em 1em;
     background: var(--pre-bg);
     overflow-x: auto;
     border-radius: 3pt;
@@ -125,5 +127,39 @@
   }
   aside a {
     display: inline-flex;
+  }
+  @media (width < 600px) {
+    div {
+      display: grid;
+      grid-template-rows: auto auto auto auto;
+      isolation: isolate;
+    }
+    div::before {
+      content: '';
+      grid-area: 2 / 1 / 5 / 2;
+      background: var(--pre-bg);
+      border-radius: 3pt;
+      z-index: -1;
+    }
+    header {
+      display: contents;
+    }
+    h3 {
+      grid-area: 1 / 1 / 3 / 2;
+      margin: 0 1rem;
+      transform: none;
+      justify-self: start;
+    }
+    aside {
+      grid-area: 3 / 1 / 4 / 2;
+      position: static;
+      justify-self: end;
+      margin: 1rem 1rem 0;
+    }
+    pre {
+      grid-area: 4 / 1 / 5 / 2;
+      background: none;
+      padding-top: 1em;
+    }
   }
 </style>

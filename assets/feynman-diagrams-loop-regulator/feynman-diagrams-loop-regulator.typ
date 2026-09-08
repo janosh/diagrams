@@ -53,12 +53,12 @@
       )
 
       // Cross marker
-      // Regulator insertion: a circled cross on an opaque white disc.
+      // Regulator insertion: a circled cross on an opaque gray disc.
       content(
         "loop." + cross-pos,
         text(size: 16pt, baseline: -0.5pt)[$times.o$],
         stroke: none,
-        fill: white,
+        fill: rgb("#cdd3da"),
         frame: "circle",
         padding: -2.5pt,
         name: "cross",

@@ -15,20 +15,20 @@
 // A and B are normalized, nonoverlapping 1s orbitals. The singlet spin factor is implicit.
 // Sources: Fuchs et al., JCP 122, 094116 (2005), doi:10.1063/1.1858371;
 // Burke, The ABC of DFT, chapters 4, 7, 11, 13; Hehre et al., JCP 51, 2657 (1969).
-#set page(width: auto, height: auto, margin: 0pt, fill: white)
+#set page(width: auto, height: auto, margin: 0pt, fill: none)
 #set text(font: "Avenir Next", size: 14pt, fill: rgb("#20334C"))
 #set par(leading: 0.5em)
 #set math.equation(numbering: none)
 
 #let ink = rgb("#19304E")
-#let muted = rgb("#617087")
+#let muted = rgb("#344257")
 #let blue = rgb("#2764C3")
 #let orange = rgb("#BC502D")
 #let purple = rgb("#7948AD")
 #let teal = rgb("#087F7C")
-#let pale_blue = rgb("#EFF5FD")
-#let pale_orange = rgb("#FFF4ED")
-#let pale_teal = rgb("#EFF8F5")
+#let pale_blue = rgb("#c7d3e1")
+#let pale_orange = rgb("#e1d2c7")
+#let pale_teal = rgb("#c7d8d1")
 
 #let label(left, top, width, body, size: 14pt, color: ink, weight: "regular", centered: false) = {
   content(
@@ -692,7 +692,7 @@
     for col_idx in range(2) {
       let same_atom = row_idx == col_idx
       let cell_fill = if same_atom {
-        if correlated { rgb("#F4F5F7") } else { orange.lighten(72%) }
+        if correlated { rgb("#cdd1d6") } else { orange.lighten(72%) }
       } else { blue.lighten(if correlated { 53% } else { 78% }) }
       rect(
         (left + col_idx * cell_size, -top - row_idx * cell_size),
@@ -713,9 +713,8 @@
 }
 
 #canvas(length: 1pt, {
-  rect((0, 0), (1100, -1424), fill: white, stroke: none)
-  rect((0, 0), (1100, -8), fill: teal, stroke: none)
-  label(30, 20, 1040, [Why breaking H₂ is hard], size: 37pt, weight: "bold")
+  rect((0, -45), (1100, -1424), fill: none, stroke: none)
+  rect((0, -45), (1100, -53), fill: teal, stroke: none)
   label(
     32,
     65,
@@ -760,8 +759,8 @@
   label(941, 232, 90, [H (B)], size: 12pt, centered: true)
 
   // === Decode the orbital names through phase and symmetry ===
-  panel(28, 280, 686, 156, rgb("#F5F7FA"))
-  panel(744, 280, 328, 156, rgb("#F5F7FA"))
+  panel(28, 280, 686, 156, rgb("#cdd3da"))
+  panel(744, 280, 328, 156, rgb("#cdd3da"))
   label(42, 289, 300, [$sigma_g$: bonding], size: 17pt, color: blue, weight: "bold")
   label(
     400,
@@ -1022,7 +1021,7 @@
     centered: true,
   )
 
-  panel(690, 862, 382, 278, rgb("#F2F6FC"))
+  panel(690, 862, 382, 278, rgb("#cad4e0"))
   label(
     708,
     912,
@@ -1157,8 +1156,8 @@
     weight: "bold",
     centered: true,
   )
-  circle((510, -1244), radius: 23, fill: white, stroke: 0.8pt + orange.lighten(65%))
-  circle((590, -1244), radius: 23, fill: white, stroke: 0.8pt + orange.lighten(65%))
+  circle((510, -1244), radius: 23, fill: rgb("#cdd3da"), stroke: 0.8pt + orange.lighten(65%))
+  circle((590, -1244), radius: 23, fill: rgb("#cdd3da"), stroke: 0.8pt + orange.lighten(65%))
   electron(510, 1244, "up")
   electron(590, 1244, "down")
   label(

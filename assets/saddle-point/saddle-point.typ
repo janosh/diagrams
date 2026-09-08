@@ -1,6 +1,6 @@
 #import "@preview/plotsy-3d:0.2.1": plot-3d-surface
 
-#set page(width: auto, height: auto, fill: none)
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #let domain-size = 2
 
@@ -14,6 +14,8 @@
   xdomain: (-domain-size, domain-size),
   ydomain: (-domain-size, domain-size),
   scale-dim: (0.1, 0.06, 0.03),
+  axis-label-size: 1em,
+  axis-label-offset: (0.16, 0.12, 0.12),
   axis-labels: ($V$, $T$, $F(T,V)$),
   axis-step: (1, 1, 2),
 )

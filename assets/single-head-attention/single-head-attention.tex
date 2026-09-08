@@ -36,7 +36,6 @@
   f2v/.style={->,shorten >= 0.75pt,draw=black!50, thick}
 ]
 
-  \node[font=\bfseries] at (3.5, 2.3) {Single-head attention};
   \node at (3.5, -2.5) {$\displaystyle \Attention(Q, K, V) = \softmax_\text{row} \left( \frac{Q K\transpose}{\sqrt{d}} \right) V$};
   \node[value,    minimum height=0.8cm,minimum width=0.7cm] (K) at (0, 0) {$K$};
   \node[value,    minimum height=1.2cm,minimum width=0.7cm] (Q) [above=0.5cm of K] {$Q$};
