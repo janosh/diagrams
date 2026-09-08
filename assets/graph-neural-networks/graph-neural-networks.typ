@@ -1,0 +1,260 @@
+#import "@preview/cetz:0.5.2": canvas, draw
+#import draw: circle, content, line
+
+#set page(width: 780pt, height: auto, margin: 22pt, fill: white)
+#set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
+#set par(leading: 0.55em)
+
+// Measure each drawing before fitting it; keep labels and geometry together.
+#let fit-figure(body, height: 170pt) = layout(size => {
+  let bounds = measure(body)
+  let factor = calc.min(size.width / bounds.width, height / bounds.height)
+  box(width: 100%, align(center + horizon, std.scale(
+    x: factor * 100%,
+    y: factor * 100%,
+    reflow: true,
+    body,
+  )))
+})
+#let card(title, body, caption, height: 170pt) = block(
+  width: 100%,
+  inset: 12pt,
+  radius: 8pt,
+  fill: rgb("#f3f6fa"),
+  breakable: false,
+)[
+  #text(size: 13pt, weight: "bold", title)
+  #v(8pt)
+  #fit-figure(body, height: height)
+  #v(7pt)
+  #caption
+]
+#let takeaway(body) = block(
+  width: 100%,
+  inset: 12pt,
+  radius: 6pt,
+  fill: rgb("#e9f5f2"),
+  breakable: false,
+)[#body]
+
+#let neighborhood(mode) = canvas({
+  let sites = ((-2, 1.3), (-2, -1.3), (0, 2), (0, -2))
+  for (idx, pos) in sites.enumerate() {
+    draw.circle(
+      pos,
+      radius: .35,
+      fill: rgb("#d6e9f8"),
+      stroke: rgb("#537da0") + .7pt,
+      name: "neighbor" + str(idx),
+    )
+    draw.content(pos, $h_#(idx + 1)$)
+  }
+  draw.circle(
+    (0, 0),
+    radius: .42,
+    fill: rgb("#d3ede5"),
+    stroke: rgb("#008580") + 1pt,
+    name: "center",
+  )
+  draw.content((0, 0), $h_v$)
+  for (idx, pos) in sites.enumerate() {
+    let width = if mode == "attention" { (.5, 1, 2, 3).at(idx) * 1pt } else { 1pt }
+    draw.line("neighbor" + str(idx), "center", stroke: rgb("#008580") + width, mark: (
+      end: "stealth",
+      scale: .5,
+    ))
+  }
+  draw.line("center", (3, 0), stroke: rgb("#008580") + 1.5pt, mark: (end: "stealth"))
+  draw.content((3.6, 0), $h′_v$, frame: "circle", padding: 7pt, fill: rgb("#fbe4d4"), stroke: none)
+  draw.content((2.2, .65), if mode == "attention" { [weighted sum] } else if mode == "message" {
+    [message + update]
+  } else { [aggregate + update] })
+  if mode == "attention" {
+    draw.content((-.8, -2.8), [thicker arrow = larger learned weight])
+  } else if mode == "message" {
+    draw.content((-.4, -2.8), $m_(u v)=M(h_u,h_v,e_(u v))$)
+  } else {
+    draw.content((-.4, -2.8), [sum or mean ignores neighbor ordering])
+  }
+})
+
+// === 1  Aggregate the neighbors ===
+#let figure-0 = [
+  #neighborhood("aggregate")
+]
+
+// === 2  Stack layers to reach farther ===
+#let figure-1 = [
+  #canvas({
+    draw.set-style(legend: (fill: white))
+    let arrow-style = (
+      mark: (end: "stealth", fill: black, scale: 0.5, offset: 2pt),
+      stroke: 0.5pt,
+    )
+    let edge-style = (stroke: 0.4pt)
+    let node-radius = 0.3
+    let graph-sep = 4.5 // separation between input graph and aggregation
+
+    // Node colors - ensure consistency
+    let colors = (
+      A: rgb("#ffd700"), // Gold
+      B: rgb("#ff4d4d"), // Red
+      C: rgb("#90ee90"), // Light green
+      D: rgb("#4d94ff"), // Blue
+      E: rgb("#9370db"), // Purple
+      F: rgb("#ff69b4"), // Pink
+    )
+
+    let draw-node(pos, label, name) = {
+      circle(
+        pos,
+        radius: node-radius,
+        fill: colors.at(label),
+        stroke: 0.5pt,
+        name: name,
+      )
+      content(pos, label, anchor: "center")
+    }
+
+    // Input Graph (left side)
+    let target-pos = (-1.5, 1.2)
+    let b-pos = (0.5, 2)
+    let c-pos = (1, 1)
+    let d-pos = (-2.5, -.7)
+    let e-pos = (-0.25, -1.25)
+    let f-pos = (1.5, 0)
+
+    draw-node(target-pos, "A", "target")
+    draw-node(b-pos, "B", "b")
+    draw-node(c-pos, "C", "c")
+    draw-node(d-pos, "D", "d")
+    draw-node(e-pos, "E", "e")
+    draw-node(f-pos, "F", "f")
+
+    content((rel: (0, 1.5), to: "target"), "Target Node", name: "target-label")
+    line("target-label.south", "target", ..arrow-style)
+
+    for (start, end) in (
+      ("target", "b"),
+      ("target", "c"),
+      ("b", "c"),
+      ("target", "d"),
+      ("c", "e"),
+      ("c", "f"),
+      ("e", "f"),
+    ) {
+      line(start, end, ..edge-style)
+    }
+
+    content((0.25, -1.8), [Input Graph])
+
+    // Main aggregation box
+    let box-pos = (graph-sep, 0.5)
+    content(
+      box-pos,
+      [Aggregation\ for Node A],
+      name: "agg-box",
+      fill: rgb("ddd"),
+      frame: "rect",
+      stroke: 0.2pt,
+      padding: (3pt, 7pt),
+    )
+
+    // First layer nodes - renamed to show they're neighbors of A
+    let first-layer = (
+      (2, 2, "B", "a-to-b"),
+      (2, 0, "C", "a-to-c"),
+      (2, -2, "D", "a-to-d"),
+    )
+
+    // Draw first layer nodes and arrows
+    for (dx, dy, label, name) in first-layer {
+      draw-node((rel: (dx, dy), to: "agg-box.east"), label, name)
+      line(name, "agg-box.east", ..arrow-style)
+    }
+
+    content((rel: (0, .7), to: "a-to-b"), "Hop 1")
+
+    // Draw aggregation boxes for each first layer node
+    for node in ("a-to-b", "a-to-c", "a-to-d") {
+      let letter = node.split("-").at(-1)
+      content(
+        (rel: (2, 0), to: node),
+        [Aggr(#upper(letter))],
+        fill: rgb("ddd"),
+        frame: "rect",
+        stroke: 0.2pt,
+        padding: (2pt, 4pt),
+        name: "aggr-" + letter,
+      )
+      line("aggr-" + letter, node, ..arrow-style)
+    }
+
+    // Second layer nodes and connections - renamed to show full path
+    let second-layer = (
+      // From B-aggregation (B's neighbors)
+      ((2, 1), "A", "aggr-b", "b-to-a"),
+      ((2, 0), "C", "aggr-b", "b-to-c"),
+      // From C-aggregation (C's neighbors)
+      ((2, 1), "A", "aggr-c", "c-to-a"),
+      ((2, 0.25), "B", "aggr-c", "c-to-b"),
+      ((2, -0.5), "E", "aggr-c", "c-to-e"),
+      ((2, -1.25), "F", "aggr-c", "c-to-f"),
+      // From D-aggregation (D's neighbors)
+      ((2, 0), "A", "aggr-d", "d-to-a"),
+    )
+
+    for ((dx, dy), label, parent, name) in second-layer {
+      draw-node((rel: (dx, dy), to: parent), label, name)
+      line(name, parent + ".east", ..arrow-style)
+    }
+
+    content((rel: (0, .7), to: "b-to-a"), "Hop 2")
+  })
+]
+
+// === 3  Construct messages ===
+#let figure-2 = [
+  #neighborhood("message")
+]
+
+// === 4  Learn which neighbors matter ===
+#let figure-3 = [
+  #neighborhood("attention")
+]
+
+#text(size: 27pt, weight: "bold")[Graph Neural Networks]
+#v(5pt)
+A node learns from its neighborhood. These views connect the local operation, the growth of its receptive field, and two ways to construct the information being combined.
+#v(14pt)
+#grid(
+  columns: (1fr, 1fr),
+  gutter: 12pt,
+  card(
+    [1  Aggregate the neighbors],
+    figure-0,
+    [Graph convolution mixes neighboring node features with shared parameters. A sum or mean is unchanged when the neighbors are reordered; include self-information in the update.],
+    height: 195pt,
+  ),
+  card(
+    [2  Stack layers to reach farther],
+    figure-1,
+    [One layer communicates across one edge; two layers can use two-hop information. The expanded tree shows computation paths, not duplicated physical nodes.],
+    height: 195pt,
+  ),
+
+  card(
+    [3  Construct messages],
+    figure-2,
+    [A message function $M$ can depend on sender features, receiver features, and edge attributes $e_(u v)$. Aggregate the messages, then update the receiving node.],
+    height: 195pt,
+  ),
+  card(
+    [4  Learn which neighbors matter],
+    figure-3,
+    [Attention assigns normalized weights to neighbors before aggregation. Multiple heads learn different weightings, then concatenate or average their outputs.],
+    height: 195pt,
+  ),
+)
+#v(12pt)
+#takeaway[$h_v$ = features at node $v$; $h′_v$ = updated features. *Shared local rules preserve node relabeling symmetry.* A graph-level prediction can pool node features into one permutation-invariant representation.]

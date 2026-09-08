@@ -1,0 +1,18 @@
+title: GPU Batching
+tags:
+- gpu computing
+- parallel computing
+- molecular dynamics
+- molecular simulations
+- performance optimization
+- structure relaxation
+- materials discovery
+- machine learning
+- deep learning
+- interatomic potentials
+- gpu
+- optimization
+- auto-batching
+- torch-sim
+description: Small atomistic jobs can leave a GPU underused. Batching runs several together; replacing completed jobs keeps useful work in the batch.
+creator: Janosh Riebesell

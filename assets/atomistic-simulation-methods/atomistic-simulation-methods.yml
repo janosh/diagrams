@@ -1,0 +1,8 @@
+title: Atomistic Simulation Methods
+tags:
+- materials science
+- machine learning
+- density functional theory
+- computational chemistry
+- force fields
+description: Choose a model for the quantities and configurations your simulation must predict. Speed, accuracy, and transferability depend on the task; they are not universal scores.
