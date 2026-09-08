@@ -134,11 +134,31 @@ test(`a diagram that fits remains centered`, async ({ page }) => {
   expect(await wrapper.evaluate((element) => element.scrollHeight)).toBe(2000)
 })
 
-for (const slug of [`xc-functional`, `matsubara-contour-deformation`]) {
-  test(`mobile source controls never cover code (${slug})`, async ({ page }) => {
+for (const slug of [`xc-functional`, `regulated-and-unregulated-propagators`]) {
+  test(`mobile source stays readable across themes (${slug})`, async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 720 })
+    await page.addInitScript(() => localStorage.setItem(`theme`, `dark`))
     await open_diagram(page, slug)
     const code = page.locator(`pre`)
+    // Explicit site themes must win over either OS preference, including after toggling.
+    for (const color_scheme of [`dark`, `light`] as const) {
+      await page.emulateMedia({ colorScheme: color_scheme })
+      for (const theme of [`light`, `dark`] as const) {
+        if (theme === `dark`)
+          await page
+            .getByRole(`button`, { name: `Switch to system (auto) theme` })
+            .click()
+        await page.getByRole(`button`, { name: `Switch to ${theme} theme` }).click()
+        await expect(code.locator(`.pl-smi`).first()).toHaveCSS(
+          `color`,
+          theme === `light` ? `rgb(31, 35, 40)` : `rgb(240, 246, 252)`,
+        )
+        await expect(code.locator(`.pl-k`).first()).toHaveCSS(
+          `color`,
+          theme === `light` ? `rgb(207, 34, 46)` : `rgb(255, 123, 114)`,
+        )
+      }
+    }
     const header = page.locator(`header`).filter({ has: page.locator(`aside`) })
     await header.scrollIntoViewIfNeeded()
     const header_bounds = await header.boundingBox()
