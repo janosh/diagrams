@@ -9,14 +9,9 @@
 #let fit-figure(body, height: 170pt) = layout(size => {
   let bounds = measure(body)
   let factor = calc.min(size.width / bounds.width, height / bounds.height)
-  box(width: 100%, align(center + horizon, std.scale(
-    x: factor * 100%,
-    y: factor * 100%,
-    reflow: true,
-    body,
-  )))
+  box(width: 100%, align(center + horizon, std.scale(factor * 100%, reflow: true, body)))
 })
-#let card(title, body, caption, height: 170pt) = block(
+#let card(title, body, caption, height: 225pt) = block(
   width: 100%,
   inset: 12pt,
   radius: 8pt,
@@ -37,16 +32,86 @@
   breakable: false,
 )[#body]
 
+// Hairline tying a label to whatever it names: pole callouts, semi-axis leaders,
+// off-diagram vertex captions.
+#let leader = (paint: rgb("#78828C"), thickness: 0.5pt)
+
+#let axis-arrow = (mark: (end: "stealth", fill: black, scale: 0.5))
+
+#let dark-blue = blue.darken(20%)
+
+#let contour-stroke = (paint: dark-blue, thickness: 0.8pt)
+
+// Arrowheads at the given fractions along a contour, marking its orientation.
+#let contour-marks(..fractions) = (
+  end: fractions
+    .pos()
+    .map(pos => (
+      pos: pos,
+      symbol: "stealth",
+      fill: dark-blue,
+      scale: 0.5,
+      shorten-to: none,
+    )),
+)
+
+#let thermal-poles(extent, label-padding: (x: 3pt)) = {
+  // Dots on the imaginary axis at every non-zero Matsubara frequency i omega_n.
+  for n in range(-extent, extent + 1).filter(n => n != 0) {
+    let name = "freq-" + str(n)
+    circle((0, n), radius: 0.03, fill: black, name: name)
+    content(name, $i omega_#text(size: 0.7em)[#n]$, anchor: "west", padding: label-padding)
+  }
+  circle((0, 0), radius: 0.03, fill: black, name: "origin")
+}
+
+#let function-poles(label-pos) = {
+  // Poles of h(p_0), each tied to a shared callout label by a hairline.
+  content(label-pos, [poles of $h(p_0)$], name: "poles-label")
+  let sites = (
+    ((1.5, 3), "west"),
+    ((2, -2), "north"),
+    ((-3, 1), "south"),
+    ((-2, -1.5), "north"),
+  )
+  for (idx, (pos, anchor)) in sites.enumerate(start: 1) {
+    let name = "p" + str(idx)
+    circle(pos, radius: 0.05, fill: black, name: name)
+    content(name, $p_#idx$, anchor: anchor, padding: 2pt)
+    // p3 sits far to the left, so aim its hairline at the label's west edge
+    let target = if idx == 3 { "poles-label.west" } else { "poles-label" }
+    line(target, name, stroke: leader)
+  }
+}
+
+#let half-contours(main-radius, y-offset) = {
+  // Contour split into a right half C_1 and a left half C_2, each a vertical line
+  // running past the poles and closed by a semicircle at infinity.
+  let style = (
+    stroke: contour-stroke,
+    mark: contour-marks(25%, 50%, 75%),
+  )
+  // C_1 runs down the right of the imaginary axis and back up its semicircle; C_2 mirrors it
+  for (sign, start, label, anchor) in (
+    (1, -90deg, $C_1$, "south-west"),
+    (-1, 90deg, $C_2$, "south-east"),
+  ) {
+    let x = sign * y-offset
+    line((x, sign * main-radius), (x, -sign * main-radius), ..style)
+    arc(
+      (x, 0),
+      radius: main-radius,
+      start: start,
+      stop: start + 180deg,
+      anchor: "origin",
+      ..style,
+    )
+    content((x, -main-radius), text(fill: dark-blue, label), anchor: anchor, padding: 4pt)
+  }
+}
+
 // === 1  Enclose the thermal poles ===
 #let figure-0 = [
-  #let axis-arrow = (mark: (end: "stealth", fill: black, scale: 0.5))
-
-  #let dark-blue = blue.darken(20%)
-
-  // Hairline tying a label to whatever it names: pole callouts, semi-axis leaders,
-  // off-diagram vertex captions.
-  #let leader = (paint: rgb("#78828C"), thickness: 0.5pt)
-
 
   #let range-xy = 3
   #let axis = (..axis-arrow, stroke: 0.5pt)
@@ -67,13 +132,7 @@
     )
     line("y-axis.98%", "y-label", stroke: leader)
 
-    // Dots on the imaginary axis at every non-zero Matsubara frequency i omega_n.
-    for n in range(-range-xy, range-xy + 1).filter(n => n != 0) {
-      let name = "freq-" + str(n)
-      circle((0, n), radius: 0.03, fill: black, name: name)
-      content(name, $i omega_#text(size: 0.7em)[#n]$, anchor: "west", padding: (x: 3pt))
-    }
-    circle((0, 0), radius: 0.03, fill: black, name: "origin")
+    thermal-poles(range-xy)
     content("origin", [0], anchor: "south-west", padding: (left: 3pt, bottom: 2pt))
 
     // Contour C hugs the imaginary axis, closed by semicircles beyond the last frequency
@@ -83,45 +142,12 @@
     arc((0, -range-xy - 0.5), radius: 1, start: 180deg, stop: 360deg, anchor: "center", ..contour)
     content("right-line.end", text(fill: dark-blue)[$C$], anchor: "south-west", padding: 2pt)
 
-    // Poles of h(p_0), each tied to a shared callout label by a hairline.
-    content((2.75, 1.5), [poles of $h(p_0)$], name: "poles-label")
-    let sites = (
-      ((1.5, 3), "west"),
-      ((2, -2), "north"),
-      ((-3, 1), "south"),
-      ((-2, -1.5), "north"),
-    )
-    for (idx, (pos, anchor)) in sites.enumerate(start: 1) {
-      let name = "p" + str(idx)
-      circle(pos, radius: 0.05, fill: black, name: name)
-      content(name, $p_#idx$, anchor: anchor, padding: 2pt)
-      // p3 sits far to the left, so aim its hairline at the label's west edge
-      let target = if idx == 3 { "poles-label.west" } else { "poles-label" }
-      line(target, name, stroke: leader)
-    }
+    function-poles((2.75, 1.5))
   })
 ]
 
 // === 2  Expand, then subtract ===
 #let figure-1 = [
-  #let dark-blue = blue.darken(20%)
-
-  // Arrowheads at the given fractions along a contour, marking its orientation.
-  #let flow(..fractions) = (
-    end: fractions
-      .pos()
-      .map(pos => (
-        pos: pos,
-        symbol: "stealth",
-        fill: dark-blue,
-        scale: 0.5,
-        shorten-to: none,
-      )),
-  )
-
-  // Hairline tying a label to whatever it names: pole callouts, semi-axis leaders,
-  // off-diagram vertex captions.
-  #let leader = (paint: rgb("#78828C"), thickness: 0.5pt)
 
 
   #let y-range = 3
@@ -136,13 +162,7 @@
     line((0, -main-radius), (0, main-radius), ..axis, name: "y-axis")
     content("y-axis.97%", $"Im"(p_0)$, anchor: "north-east", padding: 2pt)
 
-    // Dots on the imaginary axis at every non-zero Matsubara frequency i omega_n.
-    for n in range(-y-range, y-range + 1).filter(n => n != 0) {
-      let name = "freq-" + str(n)
-      circle((0, n), radius: 0.03, fill: black, name: name)
-      content(name, $i omega_#text(size: 0.7em)[#n]$, anchor: "west", padding: (x: 3pt))
-    }
-    circle((0, 0), radius: 0.03, fill: black, name: "origin")
+    thermal-poles(y-range)
     content("origin", [0], anchor: "south-west", padding: (left: 3pt, bottom: 2pt))
 
     // Outer contour C, deformable into the four small pole contours C_1..C_4
@@ -153,7 +173,7 @@
       stop: 360deg,
       anchor: "origin",
       stroke: dark-blue,
-      mark: flow(12.5%, 37.5%, 62.5%, 87.5%),
+      mark: contour-marks(12.5%, 37.5%, 62.5%, 87.5%),
       name: "main-contour",
     )
     content(
@@ -163,22 +183,7 @@
       padding: 2pt,
     )
 
-    // Poles of h(p_0), each tied to a shared callout label by a hairline.
-    content((2.5, 1.5), [poles of $h(p_0)$], name: "poles-label")
-    let sites = (
-      ((1.5, 3), "west"),
-      ((2, -2), "north"),
-      ((-3, 1), "south"),
-      ((-2, -1.5), "north"),
-    )
-    for (idx, (pos, anchor)) in sites.enumerate(start: 1) {
-      let name = "p" + str(idx)
-      circle(pos, radius: 0.05, fill: black, name: name)
-      content(name, $p_#idx$, anchor: anchor, padding: 2pt)
-      // p3 sits far to the left, so aim its hairline at the label's west edge
-      let target = if idx == 3 { "poles-label.west" } else { "poles-label" }
-      line(target, name, stroke: leader)
-    }
+    function-poles((2.5, 1.5))
 
     for idx in range(1, 5) {
       let name = "c" + str(idx)
@@ -189,7 +194,7 @@
         stop: 360deg,
         anchor: "origin",
         stroke: dark-blue,
-        mark: flow(25%, 75%),
+        mark: contour-marks(25%, 75%),
         name: name,
       )
       content(
@@ -203,14 +208,6 @@
 
 // === 3  Separate the half-planes ===
 #let figure-2 = [
-  #let dark-blue = blue.darken(20%)
-
-  #let contour-stroke = (paint: dark-blue, thickness: 0.8pt)
-
-  // Hairline tying a label to whatever it names: pole callouts, semi-axis leaders,
-  // off-diagram vertex captions.
-  #let leader = (paint: rgb("#78828C"), thickness: 0.5pt)
-
 
   #let y-range = 3
   #let main-radius = y-range + 1.5
@@ -230,72 +227,15 @@
     line((0, -main-radius), (0, main-radius), ..axis, name: "y-axis")
     content("y-axis.97%", $"Im"(p_0)$, anchor: "north-east", padding: (right: 8pt))
 
-    // Dots on the imaginary axis at every non-zero Matsubara frequency i omega_n.
-    for n in range(-y-range, y-range + 1).filter(n => n != 0) {
-      let name = "freq-" + str(n)
-      circle((0, n), radius: 0.03, fill: black, name: name)
-      content(name, $i omega_#text(size: 0.7em)[#n]$, anchor: "west", padding: (left: 10pt))
-    }
-    circle((0, 0), radius: 0.03, fill: black, name: "origin")
+    thermal-poles(y-range, label-padding: (left: 10pt))
     content("origin", [0], anchor: "south-west", padding: (left: 10pt, bottom: 3pt))
-    // Contour split into a right half C_1 and a left half C_2, each a vertical line
-    // running past the poles and closed by a semicircle at infinity.
-    let style = (
-      stroke: contour-stroke,
-      mark: (
-        end: (25%, 50%, 75%).map(pos => (
-          pos: pos,
-          symbol: "stealth",
-          fill: dark-blue,
-          scale: 0.5,
-          shorten-to: none,
-        )),
-      ),
-    )
-    // C_1 runs down the right of the imaginary axis and back up its semicircle; C_2 mirrors it
-    for (sign, start, label, anchor) in (
-      (1, -90deg, $C_1$, "south-west"),
-      (-1, 90deg, $C_2$, "south-east"),
-    ) {
-      let x = sign * y-offset
-      line((x, sign * main-radius), (x, -sign * main-radius), ..style)
-      arc(
-        (x, 0),
-        radius: main-radius,
-        start: start,
-        stop: start + 180deg,
-        anchor: "origin",
-        ..style,
-      )
-      content((x, -main-radius), text(fill: dark-blue, label), anchor: anchor, padding: 4pt)
-    }
-    // Poles of h(p_0), each tied to a shared callout label by a hairline.
-    content((2.5, 1.5), [poles of $h(p_0)$], name: "poles-label")
-    let sites = (
-      ((1.5, 3), "west"),
-      ((2, -2), "north"),
-      ((-3, 1), "south"),
-      ((-2, -1.5), "north"),
-    )
-    for (idx, (pos, anchor)) in sites.enumerate(start: 1) {
-      let name = "p" + str(idx)
-      circle(pos, radius: 0.05, fill: black, name: name)
-      content(name, $p_#idx$, anchor: anchor, padding: 2pt)
-      // p3 sits far to the left, so aim its hairline at the label's west edge
-      let target = if idx == 3 { "poles-label.west" } else { "poles-label" }
-      line(target, name, stroke: leader)
-    }
+    half-contours(main-radius, y-offset)
+    function-poles((2.5, 1.5))
   })
 ]
 
 // === 4  Identify additional singularities ===
 #let figure-3 = [
-  #let axis-arrow = (mark: (end: "stealth", fill: black, scale: 0.5))
-
-  #let dark-blue = blue.darken(20%)
-
-  #let contour-stroke = (paint: dark-blue, thickness: 0.8pt)
-
 
   #let (x-range, y-range) = (3.5, 3)
   #let main-radius = y-range + 0.75
@@ -324,45 +264,9 @@
     line((0, -y-range - 0.7), (0, y-range + 0.7), ..axis-arrow, name: "y-axis")
     content("y-axis.97%", $"Im"(p_0)$, anchor: "north-east", padding: (right: 8pt))
 
-    // Dots on the imaginary axis at every non-zero Matsubara frequency i omega_n.
-    for n in range(-y-range, y-range + 1).filter(n => n != 0) {
-      let name = "freq-" + str(n)
-      circle((0, n), radius: 0.03, fill: black, name: name)
-      content(name, $i omega_#text(size: 0.7em)[#n]$, anchor: "west", padding: (left: 10pt))
-    }
-    circle((0, 0), radius: 0.03, fill: black, name: "origin")
+    thermal-poles(y-range, label-padding: (left: 10pt))
     content("origin", [0], anchor: "north-east", padding: 2pt)
-    // Contour split into a right half C_1 and a left half C_2, each a vertical line
-    // running past the poles and closed by a semicircle at infinity.
-    let style = (
-      stroke: contour-stroke,
-      mark: (
-        end: (25%, 50%, 75%).map(pos => (
-          pos: pos,
-          symbol: "stealth",
-          fill: dark-blue,
-          scale: 0.5,
-          shorten-to: none,
-        )),
-      ),
-    )
-    // C_1 runs down the right of the imaginary axis and back up its semicircle; C_2 mirrors it
-    for (sign, start, label, anchor) in (
-      (1, -90deg, $C_1$, "south-west"),
-      (-1, 90deg, $C_2$, "south-east"),
-    ) {
-      let x = sign * y-offset
-      line((x, sign * main-radius), (x, -sign * main-radius), ..style)
-      arc(
-        (x, 0),
-        radius: main-radius,
-        start: start,
-        stop: start + 180deg,
-        anchor: "origin",
-        ..style,
-      )
-      content((x, -main-radius), text(fill: dark-blue, label), anchor: anchor, padding: 4pt)
-    }
+    half-contours(main-radius, y-offset)
 
     for (name, pos, label, anchor) in (
       ("pole-e", (x-range / 2, y-range / 4), $E$, "west"),
@@ -376,12 +280,6 @@
 
 // === 5  Follow both sides of a cut ===
 #let figure-4 = [
-  #let axis-arrow = (mark: (end: "stealth", fill: black, scale: 0.5))
-
-  #let dark-blue = blue.darken(20%)
-
-  #let contour-stroke = (paint: dark-blue, thickness: 0.8pt)
-
 
   #let (x-range, y-range) = (4, 1)
   #let radius = y-range / 4
@@ -414,15 +312,7 @@
       start,
       end,
       stroke: contour-stroke,
-      mark: (
-        end: (25%, 75%).map(pos => (
-          pos: pos,
-          symbol: "stealth",
-          fill: dark-blue,
-          scale: 0.5,
-          shorten-to: none,
-        )),
-      ),
+      mark: contour-marks(25%, 75%),
       ..args,
     )
     for sign in (1, -1) {
@@ -473,39 +363,33 @@ A thermal frequency sum can be rewritten as a contour integral. Follow which sin
     [1  Enclose the thermal poles],
     figure-0,
     [The blue contour encloses the imaginary-axis Matsubara poles of the thermal factor. Dots away from that axis are poles of the other factor, $h(z)$.],
-    height: 225pt,
   ),
   card(
     [2  Expand, then subtract],
     figure-1,
     [Expanding the contour also encloses poles of $h$. Clockwise circles subtract them back out. The outer arc vanishes only if the full integrand decays sufficiently fast.],
-    height: 225pt,
   ),
 
   card(
     [3  Separate the half-planes],
     figure-2,
     [Contours $C_1$ and $C_2$ run on opposite sides of the imaginary axis. Deformation preserves the integral only while no singularity crosses the path.],
-    height: 225pt,
   ),
   card(
     [4  Identify additional singularities],
     figure-3,
     [Here the example has poles at $+E$ and $-E$ and a real-axis cut. This is a different singularity pattern from the four-pole sketch above.],
-    height: 225pt,
   ),
 
   card(
     [5  Follow both sides of a cut],
     figure-4,
     [The branch-cut contour samples the difference between the limiting values above and below the cut. A cut contributes through this discontinuity.],
-    height: 225pt,
   ),
   card(
     [6  Account for every contribution],
     figure-5,
     [The pictures are a bookkeeping guide, not a universal signed formula. Specify the thermal factor, its residues, and the analytic structure of the complete integrand.],
-    height: 225pt,
   ),
 )
 #v(12pt)

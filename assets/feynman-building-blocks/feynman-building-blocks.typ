@@ -9,14 +9,9 @@
 #let fit-figure(body, height: 170pt) = layout(size => {
   let bounds = measure(body)
   let factor = calc.min(size.width / bounds.width, height / bounds.height)
-  box(width: 100%, align(center + horizon, std.scale(
-    x: factor * 100%,
-    y: factor * 100%,
-    reflow: true,
-    body,
-  )))
+  box(width: 100%, align(center + horizon, std.scale(factor * 100%, reflow: true, body)))
 })
-#let card(title, body, caption, height: 170pt) = block(
+#let card(title, body, caption, height: 135pt) = block(
   width: 100%,
   inset: 12pt,
   radius: 8pt,
@@ -37,19 +32,18 @@
   breakable: false,
 )[#body]
 
+// Diagonal hatching marking a vertex as dressed rather than bare.
+#let hatched = tiling(size: (.1cm, .1cm))[
+  #place(std.rect(width: 100%, height: 100%, fill: white, stroke: none))
+  #place(std.line(start: (0%, 100%), end: (100%, 0%), stroke: 0.4pt))
+]
+
 // === 1  Propagator ===
 #let figure-0 = [
   #let momentum-arrow = (
     mark: (end: "stealth", fill: black, scale: .5),
     stroke: (thickness: 0.75pt),
   )
-
-  // Diagonal hatching marking a vertex as dressed rather than bare.
-  #let hatched = tiling(size: (.1cm, .1cm))[
-    #place(std.rect(width: 100%, height: 100%, fill: white, stroke: none))
-    #place(std.line(start: (0%, 100%), end: (100%, 0%), stroke: 0.4pt))
-  ]
-
 
   #canvas({
     draw.set-style(legend: (fill: white))
@@ -102,12 +96,6 @@
 
 // === 3  Three-point vertex ===
 #let figure-2 = [
-  // Diagonal hatching marking a vertex as dressed rather than bare.
-  #let hatched = tiling(size: (.1cm, .1cm))[
-    #place(std.rect(width: 100%, height: 100%, fill: white, stroke: none))
-    #place(std.line(start: (0%, 100%), end: (100%, 0%), stroke: 0.4pt))
-  ]
-
 
   #canvas({
     draw.set-style(legend: (fill: white))
@@ -141,12 +129,6 @@
 
 // === 4  Four-point vertex ===
 #let figure-3 = [
-  // Diagonal hatching marking a vertex as dressed rather than bare.
-  #let hatched = tiling(size: (.1cm, .1cm))[
-    #place(std.rect(width: 100%, height: 100%, fill: white, stroke: none))
-    #place(std.line(start: (0%, 100%), end: (100%, 0%), stroke: 0.4pt))
-  ]
-
 
   // draw the four-point vertex on axes rotated 45 deg so the legs run diagonally
   #let rot45(x, y) = ((x - y) / calc.sqrt(2), (x + y) / calc.sqrt(2))
@@ -193,26 +175,22 @@ Read a functional renormalization-group diagram one symbol at a time. Lines conn
     [1  Propagator],
     figure-0,
     [The full propagator $G_k$ describes a two-point correlation at scale $k$. “Full” includes interaction corrections.],
-    height: 135pt,
   ),
   card(
     [2  Regulator insertion],
     figure-1,
     [The circled cross means $partial_k R_k$: change the momentum cutoff. It is an insertion on a line, not a new particle.],
-    height: 135pt,
   ),
 
   card(
     [3  Three-point vertex],
     figure-2,
     [$Gamma_k^((3))$ couples three field legs. Each $p_i$ labels a momentum; letter indices label field components.],
-    height: 135pt,
   ),
   card(
     [4  Four-point vertex],
     figure-3,
     [$Gamma_k^((4))$ couples four field legs. The hatched disc marks a dressed vertex, including fluctuation effects.],
-    height: 135pt,
   ),
 )
 #v(12pt)

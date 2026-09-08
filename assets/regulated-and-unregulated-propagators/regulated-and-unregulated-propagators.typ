@@ -9,14 +9,9 @@
 #let fit-figure(body, height: 170pt) = layout(size => {
   let bounds = measure(body)
   let factor = calc.min(size.width / bounds.width, height / bounds.height)
-  box(width: 100%, align(center + horizon, std.scale(
-    x: factor * 100%,
-    y: factor * 100%,
-    reflow: true,
-    body,
-  )))
+  box(width: 100%, align(center + horizon, std.scale(factor * 100%, reflow: true, body)))
 })
-#let card(title, body, caption, height: 170pt) = block(
+#let card(title, body, caption, height: 145pt) = block(
   width: 100%,
   inset: 12pt,
   radius: 8pt,
@@ -37,14 +32,18 @@
   breakable: false,
 )[#body]
 
+// Diagonal hatching marking a vertex as dressed rather than bare.
+#let hatched = tiling(size: (.1cm, .1cm))[
+  #place(std.rect(width: 100%, height: 100%, fill: white, stroke: none))
+  #place(std.line(start: (0%, 100%), end: (100%, 0%), stroke: 0.4pt))
+]
+
+// Hairline tying a label to whatever it names: pole callouts, semi-axis leaders,
+// off-diagram vertex captions.
+#let leader = (paint: rgb("#78828C"), thickness: 0.5pt)
+
 // === 1  Recognize the two topologies ===
 #let figure-0 = [
-  // Diagonal hatching marking a vertex as dressed rather than bare.
-  #let hatched = tiling(size: (.1cm, .1cm))[
-    #place(std.rect(width: 100%, height: 100%, fill: white, stroke: none))
-    #place(std.line(start: (0%, 100%), end: (100%, 0%), stroke: 0.4pt))
-  ]
-
 
   #let radius = 1 // \radius in original
   // Dressed vertices use hatching; trailing options position their labels.
@@ -73,21 +72,11 @@
 
 // === 2  Resolve the internal labels ===
 #let figure-1 = [
-  // Diagonal hatching marking a vertex as dressed rather than bare.
-  #let hatched = tiling(size: (.1cm, .1cm))[
-    #place(std.rect(width: 100%, height: 100%, fill: white, stroke: none))
-    #place(std.line(start: (0%, 100%), end: (100%, 0%), stroke: 0.4pt))
-  ]
 
   #let momentum-arrow = (
     mark: (end: "stealth", fill: black, scale: .5),
     stroke: (thickness: 0.75pt),
   )
-
-  // Hairline tying a label to whatever it names: pole callouts, semi-axis leaders,
-  // off-diagram vertex captions.
-  #let leader = (paint: rgb("#78828C"), thickness: 0.5pt)
-
 
   #let radius = 1.25
   #let med-rad = 0.175 * radius
@@ -184,15 +173,6 @@
 
 // === 3  Insert the changing cutoff ===
 #let figure-2 = [
-  // Diagonal hatching marking a vertex as dressed rather than bare.
-  #let hatched = tiling(size: (.1cm, .1cm))[
-    #place(std.rect(width: 100%, height: 100%, fill: white, stroke: none))
-    #place(std.line(start: (0%, 100%), end: (100%, 0%), stroke: 0.4pt))
-  ]
-
-  // Hairline tying a label to whatever it names: pole callouts, semi-axis leaders,
-  // off-diagram vertex captions.
-  #let leader = (paint: rgb("#78828C"), thickness: 0.5pt)
 
   // Regulator insertion: a circled cross on an opaque white disc.
   #let cross(pos, label, offset, name: none) = {
@@ -207,7 +187,6 @@
     )
     content((rel: offset, to: pos), $#label$)
   }
-
 
   #let radius = 1.25 // \lrad in original
   #let med-rad = 0.13 * radius
@@ -368,19 +347,16 @@ Compare the loop structures before and after inserting a scale-dependent regulat
     [1  Recognize the two topologies],
     figure-0,
     [A loop with two three-point vertices and a tadpole with one four-point vertex. Signs and symmetry factors belong to the defining equation and conventions.],
-    height: 145pt,
   ),
   card(
     [2  Resolve the internal labels],
     figure-1,
     [The same building blocks with explicit external legs and loop momenta. Without a regulator, integration is not restricted by the running cutoff.],
-    height: 145pt,
   ),
   card(
     [3  Insert the changing cutoff],
     figure-2,
     [Each circled cross is $partial_k R_k$. Different insertion positions contribute to the scale derivative of the two-point function; these sketches show the terms, not their prefactors.],
-    height: 145pt,
   ),
 )
 #v(12pt)

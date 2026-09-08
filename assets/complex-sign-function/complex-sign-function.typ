@@ -9,14 +9,9 @@
 #let fit-figure(body, height: 170pt) = layout(size => {
   let bounds = measure(body)
   let factor = calc.min(size.width / bounds.width, height / bounds.height)
-  box(width: 100%, align(center + horizon, std.scale(
-    x: factor * 100%,
-    y: factor * 100%,
-    reflow: true,
-    body,
-  )))
+  box(width: 100%, align(center + horizon, std.scale(factor * 100%, reflow: true, body)))
 })
-#let card(title, body, caption, height: 170pt) = block(
+#let card(title, body, caption, height: 245pt) = block(
   width: 100%,
   inset: 12pt,
   radius: 8pt,
@@ -165,13 +160,11 @@ One quadrant-wise sign rule, viewed from above and as a lifted surface. This is 
     [1  Locate the quadrant],
     figure-0,
     [Equal signs of the real and imaginary parts give $+1$; opposite signs give $-1$. The sign flips on crossing either axis.],
-    height: 245pt,
   ),
   card(
     [2  Lift the value to a height],
     figure-1,
     [The same two values become horizontal sheets. Height encodes the sign; the surface is discontinuous at the axes.],
-    height: 245pt,
   ),
 )
 #v(12pt)

@@ -9,14 +9,9 @@
 #let fit-figure(body, height: 170pt) = layout(size => {
   let bounds = measure(body)
   let factor = calc.min(size.width / bounds.width, height / bounds.height)
-  box(width: 100%, align(center + horizon, std.scale(
-    x: factor * 100%,
-    y: factor * 100%,
-    reflow: true,
-    body,
-  )))
+  box(width: 100%, align(center + horizon, std.scale(factor * 100%, reflow: true, body)))
 })
-#let card(title, body, caption, height: 170pt) = block(
+#let card(title, body, caption, height: 195pt) = block(
   width: 100%,
   inset: 12pt,
   radius: 8pt,
@@ -77,11 +72,6 @@
     draw.content((-.4, -2.8), [sum or mean ignores neighbor ordering])
   }
 })
-
-// === 1  Aggregate the neighbors ===
-#let figure-0 = [
-  #neighborhood("aggregate")
-]
 
 // === 2  Stack layers to reach farther ===
 #let figure-1 = [
@@ -213,16 +203,6 @@
   })
 ]
 
-// === 3  Construct messages ===
-#let figure-2 = [
-  #neighborhood("message")
-]
-
-// === 4  Learn which neighbors matter ===
-#let figure-3 = [
-  #neighborhood("attention")
-]
-
 #text(size: 27pt, weight: "bold")[Graph Neural Networks]
 #v(5pt)
 A node learns from its neighborhood. These views connect the local operation, the growth of its receptive field, and two ways to construct the information being combined.
@@ -232,28 +212,24 @@ A node learns from its neighborhood. These views connect the local operation, th
   gutter: 12pt,
   card(
     [1  Aggregate the neighbors],
-    figure-0,
+    neighborhood("aggregate"),
     [Graph convolution mixes neighboring node features with shared parameters. A sum or mean is unchanged when the neighbors are reordered; include self-information in the update.],
-    height: 195pt,
   ),
   card(
     [2  Stack layers to reach farther],
     figure-1,
     [One layer communicates across one edge; two layers can use two-hop information. The expanded tree shows computation paths, not duplicated physical nodes.],
-    height: 195pt,
   ),
 
   card(
     [3  Construct messages],
-    figure-2,
+    neighborhood("message"),
     [A message function $M$ can depend on sender features, receiver features, and edge attributes $e_(u v)$. Aggregate the messages, then update the receiving node.],
-    height: 195pt,
   ),
   card(
     [4  Learn which neighbors matter],
-    figure-3,
+    neighborhood("attention"),
     [Attention assigns normalized weights to neighbors before aggregation. Multiple heads learn different weightings, then concatenate or average their outputs.],
-    height: 195pt,
   ),
 )
 #v(12pt)

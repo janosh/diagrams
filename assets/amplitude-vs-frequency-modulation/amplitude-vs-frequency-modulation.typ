@@ -9,14 +9,9 @@
 #let fit-figure(body, height: 170pt) = layout(size => {
   let bounds = measure(body)
   let factor = calc.min(size.width / bounds.width, height / bounds.height)
-  box(width: 100%, align(center + horizon, std.scale(
-    x: factor * 100%,
-    y: factor * 100%,
-    reflow: true,
-    body,
-  )))
+  box(width: 100%, align(center + horizon, std.scale(factor * 100%, reflow: true, body)))
 })
-#let card(title, body, caption, height: 170pt) = block(
+#let card(title, body, caption, height: 240pt) = block(
   width: 100%,
   inset: 12pt,
   radius: 8pt,
@@ -37,39 +32,39 @@
   breakable: false,
 )[#body]
 
+#let plot-height = 1.6
+
+// `y` is the height of the panel's t-axis; the curve is shifted so that the zero of
+// `y-range` lands on it, which is what lets panels with different scales line up.
+#let signal-row(name, y, title, func, color, y-range, samples: 1600) = {
+  let (y-min, y-max) = y-range
+  let arrow = (mark: (end: "stealth", fill: black, scale: .55), stroke: .8pt)
+  let (x-axis, y-axis) = (name + "-x-axis", name + "-y-axis")
+
+  draw.line((0, y), (10.5, y), ..arrow, name: x-axis)
+  draw.line((0, y - .95), (0, y + 1.15), ..arrow, name: y-axis)
+  draw.content(x-axis + ".end", $t$, anchor: "west", padding: 2pt)
+  draw.content(
+    (rel: (.14, -.15), to: y-axis + ".end"),
+    text(fill: color, title),
+    anchor: "south-west",
+  )
+
+  draw.group({
+    draw.translate((0, y - (0 - y-min) / (y-max - y-min) * plot-height))
+    plot.plot(
+      size: (10.0, plot-height),
+      axis-style: none,
+      y-min: y-min,
+      y-max: y-max,
+      plot.add(style: (stroke: color + 1.3pt), domain: (0, 1), samples: samples, func),
+    )
+  })
+}
+
+
 // === AM: change the envelope ===
 #let figure-0 = [
-  #let plot-height = 1.6
-
-  // `y` is the height of the panel's t-axis; the curve is shifted so that the zero of
-  // `y-range` lands on it, which is what lets panels with different scales line up.
-  #let signal-row(name, y, title, func, color, y-range, samples: 1600) = {
-    let (y-min, y-max) = y-range
-    let arrow = (mark: (end: "stealth", fill: black, scale: .55), stroke: .8pt)
-    let (x-axis, y-axis) = (name + "-x-axis", name + "-y-axis")
-
-    draw.line((0, y), (10.5, y), ..arrow, name: x-axis)
-    draw.line((0, y - .95), (0, y + 1.15), ..arrow, name: y-axis)
-    draw.content(x-axis + ".end", $t$, anchor: "west", padding: 2pt)
-    draw.content(
-      (rel: (.14, -.15), to: y-axis + ".end"),
-      text(fill: color, title),
-      anchor: "south-west",
-    )
-
-    draw.group({
-      draw.translate((0, y - (0 - y-min) / (y-max - y-min) * plot-height))
-      plot.plot(
-        size: (10.0, plot-height),
-        axis-style: none,
-        y-min: y-min,
-        y-max: y-max,
-        plot.add(style: (stroke: color + 1.3pt), domain: (0, 1), samples: samples, func),
-      )
-    })
-  }
-
-
   #let domain-x(x) = 11 * calc.pi * x
   #let msg(x) = 2 * calc.sin(.5 * domain-x(x))
   #let carrier(x) = 2 * calc.sin(6 * domain-x(x))
@@ -85,41 +80,10 @@
 
 // === FM: change the spacing ===
 #let figure-1 = [
-  #let plot-height = 1.6
-
-  // `y` is the height of the panel's t-axis; the curve is shifted so that the zero of
-  // `y-range` lands on it, which is what lets panels with different scales line up.
-  #let signal-row(name, y, title, func, color, y-range, samples: 1600) = {
-    let (y-min, y-max) = y-range
-    let arrow = (mark: (end: "stealth", fill: black, scale: .55), stroke: .8pt)
-    let (x-axis, y-axis) = (name + "-x-axis", name + "-y-axis")
-
-    draw.line((0, y), (10.5, y), ..arrow, name: x-axis)
-    draw.line((0, y - .95), (0, y + 1.15), ..arrow, name: y-axis)
-    draw.content(x-axis + ".end", $t$, anchor: "west", padding: 2pt)
-    draw.content(
-      (rel: (.14, -.15), to: y-axis + ".end"),
-      text(fill: color, title),
-      anchor: "south-west",
-    )
-
-    draw.group({
-      draw.translate((0, y - (0 - y-min) / (y-max - y-min) * plot-height))
-      plot.plot(
-        size: (10.0, plot-height),
-        axis-style: none,
-        y-min: y-min,
-        y-max: y-max,
-        plot.add(style: (stroke: color + 1.3pt), domain: (0, 1), samples: samples, func),
-      )
-    })
-  }
-
-
   #let domain-x(x) = 11 * x
   #let msg(x) = 2 * calc.sin(2 * calc.pi * .25 * domain-x(x))
   #let carrier(x) = 2 * calc.sin(6 * calc.pi * domain-x(x))
-  // phase modulation: the message integrates into the carrier's argument
+  // Frequency modulation: integrate the message into the carrier phase.
   #let fm(x) = (
     2
       * calc.sin(
@@ -147,13 +111,11 @@ Transmit the same message by changing one property of a fast carrier. Read each 
     [AM: change the envelope],
     figure-0,
     [The carrier’s amplitude follows the message; its rapid oscillation rate stays fixed. The envelope is easiest to see in the peaks.],
-    height: 240pt,
   ),
   card(
     [FM: change the spacing],
     figure-1,
     [The instantaneous frequency follows the message; the amplitude stays fixed. Closely spaced peaks mean a higher frequency.],
-    height: 240pt,
   ),
 )
 #v(12pt)

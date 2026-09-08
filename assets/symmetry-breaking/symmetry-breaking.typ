@@ -9,14 +9,9 @@
 #let fit-figure(body, height: 170pt) = layout(size => {
   let bounds = measure(body)
   let factor = calc.min(size.width / bounds.width, height / bounds.height)
-  box(width: 100%, align(center + horizon, std.scale(
-    x: factor * 100%,
-    y: factor * 100%,
-    reflow: true,
-    body,
-  )))
+  box(width: 100%, align(center + horizon, std.scale(factor * 100%, reflow: true, body)))
 })
-#let card(title, body, caption, height: 170pt) = block(
+#let card(title, body, caption, height: 230pt) = block(
   width: 100%,
   inset: 12pt,
   radius: 8pt,
@@ -207,13 +202,11 @@ A symmetric energy landscape can have an entire family of equally good minima. C
     [1  A ring of minima],
     figure-0,
     [The peak at zero field is unstable; all points around the valley have the same potential energy. The selected red point breaks the rotational symmetry of this picture.],
-    height: 230pt,
   ),
   card(
     [2  Radial and angular directions],
     figure-1,
     [For a global continuous symmetry, angular motion along the valley gives a massless Goldstone mode. Radial motion climbs the potential and costs energy.],
-    height: 230pt,
   ),
 )
 #v(12pt)

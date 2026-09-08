@@ -8,14 +8,9 @@
 #let fit-figure(body, height: 170pt) = layout(size => {
   let bounds = measure(body)
   let factor = calc.min(size.width / bounds.width, height / bounds.height)
-  box(width: 100%, align(center + horizon, std.scale(
-    x: factor * 100%,
-    y: factor * 100%,
-    reflow: true,
-    body,
-  )))
+  box(width: 100%, align(center + horizon, std.scale(factor * 100%, reflow: true, body)))
 })
-#let card(title, body, caption, height: 170pt) = block(
+#let card(title, body, caption, height: 130pt) = block(
   width: 100%,
   inset: 12pt,
   radius: 8pt,
@@ -101,31 +96,6 @@
   }
 })
 
-// === 1  Autoencoder ===
-#let figure-0 = [
-  #architecture("plain")
-]
-
-// === 2  Sparse autoencoder ===
-#let figure-1 = [
-  #architecture("sparse")
-]
-
-// === 3  Variational autoencoder ===
-#let figure-2 = [
-  #architecture("vae")
-]
-
-// === 4  Denoising variational autoencoder ===
-#let figure-3 = [
-  #architecture("denoise")
-]
-
-// === 5  Convolutional autoencoder ===
-#let figure-4 = [
-  #architecture("conv")
-]
-
 // === 6  These choices can be combined ===
 #let figure-5 = [
   #align(center)[
@@ -148,41 +118,35 @@ Every autoencoder learns to reconstruct an input through an intermediate represe
   gutter: 12pt,
   card(
     [1  Autoencoder],
-    figure-0,
+    architecture("plain"),
     [Encode $x$ into a bottleneck $z$, then reconstruct $hat(x)$. A reconstruction loss rewards retaining useful information.],
-    height: 130pt,
   ),
   card(
     [2  Sparse autoencoder],
-    figure-1,
+    architecture("sparse"),
     [Penalize latent activity so only a few components activate for one input. The latent layer may be wider than the input; sparsity is the constraint.],
-    height: 130pt,
   ),
 
   card(
     [3  Variational autoencoder],
-    figure-2,
+    architecture("vae"),
     [The encoder predicts a distribution over $z$, not just one code. Reconstruction and a KL-divergence term train it toward an explicit prior.],
-    height: 130pt,
   ),
   card(
     [4  Denoising variational autoencoder],
-    figure-3,
+    architecture("denoise"),
     [Corrupt the input, then reconstruct the clean target. The stochastic latent step remains; robustness and distribution learning are separate ingredients.],
-    height: 130pt,
   ),
 
   card(
     [5  Convolutional autoencoder],
-    figure-4,
+    architecture("conv"),
     [Convolutions share filters over spatial locations. Feature maps change resolution through the encoder and decoder; this is an architectural choice.],
-    height: 130pt,
   ),
   card(
     [6  These choices can be combined],
     figure-5,
     [A convolutional model can also be sparse, variational, or denoising. These names describe different design dimensions, not mutually exclusive model families.],
-    height: 130pt,
   ),
 )
 #v(12pt)

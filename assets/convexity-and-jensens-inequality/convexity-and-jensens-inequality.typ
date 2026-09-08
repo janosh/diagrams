@@ -9,14 +9,9 @@
 #let fit-figure(body, height: 170pt) = layout(size => {
   let bounds = measure(body)
   let factor = calc.min(size.width / bounds.width, height / bounds.height)
-  box(width: 100%, align(center + horizon, std.scale(
-    x: factor * 100%,
-    y: factor * 100%,
-    reflow: true,
-    body,
-  )))
+  box(width: 100%, align(center + horizon, std.scale(factor * 100%, reflow: true, body)))
 })
-#let card(title, body, caption, height: 170pt) = block(
+#let card(title, body, caption, height: 180pt) = block(
   width: 100%,
   inset: 12pt,
   radius: 8pt,
@@ -192,26 +187,22 @@ Curvature tells us how a function compares with its tangents, chords, and averag
     [1  Convex: above a tangent],
     figure-0,
     [For $f(x)=x ln x$ ($x>0$), the tangent at $x=1$ is $x-1$. Thus $x ln x >= x-1$, with equality at the contact point.],
-    height: 180pt,
   ),
   card(
     [2  Concave: reverse the inequality],
     figure-1,
     [Negating $x ln x$ reverses its curvature. A straight line is both convex and concave. Curvature statements apply on the specified domain.],
-    height: 180pt,
   ),
 
   card(
     [3  The local picture for log],
     figure-2,
     [The concave logarithm lies below its tangent. To understand Jensen’s inequality, compare a point on the curve with the chord between two sampled values.],
-    height: 180pt,
   ),
   card(
     [4  Average first, or apply f first?],
     figure-3,
     [For convex $f$, $f(sum_i w_i x_i) <= sum_i w_i f(x_i)$ when $w_i >= 0$ and $sum_i w_i=1$. For concave $f$, reverse the sign.],
-    height: 180pt,
   ),
 )
 #v(12pt)

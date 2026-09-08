@@ -9,14 +9,9 @@
 #let fit-figure(body, height: 170pt) = layout(size => {
   let bounds = measure(body)
   let factor = calc.min(size.width / bounds.width, height / bounds.height)
-  box(width: 100%, align(center + horizon, std.scale(
-    x: factor * 100%,
-    y: factor * 100%,
-    reflow: true,
-    body,
-  )))
+  box(width: 100%, align(center + horizon, std.scale(factor * 100%, reflow: true, body)))
 })
-#let card(title, body, caption, height: 170pt) = block(
+#let card(title, body, caption, height: 210pt) = block(
   width: 100%,
   inset: 12pt,
   radius: 8pt,
@@ -132,13 +127,11 @@ One energy formula connects thermal motion with zero-point motion. Compare the l
     [1  Increase frequency at fixed temperature],
     figure-0,
     [At small level spacing, $chevron.l E chevron.r approx k_"B" T$: classical equipartition. At large spacing the zero-point term dominates. The energy rises monotonically.],
-    height: 210pt,
   ),
   card(
     [2  Cool at fixed frequency],
     figure-1,
     [Move right by increasing $beta=1/(k_"B" T)$. Thermal excitations freeze out; the mean energy approaches $ℏ omega/2$, rather than zero.],
-    height: 210pt,
   ),
 )
 #v(12pt)

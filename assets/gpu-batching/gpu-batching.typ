@@ -9,14 +9,9 @@
 #let fit-figure(body, height: 170pt) = layout(size => {
   let bounds = measure(body)
   let factor = calc.min(size.width / bounds.width, height / bounds.height)
-  box(width: 100%, align(center + horizon, std.scale(
-    x: factor * 100%,
-    y: factor * 100%,
-    reflow: true,
-    body,
-  )))
+  box(width: 100%, align(center + horizon, std.scale(factor * 100%, reflow: true, body)))
 })
-#let card(title, body, caption, height: 170pt) = block(
+#let card(title, body, caption, height: 300pt) = block(
   width: 100%,
   inset: 12pt,
   radius: 8pt,
@@ -504,13 +499,11 @@ Small atomistic jobs can leave a GPU underused. Batching runs several together; 
     [1  Compare scheduling strategies],
     figure-0,
     [Sequential jobs leave capacity unused. Fixed batches wait for their slowest member. In-flight scheduling admits new work as individual structures finish.],
-    height: 300pt,
   ),
   card(
     [2  Follow a replacement],
     figure-1,
     [Each structure has its own convergence state. After a structure finishes, move it to the completed pool and fill the available capacity from the waiting pool.],
-    height: 300pt,
   ),
 )
 #v(12pt)

@@ -8,14 +8,9 @@
 #let fit-figure(body, height: 170pt) = layout(size => {
   let bounds = measure(body)
   let factor = calc.min(size.width / bounds.width, height / bounds.height)
-  box(width: 100%, align(center + horizon, std.scale(
-    x: factor * 100%,
-    y: factor * 100%,
-    reflow: true,
-    body,
-  )))
+  box(width: 100%, align(center + horizon, std.scale(factor * 100%, reflow: true, body)))
 })
-#let card(title, body, caption, height: 170pt) = block(
+#let card(title, body, caption, height: 160pt) = block(
   width: 100%,
   inset: 12pt,
   radius: 8pt,
@@ -108,26 +103,22 @@ A moving string sweeps out a two-dimensional worldsheet. Perturbation theory sum
     [Closed sector: sphere],
     figure-0,
     [No handles and no boundaries. External closed-string insertions would be marked points on this surface; none are drawn here.],
-    height: 160pt,
   ),
   card(
     [Closed sector: torus],
     figure-1,
     [Add one handle to obtain the next closed-string loop topology. The central opening is a handle, not a boundary edge.],
-    height: 160pt,
   ),
 
   card(
     [Open sector: disk],
     figure-2,
     [The edge is a true worldsheet boundary, traced by open-string endpoints. The interior is a two-dimensional surface.],
-    height: 160pt,
   ),
   card(
     [Open sector: annulus],
     figure-3,
     [Add a second boundary. The annulus is topologically a cylinder; its inner rim is a boundary, not a handle.],
-    height: 160pt,
   ),
 )
 #v(12pt)

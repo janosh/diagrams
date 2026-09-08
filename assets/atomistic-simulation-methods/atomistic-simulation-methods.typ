@@ -8,14 +8,9 @@
 #let fit-figure(body, height: 170pt) = layout(size => {
   let bounds = measure(body)
   let factor = calc.min(size.width / bounds.width, height / bounds.height)
-  box(width: 100%, align(center + horizon, std.scale(
-    x: factor * 100%,
-    y: factor * 100%,
-    reflow: true,
-    body,
-  )))
+  box(width: 100%, align(center + horizon, std.scale(factor * 100%, reflow: true, body)))
 })
-#let card(title, body, caption, height: 170pt) = block(
+#let card(title, body, caption, height: 260pt) = block(
   width: 100%,
   inset: 12pt,
   radius: 8pt,
@@ -118,13 +113,11 @@ Choose a model for the quantities and configurations your simulation must predic
     [1  What is evaluated?],
     figure-0,
     [All three can supply energies and forces for atomistic simulation. They differ in how that mapping is built and what electronic physics is represented.],
-    height: 260pt,
   ),
   card(
     [2  What must be validated?],
     figure-1,
     [Benchmark the same observable, structures, and accuracy target on the intended hardware. Report throughput and errors with units; test transfer on configurations excluded from fitting.],
-    height: 260pt,
   ),
 )
 #v(12pt)

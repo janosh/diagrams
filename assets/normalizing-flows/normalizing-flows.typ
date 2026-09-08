@@ -10,14 +10,9 @@
 #let fit-figure(body, height: 170pt) = layout(size => {
   let bounds = measure(body)
   let factor = calc.min(size.width / bounds.width, height / bounds.height)
-  box(width: 100%, align(center + horizon, std.scale(
-    x: factor * 100%,
-    y: factor * 100%,
-    reflow: true,
-    body,
-  )))
+  box(width: 100%, align(center + horizon, std.scale(factor * 100%, reflow: true, body)))
 })
-#let card(title, body, caption, height: 170pt) = block(
+#let card(title, body, caption, height: 165pt) = block(
   width: 100%,
   inset: 12pt,
   radius: 8pt,
@@ -92,7 +87,7 @@
         fill: gray.transparentize(70%),
         (x, y-base),
         radius: 0.4,
-        stroke: if special != none { special } else { none },
+        stroke: special,
         name: name,
       )
       content(name, label, ..rest)
@@ -111,29 +106,17 @@
     content((rel: (0.9, 0), to: "zk"), $= x$)
 
     let arrow-style = (end: ">", fill: black, scale: 0.8, offset: 0.1)
-    line("z0", "z1", mark: arrow-style, name: "z0-z1")
-    content("z0-z1.mid", $f_(1)(z_0)$, name: "f1", anchor: "south", padding: (
-      bottom: 3pt,
-    ))
-
-    line("dots1.east", "zi", mark: arrow-style, name: "z1-zi")
-    content("z1-zi.30%", $f_i (z_1)$, name: "fi", anchor: "south", padding: (
-      bottom: 3pt,
-    ))
-
-    line("zi", "zi1", mark: arrow-style, name: "zi-zi1")
-    content(
-      "zi-zi1.mid",
-      $f_(i+1) (z_i)$,
-      name: "fi1",
-      anchor: "south",
-      padding: (bottom: 3pt),
-    )
-
-    line("dots2.east", "zk", mark: arrow-style, name: "zi1-zk")
-    content("zi1-zk.30%", $f_k (z_(k-1))$, name: "fk", anchor: "south", padding: (
-      bottom: 3pt,
-    ))
+    for (from, to, edge, position, label, label-name) in (
+      ("z0", "z1", "z0-z1", "mid", $f_(1)(z_0)$, "f1"),
+      ("dots1.east", "zi", "z1-zi", "30%", $f_i (z_1)$, "fi"),
+      ("zi", "zi1", "zi-zi1", "mid", $f_(i+1) (z_i)$, "fi1"),
+      ("dots2.east", "zk", "zi1-zk", "30%", $f_k (z_(k-1))$, "fk"),
+    ) {
+      line(from, to, mark: arrow-style, name: edge)
+      content(edge + "." + position, label, name: label-name, anchor: "south", padding: (
+        bottom: 3pt,
+      ))
+    }
 
     draw-distro(0, y-distro, p0, name: "d0")
     content("d0.south", $z_0 ~ p_(0)(z_0)$, anchor: "north", padding: (top: 3pt))
@@ -174,89 +157,33 @@
       content(pos, label, anchor: "center")
     }
 
-    // Forward pass (left side)
-    // First row
-    let z1-pos = (0, 0)
-    let eq1-pos = (spacing.node, 0)
-    let x1-pos = (2 * spacing.node, 0)
-
-    // Second row
-    let z2-pos = (0, -spacing.row)
-    let g1-pos = (spacing.node, -spacing.row)
-    let x2-pos = (2 * spacing.node, -spacing.row)
-
-    // Middle node
-    let m1-pos = (spacing.node / 2, -spacing.row / 2)
-
-    diamond(z1-pos, "z1", $arrow(z)_(1:d)$, fill: rgb("#cce5ff"))
-    circle-node(eq1-pos, "eq1", "=")
-    diamond(x1-pos, "x1", $arrow(x)_(1:d)$, fill: rgb("#cce5ff"))
-    diamond(z2-pos, "z2", $arrow(z)_(d+1:D)$, fill: rgb("#ccffcc"))
-    circle-node(g1-pos, "g1", $arrow(g)$)
-    diamond(x2-pos, "x2", $arrow(x)_(d+1:D)$, fill: rgb("#fff5cc"))
-    circle-node(m1-pos, "m1", "m")
-
-    // Forward pass arrows
-    for (from, to) in (
-      ("z1", "eq1"),
-      ("eq1", "x1"),
-      ("z2", "g1"),
-      ("g1", "x2"),
-      ("z1", "m1"),
-      ("m1", "g1"),
+    // The inverse uses the same two rows, with reversed data arrows and conditioning from x.
+    for (prefix, offset, inverse) in (
+      ("forward-", 0, false),
+      ("inverse-", 5 * spacing.node, true),
     ) {
-      line(from, to, ..arrow-style)
+      let name(node) = prefix + node
+      let at(column, row) = (offset + column * spacing.node, -row * spacing.row)
+      diamond(at(0, 0), name("z1"), $arrow(z)_(1:d)$, fill: rgb("#cce5ff"))
+      circle-node(at(1, 0), name("eq"), "=")
+      diamond(at(2, 0), name("x1"), $arrow(x)_(1:d)$, fill: rgb("#cce5ff"))
+      diamond(at(0, 1), name("z2"), $arrow(z)_(d+1:D)$, fill: rgb("#ccffcc"))
+      circle-node(at(1, 1), name("g"), if inverse { $arrow(g)^(-1)$ } else { $arrow(g)$ })
+      diamond(at(2, 1), name("x2"), $arrow(x)_(d+1:D)$, fill: rgb("#fff5cc"))
+      circle-node(at(if inverse { 1.5 } else { 0.5 }, 0.5), name("m"), "m")
+
+      for (left, right) in (("z1", "eq"), ("eq", "x1"), ("z2", "g"), ("g", "x2")) {
+        let (from, to) = if inverse { (right, left) } else { (left, right) }
+        line(name(from), name(to), ..arrow-style)
+      }
+      line(name(if inverse { "x1" } else { "z1" }), name("m"), ..arrow-style)
+      line(name("m"), name("g"), ..arrow-style)
+      content(
+        (rel: (0, -1), to: name("g")),
+        if inverse { [inverse pass] } else { [forward pass] },
+        anchor: "south",
+      )
     }
-
-    // Label under g1
-    content(
-      (rel: (0, -1), to: "g1"),
-      [forward pass],
-      anchor: "south",
-    )
-
-    // Inverse pass (right side)
-    let right-x = 5 * spacing.node
-
-    // First row
-    let z1r-pos = (right-x, 0)
-    let eq2-pos = (right-x + spacing.node, 0)
-    let x1r-pos = (right-x + 2 * spacing.node, 0)
-
-    // Second row
-    let z2r-pos = (right-x, -spacing.row)
-    let g2-pos = (right-x + spacing.node, -spacing.row)
-    let x2r-pos = (right-x + 2 * spacing.node, -spacing.row)
-
-    // Middle node
-    let m2-pos = (right-x + 1.5 * spacing.node, -spacing.row / 2)
-
-    diamond(z1r-pos, "z1r", $arrow(z)_(1:d)$, fill: rgb("#cce5ff"))
-    circle-node(eq2-pos, "eq2", "=")
-    diamond(x1r-pos, "x1r", $arrow(x)_(1:d)$, fill: rgb("#cce5ff"))
-    diamond(z2r-pos, "z2r", $arrow(z)_(d+1:D)$, fill: rgb("#ccffcc"))
-    circle-node(g2-pos, "g2", $arrow(g)^(-1)$)
-    diamond(x2r-pos, "x2r", $arrow(x)_(d+1:D)$, fill: rgb("#fff5cc"))
-    circle-node(m2-pos, "m2", "m")
-
-    // Inverse pass arrows (reversed direction)
-    for (from, to) in (
-      ("eq2", "z1r"),
-      ("x1r", "eq2"),
-      ("g2", "z2r"),
-      ("x2r", "g2"),
-      ("x1r", "m2"),
-      ("m2", "g2"),
-    ) {
-      line(from, to, ..arrow-style)
-    }
-
-    // Label under g2
-    content(
-      (rel: (0, -1), to: "g2"),
-      [inverse pass],
-      anchor: "south",
-    )
   })
 ]
 
@@ -443,26 +370,22 @@ Build a complicated density by composing invertible transformations of a simple 
     [1  Compose invertible maps],
     figure-0,
     [A base sample $z_0$ moves through $f_1, f_2, dots, f_K$ to become a data-space sample. Every step must have a computable inverse and density correction.],
-    height: 165pt,
   ),
   card(
     [2  A coupling layer is reversible],
     figure-1,
     [Leave one block unchanged; use it to condition an invertible map of the other block. The conditioner itself does not need to be invertible.],
-    height: 165pt,
   ),
 
   card(
     [3  Affine coupling],
     figure-2,
     [Keep $x_A=z_A$ and transform $x_B=z_B dot exp(s(z_A))+t(z_A)$. Scale and shift depend only on the unchanged block; alternate which block is transformed.],
-    height: 165pt,
   ),
   card(
     [4  Autoregressive conditioning],
     figure-3,
     [For a masked autoregressive flow, coordinate $i$ is conditioned on all earlier data coordinates. A masked network evaluates density in parallel; generation follows the ordering sequentially.],
-    height: 165pt,
   ),
 )
 #v(12pt)

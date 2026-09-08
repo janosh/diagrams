@@ -8,14 +8,9 @@
 #let fit-figure(body, height: 170pt) = layout(size => {
   let bounds = measure(body)
   let factor = calc.min(size.width / bounds.width, height / bounds.height)
-  box(width: 100%, align(center + horizon, std.scale(
-    x: factor * 100%,
-    y: factor * 100%,
-    reflow: true,
-    body,
-  )))
+  box(width: 100%, align(center + horizon, std.scale(factor * 100%, reflow: true, body)))
 })
-#let card(title, body, caption, height: 170pt) = block(
+#let card(title, body, caption, height: 150pt) = block(
   width: 100%,
   inset: 12pt,
   radius: 8pt,
@@ -36,26 +31,37 @@
   breakable: false,
 )[#body]
 
-// === 1  Dragon Curve ===
-#let figure-0 = [
-  #let panel-size = 4.5cm
-  #let stages = (5, 9, 13)
-
-  // Unit step for each heading on the square grid.
-  #let steps = ((1.0, 0.0), (0.0, 1.0), (-1.0, 0.0), (0.0, -1.0))
-
-  #let draw-stage(order) = {
+#let panel-size = 4.5cm
+// Unit steps for the square and hexagonal lattice headings.
+#let square-steps = ((1.0, 0.0), (0.0, 1.0), (-1.0, 0.0), (0.0, -1.0))
+#let hexagonal-steps = (
+  (1.0, 0.0),
+  (0.5, calc.sqrt(3.0) / 2.0),
+  (-0.5, calc.sqrt(3.0) / 2.0),
+  (-1.0, 0.0),
+  (-0.5, -calc.sqrt(3.0) / 2.0),
+  (0.5, -calc.sqrt(3.0) / 2.0),
+)
+// Equal-width panels retain their natural aspect ratios.
+#let stage-panels(stages, draw-stage) = grid(
+  columns: stages.len(),
+  column-gutter: 14pt,
+  row-gutter: 6pt,
+  ..stages.map(order => box(width: panel-size, align(center + horizon, draw-stage(order)))),
+  ..stages.map(order => align(center, text(size: 10pt)[$n = #order$])),
+)
+#let curve-stages(stages, steps, rules, axiom, drawing-symbols) = {
+  let draw-stage(order) = {
     // Repeatedly replace symbols to build the curve path.
-    let rules = ("X": "X+YF+", "Y": "-FX-Y")
     let pattern = regex(rules.keys().join("|"))
-    let path = "FX"
+    let path = axiom
     for _ in range(order) { path = path.replace(pattern, matched => rules.at(matched.text)) }
 
     // Follow the path: drawing symbols advance one unit; + and - turn one heading.
     let (x-pos, y-pos, direction) = (0.0, 0.0, 0)
     let points = ((x-pos, y-pos),)
     for symbol in path {
-      if symbol in "F" {
+      if symbol in drawing-symbols {
         let (delta-x, delta-y) = steps.at(direction)
         x-pos += delta-x
         y-pos += delta-y
@@ -86,221 +92,48 @@
     })
   }
 
-  // Equal-width panels retain their natural aspect ratios.
-  #grid(
-    columns: stages.len(),
-    column-gutter: 14pt,
-    row-gutter: 6pt,
-    ..stages.map(order => box(width: panel-size, align(center + horizon, draw-stage(order)))),
-    ..stages.map(order => align(center, text(size: 10pt)[$n = #order$])),
-  )
-]
+  stage-panels(stages, draw-stage)
+}
+
+// === 1  Dragon Curve ===
+#let figure-0 = curve-stages(
+  (5, 9, 13),
+  square-steps,
+  ("X": "X+YF+", "Y": "-FX-Y"),
+  "FX",
+  "F",
+)
 
 // === 2  Koch Curve ===
-#let figure-1 = [
-  #let panel-size = 4.5cm
-  #let stages = (2, 3, 4)
-
-  // Unit step for each heading on the hexagonal grid.
-  #let steps = (
-    (1.0, 0.0),
-    (0.5, calc.sqrt(3.0) / 2.0),
-    (-0.5, calc.sqrt(3.0) / 2.0),
-    (-1.0, 0.0),
-    (-0.5, -calc.sqrt(3.0) / 2.0),
-    (0.5, -calc.sqrt(3.0) / 2.0),
-  )
-
-  #let draw-stage(order) = {
-    // Repeatedly replace symbols to build the curve path.
-    let rules = ("F": "F+F--F+F")
-    let pattern = regex(rules.keys().join("|"))
-    let path = "F"
-    for _ in range(order) { path = path.replace(pattern, matched => rules.at(matched.text)) }
-
-    // Follow the path: drawing symbols advance one unit; + and - turn one heading.
-    let (x-pos, y-pos, direction) = (0.0, 0.0, 0)
-    let points = ((x-pos, y-pos),)
-    for symbol in path {
-      if symbol in "F" {
-        let (delta-x, delta-y) = steps.at(direction)
-        x-pos += delta-x
-        y-pos += delta-y
-        points.push((x-pos, y-pos))
-      } else if symbol == "+" {
-        direction = calc.rem(direction + 1, steps.len())
-      } else if symbol == "-" {
-        direction = calc.rem(direction - 1 + steps.len(), steps.len())
-      }
-    }
-
-    // Fit the path's bounds to the panel while preserving its aspect ratio.
-    let (xs, ys) = (points.map(point => point.at(0)), points.map(point => point.at(1)))
-    let (x-min, y-min) = (calc.min(..xs), calc.min(..ys))
-    let span = calc.max(calc.max(..xs) - x-min, calc.max(..ys) - y-min, 1.0)
-    let shift(point) = (point.at(0) - x-min, point.at(1) - y-min)
-    // Early stages read thicker; dense stages stay fine.
-    let thickness = calc.max(0.45pt, calc.min(0.75pt, 3.2pt / calc.sqrt(points.len() - 1)))
-    canvas(length: panel-size / span, {
-      for (start, end) in points.zip(points.slice(1)) {
-        draw.line(shift(start), shift(end), stroke: (
-          paint: black,
-          thickness: thickness,
-          join: "round",
-          cap: "round",
-        ))
-      }
-    })
-  }
-
-  // Equal-width panels retain their natural aspect ratios.
-  #grid(
-    columns: stages.len(),
-    column-gutter: 14pt,
-    row-gutter: 6pt,
-    ..stages.map(order => box(width: panel-size, align(center + horizon, draw-stage(order)))),
-    ..stages.map(order => align(center, text(size: 10pt)[$n = #order$])),
-  )
-]
+#let figure-1 = curve-stages(
+  (2, 3, 4),
+  hexagonal-steps,
+  ("F": "F+F--F+F"),
+  "F",
+  "F",
+)
 
 // === 3  Gosper Curve ===
-#let figure-2 = [
-  #let panel-size = 4.5cm
-  #let stages = (1, 2, 3)
-
-  // Unit step for each heading on the hexagonal grid.
-  #let steps = (
-    (1.0, 0.0),
-    (0.5, calc.sqrt(3.0) / 2.0),
-    (-0.5, calc.sqrt(3.0) / 2.0),
-    (-1.0, 0.0),
-    (-0.5, -calc.sqrt(3.0) / 2.0),
-    (0.5, -calc.sqrt(3.0) / 2.0),
-  )
-
-  #let draw-stage(order) = {
-    // Repeatedly replace symbols to build the curve path.
-    let rules = ("A": "A-B--B+A++AA+B-", "B": "+A-BB--B-A++A+B")
-    let pattern = regex(rules.keys().join("|"))
-    let path = "A"
-    for _ in range(order) { path = path.replace(pattern, matched => rules.at(matched.text)) }
-
-    // Follow the path: drawing symbols advance one unit; + and - turn one heading.
-    let (x-pos, y-pos, direction) = (0.0, 0.0, 0)
-    let points = ((x-pos, y-pos),)
-    for symbol in path {
-      if symbol in "AB" {
-        let (delta-x, delta-y) = steps.at(direction)
-        x-pos += delta-x
-        y-pos += delta-y
-        points.push((x-pos, y-pos))
-      } else if symbol == "+" {
-        direction = calc.rem(direction + 1, steps.len())
-      } else if symbol == "-" {
-        direction = calc.rem(direction - 1 + steps.len(), steps.len())
-      }
-    }
-
-    // Fit the path's bounds to the panel while preserving its aspect ratio.
-    let (xs, ys) = (points.map(point => point.at(0)), points.map(point => point.at(1)))
-    let (x-min, y-min) = (calc.min(..xs), calc.min(..ys))
-    let span = calc.max(calc.max(..xs) - x-min, calc.max(..ys) - y-min, 1.0)
-    let shift(point) = (point.at(0) - x-min, point.at(1) - y-min)
-    // Early stages read thicker; dense stages stay fine.
-    let thickness = calc.max(0.45pt, calc.min(0.75pt, 3.2pt / calc.sqrt(points.len() - 1)))
-    canvas(length: panel-size / span, {
-      for (start, end) in points.zip(points.slice(1)) {
-        draw.line(shift(start), shift(end), stroke: (
-          paint: black,
-          thickness: thickness,
-          join: "round",
-          cap: "round",
-        ))
-      }
-    })
-  }
-
-  // Equal-width panels retain their natural aspect ratios.
-  #grid(
-    columns: stages.len(),
-    column-gutter: 14pt,
-    row-gutter: 6pt,
-    ..stages.map(order => box(width: panel-size, align(center + horizon, draw-stage(order)))),
-    ..stages.map(order => align(center, text(size: 10pt)[$n = #order$])),
-  )
-]
+#let figure-2 = curve-stages(
+  (1, 2, 3),
+  hexagonal-steps,
+  ("A": "A-B--B+A++AA+B-", "B": "+A-BB--B-A++A+B"),
+  "A",
+  "AB",
+)
 
 // === 4  Sierpinski Curve ===
-#let figure-3 = [
-  #let panel-size = 4.5cm
-  // Even orders keep the same triangle orientation.
-  #let stages = (2, 4, 6)
-
-  // Unit step for each heading on the hexagonal grid.
-  #let steps = (
-    (1.0, 0.0),
-    (0.5, calc.sqrt(3.0) / 2.0),
-    (-0.5, calc.sqrt(3.0) / 2.0),
-    (-1.0, 0.0),
-    (-0.5, -calc.sqrt(3.0) / 2.0),
-    (0.5, -calc.sqrt(3.0) / 2.0),
-  )
-
-  #let draw-stage(order) = {
-    // Repeatedly replace symbols to build the curve path.
-    let rules = ("A": "B-A-B", "B": "A+B+A")
-    let pattern = regex(rules.keys().join("|"))
-    let path = "A"
-    for _ in range(order) { path = path.replace(pattern, matched => rules.at(matched.text)) }
-
-    // Follow the path: drawing symbols advance one unit; + and - turn one heading.
-    let (x-pos, y-pos, direction) = (0.0, 0.0, 0)
-    let points = ((x-pos, y-pos),)
-    for symbol in path {
-      if symbol in "AB" {
-        let (delta-x, delta-y) = steps.at(direction)
-        x-pos += delta-x
-        y-pos += delta-y
-        points.push((x-pos, y-pos))
-      } else if symbol == "+" {
-        direction = calc.rem(direction + 1, steps.len())
-      } else if symbol == "-" {
-        direction = calc.rem(direction - 1 + steps.len(), steps.len())
-      }
-    }
-
-    // Fit the path's bounds to the panel while preserving its aspect ratio.
-    let (xs, ys) = (points.map(point => point.at(0)), points.map(point => point.at(1)))
-    let (x-min, y-min) = (calc.min(..xs), calc.min(..ys))
-    let span = calc.max(calc.max(..xs) - x-min, calc.max(..ys) - y-min, 1.0)
-    let shift(point) = (point.at(0) - x-min, point.at(1) - y-min)
-    // Early stages read thicker; dense stages stay fine.
-    let thickness = calc.max(0.45pt, calc.min(0.75pt, 3.2pt / calc.sqrt(points.len() - 1)))
-    canvas(length: panel-size / span, {
-      for (start, end) in points.zip(points.slice(1)) {
-        draw.line(shift(start), shift(end), stroke: (
-          paint: black,
-          thickness: thickness,
-          join: "round",
-          cap: "round",
-        ))
-      }
-    })
-  }
-
-  // Equal-width panels retain their natural aspect ratios.
-  #grid(
-    columns: stages.len(),
-    column-gutter: 14pt,
-    row-gutter: 6pt,
-    ..stages.map(order => box(width: panel-size, align(center + horizon, draw-stage(order)))),
-    ..stages.map(order => align(center, text(size: 10pt)[$n = #order$])),
-  )
-]
+// Even orders keep the same triangle orientation.
+#let figure-3 = curve-stages(
+  (2, 4, 6),
+  hexagonal-steps,
+  ("A": "B-A-B", "B": "A+B+A"),
+  "A",
+  "AB",
+)
 
 // === 5  Sierpinski Carpet ===
 #let figure-4 = [
-  #let panel-size = 4.5cm
   #let stages = (2, 3, 4)
 
   // Subdivide a square into 3×3 cells, drop the center, and recurse until unit cells.
@@ -330,14 +163,7 @@
     canvas(length: panel-size / size, carpet(size))
   }
 
-  // Equal-width panels retain their natural aspect ratios.
-  #grid(
-    columns: stages.len(),
-    column-gutter: 14pt,
-    row-gutter: 6pt,
-    ..stages.map(order => box(width: panel-size, align(center + horizon, draw-stage(order)))),
-    ..stages.map(order => align(center, text(size: 10pt)[$n = #order$])),
-  )
+  #stage-panels(stages, draw-stage)
 ]
 
 // === 6  Eisenstein ===
@@ -384,7 +210,6 @@
     positions.map(point => complex-multiply(negative-rotation, point))
   }
 
-  #let panel-size = 4.5cm
 
   #let draw-stage(stage) = {
     let points = eisenstein-positions(stage)
@@ -410,17 +235,7 @@
 
   #let stages = (2, 3, 4)
 
-  // Equal-width panels retain their natural aspect ratios.
-  #grid(
-    columns: stages.len(),
-    column-gutter: 14pt,
-    row-gutter: 6pt,
-    ..stages.map(order => box(
-      width: panel-size,
-      align(center + horizon, draw-stage(order)),
-    )),
-    ..stages.map(order => align(center, text(size: 10pt)[$n = #order$])),
-  )
+  #stage-panels(stages, draw-stage)
 ]
 
 #text(size: 27pt, weight: "bold")[Fractal Atlas]
@@ -434,39 +249,33 @@ Simple repeated rules create intricate shapes. Within each row the iteration inc
     [1  Dragon Curve],
     figure-0,
     [A folding construction becomes repeated right-angle turns. The numbered panels show increasingly detailed iterations, each fitted to its own frame.],
-    height: 150pt,
   ),
   card(
     [2  Koch Curve],
     figure-1,
     [Replace each segment with four segments at one-third scale. The added triangular bump repeats at every level; turn angles are 60 degrees.],
-    height: 150pt,
   ),
 
   card(
     [3  Gosper Curve],
     figure-2,
     [A seven-part replacement on a hexagonal grid builds a denser curve. The two drawing symbols have different replacement rules.],
-    height: 150pt,
   ),
   card(
     [4  Sierpinski Curve],
     figure-3,
     [A recursive triangular path grows on a hexagonal grid. Keep this curve distinct from the filled Sierpiński triangle and the square carpet.],
-    height: 150pt,
   ),
 
   card(
     [5  Sierpinski Carpet],
     figure-4,
     [Split a square into nine equal cells; remove the middle cell and repeat on the eight survivors. Black marks what remains.],
-    height: 150pt,
   ),
   card(
     [6  Eisenstein],
     figure-5,
     [Copy the seed on a triangular lattice, rotate, and expand the arrangement. Here the marks are points rather than a continuous turtle path.],
-    height: 150pt,
   ),
 )
 #v(12pt)

@@ -9,14 +9,9 @@
 #let fit-figure(body, height: 170pt) = layout(size => {
   let bounds = measure(body)
   let factor = calc.min(size.width / bounds.width, height / bounds.height)
-  box(width: 100%, align(center + horizon, std.scale(
-    x: factor * 100%,
-    y: factor * 100%,
-    reflow: true,
-    body,
-  )))
+  box(width: 100%, align(center + horizon, std.scale(factor * 100%, reflow: true, body)))
 })
-#let card(title, body, caption, height: 170pt) = block(
+#let card(title, body, caption, height: 215pt) = block(
   width: 100%,
   inset: 12pt,
   radius: 8pt,
@@ -109,13 +104,11 @@ At fixed temperature and pressure, enthalpy and entropy compete to determine the
     [1  A worked competition],
     figure-0,
     [Illustration: $Delta H=+20$ kJ/mol and $Delta S=+50$ J/(mol K), treated as constant. Their contributions balance at $T=400$ K; above it, $Delta G<0$.],
-    height: 215pt,
   ),
   card(
     [2  Direction is not speed],
     figure-1,
     [A negative free-energy change favors the forward direction at the current composition. A large activation barrier can still make that process very slow.],
-    height: 215pt,
   ),
 )
 #v(12pt)

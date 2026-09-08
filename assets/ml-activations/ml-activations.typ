@@ -9,14 +9,9 @@
 #let fit-figure(body, height: 170pt) = layout(size => {
   let bounds = measure(body)
   let factor = calc.min(size.width / bounds.width, height / bounds.height)
-  box(width: 100%, align(center + horizon, std.scale(
-    x: factor * 100%,
-    y: factor * 100%,
-    reflow: true,
-    body,
-  )))
+  box(width: 100%, align(center + horizon, std.scale(factor * 100%, reflow: true, body)))
 })
-#let card(title, body, caption, height: 170pt) = block(
+#let card(title, body, caption, height: 215pt) = block(
   width: 100%,
   inset: 12pt,
   radius: 8pt,
@@ -134,13 +129,11 @@ Activation functions turn a linear network into a nonlinear model. Compare their
     [1  Common nonlinearities],
     figure-0,
     [ReLU clips negative inputs; leaky ReLU keeps a small negative slope. GELU gates smoothly. Sigmoid maps to $(0,1)$ and tanh to $(-1,1)$.],
-    height: 215pt,
   ),
   card(
     [2  Tanh: linear center, saturated tails],
     figure-1,
     [Near zero, $tanh x approx x$. Far from zero, the output approaches $+1$ or $-1$ and its slope approaches zero.],
-    height: 215pt,
   ),
 )
 #v(12pt)

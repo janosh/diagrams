@@ -10,14 +10,9 @@
 #let fit-figure(body, height: 170pt) = layout(size => {
   let bounds = measure(body)
   let factor = calc.min(size.width / bounds.width, height / bounds.height)
-  box(width: 100%, align(center + horizon, std.scale(
-    x: factor * 100%,
-    y: factor * 100%,
-    reflow: true,
-    body,
-  )))
+  box(width: 100%, align(center + horizon, std.scale(factor * 100%, reflow: true, body)))
 })
-#let card(title, body, caption, height: 170pt) = block(
+#let card(title, body, caption, height: 200pt) = block(
   width: 100%,
   inset: 12pt,
   radius: 8pt,
@@ -225,26 +220,22 @@ Count the mean occupation of a single-particle state. Quantum statistics changes
     [1  Compare occupation laws],
     figure-0,
     [At $x=beta(epsilon-mu) >> 1$, all three approach $exp(-x)$. For bosons use $x>0$ in this plot; the Bose curve diverges toward the lowest allowed chemical-potential limit.],
-    height: 200pt,
   ),
   card(
     [2  Fermions: a smeared step],
     figure-1,
     [Each state has occupation between zero and one. Heating rounds the step around the chemical potential $mu$ over an energy range of order $k_"B" T$.],
-    height: 200pt,
   ),
 
   card(
     [3  Bosons: shared states],
     figure-2,
     [Bosons can accumulate in the same state. At fixed positive $epsilon-mu$, increasing temperature increases its mean occupation; there is no Pauli ceiling of one. $T_0$ is a reference temperature; $mu$ is held fixed.],
-    height: 200pt,
   ),
   card(
     [4  The same variable in three formulas],
     figure-3,
     [Here $epsilon$ is the state’s energy, $mu$ the chemical potential, and $beta=1/(k_"B" T)$. Spin degeneracy counts separate states; it does not change the occupation limit per state.],
-    height: 200pt,
   ),
 )
 #v(12pt)
