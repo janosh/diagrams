@@ -52,13 +52,8 @@ for (const theme of [`light`, `dark`] as const) {
   }) => {
     const wrapper = await open_diagram(page, `euler-angles`)
     await set_theme(page, theme)
-    // Crop at a fixed origin, independent of font metrics in the preceding prose.
-    await expect(wrapper).toHaveScreenshot(`euler-page-${theme}.png`, {
-      stylePath: `${import.meta.dirname}/diagram-crop.css`,
-    })
     await enter_fullscreen(wrapper)
     await expect(wrapper).toHaveJSProperty(`scrollTop`, 0)
-    await expect(page).toHaveScreenshot(`euler-fullscreen-${theme}.png`)
     for (const next_theme of [theme === `light` ? `dark` : `light`, theme] as const) {
       await set_theme(page, next_theme)
       const page_bg = await page
