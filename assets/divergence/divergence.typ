@@ -1,11 +1,14 @@
-#import "@preview/cetz:0.5.2": canvas
+#import "@preview/cetz:0.5.2": canvas, draw
 #import "@preview/cetz-plot:0.1.4": plot
-#import "../_shared/plot.typ": legend-box, stealth, style-axes
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #canvas({
-  style-axes(x-label: none, y-label: none, mark: (..stealth, scale: 0.5))
+  let axis-mark = (end: "stealth", fill: black, scale: 0.5)
+  draw.set-style(axes: (
+    x: (mark: axis-mark),
+    y: (mark: axis-mark),
+  ))
 
   plot.plot(
     size: (8, 5),
@@ -15,7 +18,8 @@
     y-tick-step: 2,
     axis-style: "left",
     legend: "inner-north-west",
-    legend-style: legend-box,
+    // Compact legend with a thin border.
+    legend-style: (item: (spacing: 0.15), padding: 0.15, stroke: 0.5pt),
     {
       plot.add(
         style: (stroke: blue + 1.5pt),

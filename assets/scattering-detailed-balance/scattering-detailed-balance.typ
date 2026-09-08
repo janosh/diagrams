@@ -19,84 +19,46 @@
 
   content((0, 0), text(size: equals-size)[=])
 
-  circle(
-    (-circle-spacing, 0),
-    radius: circle-radius,
-    fill: gray.lighten(50%),
-    stroke: gray,
-    name: "left-circle",
+  let nodes = (
+    (side: "left", x: -circle-spacing, incoming: ($p'$, $k'$), outgoing: ($p$, $k$)),
+    (side: "right", x: circle-spacing, incoming: ($p$, $k$), outgoing: ($p'$, $k'$)),
   )
-  circle(
-    (circle-spacing, 0),
-    radius: circle-radius,
-    fill: gray.lighten(50%),
-    stroke: gray,
-    name: "right-circle",
-  )
-
-  // Left node arrows and labels
-  line(
-    (rel: (arrow-length, arrow-rise), to: "left-circle"),
-    "left-circle",
-    ..arrow-style,
-    name: "left-ne",
-  )
-  content("left-ne.start", $p'$, anchor: "west")
-
-  line(
-    (rel: (arrow-length, -arrow-rise), to: "left-circle"),
-    "left-circle",
-    ..arrow-style,
-    name: "left-se",
-  )
-  content("left-se.start", $k'$, anchor: "west")
-
-  line(
-    "left-circle",
-    (rel: (-arrow-length, arrow-rise), to: "left-circle"),
-    ..arrow-style,
-    name: "left-nw",
-  )
-  content("left-nw.end", $p$, anchor: "east")
-
-  line(
-    "left-circle",
-    (rel: (-arrow-length, -arrow-rise), to: "left-circle"),
-    ..arrow-style,
-    name: "left-sw",
-  )
-  content("left-sw.end", $k$, anchor: "east")
-
-  // Right node arrows and labels
-  line(
-    (rel: (arrow-length, arrow-rise), to: "right-circle"),
-    "right-circle",
-    ..arrow-style,
-    name: "right-ne",
-  )
-  content("right-ne.start", $p$, anchor: "west")
-
-  line(
-    (rel: (arrow-length, -arrow-rise), to: "right-circle"),
-    "right-circle",
-    ..arrow-style,
-    name: "right-se",
-  )
-  content("right-se.start", $k$, anchor: "west")
-
-  line(
-    "right-circle",
-    (rel: (-arrow-length, arrow-rise), to: "right-circle"),
-    ..arrow-style,
-    name: "right-nw",
-  )
-  content("right-nw.end", $p'$, anchor: "east")
-
-  line(
-    "right-circle",
-    (rel: (-arrow-length, -arrow-rise), to: "right-circle"),
-    ..arrow-style,
-    name: "right-sw",
-  )
-  content("right-sw.end", $k'$, anchor: "east")
+  for node in nodes {
+    circle(
+      (node.x, 0),
+      radius: circle-radius,
+      fill: gray.lighten(50%),
+      stroke: gray,
+      name: node.side + "-circle",
+    )
+  }
+  for node in nodes {
+    let circle-name = node.side + "-circle"
+    for (vertical, suffix, label) in (
+      (1, "ne", node.incoming.at(0)),
+      (-1, "se", node.incoming.at(1)),
+    ) {
+      let name = node.side + "-" + suffix
+      line(
+        (rel: (arrow-length, vertical * arrow-rise), to: circle-name),
+        circle-name,
+        ..arrow-style,
+        name: name,
+      )
+      content(name + ".start", label, anchor: "west")
+    }
+    for (vertical, suffix, label) in (
+      (1, "nw", node.outgoing.at(0)),
+      (-1, "sw", node.outgoing.at(1)),
+    ) {
+      let name = node.side + "-" + suffix
+      line(
+        circle-name,
+        (rel: (-arrow-length, vertical * arrow-rise), to: circle-name),
+        ..arrow-style,
+        name: name,
+      )
+      content(name + ".end", label, anchor: "east")
+    }
+  }
 })

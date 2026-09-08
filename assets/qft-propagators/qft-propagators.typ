@@ -41,45 +41,36 @@
   }
   content((-1.1, 2), align(right)[Matsubara\ frequencies])
 
-  // Propagators
-  // Advanced propagator (red)
-  line(
-    (-re-range, -1),
-    (re-range, -1),
-    stroke: (paint: red, dash: "dashed"),
-    name: "advanced",
-  )
-  content(
-    (rel: (0, -0.4), to: "advanced.start"),
-    text(red)[advanced],
-    anchor: "south-west",
-    padding: (left: 5pt),
-  )
-
-  // Retarded propagator (blue)
-  line(
-    (-re-range, 1),
-    (re-range, 1),
-    stroke: (paint: blue, dash: "dashed"),
-    name: "retarded",
-  )
-  content(
-    "retarded.start",
-    text(blue)[retarded],
-    anchor: "south-west",
-    padding: 2pt,
-  )
-
-  // Feynman propagator (orange)
-  line(
-    (-re-range, -1),
-    (re-range, 1),
-    stroke: (paint: orange, dash: "dashed"),
-    name: "feynman",
-  )
-  content(
-    (rel: (-0.7, -0.55), to: "feynman.end"),
-    text(orange)[Feynman],
-    padding: 2pt,
-  )
+  for spec in (
+    (
+      name: "advanced",
+      start: (-re-range, -1),
+      end: (re-range, -1),
+      paint: red,
+      label: [advanced],
+      label-pos: (rel: (0, -0.4), to: "advanced.start"),
+      label-args: (anchor: "south-west", padding: (left: 5pt)),
+    ),
+    (
+      name: "retarded",
+      start: (-re-range, 1),
+      end: (re-range, 1),
+      paint: blue,
+      label: [retarded],
+      label-pos: "retarded.start",
+      label-args: (anchor: "south-west", padding: 2pt),
+    ),
+    (
+      name: "feynman",
+      start: (-re-range, -1),
+      end: (re-range, 1),
+      paint: orange,
+      label: [Feynman],
+      label-pos: (rel: (-0.7, -0.55), to: "feynman.end"),
+      label-args: (padding: 2pt),
+    ),
+  ) {
+    line(spec.start, spec.end, stroke: (paint: spec.paint, dash: "dashed"), name: spec.name)
+    content(spec.label-pos, text(spec.paint, spec.label), ..spec.label-args)
+  }
 })

@@ -37,32 +37,23 @@
     name: "B-arc",
     anchor: "origin",
   )
-  // Draw the extended green arcs (C and C') first
-  arc(
-    (0, 0),
-    radius: 1,
-    start: 0deg,
-    stop: 90deg,
-    mode: "PIE",
-    stroke: (paint: green),
-    fill: white,
-    name: "C-arc",
-    anchor: "start",
-  )
-  content("C-arc.20%", $C$, fill: green, anchor: "north-east", padding: 2pt)
-
-  arc(
-    (0, 0),
-    radius: 1,
-    start: 90deg,
-    stop: 180deg,
-    mode: "PIE",
-    stroke: (paint: green),
-    fill: white,
-    name: "C-prime-arc",
-    anchor: "arc-end",
-  )
-  content("C-prime-arc.25%", $C'$, fill: green, anchor: "north-west", padding: 2pt)
+  for (start, name, arc-anchor, label-anchor, label-pos, label) in (
+    (0deg, "C-arc", "start", "north-east", "C-arc.20%", $C$),
+    (90deg, "C-prime-arc", "arc-end", "north-west", "C-prime-arc.25%", $C'$),
+  ) {
+    arc(
+      (0, 0),
+      radius: 1,
+      start: start,
+      stop: start + 90deg,
+      mode: "PIE",
+      stroke: (paint: green),
+      fill: white,
+      name: name,
+      anchor: arc-anchor,
+    )
+    content(label-pos, label, fill: green, anchor: label-anchor, padding: 2pt)
+  }
   // Draw semicircle B and B' (dark red)
   arc(
     (0, 0),
@@ -77,11 +68,10 @@
   line((xmin, 0), (xmax, 0), ..arrow-style, name: "x-axis")
   line((0, ymin), (0, ymax), ..arrow-style, name: "y-axis")
 
-  line((-0.5, -0.02), (-0.5, 0.02), name: "x-minus-tick")
-  content((rel: (0, -0.08), to: "x-minus-tick.mid"), $-1 / 2$, anchor: "north")
-
-  line((0.5, -0.02), (0.5, 0.02), name: "x-plus-tick")
-  content((rel: (0, -0.08), to: "x-plus-tick.mid"), $1 / 2$, anchor: "north")
+  for (x, name, label) in ((-0.5, "x-minus-tick", $-1 / 2$), (0.5, "x-plus-tick", $1 / 2$)) {
+    line((x, -0.02), (x, 0.02), name: name)
+    content((rel: (0, -0.08), to: name + ".mid"), label, anchor: "north")
+  }
 
   line((-0.02, 1), (0.02, 1), name: "i-tick", stroke: (thickness: 0.6pt))
   content("i-tick", $i$, anchor: "north-west", padding: 1pt)
@@ -89,34 +79,19 @@
   content("B-arc.60%", $B$, fill: red, anchor: "south", padding: (0, 0, 3pt))
   content("B-arc.40%", $B'$, fill: red, anchor: "south", padding: (0, 0, 3pt))
 
-  // Draw vertical lines A and A' (dark blue)
-  line(
-    (-0.5, 0),
-    (-0.5, ymax),
-    stroke: (paint: blue),
-    mark: (end: "stealth", fill: blue, scale: 0.2),
-    name: "A-line",
-  )
-  content("A-line.80%", $A$, fill: blue, anchor: "east", padding: (
-    0,
-    4pt,
-    0,
-    0,
-  ))
-
-  line(
-    (0.5, 0),
-    (0.5, ymax),
-    stroke: (paint: blue),
-    mark: (end: "stealth", fill: blue, scale: 0.2),
-    name: "A-prime-line",
-  )
-  content("A-prime-line.80%", $A'$, fill: blue, anchor: "west", padding: (
-    0,
-    0,
-    0,
-    4pt,
-  ))
+  for (x, name, label, anchor, padding) in (
+    (-0.5, "A-line", $A$, "east", (0, 4pt, 0, 0)),
+    (0.5, "A-prime-line", $A'$, "west", (0, 0, 0, 4pt)),
+  ) {
+    line(
+      (x, 0),
+      (x, ymax),
+      stroke: (paint: blue),
+      mark: (end: "stealth", fill: blue, scale: 0.2),
+      name: name,
+    )
+    content(name + ".80%", label, fill: blue, anchor: anchor, padding: padding)
+  }
 
   content("y-axis.80%", $F_0$, anchor: "west", padding: (0, 0, 0, 2pt))
   content((rel: (-0.2, -0.2), to: "B-arc.50%"), $F_0'$)

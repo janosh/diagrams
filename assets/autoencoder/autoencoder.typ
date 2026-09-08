@@ -1,11 +1,13 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: content, line
-#import "../_shared/network.typ": node-stroke
+
+// Outline weight of network units.
+#let node-stroke = 0.8pt
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #let neuron(pos, fill: white, text: none) = {
-  draw.content(pos, text, frame: "circle", fill: fill, stroke: node-stroke, padding: 1pt)
+  content(pos, text, frame: "circle", fill: fill, stroke: node-stroke, padding: 1pt)
 }
 
 #let connect-layers(start-pos, start-count, end-pos, end-count) = {
@@ -16,7 +18,7 @@
     for jj in range(end-count) {
       let start = (start-pos, start-y - ii * 0.8)
       let end = (end-pos, end-y - jj * 0.8)
-      draw.line(start, end, stroke: rgb("#aaa") + .5pt)
+      line(start, end, stroke: rgb("#aaa") + .5pt)
     }
   }
 }

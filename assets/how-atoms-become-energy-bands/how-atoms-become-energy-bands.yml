@@ -1,0 +1,9 @@
+title: How Atoms Become Energy Bands
+tags:
+  - physics
+  - quantum mechanics
+  - electronic structure
+  - solid state physics
+  - semiconductors
+description: |
+  A visual progression from one atomic orbital to a pair, a finite chain, and a dense energy band. Finite-chain levels are calculated from a uniform nearest-neighbor tight-binding model, and the infinite-chain cosine dispersion connects wavefunction phase patterns to bonding, antibonding, and bandwidth. Explicit state and spin counting separates coupling-induced splitting from Pauli filling. Occupation cartoons explain a partially filled band and a filled band separated from empty states by a gap, with the limitations of the independent-electron picture stated explicitly.

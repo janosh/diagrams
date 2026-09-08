@@ -1,7 +1,18 @@
 #import "@preview/cetz:0.5.2": canvas, draw
-#import draw: circle, content, rect
-#import "../_shared/network.typ": fully-connect, node-stroke
-#import "../_shared/theme.typ": line-weight, neutral
+#import draw: circle, content, line, rect
+
+// Edge from every node of one layer to every node of the next, addressing nodes by the
+// `<prefix><index>` names their layer gave them. `start` is that numbering's first index.
+#let fully-connect(from-prefix, to-prefix, from-count, to-count, start: 1, ..style) = {
+  for from-idx in range(start, from-count + start) {
+    for to-idx in range(start, to-count + start) {
+      line(from-prefix + str(from-idx), to-prefix + str(to-idx), ..style)
+    }
+  }
+}
+
+// Outline weight of network units.
+#let node-stroke = 0.8pt
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
@@ -48,11 +59,11 @@
 
   let arr = (
     mark: (end: "stealth", fill: black, scale: .6),
-    stroke: neutral.annotation + line-weight.hairline,
+    stroke: rgb("#4A5560") + 0.5pt,
   )
   let bi-arr = (
     mark: (start: "stealth", end: "stealth", fill: black, scale: .6),
-    stroke: neutral.annotation + line-weight.hairline,
+    stroke: rgb("#4A5560") + 0.5pt,
   )
   fully-connect("a", "b", 9, 5, start: 0, ..arr)
   fully-connect("b", "c", 5, 5, start: 0, ..bi-arr)

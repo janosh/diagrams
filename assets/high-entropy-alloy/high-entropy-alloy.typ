@@ -1,6 +1,20 @@
 #import "@preview/cetz:0.5.2": canvas, draw
-#import draw: content
-#import "../_shared/shading.typ": sphere
+#import draw: circle, content
+
+// The flat disc underneath is fully covered by the gradient, but drawing both
+// doubles up the antialiased rim so the sphere keeps a crisp edge.
+#let sphere(pos, radius: 0.25, fill: luma(50), ..args) = {
+  circle(pos, radius: radius, stroke: none, fill: fill, ..args)
+  circle(pos, radius: radius, stroke: none, fill: gradient.radial(
+    fill.lighten(75%),
+    fill,
+    fill.darken(15%),
+    // Offset the highlight to suggest a lit sphere.
+    focal-center: (30%, 25%),
+    focal-radius: 5%,
+    center: (35%, 30%),
+  ))
+}
 
 #set page(width: auto, height: auto, margin: 5pt, fill: none)
 

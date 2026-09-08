@@ -86,39 +86,28 @@
   }
 
   let arrow-inset = 0.3
-  labeled-arrow(
-    (-1, arrow-inset),
-    (-1, height - arrow-inset),
-    "probability1",
-    probability,
-    dir: ltr,
-    align: top,
-  )
-  labeled-arrow(
-    (width + 1, arrow-inset),
-    (width + 1, height - arrow-inset),
-    "probability2",
-    probability,
-    dir: rtl,
-    align: top,
-  )
-
-  labeled-arrow(
-    (arrow-inset, -1),
-    (width / 2 - arrow-inset, -1),
-    "neg-impact",
-    neg-impact,
-    dir: ltr,
-    align: bottom,
-  )
-  labeled-arrow(
-    (width - arrow-inset, -1),
-    (width / 2 + arrow-inset, -1),
-    "pos-impact",
-    pos-impact,
-    dir: rtl,
-    align: bottom,
-  )
+  for (start, end, name, label, dir, align) in (
+    ((-1, arrow-inset), (-1, height - arrow-inset), "probability1", probability, ltr, top),
+    (
+      (width + 1, arrow-inset),
+      (width + 1, height - arrow-inset),
+      "probability2",
+      probability,
+      rtl,
+      top,
+    ),
+    ((arrow-inset, -1), (width / 2 - arrow-inset, -1), "neg-impact", neg-impact, ltr, bottom),
+    (
+      (width - arrow-inset, -1),
+      (width / 2 + arrow-inset, -1),
+      "pos-impact",
+      pos-impact,
+      rtl,
+      bottom,
+    ),
+  ) {
+    labeled-arrow(start, end, name, label, dir: dir, align: align)
+  }
 
   // arrow of attention
   let cone-start = 1

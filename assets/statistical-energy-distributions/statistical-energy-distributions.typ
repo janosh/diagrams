@@ -1,7 +1,5 @@
-#import "@preview/cetz:0.5.2": canvas
+#import "@preview/cetz:0.5.2": canvas, draw
 #import "@preview/cetz-plot:0.1.4": plot
-#import "../_shared/plot.typ": legend-box, style-axes
-#import "../_shared/theme.typ": series
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
@@ -11,7 +9,11 @@
 #let fermi-dirac(x) = 1 / (calc.exp(x) + 1)
 
 #canvas({
-  style-axes()
+  let axis-mark = (end: "stealth", fill: black)
+  draw.set-style(axes: (
+    x: (mark: axis-mark, label: (anchor: "south-east", offset: -0.2)),
+    y: (mark: axis-mark, label: (anchor: "north-west", offset: -0.2)),
+  ))
 
   plot.plot(
     size: (8, 5),
@@ -27,11 +29,12 @@
     x-grid: true,
     y-grid: true,
     legend: "inner-north-east",
-    legend-style: legend-box,
+    // Compact legend with a thin border.
+    legend-style: (item: (spacing: 0.15), padding: 0.15, stroke: 0.5pt),
     {
       // Bose-Einstein distribution
       plot.add(
-        style: (stroke: series(0)),
+        style: (stroke: rgb("#0B5FA5") + 1.5pt),
         domain: (0.1, 7), // Avoid x=0 since BE diverges there
         samples: 200,
         label: "Bose-Einstein",
@@ -40,7 +43,7 @@
 
       // Boltzmann distribution
       plot.add(
-        style: (stroke: series(1)),
+        style: (stroke: rgb("#C2570A") + 1.5pt),
         domain: (-1, 7),
         samples: 100,
         label: "Boltzmann",
@@ -49,7 +52,7 @@
 
       // Fermi-Dirac distribution
       plot.add(
-        style: (stroke: series(2)),
+        style: (stroke: rgb("#12793F") + 1.5pt),
         domain: (-7, 7),
         samples: 100,
         label: "Fermi-Dirac",

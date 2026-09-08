@@ -70,25 +70,19 @@
     )
   }
 
-  // First row of poles
-  pole(3, 1, $alpha_2^1$)
-  pole(5, 1, $alpha_1^1$)
-
-  // Second row
-  pole(3, -1, $alpha_2^1$)
-  pole(5, -1, $alpha_1^1$)
-
-  // Third row
-  pole(3, -2, $alpha_2^2$)
-  pole(5, -2, $alpha_1^2$)
-
-  // Fourth row
-  pole(3, -4, $alpha_2^2$)
-  pole(5, -4, $alpha_1^2$)
+  for (y-pos, left-label, right-label) in (
+    (1, $alpha_2^1$, $alpha_1^1$),
+    (-1, $alpha_2^1$, $alpha_1^1$),
+    (-2, $alpha_2^2$, $alpha_1^2$),
+    (-4, $alpha_2^2$, $alpha_1^2$),
+  ) {
+    pole(3, y-pos, left-label)
+    pole(5, y-pos, right-label)
+  }
 
   // Region labels
   let blue = rgb("#00008B") // DarkBlue equivalent
-  content((4, 1.5), text(fill: blue)[(I)], name: "region-1")
-  content((4, -1.5), text(fill: blue)[(II)], name: "region-2")
-  content((4, -4.5), text(fill: blue)[(III)], name: "region-3")
+  for (idx, y-pos, label) in ((1, 1.5, [(I)]), (2, -1.5, [(II)]), (3, -4.5, [(III)])) {
+    content((4, y-pos), text(fill: blue, label), name: "region-" + str(idx))
+  }
 })

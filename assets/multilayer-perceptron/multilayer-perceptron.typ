@@ -1,6 +1,8 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: bezier, circle, content, line
-#import "../_shared/network.typ": node-stroke
+
+// Outline weight of network units.
+#let node-stroke = 0.8pt
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 

@@ -1,7 +1,5 @@
-#import "@preview/cetz:0.5.2": canvas
+#import "@preview/cetz:0.5.2": canvas, draw
 #import "@preview/cetz-plot:0.1.4": plot
-#import "../_shared/plot.typ": legend-box, style-axes
-#import "../_shared/theme.typ": series
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
@@ -20,7 +18,11 @@
 }
 
 #canvas({
-  style-axes(x-label: (anchor: "north", offset: 0.2))
+  let axis-mark = (end: "stealth", fill: black)
+  draw.set-style(axes: (
+    x: (mark: axis-mark, label: (anchor: "north", offset: 0.2)),
+    y: (mark: axis-mark, label: (anchor: "north-west", offset: -0.2)),
+  ))
 
   plot.plot(
     size: (10, 8),
@@ -33,11 +35,12 @@
     x-tick-step: 0.2,
     y-tick-step: 0.5,
     legend: "inner-north-east",
-    legend-style: legend-box,
+    // Compact legend with a thin border.
+    legend-style: (item: (spacing: 0.15), padding: 0.15, stroke: 0.5pt),
     {
       // First function (blue)
       plot.add(
-        style: (stroke: series(0)),
+        style: (stroke: rgb("#0B5FA5") + 1.5pt),
         samples: 100,
         domain: (0.01, 1),
         f1,
@@ -46,7 +49,7 @@
 
       // Second function (red)
       plot.add(
-        style: (stroke: series(1)),
+        style: (stroke: rgb("#C2570A") + 1.5pt),
         samples: 50,
         domain: (0, 1.1),
         f2,
@@ -55,7 +58,7 @@
 
       // Third function (orange)
       plot.add(
-        style: (stroke: series(2)),
+        style: (stroke: rgb("#12793F") + 1.5pt),
         samples: 125,
         domain: (0.01, 1),
         f3,

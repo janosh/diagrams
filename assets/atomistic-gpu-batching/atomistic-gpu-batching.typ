@@ -1,6 +1,8 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: content, line, rect
-#import "../_shared/theme.typ": annotation-size
+
+// Size of compact annotations.
+#let annotation-size = 9pt
 
 #set page(width: auto, height: auto, margin: 15pt, fill: none)
 

@@ -1,7 +1,5 @@
-#import "@preview/cetz:0.5.2": canvas
+#import "@preview/cetz:0.5.2": canvas, draw
 #import "@preview/cetz-plot:0.1.4": plot
-#import "../_shared/plot.typ": legend-box, style-axes
-#import "../_shared/theme.typ": series
 
 #let vector(v) = $bold(#v)$
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
@@ -15,26 +13,32 @@
 #let tanh(x) = (calc.exp(x) - calc.exp(-x)) / (calc.exp(x) + calc.exp(-x))
 
 #canvas({
-  style-axes(x-label: none)
+  let axis-mark = (end: "stealth", fill: black)
+  draw.set-style(axes: (
+    x: (mark: axis-mark),
+    y: (mark: axis-mark, label: (anchor: "north-west", offset: -0.2)),
+  ))
   plot.plot(
     size: (8, 5),
     y-tick-step: 1,
     x-tick-step: 2,
     legend: "inner-north-west",
-    legend-style: legend-box,
+    // Compact legend with a thin border.
+    legend-style: (item: (spacing: 0.15), padding: 0.15, stroke: 0.5pt),
     axis-style: "left",
     x-grid: true,
     y-grid: true,
     {
       let curves = (
-        "ReLU": relu,
-        "GELU": gelu,
-        "Leaky ReLU": leaky-relu,
-        "Sigmoid": sigmoid,
-        "Tanh": tanh,
+        ("ReLU", relu, rgb("#0B5FA5") + 1.5pt),
+        ("GELU", gelu, rgb("#C2570A") + 1.5pt),
+        ("Leaky ReLU", leaky-relu, rgb("#12793F") + 1.5pt),
+        ("Sigmoid", sigmoid, rgb("#A81E7A") + 1.5pt),
+        // Dashes distinguish the less separable purple curve.
+        ("Tanh", tanh, (paint: rgb("#7A3E9D"), thickness: 1.5pt, dash: "dashed")),
       )
-      for (idx, (key, func)) in curves.pairs().enumerate() {
-        plot.add(style: (stroke: series(idx)), domain: (-4, 4), func, label: key)
+      for (key, func, stroke) in curves {
+        plot.add(style: (stroke: stroke), domain: (-4, 4), func, label: key)
       }
     },
   )

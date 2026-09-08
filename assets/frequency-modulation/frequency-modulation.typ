@@ -1,5 +1,35 @@
-#import "@preview/cetz:0.5.2": canvas
-#import "../_shared/signal-plot.typ": signal-row
+#import "@preview/cetz-plot:0.1.4": plot
+#import "@preview/cetz:0.5.2": canvas, draw
+
+#let plot-height = 1.6
+
+// `y` is the height of the panel's t-axis; the curve is shifted so that the zero of
+// `y-range` lands on it, which is what lets panels with different scales line up.
+#let signal-row(name, y, title, func, color, y-range, samples: 1600) = {
+  let (y-min, y-max) = y-range
+  let arrow = (mark: (end: "stealth", fill: black, scale: .55), stroke: .8pt)
+  let (x-axis, y-axis) = (name + "-x-axis", name + "-y-axis")
+
+  draw.line((0, y), (10.5, y), ..arrow, name: x-axis)
+  draw.line((0, y - .95), (0, y + 1.15), ..arrow, name: y-axis)
+  draw.content(x-axis + ".end", $t$, anchor: "west", padding: 2pt)
+  draw.content(
+    (rel: (.14, -.15), to: y-axis + ".end"),
+    text(fill: color, title),
+    anchor: "south-west",
+  )
+
+  draw.group({
+    draw.translate((0, y - (0 - y-min) / (y-max - y-min) * plot-height))
+    plot.plot(
+      size: (10.0, plot-height),
+      axis-style: none,
+      y-min: y-min,
+      y-max: y-max,
+      plot.add(style: (stroke: color + 1.3pt), domain: (0, 1), samples: samples, func),
+    )
+  })
+}
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 

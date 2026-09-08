@@ -12,7 +12,7 @@
   let (orange, blue, teal) = (rgb("#e8c268"), rgb("#63a7e390"), rgb("#008080"))
 
   // Helper function for boxes
-  let box(pos, text, fill: none, name: none) = {
+  let box(pos, body, fill: none, name: none) = {
     rect(
       pos,
       (rel: (node-width, node-height)),
@@ -20,37 +20,39 @@
       stroke: 0.3pt,
       name: name,
     )
-    content(name, text)
+    content(name, body)
   }
 
-  // Top row x nodes
-  box((0, 0), $x_1$, fill: blue, name: "x1")
-  box((horiz-sep, 0), $x_2$, fill: blue, name: "x2")
-  box((3 * horiz-sep, 0), $x_d$, fill: blue, name: "xd")
-  content(("x2", 50%, "xd"), text(size: 14pt)[$dots.c$], name: "xdots1")
-
-  // Green boxes with more spacing
-  box((5 * horiz-sep, 0), $x_(d+1)$, fill: orange, name: "xd-plus-1")
-  box((7 * horiz-sep, 0), $x_D$, fill: orange, name: "xD")
-  content(("xd-plus-1", 50%, "xD"), text(size: 14pt)[$dots.c$], name: "xdots2")
-
-  // Bottom row z nodes
-  box((0, -vert-sep), $z_1$, fill: blue, name: "z1")
-  box((horiz-sep, -vert-sep), $z_2$, fill: blue, name: "z2")
-  box((3 * horiz-sep, -vert-sep), $z_d$, fill: blue, name: "zd")
-  content(("z2", 50%, "zd"), text(size: 14pt)[$dots.c$], name: "zdots1")
-
-  // Orange boxes
-  box((5 * horiz-sep, -vert-sep), $z_(d+1)$, fill: orange, name: "zd-plus-1")
-  box((7 * horiz-sep, -vert-sep), $z_D$, fill: orange, name: "zD")
-  content(("zd-plus-1", 50%, "zD"), text(size: 14pt)[$dots.c$], name: "zdots2")
+  for (prefix, y-pos, labels) in (
+    ("x", 0, ($x_1$, $x_2$, $x_d$, $x_(d+1)$, $x_D$)),
+    ("z", -vert-sep, ($z_1$, $z_2$, $z_d$, $z_(d+1)$, $z_D$)),
+  ) {
+    let nodes = (
+      (0, prefix + "1", labels.at(0), blue),
+      (horiz-sep, prefix + "2", labels.at(1), blue),
+      (3 * horiz-sep, prefix + "d", labels.at(2), blue),
+      (5 * horiz-sep, prefix + "d-plus-1", labels.at(3), orange),
+      (7 * horiz-sep, prefix + "D", labels.at(4), orange),
+    )
+    for (x-pos, name, label, fill) in nodes {
+      box((x-pos, y-pos), label, fill: fill, name: name)
+    }
+    content((prefix + "2", 50%, prefix + "d"), text(size: 14pt)[$dots.c$], name: prefix + "dots1")
+    content(
+      (prefix + "d-plus-1", 50%, prefix + "D"),
+      text(size: 14pt)[$dots.c$],
+      name: prefix + "dots2",
+    )
+  }
 
   // Vertical connecting lines
-  line("z1", "x1", mark: arrow-style, name: "line1")
-  line("z2", "x2", mark: arrow-style, name: "line2")
-  line("zd", "xd", mark: arrow-style, name: "lined")
-  line("zd-plus-1", "xd-plus-1", mark: arrow-style, name: "line-d-plus-1")
-  line("zD", "xD", mark: arrow-style, name: "lineD")
+  for (suffix, line-name) in (
+    ("1", "line1"),
+    ("2", "line2"),
+    ("d", "lined"),
+    ("d-plus-1", "line-d-plus-1"),
+    ("D", "lineD"),
+  ) { line("z" + suffix, "x" + suffix, mark: arrow-style, name: line-name) }
 
   // Scale and translate functions
 

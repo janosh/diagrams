@@ -18,83 +18,46 @@
   let y-dots-2 = yj - spacing.vertical
   let yn = y-dots-2 - spacing.vertical
   let arrow-style = (end: "stealth", fill: black, scale: 0.7)
+  let rows = (
+    (id: "1", y: y1, input: $arrow(e)_1$, alpha: $alpha_(1j)$, alpha-fill: rgb(0, 0, 0, 20%)),
+    (id: "j", y: yj, input: $arrow(e)_j$, alpha: $alpha_(j j)$, alpha-fill: none),
+    (id: "n", y: yn, input: $arrow(e)_n$, alpha: $alpha_(n j)$, alpha-fill: rgb(0, 0, 0, 60%)),
+  )
 
-  // First column (input vectors)
-  content((0, y1), $arrow(e)_1$, name: "arrow1", padding: 2pt)
-  content((0, y-dots-1), $dots$)
-  content((0, yj), $arrow(e)_j$, name: "arrowj", padding: 2pt)
-  content((0, y-dots-2), $dots$)
-  content((0, yn), $arrow(e)_n$, name: "arrown", padding: 2pt)
+  for row in rows { content((0, row.y), row.input, name: "arrow" + row.id, padding: 2pt) }
+  for y in (y-dots-1, y-dots-2) { content((0, y), $dots$) }
 
-  // Second column (attention nodes)
   let x2 = spacing.layer
-  content(
-    (x2, y1),
-    $a_phi$,
-    frame: "rect",
-    stroke: 1pt,
-    padding: (3pt, 4pt),
-    name: "attn1",
-  )
-  content(
-    (x2, yj),
-    $a_phi$,
-    frame: "rect",
-    stroke: 1pt,
-    padding: (3pt, 4pt),
-    name: "attnj",
-  )
-  content(
-    (x2, yn),
-    $a_phi$,
-    frame: "rect",
-    stroke: 1pt,
-    padding: (3pt, 4pt),
-    name: "attnn",
-  )
+  for row in rows {
+    content(
+      (x2, row.y),
+      $a_phi$,
+      frame: "rect",
+      stroke: 1pt,
+      padding: (3pt, 4pt),
+      name: "attn" + row.id,
+    )
+  }
 
-  // Third column (alpha values)
   let x3 = x2 + spacing.layer
-  content(
-    (x3, y1),
-    text(fill: rgb(0, 0, 0, 20%))[$alpha_(1j)$],
-    name: "alpha1j",
-    padding: 3pt,
-  )
-  content((x3, yj), $alpha_(j j)$, name: "alphajj", padding: 3pt)
-  content(
-    (x3, yn),
-    text(fill: rgb(0, 0, 0, 60%))[$alpha_(n j)$],
-    name: "alphanj",
-    padding: 3pt,
-  )
+  for row in rows {
+    let label = if row.alpha-fill == none { row.alpha } else {
+      text(fill: row.alpha-fill, row.alpha)
+    }
+    content((x3, row.y), label, name: "alpha" + row.id + "j", padding: 3pt)
+  }
 
-  // Fourth column (multiplication nodes)
   let x4 = x3 + spacing.layer
-  content(
-    (x4, y1),
-    name: "times1",
-    $times$,
-    frame: "circle",
-    padding: 3pt,
-    stroke: .7pt,
-  )
-  content(
-    (x4, yj),
-    name: "timesj",
-    $times$,
-    frame: "circle",
-    padding: 3pt,
-    stroke: .7pt,
-  )
-  content(
-    (x4, yn),
-    name: "timesn",
-    $times$,
-    frame: "circle",
-    padding: 3pt,
-    stroke: .7pt,
-  )
+  for row in rows {
+    content(
+      (x4, row.y),
+      $times$,
+      frame: "circle",
+      padding: 3pt,
+      stroke: .7pt,
+      name: "times" + row.id,
+    )
+  }
 
   // Fifth column (sum node)
   let x5 = x4 + spacing.layer
@@ -122,11 +85,9 @@
   for key in ("attn1", "attnn") { line("arrowj.east", key, mark: arrow-style) }
   line("sum.east", "output.west", mark: arrow-style)
 
-  for (idx, (start, end)) in (
-    ("arrow1.east", "times1.south-west"),
-    ("arrowj.east", "timesj.south-west"),
-    ("arrown.east", "timesn.south-west"),
-  ).enumerate(start: 1) {
+  for (idx, row) in rows.enumerate(start: 1) {
+    let start = "arrow" + row.id + ".east"
+    let end = "times" + row.id + ".south-west"
     bezier(
       start,
       end,

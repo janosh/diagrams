@@ -29,34 +29,20 @@
     content(pos, label, anchor: anchor, padding: padding)
   }
 
-  stable-point(
-    (0, height - 1),
-    "A",
-    anchor: "west",
-    padding: (left: 10pt),
-    name: "a",
-  )
-  stable-point(
-    (width / 2, 2),
-    "AX",
-    anchor: "north",
-    padding: (top: 10pt),
-    name: "ax",
-  )
-  stable-point(
-    (width * 5 / 7, 1.5),
-    $A_2X_5$,
-    anchor: "north",
-    padding: (top: 10pt),
-    name: "a2x5",
-  )
-  stable-point(
-    (width, height - 1.5),
-    "X",
-    anchor: "east",
-    padding: (right: 10pt),
-    name: "x",
-  )
+  for spec in (
+    (pos: (0, height - 1), label: "A", args: (anchor: "west", padding: (left: 10pt), name: "a")),
+    (pos: (width / 2, 2), label: "AX", args: (anchor: "north", padding: (top: 10pt), name: "ax")),
+    (
+      pos: (width * 5 / 7, 1.5),
+      label: $A_2X_5$,
+      args: (anchor: "north", padding: (top: 10pt), name: "a2x5"),
+    ),
+    (
+      pos: (width, height - 1.5),
+      label: "X",
+      args: (anchor: "east", padding: (right: 10pt), name: "x"),
+    ),
+  ) { stable-point(spec.pos, spec.label, ..spec.args) }
 
   let unstable-point(pos, label, ..rest) = {
     let (x, y) = pos
@@ -64,12 +50,16 @@
     content(pos, label, anchor: "south", padding: (bottom: 8pt))
   }
 
-  unstable-point((width / 3, height - 1.5), $A_2X$, name: "a2x")
-  unstable-point((width * 7 / 9, 3.7), $A_2X_7$, name: "a2x7")
+  for (pos, label, name) in (
+    ((width / 3, height - 1.5), $A_2X$, "a2x"),
+    ((width * 7 / 9, 3.7), $A_2X_7$, "a2x7"),
+  ) { unstable-point(pos, label, name: name) }
 
-  line("a", "ax", ..hull-style, name: "hull-a-ax")
-  line("ax", "a2x5", ..hull-style, name: "hull-ax-a2x5")
-  line("a2x5", "x", ..hull-style, name: "hull-a2x5-x")
+  for (start, end, name) in (
+    ("a", "ax", "hull-a-ax"),
+    ("ax", "a2x5", "hull-ax-a2x5"),
+    ("a2x5", "x", "hull-a2x5-x"),
+  ) { line(start, end, ..hull-style, name: name) }
   content(
     (rel: (-1.8, -.8), to: "ax"),
     text(fill: blue.darken(20%), size: 12pt)[convex hull\ of stability],
@@ -87,8 +77,10 @@
     name: "hull-label-line",
   )
 
-  line("ax", "a2x7", ..hyp-hull-style, name: "hyp-hull-ax-a2x7")
-  line("a2x7", "x", ..hyp-hull-style, name: "hyp-hull-a2x7-x")
+  for (start, end, name) in (
+    ("ax", "a2x7", "hyp-hull-ax-a2x7"),
+    ("a2x7", "x", "hyp-hull-a2x7-x"),
+  ) { line(start, end, ..hyp-hull-style, name: name) }
   content(
     (rel: (0, 0.3), to: "hyp-hull-a2x7-x.mid"),
     text(fill: gray, size: 13pt)[hypothetical hull for\ evaluating $A_2X_5$],

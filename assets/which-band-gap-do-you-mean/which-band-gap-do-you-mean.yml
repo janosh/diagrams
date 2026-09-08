@@ -1,0 +1,9 @@
+title: Which Band Gap Do You Mean?
+tags:
+  - physics
+  - density functional theory
+  - electronic structure
+  - semiconductors
+  - spectroscopy
+description: |
+  Three complementary pictures distinguish a Kohn–Sham orbital gap, the fundamental gap measured through electron addition and removal, and the optical gap for a neutral excitation. A common schematic connects the exact local Kohn–Sham derivative discontinuity to the charge gap and exciton binding to a matching direct optical threshold. Plain-language labels explain holes, excitons, ionization energy, electron affinity, and the conditions needed when comparing experimental and calculated gaps, including indirect transitions and dark states.

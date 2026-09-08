@@ -18,81 +18,59 @@
   let (p-min, p-max) = (0.2 * p, 0.9 * p)
   let (V-min, V-max) = (0.2 * V, 0.9 * V)
 
-  content((0, p-max), name: "p-max-ref", [])
-  content((0, p-min), name: "p-min-ref", [])
-  content((V-min, 0), name: "V-min-ref", [])
-  content((V-max, 0), name: "V-max-ref", [])
+  for (name, pos) in (
+    ("p-max-ref", (0, p-max)),
+    ("p-min-ref", (0, p-min)),
+    ("V-min-ref", (V-min, 0)),
+    ("V-max-ref", (V-max, 0)),
+  ) { content(pos, name: name, []) }
 
-  // Horizontal dashed line for p-max
-  line(
-    "p-max-ref",
-    (rel: (V-min, 0), to: "p-max-ref"),
-    stroke: (dash: "dashed", thickness: 0.8pt),
-    name: "p-max-line",
+  for spec in (
+    (ref: "p-max-ref", delta: (V-min, 0), label-rel: (-0.5, 0), label: $p_"max"$, prefix: "p-max"),
+    (ref: "V-min-ref", delta: (0, p-max), label-rel: (0, -0.5), label: $V_"min"$, prefix: "V-min"),
+    (ref: "p-min-ref", delta: (V-max, 0), label-rel: (-0.5, 0), label: $p_"min"$, prefix: "p-min"),
+    (ref: "V-max-ref", delta: (0, p-min), label-rel: (0, -0.5), label: $V_"max"$, prefix: "V-max"),
+  ) {
+    line(
+      spec.ref,
+      (rel: spec.delta, to: spec.ref),
+      stroke: (dash: "dashed", thickness: 0.8pt),
+      name: spec.prefix + "-line",
+    )
+    content(
+      (rel: spec.label-rel, to: spec.ref),
+      spec.label,
+      name: spec.prefix + "-label",
+    )
+  }
+
+  let points = (
+    (suffix: "a", pos: (V-min, p-max), label: [1], args: (anchor: "south", padding: (bottom: 5pt))),
+    (suffix: "b", pos: (V-max, 0.5 * p), label: [2], args: (anchor: "west", padding: (left: 5pt))),
+    (
+      suffix: "c",
+      pos: (V-max, p-min),
+      label: [3],
+      args: (anchor: "north-west", padding: (left: 5pt)),
+    ),
+    (
+      suffix: "d",
+      pos: (V-min, 0.45 * p),
+      label: [4],
+      args: (anchor: "east", padding: (right: 5pt)),
+    ),
   )
-
-  // Vertical dashed line for V-min
-  line(
-    "V-min-ref",
-    (rel: (0, p-max), to: "V-min-ref"),
-    stroke: (dash: "dashed", thickness: 0.8pt),
-    name: "V-min-line",
-  )
-
-  // Labels for p-max and V-min
-  content((rel: (-0.5, 0), to: "p-max-ref"), $p_"max"$, name: "p-max-label")
-  content((rel: (0, -0.5), to: "V-min-ref"), $V_"min"$, name: "V-min-label")
-
-  // Horizontal dashed line for p-min
-  line(
-    "p-min-ref",
-    (rel: (V-max, 0), to: "p-min-ref"),
-    stroke: (dash: "dashed", thickness: 0.8pt),
-    name: "p-min-line",
-  )
-
-  // Vertical dashed line for V-max
-  line(
-    "V-max-ref",
-    (rel: (0, p-min), to: "V-max-ref"),
-    stroke: (dash: "dashed", thickness: 0.8pt),
-    name: "V-max-line",
-  )
-
-  // Labels for p-min and V-max
-  content((rel: (-0.5, 0), to: "p-min-ref"), $p_"min"$, name: "p-min-label")
-  content((rel: (0, -0.5), to: "V-max-ref"), $V_"max"$, name: "V-max-label")
-
-  circle((V-min, p-max), radius: 3pt, fill: black, name: "point-a")
-
-  circle((V-max, 0.5 * p), radius: 3pt, fill: black, name: "point-b")
-
-  circle((V-max, p-min), radius: 3pt, fill: black, name: "point-c")
-
-  circle((V-min, 0.45 * p), radius: 3pt, fill: black, name: "point-d")
-
-  content(
-    "point-a",
-    [1],
-    anchor: "south",
-    padding: (bottom: 5pt),
-    name: "label-a",
-  )
-  content("point-b", [2], anchor: "west", padding: (left: 5pt), name: "label-b")
-  content(
-    "point-c",
-    [3],
-    anchor: "north-west",
-    padding: (left: 5pt),
-    name: "label-c",
-  )
-  content(
-    "point-d",
-    [4],
-    anchor: "east",
-    padding: (right: 5pt),
-    name: "label-d",
-  )
+  for point in points {
+    circle(point.pos, radius: 3pt, fill: black, name: "point-" + point.suffix)
+  }
+  for point in points {
+    content(
+      "point-" + point.suffix,
+      point.label,
+      ..point.args,
+      name: "label-" + point.suffix,
+    )
+  }
 
   let arrow-style = (end: "stealth", fill: black, scale: .5)
   let stroke-style = (paint: rgb("#00008b"), thickness: 1.5pt)

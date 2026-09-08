@@ -1,7 +1,4 @@
 import { building } from '$app/environment'
-// slug -> HTML, rendered at build time by vite-plugin-descriptions. Rendering here instead
-// drags mdsvex and katex into the client bundle, where their node builtins throw on load.
-import rendered_descriptions from 'virtual:descriptions'
 
 export { default as CodeBlock } from './CodeBlock.svelte'
 export { default as DiagramCard } from './DiagramCard.svelte'
@@ -28,12 +25,11 @@ export type YamlMetadata = {
   hide?: boolean
 }
 
-// Load all YAML files from assets directory
-const yaml_data = import.meta.glob<YamlMetadata>(`$assets/**/*.yml`, {
+// YAML imports already contain descriptions rendered to HTML by the Vite plugin.
+// Rolldown leaves eager glob imports wrapped as modules; unwrap .default below.
+const yaml_data = import.meta.glob<{ default: YamlMetadata }>(`$assets/**/*.yml`, {
   eager: true,
-  import: `default`,
 })
-// rolldown doesn't unwrap `import: 'default'` for query imports, so access .default at usage
 const code_files = import.meta.glob<{ default: string }>(
   [`$assets/**/*.tex`, `$assets/**/*.typ`],
   { eager: true, query: `?raw` },
@@ -44,13 +40,14 @@ const asset_files = import.meta.glob<{ default: string }>(
 )
 const image_files = import.meta.glob<{ default: string }>(`$assets/**/*.png`, {
   eager: true,
-  query: { enhanced: true },
+  // Density descriptors are lost by imagetools' cache; use stable width descriptors.
+  query: { enhanced: true, basePixels: 0 },
 })
 
 // Process YAML files to create figure data
 export const diagrams: Diagram[] = Object.entries(yaml_data)
-  .filter(([_path, metadata]) => !metadata.hide)
-  .map(([path, metadata]): Diagram => {
+  .filter(([_path, { default: metadata }]) => !metadata.hide)
+  .map(([path, { default: metadata }]): Diagram => {
     const slug = path.split(`/`)[2] ?? ``
     const figure_basename = `../assets/${slug}/${slug}`
 
@@ -83,15 +80,14 @@ export const diagrams: Diagram[] = Object.entries(yaml_data)
       hd: image_files[`${figure_basename}-hd.png`]?.default,
       sd: image_files[`${figure_basename}.png`]?.default,
     }
-    const description = rendered_descriptions[slug] ?? null
-    return { ...metadata, slug, code, tags, description, downloads, images }
+    return { ...metadata, slug, code, tags, downloads, images }
   })
 
 // title-sorted view of diagrams; stable order for prev/next nav, the home grid and
 // the prerendered server load (avoids coupling those to the client filter state). Fixed
 // `en` collator so build (Node) and client agree, avoiding a hydration reorder
 const diagram_collator = new Intl.Collator(`en`, { numeric: true })
-export const sorted_diagrams = [...diagrams].toSorted(
+export const sorted_diagrams = diagrams.toSorted(
   (d1, d2) =>
     diagram_collator.compare(d1.title, d2.title) ||
     diagram_collator.compare(d1.slug, d2.slug),

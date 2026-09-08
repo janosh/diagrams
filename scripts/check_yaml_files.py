@@ -4,6 +4,7 @@ import unicodedata
 from collections import Counter
 from difflib import SequenceMatcher
 from glob import glob
+from itertools import combinations
 from typing import Final
 
 import yaml
@@ -51,8 +52,7 @@ def _greek_to_latin() -> dict[int, str]:
     for code in range(0x03B1, 0x03CA):  # Greek lowercase letters α-ω
         char = chr(code)
         # last word handles multi-word names like "FINAL SIGMA" (ς) -> "sigma"
-        words = unicodedata.name(char).removeprefix("GREEK SMALL LETTER ").split()
-        latin = words[-1].lower()
+        latin = unicodedata.name(char).split()[-1].lower()
         mapping[code] = latin
         mapping[ord(char.upper())] = latin.title()
     return mapping
@@ -75,8 +75,7 @@ def find_similar_tags(
     """Find pairs of tags that are very similar to each other."""
     pairs = [
         (tag1, tag2, ratio)
-        for idx, tag1 in enumerate(tags)
-        for tag2 in tags[idx + 1 :]
+        for tag1, tag2 in combinations(tags, 2)
         if (ratio := SequenceMatcher(None, tag1, tag2).ratio()) >= threshold
     ]
     return sorted(pairs, key=lambda pair: pair[2], reverse=True)

@@ -1,0 +1,106 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: typst-community/setup-typst@v5
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Install site dependencies
+        run: |
+          corepack enable
+          printf 'allowBuilds:\n  svelte-widgets: true\n  sharp: true\n' > pnpm-workspace.yaml
+          # npm prepares Git dependencies; avoid its conflicting optional Vitest peers.
+          NPM_CONFIG_LEGACY_PEER_DEPS=true pnpm install --no-lockfile
+        working-directory: site
+      - name: Unit tests
+        run: pnpm test
+        working-directory: site
+
+      - name: Run prek
+        uses: j178/prek-action@v3.0.0
+
+  link-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Discover broken links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          # increase max-redirects needed for some journal links
+          # ${...} becomes $%7B...%7D once lychee percent-encodes the extracted URL
+          args: --accept 100..=103,200..=299,403,429,500,503 --max-redirects 10 --timeout 30 --exclude-all-private --exclude '\$(\{.*\}|%7B.*%7D)' --exclude 'chemicalaid\.com' --exclude 'janosh\.github\.io/diagrams' --exclude 'diagrams\.janosh\.dev' --exclude 'arxiv\.org' --exclude 'sciencedirect\.com' --exclude 'rolandwanner\.com' --exclude 'tikz\.dev' -- ./**/*.{typ,tex,md,svelte,ts,yml}
+
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - uses: actions/cache/restore@v6
+        id: images
+        with:
+          path: site/node_modules/.cache/imagetools
+          key: imagetools-${{ hashFiles('assets/**/*.png', 'site/src/lib/index.ts', 'site/package.json') }}
+          restore-keys: imagetools-
+      - name: Install site dependencies
+        run: |
+          corepack enable
+          printf 'allowBuilds:\n  svelte-widgets: true\n  sharp: true\n' > pnpm-workspace.yaml
+          # npm prepares Git dependencies; avoid its conflicting optional Vitest peers.
+          NPM_CONFIG_LEGACY_PEER_DEPS=true pnpm install --no-lockfile
+        working-directory: site
+      - run: pnpm exec vp build
+        working-directory: site
+      - uses: actions/cache/save@v6
+        if: steps.images.outputs.cache-hit != 'true'
+        with:
+          path: site/node_modules/.cache/imagetools
+          key: ${{ steps.images.outputs.cache-primary-key }}
+      - name: Install browser for visual checks
+        run: pnpm exec playwright install --with-deps --only-shell chromium
+        working-directory: site
+      - name: Visual regression checks
+        run: pnpm test:visual
+        working-directory: site
+      - name: Upload visual failure report
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: visual-regression-report
+          path: |
+            site/playwright-report
+            site/test-results
+          retention-days: 7
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: site/build
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v5

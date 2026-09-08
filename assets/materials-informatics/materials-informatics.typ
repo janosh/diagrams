@@ -1,13 +1,28 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content, line, rect
-#import "../_shared/network.typ": fully-connect
-#import "../_shared/shading.typ": sphere
-#import "../_shared/theme.typ": annotation-size
+
+// The flat disc underneath is fully covered by the gradient, but drawing both
+// doubles up the antialiased rim so the sphere keeps a crisp edge.
+#let sphere(pos, radius: 0.25, fill: luma(50), ..args) = {
+  circle(pos, radius: radius, stroke: none, fill: fill, ..args)
+  circle(pos, radius: radius, stroke: none, fill: gradient.radial(
+    fill.lighten(75%),
+    fill,
+    fill.darken(15%),
+    // Offset the highlight to suggest a lit sphere.
+    focal-center: (30%, 25%),
+    focal-radius: 5%,
+    center: (35%, 30%),
+  ))
+}
+
+// Size of compact annotations.
+#let annotation-size = 9pt
 
 #set page(width: auto, height: auto, margin: 5pt, fill: none)
 
 #let neuron(pos, fill: white, text: none, name: none) = {
-  draw.content(pos, text, frame: "circle", fill: fill, stroke: none, padding: 4pt, name: name)
+  content(pos, text, frame: "circle", fill: fill, stroke: none, padding: 4pt, name: name)
 }
 
 #let atom(pos, element, color: white, text-color: black, padding: 6pt, name: none) = {
@@ -165,13 +180,16 @@
   }
   for (idx, (_, count, _, prefix)) in layers.slice(0, -1).enumerate() {
     let (_, next-count, _, next-prefix) = layers.at(idx + 1)
-    fully-connect(
-      prefix + "-",
-      next-prefix + "-",
-      count,
-      next-count,
-      stroke: rgb("#aaa") + 0.5pt,
-    )
+    // Connect every unit in this layer to every unit in the next.
+    for from-idx in range(1, count + 1) {
+      for to-idx in range(1, next-count + 1) {
+        line(
+          prefix + "-" + str(from-idx),
+          next-prefix + "-" + str(to-idx),
+          stroke: rgb("#aaa") + 0.5pt,
+        )
+      }
+    }
   }
 
   caption(model-x + layer-sep, [Model])

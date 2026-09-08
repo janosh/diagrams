@@ -72,27 +72,27 @@
     }
   })
 }
-#let calc-bend-pt(a, b, e) = {
-  let mid-pt = (0, 0, 0)
-  mid-pt.at(0) = (a.at(0) + b.at(0)) / 2
-  mid-pt.at(1) = (a.at(1) + b.at(1)) / 2
-  mid-pt.at(2) = (a.at(2) + b.at(2)) / 2
-
-  let orth-vec = (0, 0, 0)
-  orth-vec.at(0) = a.at(1) - b.at(1)
-  orth-vec.at(1) = b.at(0) - a.at(0)
-
-  let scaled-orth-vec = cetz.vector.scale(orth-vec, e)
-
-  return cetz.vector.add(mid-pt, scaled-orth-vec)
+#let calc-bend-pt(start, end, bend) = {
+  let midpoint = (
+    (start.at(0) + end.at(0)) / 2,
+    (start.at(1) + end.at(1)) / 2,
+    (start.at(2) + end.at(2)) / 2,
+  )
+  let orthogonal = (start.at(1) - end.at(1), end.at(0) - start.at(0), 0)
+  cetz.vector.add(midpoint, cetz.vector.scale(orthogonal, bend))
 }
-#let curve(a, b, mark: none, bend: 0) = {
-  cetz.draw.bezier(a, b, ((a, b) => calc-bend-pt(a, b, bend), a, b), mark: mark)
+#let curve(start, end, mark: none, bend: 0) = {
+  cetz.draw.bezier(
+    start,
+    end,
+    ((start, end) => calc-bend-pt(start, end, bend), start, end),
+    mark: mark,
+  )
 }
-#let bent-line(a, b, mark: none, bend: 0) = {
-  let s = ((a, b) => calc-bend-pt(a, b, bend), a, b)
-  cetz.draw.line(a, s)
-  cetz.draw.line(s, b, mark: mark)
+#let bent-line(start, end, mark: none, bend: 0) = {
+  let bend-point = ((start, end) => calc-bend-pt(start, end, bend), start, end)
+  cetz.draw.line(start, bend-point)
+  cetz.draw.line(bend-point, end, mark: mark)
 }
 
 #cetz.canvas({
@@ -101,26 +101,25 @@
     cetz.draw.translate((-0.2, 0.3, 0))
     cetz.draw.set-origin((3, 0.3))
 
-    transition((0, 0), name: "t0", content: $T_(frak(I))$)
-    transition((4, 0), name: "t2in", content: $T_(2_frak(I))$)
-    transition((8, 0), name: "t2out", content: $T_(2_frak(O))$)
-    transition((12, 0), name: "t1in", content: $T_(1_frak(I))$)
-    transition((16, 0), name: "t1out", content: $T_(1_frak(O))$)
-    transition((20, 0), name: "t6", content: $T_(frak(O))$)
+    for (x-pos, name, label) in (
+      (0, "t0", $T_(frak(I))$),
+      (4, "t2in", $T_(2_frak(I))$),
+      (8, "t2out", $T_(2_frak(O))$),
+      (12, "t1in", $T_(1_frak(I))$),
+      (16, "t1out", $T_(1_frak(O))$),
+      (20, "t6", $T_(frak(O))$),
+    ) { transition((x-pos, 0), name: name, content: label) }
 
-    place((rel: (2.3, 0), to: "t0.right"), name: "p02", content: $τ_(02)$)
-    place((rel: (2.3, -1), to: "t2in.right"), name: "pr2", content: $ρ_(2)$)
-    place((rel: (2.3, 1), to: "t2in.right"), name: "p22", content: $τ_(22)$)
-    place((rel: (2.3, 0), to: "t2out.right"), name: "p21", content: $τ_(21)$)
-    place((rel: (2.3, -1), to: "t1in.right"), name: "pr1", content: $ρ_(1)$)
-    place((rel: (2.3, 1), to: "t1in.right"), name: "p11", content: $τ_(11)$)
-    place((rel: (2.3, 0), to: "t1out.right"), name: "p16", content: $τ_(16)$)
-    place(
-      (rel: (3, -4), to: "t2out.right"),
-      name: "p61",
-      content: $τ_(60)$,
-      token: true,
-    )
+    for (rel, target, name, label, token) in (
+      ((2.3, 0), "t0.right", "p02", $τ_(02)$, false),
+      ((2.3, -1), "t2in.right", "pr2", $ρ_(2)$, false),
+      ((2.3, 1), "t2in.right", "p22", $τ_(22)$, false),
+      ((2.3, 0), "t2out.right", "p21", $τ_(21)$, false),
+      ((2.3, -1), "t1in.right", "pr1", $ρ_(1)$, false),
+      ((2.3, 1), "t1in.right", "p11", $τ_(11)$, false),
+      ((2.3, 0), "t1out.right", "p16", $τ_(16)$, false),
+      ((3, -4), "t2out.right", "p61", $τ_(60)$, true),
+    ) { place((rel: rel, to: target), name: name, content: label, token: token) }
 
     // the critical path threads every node left to right in one chain
     let chain = ("t0", "p02", "t2in", "pr2", "t2out", "p21", "t1in", "pr1", "t1out", "p16", "t6")

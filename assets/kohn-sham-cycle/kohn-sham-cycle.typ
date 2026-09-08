@@ -51,45 +51,39 @@
     radius: 1em,
   )
 
-  // Potential box
-  content(
-    (rel: (0, -2), to: "initial.south"),
-    [$v_("ext,s") (arrow(r))=v_H (arrow(r)) + v_"xc" (arrow(r)) + v_"ext" (arrow(r))$],
-    ..box-style,
-    name: "potential",
+  let chain = (
+    (
+      name: "potential",
+      offset: -2,
+      body: [$v_("ext,s") (arrow(r))=v_H (arrow(r)) + v_"xc" (arrow(r)) + v_"ext" (arrow(r))$],
+    ),
+    (
+      name: "hamiltonian",
+      offset: -1.25,
+      body: [$hat(H)_"KS"=-frac(planck^2, 2m)arrow(nabla)^2 + v_("ext,s") (arrow(r))$],
+    ),
+    (
+      name: "schrodinger-eq",
+      offset: -1.25,
+      body: [$hat(H)_"KS" phi_i (arrow(r))= E_i phi_i (arrow(r))$],
+    ),
+    (
+      name: "density",
+      offset: -1.25,
+      body: [$rho (arrow(r))=sum_(i=1)^n f_i |phi_i (arrow(r_i))|^2$],
+    ),
+    (name: "criterion", offset: -1.25, body: [Convergence criterion satisfied?]),
   )
-
-  // Hamiltonian box
-  content(
-    (rel: (0, -1.25), to: "potential.south"),
-    [$hat(H)_"KS"=-frac(planck^2, 2m)arrow(nabla)^2 + v_("ext,s") (arrow(r))$],
-    ..box-style,
-    name: "hamiltonian",
-  )
-
-  // Schrödinger equation box
-  content(
-    (rel: (0, -1.25), to: "hamiltonian.south"),
-    [$hat(H)_"KS" phi_i (arrow(r))= E_i phi_i (arrow(r))$],
-    ..box-style,
-    name: "schrodinger-eq",
-  )
-
-  // Density box
-  content(
-    (rel: (0, -1.25), to: "schrodinger-eq.south"),
-    [$rho (arrow(r))=sum_(i=1)^n f_i |phi_i (arrow(r_i))|^2$],
-    ..box-style,
-    name: "density",
-  )
-
-  // Convergence criterion box
-  content(
-    (rel: (0, -1.25), to: "density.south"),
-    [Convergence criterion satisfied?],
-    ..box-style,
-    name: "criterion",
-  )
+  let parent = "initial"
+  for box in chain {
+    content(
+      (rel: (0, box.offset), to: parent + ".south"),
+      box.body,
+      ..box-style,
+      name: box.name,
+    )
+    parent = box.name
+  }
 
   // Final energy box
   content(
@@ -103,11 +97,13 @@
     padding: (4pt, 2em, 1pt),
   )
 
-  line("initial", "potential", ..arrow-style)
-  line("potential", "hamiltonian", ..arrow-style)
-  line("hamiltonian", "schrodinger-eq", ..arrow-style)
-  line("schrodinger-eq", "density", ..arrow-style)
-  line("density", "criterion", ..arrow-style)
+  for (start, end) in (
+    ("initial", "potential"),
+    ("potential", "hamiltonian"),
+    ("hamiltonian", "schrodinger-eq"),
+    ("schrodinger-eq", "density"),
+    ("density", "criterion"),
+  ) { line(start, end, ..arrow-style) }
   line("criterion", "energy", ..arrow-style, name: "converged-yes")
 
   // Yes/No labels

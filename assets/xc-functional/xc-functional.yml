@@ -1,0 +1,8 @@
+title: XC Functional
+tags:
+  - physics
+  - quantum mechanics
+  - density functional theory
+  - computational chemistry
+description: |
+  A visual explanation of exchange and correlation in Kohn-Sham density functional theory. Physical icons introduce the four energy terms, a fermion-swap sketch explains exchange antisymmetry, and probability maps and hole profiles show the exchange deficit and correlation redistribution. Three small diagrams illustrate dynamic avoidance, static correlation in a stretched-bond singlet, and dispersion from coupled fluctuations. Compact equations retain the kinetic correlation correction, exact hole sum rules, and one-electron self-interaction cancellation. A classical-charge comparison distinguishes quantum exchange from classical correlation, while a feedback loop connects the XC functional derivative to orbitals and density.

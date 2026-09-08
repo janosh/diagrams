@@ -1,6 +1,5 @@
 #import "@preview/cetz:0.5.2": canvas, decorations, draw
 #import draw: arc, circle, content, line, mark
-#import "../_shared/feynman.typ" as fey
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
@@ -9,6 +8,18 @@
 
 #let graviton(from, to) = decorations.wave(line(from, to), ..wavy)
 #let vertex(pos) = circle(pos, radius: .075, fill: black, stroke: none)
+#let regulator(pos) = {
+  let radius = .18
+  let arm = radius / calc.sqrt(2)
+  circle(pos, radius: radius, fill: white, stroke: .8pt)
+  for direction in (-1, 1) {
+    line(
+      (rel: (-arm, direction * arm), to: pos),
+      (rel: (arm, -direction * arm), to: pos),
+      stroke: .8pt,
+    )
+  }
+}
 
 // Point at `turn` around `center`, measured counter-clockwise from 3 o'clock. `out`
 // pushes past the loop rim, which is where the momentum labels sit.
@@ -56,7 +67,7 @@
   graviton(on-loop(hub, 0deg), (radius + 1.25, 0))
   vertex(on-loop(hub, 180deg))
   vertex(on-loop(hub, 0deg))
-  fey.cross(on-loop(hub, -90deg), padding: -3pt)
+  regulator(on-loop(hub, -90deg))
 
   content((radius + 1.8, 0), $+$)
 
@@ -70,5 +81,5 @@
     graviton(on-loop(bubble, 180deg), (bubble.at(0) - radius - 1.25, dy))
   }
   vertex(on-loop(bubble, 180deg))
-  fey.cross(on-loop(bubble, 0deg), padding: -3pt)
+  regulator(on-loop(bubble, 0deg))
 })

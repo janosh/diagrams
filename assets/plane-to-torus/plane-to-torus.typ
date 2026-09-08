@@ -1,14 +1,16 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: content, grid, line, rect
-#import "/assets/_shared/theme.typ": annotation-size, neutral, series
+
+// Size of compact annotations.
+#let annotation-size = 9pt
 
 #set page(width: auto, height: auto, margin: 10pt, fill: none)
 #set text(size: 11pt)
 
 // Each edge pair keeps its color through every stage, so it stays visible which edge of
 // the square becomes which circle on the torus.
-#let rim-color = series(0).paint // vertical edges -> the cylinder rims -> the short circle
-#let seam-color = series(1).paint // horizontal edges -> the seam -> the long circle
+#let rim-color = rgb("#0B5FA5") // vertical edges -> the cylinder rims -> the short circle
+#let seam-color = rgb("#C2570A") // horizontal edges -> the seam -> the long circle
 #let surface-fill = rgb("#DFE6EF")
 #let mesh-stroke = rgb("#A2AEBD") + 0.3pt
 #let edge-weight = 2.2pt
@@ -108,7 +110,7 @@
 
 #let caption(x, body) = content(
   (x, -2.35),
-  text(size: annotation-size, fill: neutral.annotation)[#body],
+  text(size: annotation-size, fill: rgb("#4A5560"))[#body],
   anchor: "north",
 )
 
@@ -116,8 +118,8 @@
   line(
     (x, 0),
     (x + 1.45, 0),
-    stroke: neutral.annotation + 0.9pt,
-    mark: (end: "stealth", fill: neutral.annotation, scale: 0.55),
+    stroke: rgb("#4A5560") + 0.9pt,
+    mark: (end: "stealth", fill: rgb("#4A5560"), scale: 0.55),
   )
   content(
     (x + 0.725, 0.2),
@@ -141,8 +143,8 @@
     line(
       from,
       to,
-      stroke: neutral.annotation + 0.7pt,
-      mark: (end: "stealth", fill: neutral.annotation, scale: 0.5),
+      stroke: rgb("#4A5560") + 0.7pt,
+      mark: (end: "stealth", fill: rgb("#4A5560"), scale: 0.5),
     )
   }
   // shifting this cell by 2pi in either direction lands on a copy of itself
@@ -158,14 +160,14 @@
   caption(0, [plane with $2pi$ periodicity])
 
   // === 2. the fundamental domain and its two identifications ===
-  step-arrow(2.55, [one cell], neutral.annotation)
+  step-arrow(2.55, [one cell], rgb("#4A5560"))
 
   let (square-x, side) = (4.75, 2.15)
   grid(
     (square-x, -side / 2),
     (square-x + side, side / 2),
     step: side / 4,
-    stroke: neutral.hairline.lighten(58%) + 0.35pt,
+    stroke: rgb("#78828C").lighten(58%) + 0.35pt,
   )
   // one chevron on the horizontal pair, two on the vertical: the usual shorthand for which
   // edge is glued to which, and in which direction

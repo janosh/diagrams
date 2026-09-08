@@ -1,6 +1,8 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content, line, rect
-#import "../_shared/network.typ": fully-connect, node-stroke
+
+// Outline weight of network units.
+#let node-stroke = 0.8pt
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
@@ -24,8 +26,6 @@
     }
   }
 
-  let connect-layers = fully-connect.with(start: 0, ..arrow-style)
-
   let fcnn-x = -5
   let mask-x = 0
   let made-x = 5
@@ -46,12 +46,16 @@
   ) {
     let from-nodes = if from-idx == 0 { 3 } else { 4 }
     let to-nodes = if to-idx == 3 { 3 } else { 4 }
-    connect-layers(
-      "fcnn" + str(from-idx) + "-",
-      "fcnn" + str(to-idx) + "-",
-      from-nodes,
-      to-nodes,
-    )
+    // Connect each pair of successive layers using their node-name prefixes.
+    for from-node in range(from-nodes) {
+      for to-node in range(to-nodes) {
+        line(
+          "fcnn" + str(from-idx) + "-" + str(from-node),
+          "fcnn" + str(to-idx) + "-" + str(to-node),
+          ..arrow-style,
+        )
+      }
+    }
     let mid-y = (from-idx + 0.5) * spacing.layer
     content(
       (fcnn-x + 2.1 + if layer-label == $W_2$ { 0.3 } else { 0 }, mid-y),

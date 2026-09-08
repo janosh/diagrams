@@ -1,5 +1,5 @@
 <h1 align="center">
-  160 Scientific Diagrams
+  164 Scientific Diagrams
 </h1>
 
 <h4 align="center">
@@ -8,9 +8,9 @@
 
 <h3 align="center">
 
-[![155 with Typst](https://img.shields.io/badge/155%20with-Typst-1f425f.svg?logo=typst)](https://diagrams.janosh.dev?tag=cetz)
+[![159 with Typst](https://img.shields.io/badge/159%20with-Typst-1f425f.svg?logo=typst)](https://diagrams.janosh.dev?tag=cetz)
 [![133 with LaTeX](https://img.shields.io/badge/133%20with-LaTeX-1f425f.svg?logo=latex)](https://diagrams.janosh.dev?tag=tikz)
-[![Site](https://github.com/janosh/diagrams/actions/workflows/gh-pages.yml/badge.svg)](https://github.com/janosh/diagrams/actions/workflows/gh-pages.yml)
+[![Site](https://github.com/janosh/diagrams/actions/workflows/ci.yml/badge.svg)](https://github.com/janosh/diagrams/actions/workflows/ci.yml)
 [![Pull Requests Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?logo=github)](https://github.com/janosh/diagrams/pulls)
 [![DOI](https://img.shields.io/badge/10.5281%2Fzenodo.7486911-blue?logo=doi&logoColor=white)](https://zenodo.org/badge/latestdoi/286220365)
 
@@ -90,14 +90,16 @@ Have a TikZ/CeTZ diagram you'd like to share? [Submit a PR](https://github.com/j
 | ![Graph Attention Layer](assets/graph-attention-layer/graph-attention-layer.png) | ![Graph Convolution](assets/graph-convolution/graph-convolution.png) |
 | [Graph Isomorphism](https://janosh.github.io/diagrams/graph-isomorphism) &nbsp;[![LaTeX][latex-logo]](assets/graph-isomorphism/graph-isomorphism.tex)&nbsp;[![Typst][typst-logo]](assets/graph-isomorphism/graph-isomorphism.typ) | [Gravitons](https://janosh.github.io/diagrams/gravitons) &nbsp;[![LaTeX][latex-logo]](assets/gravitons/gravitons.tex)&nbsp;[![Typst][typst-logo]](assets/gravitons/gravitons.typ) |
 | ![Graph Isomorphism](assets/graph-isomorphism/graph-isomorphism.png) | ![Gravitons](assets/gravitons/gravitons.png) |
-| [Gun Tackle](https://janosh.github.io/diagrams/gun-tackle) &nbsp;[![Typst][typst-logo]](assets/gun-tackle/gun-tackle.typ) | [Hamiltonian Graph](https://janosh.github.io/diagrams/hamiltonian-graph) &nbsp;[![LaTeX][latex-logo]](assets/hamiltonian-graph/hamiltonian-graph.tex)&nbsp;[![Typst][typst-logo]](assets/hamiltonian-graph/hamiltonian-graph.typ) |
-| ![Gun Tackle](assets/gun-tackle/gun-tackle.png) | ![Hamiltonian Graph](assets/hamiltonian-graph/hamiltonian-graph.png) |
-| [Harmonic Oscillator Energy vs Angular Frequency](https://janosh.github.io/diagrams/harmonic-oscillator-energy-vs-freq) &nbsp;[![LaTeX][latex-logo]](assets/harmonic-oscillator-energy-vs-freq/harmonic-oscillator-energy-vs-freq.tex)&nbsp;[![Typst][typst-logo]](assets/harmonic-oscillator-energy-vs-freq/harmonic-oscillator-energy-vs-freq.typ) | [Harmonic Oscillator Energy vs inverse Temperature](https://janosh.github.io/diagrams/harmonic-oscillator-energy-vs-inv-temp) &nbsp;[![LaTeX][latex-logo]](assets/harmonic-oscillator-energy-vs-inv-temp/harmonic-oscillator-energy-vs-inv-temp.tex)&nbsp;[![Typst][typst-logo]](assets/harmonic-oscillator-energy-vs-inv-temp/harmonic-oscillator-energy-vs-inv-temp.typ) |
-| ![Harmonic Oscillator Energy vs Angular Frequency](assets/harmonic-oscillator-energy-vs-freq/harmonic-oscillator-energy-vs-freq.png) | ![Harmonic Oscillator Energy vs inverse Temperature](assets/harmonic-oscillator-energy-vs-inv-temp/harmonic-oscillator-energy-vs-inv-temp.png) |
-| [Heatmap](https://janosh.github.io/diagrams/heatmap) &nbsp;[![LaTeX][latex-logo]](assets/heatmap/heatmap.tex)&nbsp;[![Typst][typst-logo]](assets/heatmap/heatmap.typ) | [Higgs Potential](https://janosh.github.io/diagrams/higgs-potential) &nbsp;[![LaTeX][latex-logo]](assets/higgs-potential/higgs-potential.tex) |
-| ![Heatmap](assets/heatmap/heatmap.png) | ![Higgs Potential](assets/higgs-potential/higgs-potential.png) |
-| [High Entropy Alloy](https://janosh.github.io/diagrams/high-entropy-alloy) &nbsp;[![LaTeX][latex-logo]](assets/high-entropy-alloy/high-entropy-alloy.tex)&nbsp;[![Typst][typst-logo]](assets/high-entropy-alloy/high-entropy-alloy.typ) | [In-Flight Auto-Batcher](https://janosh.github.io/diagrams/in-flight-auto-batcher) &nbsp;[![Typst][typst-logo]](assets/in-flight-auto-batcher/in-flight-auto-batcher.typ) |
-| ![High Entropy Alloy](assets/high-entropy-alloy/high-entropy-alloy.png) | ![In-Flight Auto-Batcher](assets/in-flight-auto-batcher/in-flight-auto-batcher.png) |
+| [Gun Tackle](https://janosh.github.io/diagrams/gun-tackle) &nbsp;[![Typst][typst-logo]](assets/gun-tackle/gun-tackle.typ) | [H2 Bond Breaking](https://janosh.github.io/diagrams/h2-bond-breaking) &nbsp;[![Typst][typst-logo]](assets/h2-bond-breaking/h2-bond-breaking.typ) |
+| ![Gun Tackle](assets/gun-tackle/gun-tackle.png) | ![H2 Bond Breaking](assets/h2-bond-breaking/h2-bond-breaking.png) |
+| [Hamiltonian Graph](https://janosh.github.io/diagrams/hamiltonian-graph) &nbsp;[![LaTeX][latex-logo]](assets/hamiltonian-graph/hamiltonian-graph.tex)&nbsp;[![Typst][typst-logo]](assets/hamiltonian-graph/hamiltonian-graph.typ) | [Harmonic Oscillator Energy vs Angular Frequency](https://janosh.github.io/diagrams/harmonic-oscillator-energy-vs-freq) &nbsp;[![LaTeX][latex-logo]](assets/harmonic-oscillator-energy-vs-freq/harmonic-oscillator-energy-vs-freq.tex)&nbsp;[![Typst][typst-logo]](assets/harmonic-oscillator-energy-vs-freq/harmonic-oscillator-energy-vs-freq.typ) |
+| ![Hamiltonian Graph](assets/hamiltonian-graph/hamiltonian-graph.png) | ![Harmonic Oscillator Energy vs Angular Frequency](assets/harmonic-oscillator-energy-vs-freq/harmonic-oscillator-energy-vs-freq.png) |
+| [Harmonic Oscillator Energy vs inverse Temperature](https://janosh.github.io/diagrams/harmonic-oscillator-energy-vs-inv-temp) &nbsp;[![LaTeX][latex-logo]](assets/harmonic-oscillator-energy-vs-inv-temp/harmonic-oscillator-energy-vs-inv-temp.tex)&nbsp;[![Typst][typst-logo]](assets/harmonic-oscillator-energy-vs-inv-temp/harmonic-oscillator-energy-vs-inv-temp.typ) | [Heatmap](https://janosh.github.io/diagrams/heatmap) &nbsp;[![LaTeX][latex-logo]](assets/heatmap/heatmap.tex)&nbsp;[![Typst][typst-logo]](assets/heatmap/heatmap.typ) |
+| ![Harmonic Oscillator Energy vs inverse Temperature](assets/harmonic-oscillator-energy-vs-inv-temp/harmonic-oscillator-energy-vs-inv-temp.png) | ![Heatmap](assets/heatmap/heatmap.png) |
+| [Higgs Potential](https://janosh.github.io/diagrams/higgs-potential) &nbsp;[![LaTeX][latex-logo]](assets/higgs-potential/higgs-potential.tex) | [High Entropy Alloy](https://janosh.github.io/diagrams/high-entropy-alloy) &nbsp;[![LaTeX][latex-logo]](assets/high-entropy-alloy/high-entropy-alloy.tex)&nbsp;[![Typst][typst-logo]](assets/high-entropy-alloy/high-entropy-alloy.typ) |
+| ![Higgs Potential](assets/higgs-potential/higgs-potential.png) | ![High Entropy Alloy](assets/high-entropy-alloy/high-entropy-alloy.png) |
+| [How Atoms Become Energy Bands](https://janosh.github.io/diagrams/how-atoms-become-energy-bands) &nbsp;[![Typst][typst-logo]](assets/how-atoms-become-energy-bands/how-atoms-become-energy-bands.typ) | [In-Flight Auto-Batcher](https://janosh.github.io/diagrams/in-flight-auto-batcher) &nbsp;[![Typst][typst-logo]](assets/in-flight-auto-batcher/in-flight-auto-batcher.typ) |
+| ![How Atoms Become Energy Bands](assets/how-atoms-become-energy-bands/how-atoms-become-energy-bands.png) | ![In-Flight Auto-Batcher](assets/in-flight-auto-batcher/in-flight-auto-batcher.png) |
 | [Iron Lattice Ferrox Logo](https://janosh.github.io/diagrams/iron-lattice-ferrox-logo) &nbsp;[![Typst][typst-logo]](assets/iron-lattice-ferrox-logo/iron-lattice-ferrox-logo.typ) | [Isotherms](https://janosh.github.io/diagrams/isotherms) &nbsp;[![LaTeX][latex-logo]](assets/isotherms/isotherms.tex)&nbsp;[![Typst][typst-logo]](assets/isotherms/isotherms.typ) |
 | ![Iron Lattice Ferrox Logo](assets/iron-lattice-ferrox-logo/iron-lattice-ferrox-logo.png) | ![Isotherms](assets/isotherms/isotherms.png) |
 | [Jensens Inequality](https://janosh.github.io/diagrams/jensens-inequality) &nbsp;[![LaTeX][latex-logo]](assets/jensens-inequality/jensens-inequality.tex)&nbsp;[![Typst][typst-logo]](assets/jensens-inequality/jensens-inequality.typ) | [k-Nearest Neighbors](https://janosh.github.io/diagrams/k-nearest-neighbors) &nbsp;[![Typst][typst-logo]](assets/k-nearest-neighbors/k-nearest-neighbors.typ) |
@@ -182,8 +184,10 @@ Have a TikZ/CeTZ diagram you'd like to share? [Submit a PR](https://github.com/j
 | ![Unregularized Propagator Diagrams](assets/unregularized-propagator-diagrams/unregularized-propagator-diagrams.png) | ![Variational Autoencoder](assets/variational-autoencoder/variational-autoencoder.png) |
 | [Web Graph](https://janosh.github.io/diagrams/web-graph) &nbsp;[![LaTeX][latex-logo]](assets/web-graph/web-graph.tex)&nbsp;[![Typst][typst-logo]](assets/web-graph/web-graph.typ) | [Wetterich Equation](https://janosh.github.io/diagrams/wetterich-equation) &nbsp;[![LaTeX][latex-logo]](assets/wetterich-equation/wetterich-equation.tex)&nbsp;[![Typst][typst-logo]](assets/wetterich-equation/wetterich-equation.typ) |
 | ![Web Graph](assets/web-graph/web-graph.png) | ![Wetterich Equation](assets/wetterich-equation/wetterich-equation.png) |
-| [Wyckoff Positions](https://janosh.github.io/diagrams/wyckoff-positions) &nbsp;[![LaTeX][latex-logo]](assets/wyckoff-positions/wyckoff-positions.tex)&nbsp;[![Typst][typst-logo]](assets/wyckoff-positions/wyckoff-positions.typ) | [zT vs n](https://janosh.github.io/diagrams/zt-vs-n) &nbsp;[![LaTeX][latex-logo]](assets/zt-vs-n/zt-vs-n.tex)&nbsp;[![Typst][typst-logo]](assets/zt-vs-n/zt-vs-n.typ) |
-| ![Wyckoff Positions](assets/wyckoff-positions/wyckoff-positions.png) | ![zT vs n](assets/zt-vs-n/zt-vs-n.png) |
+| [Which Band Gap Do You Mean?](https://janosh.github.io/diagrams/which-band-gap-do-you-mean) &nbsp;[![Typst][typst-logo]](assets/which-band-gap-do-you-mean/which-band-gap-do-you-mean.typ) | [Wyckoff Positions](https://janosh.github.io/diagrams/wyckoff-positions) &nbsp;[![LaTeX][latex-logo]](assets/wyckoff-positions/wyckoff-positions.tex)&nbsp;[![Typst][typst-logo]](assets/wyckoff-positions/wyckoff-positions.typ) |
+| ![Which Band Gap Do You Mean?](assets/which-band-gap-do-you-mean/which-band-gap-do-you-mean.png) | ![Wyckoff Positions](assets/wyckoff-positions/wyckoff-positions.png) |
+| [XC Functional](https://janosh.github.io/diagrams/xc-functional) &nbsp;[![Typst][typst-logo]](assets/xc-functional/xc-functional.typ) | [zT vs n](https://janosh.github.io/diagrams/zt-vs-n) &nbsp;[![LaTeX][latex-logo]](assets/zt-vs-n/zt-vs-n.tex)&nbsp;[![Typst][typst-logo]](assets/zt-vs-n/zt-vs-n.typ) |
+| ![XC Functional](assets/xc-functional/xc-functional.png) | ![zT vs n](assets/zt-vs-n/zt-vs-n.png) |
 
 ## Scripts
 
@@ -207,6 +211,19 @@ To run `pdf-compressor` directly or to use it as part of the [`render-(typst|tik
 ```sh
 pdf-compressor --set-api-key project_public_7c854a9db0...
 ```
+
+## Site visual checks
+
+The browser suite checks transparent and tall diagrams in light and dark themes, native fullscreen scrolling and exit controls, mobile source headers, and the new band diagrams. Screenshots cover diagram artwork and SVG controls; text layout is checked geometrically to avoid platform font differences.
+
+```sh
+cd site
+pnpm exec playwright install --only-shell chromium
+pnpm exec vp build
+pnpm test:visual
+```
+
+After an intentional appearance change, run `pnpm test:visual:update` and review the changed PNGs in `site/tests/visual/screenshots` before accepting them. Missing baselines fail normal runs. CI runs visual checks on the production build before deployment and uploads screenshots and traces on failure. Use the pinned Playwright version when generating baselines.
 
 ## 📖 &thinsp; How to cite
 

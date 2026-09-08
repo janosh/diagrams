@@ -47,11 +47,13 @@
   rect((0, 0), (11, 2), fill: rgb("#ffa500").lighten(50%), name: "substrate")
   content("substrate", align(center)[$p$-type\ semiconductor])
 
-  // N-type semiconductor regions
-  rect((1, 1), (4, 2), fill: rgb("#90ee90"), name: "source-n")
-  content("source-n", align(center)[$n$-type\ semiconductor])
-  rect((7, 1), (10, 2), fill: rgb("#90ee90"), name: "drain-n")
-  content("drain-n", align(center)[$n$-type\ semiconductor])
+  for (start, end, name) in (
+    ((1, 1), (4, 2), "source-n"),
+    ((7, 1), (10, 2), "drain-n"),
+  ) {
+    rect(start, end, fill: rgb("#90ee90"), name: name)
+    content(name, align(center)[$n$-type\ semiconductor])
+  }
 
   content(
     "dielectric-box",
@@ -62,15 +64,14 @@
     stroke: (thickness: .5pt),
   )
 
-  // Metal contacts
-  rect((4, 3), (7, 3.5), fill: rgb("#e6e6ff"), name: "gate-metal")
-  content("gate-metal", [gate])
-
-  rect((1.25, 2), (3, 2.5), fill: rgb("#e6e6ff"), name: "source-metal")
-  content("source-metal", [source])
-
-  rect((8, 2), (9.75, 2.5), fill: rgb("#e6e6ff"), name: "drain-metal")
-  content("drain-metal", [drain])
+  for (start, end, name, label) in (
+    ((4, 3), (7, 3.5), "gate-metal", [gate]),
+    ((1.25, 2), (3, 2.5), "source-metal", [source]),
+    ((8, 2), (9.75, 2.5), "drain-metal", [drain]),
+  ) {
+    rect(start, end, fill: rgb("#e6e6ff"), name: name)
+    content(name, label)
+  }
 
   // Title
   content("gate-metal.north", [$n$-type MOSFET], anchor: "south", padding: (

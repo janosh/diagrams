@@ -1,7 +1,6 @@
 <script lang="ts">
   import { tooltip } from 'svelte-widgets/attachments'
   import type { HTMLAttributes } from 'svelte/elements'
-  import { fade } from 'svelte/transition'
   import { type Diagram, Tags } from './index'
 
   let {
@@ -16,7 +15,7 @@
   let tooltip_content = $derived(description?.replaceAll(/\r\n?|\n/g, ` `))
 </script>
 
-<a href={slug} transition:fade={{ duration: 200 }} {...rest}>
+<a href={slug} {...rest}>
   <h2 id={slug}>{title}</h2>
   {#if format === `full`}
     <Tags {tags} style="color: var(--text-color); margin-block: 0 1em" />

@@ -135,20 +135,17 @@
     (panel-w - marker-w / 2, panel-w - marker-w / 2),
   )
 
-  transition(
-    (1.35, 1.10),
-    west-rim(x1),
-    (3.65, 1.10),
-    (3.55, -3.0),
-    (x1 - .25, -3.18),
-    $cal(T)(s_0, "↑")$,
-  )
-  transition(
-    (x1 + 1.35, 1.10),
-    west-rim(x2),
-    (x1 + 3.65, 1.10),
-    (x1 + 3.55, -3.0),
-    (x2 - .25, -3.18),
-    $cal(T)(s_1, "→")$,
-  )
+  for (x, next-x, label) in (
+    (x0, x1, $cal(T)(s_0, "↑")$),
+    (x1, x2, $cal(T)(s_1, "→")$),
+  ) {
+    transition(
+      (x + 1.35, 1.10),
+      west-rim(next-x),
+      (x + 3.65, 1.10),
+      (x + 3.55, -3.0),
+      (next-x - .25, -3.18),
+      label,
+    )
+  }
 })

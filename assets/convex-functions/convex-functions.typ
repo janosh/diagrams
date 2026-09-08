@@ -1,11 +1,14 @@
-#import "@preview/cetz:0.5.2": canvas
+#import "@preview/cetz:0.5.2": canvas, draw
 #import "@preview/cetz-plot:0.1.4": plot
-#import "../_shared/plot.typ": legend-box, style-axes
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #canvas({
-  style-axes(x-label: (anchor: "north", offset: 0.1))
+  let axis-mark = (end: "stealth", fill: black)
+  draw.set-style(axes: (
+    x: (mark: axis-mark, label: (anchor: "north", offset: 0.1)),
+    y: (mark: axis-mark, label: (anchor: "north-west", offset: -0.2)),
+  ))
   plot.plot(
     size: (8, 5),
     x-label: $x$,
@@ -14,7 +17,8 @@
     x-grid: true,
     y-grid: true,
     legend: "inner-north-west",
-    legend-style: legend-box,
+    // Compact legend with a thin border.
+    legend-style: (item: (spacing: 0.15), padding: 0.15, stroke: 0.5pt),
     axis-style: "left",
     {
       // x ln(x) function

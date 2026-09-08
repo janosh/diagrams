@@ -19,24 +19,23 @@
       text(fill: color, label),
     )
   }
-  vertex((.48, 4.04), $arrow(h)_1^ell$, gray, name: "h1")
-  vertex((2.28, 2.62), $arrow(h)_2^ell$, echo-blue, name: "h2")
-  vertex((2.4, 5.85), $arrow(h)_3^ell$, echo-blue, name: "h3")
-  // shift the label to optically center the tall sub/superscripted glyphs
-  vertex(
-    (4.18, 4.04),
-    $arrow(h)_4^(ell + 1)$,
-    olive-green,
-    radius: .6,
-    weight: 2.2pt,
-    name: "h4",
-    label-shift: (.07, -.09),
-  )
-  vertex((6.45, 6.14), $arrow(h)_5^ell$, echo-blue, name: "h5")
-  vertex((6.10, 2.14), $arrow(h)_6^ell$, echo-blue, name: "h6")
+  for spec in (
+    (pos: (.48, 4.04), label: $arrow(h)_1^ell$, color: gray, args: (name: "h1")),
+    (pos: (2.28, 2.62), label: $arrow(h)_2^ell$, color: echo-blue, args: (name: "h2")),
+    (pos: (2.4, 5.85), label: $arrow(h)_3^ell$, color: echo-blue, args: (name: "h3")),
+    (
+      pos: (4.18, 4.04),
+      label: $arrow(h)_4^(ell + 1)$,
+      color: olive-green,
+      args: (radius: .6, weight: 2.2pt, name: "h4", label-shift: (.07, -.09)),
+    ),
+    (pos: (6.45, 6.14), label: $arrow(h)_5^ell$, color: echo-blue, args: (name: "h5")),
+    (pos: (6.10, 2.14), label: $arrow(h)_6^ell$, color: echo-blue, args: (name: "h6")),
+  ) { vertex(spec.pos, spec.label, spec.color, ..spec.args) }
 
-  line("h1", "h2", stroke: gray + 1.6pt)
-  line("h2", "h3", stroke: gray + 1.6pt)
+  for (start, end) in (("h1", "h2"), ("h2", "h3")) {
+    line(start, end, stroke: gray + 1.6pt)
+  }
 
   // incoming messages
   let msg-arr = (

@@ -1,11 +1,14 @@
-#import "@preview/cetz:0.5.2": canvas
+#import "@preview/cetz:0.5.2": canvas, draw
 #import "@preview/cetz-plot:0.1.4": plot
-#import "../_shared/plot.typ": stealth, style-axes
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #canvas({
-  style-axes(x-label: (anchor: "south-east", offset: -0.25), mark: (..stealth, scale: 0.7))
+  let axis-mark = (end: "stealth", fill: black, scale: 0.7)
+  draw.set-style(axes: (
+    x: (mark: axis-mark, label: (anchor: "south-east", offset: -0.25)),
+    y: (mark: axis-mark, label: (anchor: "north-west", offset: -0.2)),
+  ))
 
   plot.plot(
     size: (8, 6),

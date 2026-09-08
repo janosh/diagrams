@@ -62,6 +62,15 @@
     stroke: mid-gray,
     thickness: 1.5pt,
   )
+  let operation(pos, body, name, padding, stroke: mid-gray + .75pt) = content(
+    pos,
+    body,
+    frame: "rect",
+    stroke: stroke,
+    fill: rgb(30%, 80%, 80%, 30%),
+    padding: padding,
+    name: name,
+  )
 
   // Title and equation
   content(
@@ -75,54 +84,23 @@
     name: "equation",
   )
 
-  // Main nodes using helper function
-  matrix(
-    (0, 2.7),
-    (0.7, 1.8),
-    "Q",
-    top-color: rgb("#FFFF00"),
-    left-color: rgb("#00FFFF"),
-    style: value-style,
-  )
+  for spec in (
+    (pos: (0, 2.7), size: (0.7, 1.8), label: "Q", top: rgb("#FFFF00"), left: rgb("#00FFFF")),
+    (pos: (0, 0.4), size: (0.7, 0.8), label: "K", top: rgb("#FFFF00"), left: rgb("#FF0000")),
+    (pos: (0, -1), size: (1.0, 1.2), label: "V", top: rgb("#FFA500"), left: rgb("#FF0000")),
+  ) {
+    matrix(
+      spec.pos,
+      spec.size,
+      spec.label,
+      top-color: spec.top,
+      left-color: spec.left,
+      style: value-style,
+    )
+  }
 
-  matrix(
-    (0, 0.4),
-    (0.7, 0.8),
-    "K",
-    top-color: rgb("#FFFF00"),
-    left-color: rgb("#FF0000"),
-    style: value-style,
-  )
-
-  matrix(
-    (0, -1),
-    (1.0, 1.2),
-    "V",
-    top-color: rgb("#FFA500"),
-    left-color: rgb("#FF0000"),
-    style: value-style,
-  )
-
-  // Operation nodes with consistent spacing
-  content(
-    (spacing.horizontal + 0.4, 0),
-    $dot.op^top$,
-    frame: "rect",
-    stroke: mid-gray + .75pt,
-    fill: rgb(30%, 80%, 80%, 30%),
-    padding: (5pt, 3pt, 1pt),
-    name: "att",
-  )
-
-  content(
-    (2 * spacing.horizontal + 0.6, 0),
-    [softmax],
-    frame: "rect",
-    stroke: mid-gray + .75pt,
-    fill: rgb(30%, 80%, 80%, 30%),
-    padding: (2pt, 3pt, 3pt),
-    name: "softmax",
-  )
+  operation((spacing.horizontal + 0.4, 0), $dot.op^top$, "att", (5pt, 3pt, 1pt))
+  operation((2 * spacing.horizontal + 0.6, 0), [softmax], "softmax", (2pt, 3pt, 3pt))
 
   matrix(
     (3 * spacing.horizontal + 0.7, 0.9),
@@ -133,15 +111,7 @@
     style: value-style,
   )
 
-  content(
-    (4 * spacing.horizontal + 1, 0),
-    $dot.op$,
-    frame: "rect",
-    stroke: mid-gray,
-    fill: rgb(30%, 80%, 80%, 30%),
-    padding: (1pt, 4pt, 2pt),
-    name: "prod",
-  )
+  operation((4 * spacing.horizontal + 1, 0), $dot.op$, "prod", (1pt, 4pt, 2pt), stroke: mid-gray)
 
   matrix(
     (5 * spacing.horizontal + 0.7, 0.9),
@@ -174,9 +144,12 @@
     name: "v-to-prod",
   )
 
-  // Other straight connections
-  line("att.east", "softmax.west", stroke: mid-gray, name: "att-to-sm")
-  line("softmax.east", "A.west", ..arrow-style, name: "sm-to-a")
-  line("A.east", "prod.west", stroke: mid-gray, name: "a-to-prod")
-  line("prod.east", "Y.west", ..arrow-style, name: "prod-to-y")
+  for (start, end, name) in (
+    ("att.east", "softmax.west", "att-to-sm"),
+    ("A.east", "prod.west", "a-to-prod"),
+  ) { line(start, end, stroke: mid-gray, name: name) }
+  for (start, end, name) in (
+    ("softmax.east", "A.west", "sm-to-a"),
+    ("prod.east", "Y.west", "prod-to-y"),
+  ) { line(start, end, ..arrow-style, name: name) }
 })

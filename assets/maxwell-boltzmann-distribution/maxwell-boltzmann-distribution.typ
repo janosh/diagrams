@@ -1,6 +1,5 @@
 #import "@preview/cetz:0.5.2": canvas
 #import "@preview/cetz-plot:0.1.4": plot
-#import "../_shared/plot.typ": legend-box
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
@@ -27,7 +26,8 @@
     legend: "inner-north-east",
     x-grid: true,
     y-grid: true,
-    legend-style: legend-box,
+    // Compact legend with a thin border.
+    legend-style: (item: (spacing: 0.15), padding: 0.15, stroke: 0.5pt),
     {
       for (temp, color) in ((100, red), (300, orange), (1000, blue)) {
         plot.add(

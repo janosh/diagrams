@@ -2,8 +2,8 @@
 
 declare module '*package.json'
 
-// slug -> description rendered to HTML at build time, see vite-plugin-descriptions.ts
-declare module 'virtual:descriptions' {
-  const descriptions: Record<string, string>
-  export default descriptions
+declare module '*.yml' {
+  // oxlint-disable-next-line typescript/consistent-type-imports
+  const metadata: import('./lib').YamlMetadata
+  export default metadata
 }

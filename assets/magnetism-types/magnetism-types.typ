@@ -1,6 +1,5 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: arc, circle, content, line, rect, rotate, scope, translate
-#import "../_shared/theme.typ": neutral
 
 // === palette ===
 
@@ -9,9 +8,12 @@
 // on a dark slide without the ink disappearing into the background.
 #let dark = sys.inputs.at("dark", default: "false") == "true"
 
-// Annotation and hairline greys have to flip with the background; `theme.neutral` is tuned
-// for white and is unreadable on near-black.
-#let ink = if dark { (annotation: rgb("#B9C3CE"), hairline: rgb("#8A94A0")) } else { neutral }
+// Annotation and hairline greys flip with the background to stay legible.
+#let ink = if dark {
+  (annotation: rgb("#B9C3CE"), hairline: rgb("#8A94A0"))
+} else {
+  (annotation: rgb("#4A5560"), hairline: rgb("#78828C"))
+}
 
 // Up red / down blue is the convention in spin-resolved band plots and DFT output, so it
 // wins over the collection's series palette here. The dark variants keep the same hues but

@@ -1,61 +1,28 @@
-import yaml from '@rollup/plugin-yaml'
+import adapter from '@sveltejs/adapter-static'
 import { enhancedImages } from '@sveltejs/enhanced-img'
 import { sveltekit } from '@sveltejs/kit/vite'
-import { load as load_yaml } from 'js-yaml'
-import { compile } from 'mdsvex'
-import { globSync, readFileSync } from 'node:fs'
-import { basename, dirname, resolve } from 'node:path'
-import { katex_preprocess } from 'svelte-widgets/katex'
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
+import { assert_ok, create_markdown } from 'svelte-widgets/markdown'
+import { readFileSync } from 'node:fs'
 import { make_config } from 'svelte-widgets/vite-config'
-import { defineConfig } from 'vite-plus'
+import { yaml_plugin } from 'svelte-widgets/yaml'
+import type { Plugin } from 'vite'
+import type { YamlMetadata } from './src/lib/index.ts'
 
-const DESCRIPTIONS_ID = `virtual:descriptions`
-const RESOLVED_ID = `\0${DESCRIPTIONS_ID}`
-const MD_FILE = `description.md`
-const assets_dir = resolve(import.meta.dirname, `../assets`)
-
-// katex before/after around mdsvex so KaTeX HTML (with `{` / `}`) never hits the Svelte
-// parser — before stashes rendered math in private-use slots; after emits `{@html …}`,
-// which we unwrap again since we inject HTML, not a Svelte component.
-const katex = katex_preprocess({ throwOnError: false })
-const svelte_html_expr = /\{@html (?<json>"(?:\\.|[^"\\])*")\}/gu
-
-const render_description = async (source: string): Promise<string> => {
-  const { code } = katex.before.markup({ content: source, filename: MD_FILE })
-  const opts = { filename: MD_FILE, extensions: [`.md`], smartypants: false }
-  const compiled = await compile(code, opts)
-  if (!compiled) throw new Error(`mdsvex failed on description: ${source.slice(0, 120)}`)
-  return katex.after
-    .markup({ content: compiled.code })
-    .code.replace(svelte_html_expr, (_match, json: string) => JSON.parse(json) as string)
-    .trim()
+// passed inline to sveltekit() (Kit >= 2.62) so no separate svelte.config.ts is needed;
+// kit options (adapter, alias) sit at the top level rather than under `kit`
+const svelte_config = {
+  preprocess: vitePreprocess(),
+  adapter: adapter(),
+  alias: { $root: `.`, $assets: `../assets` },
 }
 
-export default defineConfig({
+const engine = create_markdown({ math: { throwOnError: false }, frontmatter: false })
+
+export default {
+  resolve: { dedupe: [`svelte`] },
   ...make_config(), // shared lint/fmt/build/staged
   plugins: [
-    {
-      // Render diagram descriptions to HTML up front and serve the slug -> HTML map as a
-      // virtual module. Has to happen here, not in $lib: mdsvex needs `util.inherits` and
-      // the katex preprocessor needs `node:crypto`, both of which Vite stubs out in the
-      // browser, so importing them from app code throws on page load.
-      name: `diagram-descriptions`,
-      resolveId: (id) => (id === DESCRIPTIONS_ID ? RESOLVED_ID : null),
-      async load(id) {
-        if (id !== RESOLVED_ID) return null
-        const rendered: Record<string, string> = {}
-        for (const path of globSync(`${assets_dir}/*/*.yml`).toSorted()) {
-          this.addWatchFile(path) // re-render when a description is edited
-          const { description } = load_yaml(readFileSync(path, `utf-8`)) as {
-            description?: string | null
-          }
-          if (description?.trim()) {
-            rendered[basename(dirname(path))] = await render_description(description)
-          }
-        }
-        return `export default ${JSON.stringify(rendered)}`
-      },
-    },
     {
       // serve .tex/.typ files as raw text so rolldown doesn't try to parse them as JS
       name: `raw-text-loader`,
@@ -66,10 +33,22 @@ export default defineConfig({
           return `export default ${JSON.stringify(readFileSync(clean_id, `utf-8`))}`
         return null
       },
-    },
+    } satisfies Plugin,
     enhancedImages(),
-    sveltekit(),
-    yaml(),
+    sveltekit(svelte_config),
+    yaml_plugin({
+      // Render within the YAML import so source Markdown and its parser stay out of
+      // the client bundle. Vite watches the imported file for metadata and prose edits.
+      async transform(data, filename) {
+        const metadata = data as YamlMetadata
+        const { description } = metadata
+        if (!description?.trim()) return { ...metadata, description: null }
+        return {
+          ...metadata,
+          description: assert_ok(await engine.render(description, { filename })),
+        }
+      },
+    }),
   ],
   server: {
     fs: {
@@ -80,4 +59,4 @@ export default defineConfig({
   preview: {
     port: 3000,
   },
-})
+}
