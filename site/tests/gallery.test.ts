@@ -1,7 +1,7 @@
 import { render } from 'svelte/server'
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
-import { fileURLToPath } from 'node:url'
+import { tmpdir } from 'node:os'
 import { expect, it, vi } from 'vitest'
 import { gallery_count_for } from '../src/lib/gallery'
 import euler_angles from '../../assets/euler-angles/euler-angles.yml'
@@ -13,9 +13,13 @@ import config from '../vite.config'
 
 vi.mock(`$lib`, () => {
   const diagrams = [
-    { slug: `euler-angles`, title: `Euler Angles` },
+    { slug: `euler-angles`, title: `Euler Angles`, source_types: [`typ`, `tex`] },
     { slug: `euler-angles-alternative`, title: `Euler Angles` },
-    { slug: `which-band-gap-do-you-mean`, title: `Which Band Gap Do You Mean?` },
+    {
+      slug: `which-band-gap-do-you-mean`,
+      title: `Which Band Gap Do You Mean?`,
+      source_types: [`typ`],
+    },
   ]
   return { diagrams, sorted_diagrams: diagrams }
 })
@@ -31,18 +35,25 @@ it(`loads only the requested diagram and rejects unknown slugs`, async () => {
     diagram: {
       slug: `euler-angles`,
       title: `Euler Angles`,
-      code: { typst: euler_angles_source, tex: euler_angles_tex },
+      source_types: [`typ`, `tex`],
+      sources: [
+        { ext: `typ`, code: euler_angles_source },
+        { ext: `tex`, code: euler_angles_tex },
+      ],
     },
   })
   event.params.slug = `which-band-gap-do-you-mean`
   expect(await load(event)).toMatchObject({
     diagram: {
       slug: event.params.slug,
-      code: {
-        typst:
-          typst_sources[`../../assets/${event.params.slug}/${event.params.slug}.typ`],
-        tex: undefined,
-      },
+      sources: [
+        {
+          ext: `typ`,
+          code: typst_sources[
+            `../../assets/${event.params.slug}/${event.params.slug}.typ`
+          ],
+        },
+      ],
     },
   })
   event.params.slug = `unknown`
@@ -67,40 +78,34 @@ const typst_sources = import.meta.glob<string>(`../../assets/**/*.typ`, {
   import: `default`,
 })
 
-const shared_layout_sources = Object.entries(typst_sources).filter(([path]) =>
-  readFileSync(new URL(path, import.meta.url), `utf-8`).includes(`../_shared/layout.typ`),
+const compound_sources = Object.entries(typst_sources).filter(([, source]) =>
+  source.includes(`#let card_body(`),
 )
 
 it(`keeps gallery sources standalone with only package imports`, () => {
-  expect(shared_layout_sources.length).toBeGreaterThan(0)
+  expect(compound_sources.length).toBeGreaterThan(0)
   for (const [path, source] of Object.entries(typst_sources)) {
+    expect(source, path).toBe(readFileSync(new URL(path, import.meta.url), `utf-8`))
     expect(source, path).not.toMatch(/#(?:import|include)\s+["'](?!@)/u)
   }
 })
 
-it.each(shared_layout_sources)(
-  `renders copied %s exactly like its repository source`,
+it.each(compound_sources)(
+  `compiles copied %s without repository files`,
   // The fractal atlas can exceed 25 seconds; allow a minute for each compilation.
-  { timeout: 125_000 },
-  (path, source) => {
-    const compile_args = [`compile`, `--format`, `svg`, `--pages`, `1`]
-    const compile_options = { timeout: 60_000, maxBuffer: 32 * 1024 ** 2 }
-    const standalone = execFileSync(`typst`, [...compile_args, `-`, `-`], {
-      input: source,
-      ...compile_options,
-    })
-    const repository = execFileSync(
+  { timeout: 65_000 },
+  (_path, source) => {
+    const svg = execFileSync(
       `typst`,
-      [
-        ...compile_args,
-        `--root`,
-        `${import.meta.dirname}/../..`,
-        fileURLToPath(new URL(path, import.meta.url)),
-        `-`,
-      ],
-      compile_options,
+      [`compile`, `--format`, `svg`, `--pages`, `1`, `-`, `-`],
+      {
+        input: source,
+        cwd: tmpdir(),
+        timeout: 60_000,
+        maxBuffer: 32 * 1024 ** 2,
+      },
     )
-    expect(standalone.equals(repository)).toBe(true)
+    expect(svg.toString()).toMatch(/^<svg\b/u)
   },
 )
 

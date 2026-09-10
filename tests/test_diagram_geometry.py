@@ -269,7 +269,7 @@ def evaluate_diagram(slug: str, expression: str) -> list:
 def test_compound_typography_uses_consistent_readable_sizes(caller_font_size: int) -> None:
     """Keep labels, headings, captions, and takeaways independent of caller text size."""
     source = f"""
-#import "/assets/_shared/layout.typ": card, takeaway
+#import "/assets/atomistic-simulation-methods/atomistic-simulation-methods.typ": card, takeaway
 #set page(width: 300pt, height: auto, margin: 0pt)
 #set text(size: {caller_font_size}pt)
 #show text: item => context [#metadata((item.text, text.size / 1pt)) <typography>#item]

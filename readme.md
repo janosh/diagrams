@@ -161,7 +161,7 @@ Compound diagrams fill each card's available width and preserve the drawing's as
 
 Typst diagrams use a minimum 12pt base label size, with 14pt paragraphs and captions and 16pt compound-panel headings. Wider posters use proportionally larger text to preserve readability at gallery width. Mathematical subscripts and superscripts retain their natural smaller size. Compound artwork is sized to keep neighboring labels consistent after fitting; gallery detail pages let tall diagrams extend vertically instead of shrinking their text to fit one viewport.
 
-Compound diagrams share [`assets/_shared/layout.typ`](assets/_shared/layout.typ). Compile repository sources with `typst compile --root . assets/<slug>/<slug>.typ`. The gallery inlines the shared layout into its source viewer, so copied code still compiles as a single file.
+Every diagram source is standalone and self-contained, including its layout helpers. Copy a `.typ` file anywhere and compile it with `typst compile <slug>.typ`; no other repository files or `--root` option are required. The gallery displays the source file verbatim.
 
 To run the scripts requires the following dependencies:
 

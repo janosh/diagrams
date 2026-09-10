@@ -18,7 +18,7 @@
   let {
     title,
     description,
-    code,
+    sources,
     image,
     image_width,
     image_height,
@@ -34,11 +34,12 @@
     [`.pdf`]: { icon: FilePDF, label: `PDF` },
     [`.svg`]: { icon: FileXML, label: `SVG` },
   }
-  const code_tabs = [
-    { label: `Typst`, value: `typst` },
-    { label: `TikZ`, value: `tikz` },
-  ] as const
-  const code_tab_icons = { tikz: LaTeX, typst: Typst }
+  let code_tabs = $derived(
+    sources.map(({ ext }) => ({
+      label: ext === `typ` ? `Typst` : `TikZ`,
+      value: ext,
+    })),
+  )
 
   // production serves downloads from GitHub so we don't re-upload assets with every build
   let base_uri = $derived(`${repository}/raw/refs/heads/main/assets/${slug}/${slug}`)
@@ -52,15 +53,11 @@
       : sorted_diagrams,
   )
 
-  // Prefer Typst when both Typst (CeTZ) and TeX (TikZ) sources exist
-  let code_tab = $state<`typst` | `tikz`>(`typst`)
+  let code_tab = $state<`typ` | `tex`>(`typ`)
   let diagram_wrapper = $state<HTMLDivElement>()
-  let selected_source = $derived.by(() => {
-    if (code.typst && (code_tab === `typst` || !code.tex)) {
-      return { code: code.typst, ext: `typ` as const }
-    }
-    if (code.tex) return { code: code.tex, ext: `tex` as const }
-  })
+  let selected_source = $derived(
+    sources.find(({ ext }) => ext === code_tab) ?? sources[0],
+  )
 </script>
 
 <svelte:head>
@@ -156,10 +153,10 @@
     />
   {/if}
 {/snippet}
-{#if code.typst && code.tex}
+{#if sources.length > 1}
   <Tabs items={code_tabs} bind:value={code_tab} label="Code language" class="code-tabs">
     {#snippet tab({ item })}
-      <Icon icon={code_tab_icons[item.value]} />{item.label}
+      <Icon icon={item.value === `typ` ? Typst : LaTeX} />{item.label}
     {/snippet}
     {#snippet panel({ selected })}
       {#if selected}{@render source_block()}{/if}

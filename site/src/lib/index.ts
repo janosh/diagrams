@@ -35,15 +35,7 @@ const yaml_data = import.meta.glob<YamlMetadata>(`$assets/**/*.yml`, {
 })
 // Discover available downloads and source languages without importing their bytes.
 const asset_paths = new Set(
-  Object.keys(
-    import.meta.glob([
-      `$assets/**/*.png`,
-      `$assets/**/*.pdf`,
-      `$assets/**/*.svg`,
-      `$assets/**/*.tex`,
-      `$assets/**/*.typ`,
-    ]),
-  ),
+  Object.keys(import.meta.glob(`$assets/**/*.{png,pdf,svg,tex,typ}`)),
 )
 const image_files = import.meta.glob<string>(
   [`$assets/**/*.avif`, `!$assets/**/*-dark.avif`],
@@ -67,14 +59,14 @@ export const diagrams: Diagram[] = Object.entries(yaml_data)
     const slug = path.split(`/`)[2] ?? ``
     const figure_basename = `../assets/${slug}/${slug}`
 
-    const source_types = ([`tex`, `typ`] as const).filter((ext) =>
+    // Prefer Typst in the source viewer when both languages are available.
+    const source_types = ([`typ`, `tex`] as const).filter((ext) =>
       asset_paths.has(`${figure_basename}.${ext}`),
     )
     const tags = [
       ...new Set([
         ...(metadata.tags ?? []),
-        ...(source_types.includes(`typ`) ? [`cetz`] : []),
-        ...(source_types.includes(`tex`) ? [`tikz`] : []),
+        ...source_types.map((ext) => (ext === `typ` ? `cetz` : `tikz`)),
       ]),
     ]
 

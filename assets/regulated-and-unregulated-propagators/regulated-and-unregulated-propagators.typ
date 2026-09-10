@@ -1,6 +1,40 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content, line, mark
-#import "../_shared/layout.typ": card, label-size, paragraph-size, takeaway
+#let label-size = 12pt
+#let paragraph-size = 14pt
+#let heading-size = 16pt
+
+#let card_body(title, body, caption) = block(
+  width: 100%,
+  inset: 12pt,
+  radius: 8pt,
+  fill: rgb("#cdd3da"),
+  breakable: false,
+)[
+  #text(size: heading-size, weight: "bold", title)
+  #v(8pt)
+  // Measure unconstrained artwork before scaling, including content wider than its card.
+  #layout(size => {
+    let artwork = text(size: label-size, body)
+    std.scale(size.width / measure(artwork).width * 100%, reflow: true, artwork)
+  })
+  #v(7pt)
+  #text(size: paragraph-size, caption)
+]
+
+#let card(title, body, caption) = grid(
+  columns: (100%,),
+  card_body(title, body, caption),
+)
+
+#let takeaway(body) = block(
+  width: 100%,
+  inset: 12pt,
+  radius: 6pt,
+  fill: rgb("#c6d8d2"),
+  breakable: false,
+  text(size: paragraph-size, body),
+)
 
 #set page(width: 780pt, height: auto, margin: 22pt, fill: none)
 #set text(font: "Avenir Next", size: paragraph-size, fill: rgb("#19324f"))

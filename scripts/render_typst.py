@@ -5,13 +5,11 @@ import sys
 
 from convert_assets import PNG_PPI, finalize_assets
 
-ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-
 
 def render_typst(input_file: str) -> None:
     """Compile a Typst file to PDF, SVG, PNG, and AVIF outputs."""
     base_path = os.path.splitext(input_file)[0]
-    compile_cmd = ["typst", "compile", "--root", ROOT, input_file]
+    compile_cmd = ["typst", "compile", input_file]
 
     print("Compiling Typst → PDF")
     subprocess.run(compile_cmd, check=True)
