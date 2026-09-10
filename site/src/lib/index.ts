@@ -9,10 +9,8 @@ export type Diagram = {
   slug: string
   downloads: string[]
   code: { tex?: string; typst?: string }
-  images: {
-    hd: Picture
-    sd: Picture
-  }
+  image: string
+  thumbnail: Picture
 } & YamlMetadata
 
 export type YamlMetadata = {
@@ -25,6 +23,8 @@ export type YamlMetadata = {
   date?: string
   hide?: boolean
   preserve_colors?: boolean
+  image_width: number
+  image_height: number
 }
 
 // YAML imports already contain descriptions rendered to HTML by the Vite plugin.
@@ -37,17 +37,20 @@ const code_files = import.meta.glob<{ default: string }>(
   { eager: true, query: `?raw` },
 )
 const asset_files = import.meta.glob<{ default: string }>(
-  [`$assets/**/*.png`, `$assets/**/*.pdf`, `$assets/**/*.svg`, `!$assets/**/*-dark.png`],
-  { eager: true, query: `?url` },
+  [`$assets/**/*-hd.png`, `$assets/**/*.pdf`, `$assets/**/*.svg`],
+  { eager: true },
 )
-const image_files = import.meta.glob<{ default: Picture }>(
-  [`$assets/**/*.png`, `!$assets/**/*-dark.png`],
-  {
-    eager: true,
-    // Density descriptors are lost by imagetools' cache; use stable width descriptors.
-    query: { enhanced: true, basePixels: 0 },
-  },
+const image_files = import.meta.glob<{ default: string }>(
+  [`$assets/**/*.avif`, `!$assets/**/*-dark.avif`],
+  // Plain imports preserve the encoded file; queries activate imagetools transforms.
+  { eager: true },
 )
+const thumbnails = import.meta.glob<{ default: Picture }>([`$assets/**/*-hd.png`], {
+  eager: true,
+  // Density descriptors are lost by imagetools' cache; use stable width descriptors.
+  // Vite's build-time glob parser drops template-literal query values.
+  query: '?enhanced&format=avif&w=480;960&quality=85&basePixels=0',
+})
 
 // Process YAML files to create figure data
 export const diagrams: Diagram[] = Object.entries(yaml_data)
@@ -72,8 +75,8 @@ export const diagrams: Diagram[] = Object.entries(yaml_data)
       ]),
     ]
 
-    // store extensions, not ?url paths — content hashes would break `.includes('-hd.png')`
-    const downloads = ([`.png`, `-hd.png`, `.pdf`, `.svg`] as const).filter(
+    // Downloads retain their original filenames on GitHub.
+    const downloads = ([`-hd.png`, `.pdf`, `.svg`] as const).filter(
       (ext) => `${figure_basename}${ext}` in asset_files,
     )
     // build-time data-quality signal (building guard keeps it out of the client bundle)
@@ -81,11 +84,11 @@ export const diagrams: Diagram[] = Object.entries(yaml_data)
       console.warn(`Diagram '${slug}' has only ${downloads.length} download asset(s)`)
     }
 
-    const images = {
-      hd: image_files[`${figure_basename}-hd.png`]?.default,
-      sd: image_files[`${figure_basename}.png`]?.default,
-    }
-    return { ...metadata, slug, code, tags, downloads, images }
+    const image = image_files[`${figure_basename}.avif`]?.default
+    const thumbnail = thumbnails[`${figure_basename}-hd.png`]?.default
+    if (!image || !thumbnail)
+      throw new Error(`Missing AVIF artwork or thumbnail for '${slug}'`)
+    return { ...metadata, slug, code, tags, downloads, image, thumbnail }
   })
 
 // title-sorted view of diagrams; stable order for prev/next nav, the home grid and

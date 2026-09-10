@@ -19,7 +19,9 @@
     title,
     description,
     code,
-    images,
+    image,
+    image_width,
+    image_height,
     tags,
     slug,
     creator,
@@ -28,8 +30,7 @@
     downloads,
   } = $derived(data.diagram)
   const download_options: Record<string, { icon: IconData; label: string }> = {
-    [`.png`]: { icon: FilePNG, label: `PNG` },
-    [`-hd.png`]: { icon: FilePNG, label: `PNG (HD)` },
+    [`-hd.png`]: { icon: FilePNG, label: `PNG` },
     [`.pdf`]: { icon: FilePDF, label: `PDF` },
     [`.svg`]: { icon: FileXML, label: `SVG` },
   }
@@ -113,8 +114,10 @@
   tabindex="0"
 >
   {#key slug}
-    <enhanced:img
-      src={images.hd}
+    <img
+      src={image}
+      width={image_width}
+      height={image_height}
       alt={title}
       class="diagram"
       data-preserve-colors={data.diagram.preserve_colors || undefined}
@@ -183,7 +186,7 @@
       </h3>
       <DiagramCard
         item={diagram}
-        preload
+        prefetch
         style="max-width: 280px; font-size: 10pt"
         format="short"
       />

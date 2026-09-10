@@ -1,15 +1,14 @@
 import { expect, test, type Locator, type Page } from '@playwright/test'
+import { readFileSync } from 'node:fs'
 // oxlint-disable vitest/prefer-each -- Playwright uses loops for parameterization and has no test.each.
 
 // The production pages are the fixtures: retain native fullscreen, real images, and CSS.
 const open_diagram = async (page: Page, slug: string) => {
   await page.goto(`/${slug}`, { waitUntil: `domcontentloaded` })
   await expect(page.getByRole(`heading`, { level: 1 })).not.toBeEmpty()
-  await expect(page.locator(`.diagram-wrapper source`).first()).toHaveAttribute(
-    `srcset`,
-    /^\S+ \d+w(?:, \S+ \d+w)*$/u,
-  )
   const diagram = page.locator(`.diagram-wrapper img`)
+  await expect(diagram).toHaveAttribute(`src`, /\.avif$/u)
+  await expect(page.locator(`.diagram-wrapper source`)).toHaveCount(0)
   await expect(diagram).toBeVisible()
   await expect
     .poll(() =>
@@ -18,6 +17,14 @@ const open_diagram = async (page: Page, slug: string) => {
       ),
     )
     .toBe(true)
+  const dimensions = await diagram.evaluate((image: HTMLImageElement) => ({
+    width: Number(image.getAttribute(`width`)),
+    height: Number(image.getAttribute(`height`)),
+    natural_width: image.naturalWidth,
+    natural_height: image.naturalHeight,
+  }))
+  expect(dimensions.width).toBe(dimensions.natural_width)
+  expect(dimensions.height).toBe(dimensions.natural_height)
   await page.evaluate(() => document.fonts.ready)
   return page.locator(`.diagram-wrapper`)
 }
@@ -52,6 +59,12 @@ test(`gallery descriptions preserve rich links and open from keyboard focus`, as
   await page.goto(`/`, { waitUntil: `domcontentloaded` })
   await page.getByPlaceholder(`Search...`, { exact: true }).fill(`Euler Angles`)
   const card = page.locator(`a[href="euler-angles"]`).first()
+  const thumbnail = card.locator(`img`)
+  await expect(thumbnail).toHaveAttribute(`loading`, `lazy`)
+  await expect(card.locator(`source`)).toHaveCount(1)
+  await expect(card.locator(`source`)).toHaveAttribute(`type`, `image/avif`)
+  await expect(card.locator(`source`)).toHaveAttribute(`srcset`, /\S+ 480w, \S+ 960w/u)
+  await expect(card.locator(`source`)).toHaveAttribute(`sizes`, /33vw/u)
   await card.focus()
   const description = page.getByRole(`dialog`, { name: `Euler Angles` })
   await expect(description).toBeVisible()
@@ -73,11 +86,7 @@ for (const direction of [`Next`, `Previous`]) {
     })
     await page.route(`**/*`, async (route) => {
       const url = route.request().url()
-      if (
-        route.request().resourceType() === `image` &&
-        url.includes(`-hd`) &&
-        !url.includes(`euler-angles`)
-      )
+      if (url.endsWith(`.avif`) && !url.includes(`-hd`) && !url.includes(`euler-angles`))
         await images_released
       await route.fallback()
     })
@@ -92,12 +101,11 @@ for (const direction of [`Next`, `Previous`]) {
       const nav_link = page.getByRole(`link`, { name: new RegExp(direction) })
       const target = await nav_link.getAttribute(`href`)
       if (!target) throw new Error(`Missing ${direction} navigation target`)
-      const preloaded_srcset = await page
-        .locator(`head link[rel="preload"][as="image"]`)
+      await expect(page.locator(`head link[rel="preload"][as="image"]`)).toHaveCount(0)
+      const prefetched_images = await page
+        .locator(`head link[rel="prefetch"][as="image"]`)
         .evaluateAll((links) =>
-          links.map((link) =>
-            link.getAttribute(`imagesrcset`)?.replaceAll(location.origin, ``),
-          ),
+          links.map((link) => link.getAttribute(`href`)?.replaceAll(location.origin, ``)),
         )
       await nav_link.click()
       await expect(page).toHaveURL(new RegExp(`/${target}$`))
@@ -107,9 +115,7 @@ for (const direction of [`Next`, `Previous`]) {
       }
       const new_image = wrapper.locator(`img`)
       await expect(new_image).toHaveJSProperty(`naturalWidth`, 0)
-      expect(preloaded_srcset).toContain(
-        await wrapper.locator(`source[type="image/avif"]`).getAttribute(`srcset`),
-      )
+      expect(prefetched_images).toContain(await new_image.getAttribute(`src`))
       release_images()
       await expect(new_image).toHaveJSProperty(`complete`, true)
       await expect(new_image).not.toHaveJSProperty(`naturalWidth`, 0)
@@ -343,13 +349,30 @@ for (const slug of [`xc-functional`, `regulated-and-unregulated-propagators`]) {
   })
 }
 
-for (const slug of [`which-band-gap-do-you-mean`, `how-atoms-become-energy-bands`]) {
-  test(`new diagram ${slug} has rendered artwork and source`, async ({ page }) => {
+for (const slug of [
+  `which-band-gap-do-you-mean`,
+  `how-atoms-become-energy-bands`,
+  `complex-sign-function`,
+]) {
+  test(`diagram ${slug} has rendered artwork, downloads, and source`, async ({
+    page,
+  }) => {
     await open_diagram(page, slug)
+    const image_url = await page.locator(`.diagram-wrapper img`).getAttribute(`src`)
+    if (!image_url) throw new Error(`Missing AVIF URL for ${slug}`)
+    const response = await page.request.get(image_url)
+    expect(await response.body()).toEqual(
+      readFileSync(`${import.meta.dirname}/../../../assets/${slug}/${slug}.avif`),
+    )
     await expect(page.locator(`pre`)).toContainText(`@preview/cetz`)
     await expect(page.getByRole(`link`, { name: `PDF`, exact: true })).toHaveAttribute(
       `href`,
       new RegExp(`/assets/${slug}/${slug}\\.pdf$`),
     )
+    await expect(page.getByRole(`link`, { name: `PNG`, exact: true })).toHaveAttribute(
+      `href`,
+      new RegExp(`/assets/${slug}/${slug}-hd\\.png$`),
+    )
+    await expect(page.getByRole(`link`, { name: `PNG (HD)`, exact: true })).toHaveCount(0)
   })
 }

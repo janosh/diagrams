@@ -63,7 +63,7 @@
   --tooltip-bg: light-dark(var(--light-bg), var(--dark-card-bg));
   --content-max-width: 55em;
 }
-/* Keep this filter in sync with finalize_pngs() for GitHub's README previews. */
+/* Keep this filter in sync with finalize_assets() for GitHub's README previews. */
 :root[data-theme='dark'] img.diagram:not([data-preserve-colors]) {
   filter: invert(0.9) hue-rotate(180deg);
 }

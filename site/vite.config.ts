@@ -54,6 +54,19 @@ export default {
       // the client bundle. Vite watches the imported file for metadata and prose edits.
       async transform(data, filename) {
         const metadata = data as YamlMetadata
+        // PNG stores intrinsic dimensions in its IHDR header (before pixel data).
+        // The AVIF is encoded at exactly the same dimensions as this lossless master.
+        if (!metadata.hide) {
+          const png_path = filename.replace(/\.yml$/u, `-hd.png`)
+          const png = readFileSync(png_path)
+          if (
+            png.toString(`hex`, 0, 8) !== `89504e470d0a1a0a` ||
+            png.toString(`ascii`, 12, 16) !== `IHDR`
+          )
+            throw new Error(`Invalid PNG header: ${png_path}`)
+          metadata.image_width = png.readUInt32BE(16)
+          metadata.image_height = png.readUInt32BE(20)
+        }
         const { description } = metadata
         if (!description?.trim()) return { ...metadata, description: null }
         return {

@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 import render_tikz
-from convert_assets import finalize_pngs
+from convert_assets import finalize_assets
 from update_readme_table import (
     DiagramInfo,
     collect_diagrams,
@@ -38,9 +38,9 @@ def test_failed_compilation_preserves_outputs(
         for suffix in (
             ".pdf",
             ".svg",
-            ".png",
+            ".avif",
             "-hd.png",
-            "-dark.png",
+            "-dark.avif",
             ".aux",
             ".log",
         )
@@ -63,7 +63,7 @@ def test_failed_compilation_preserves_outputs(
 
 
 def read_rgba(png_path: str) -> bytes:
-    """Decode PNG pixels independently of palette and compression choices."""
+    """Decode image pixels independently of format and compression choices."""
     return subprocess.check_output(["magick", png_path, "-depth", "8", "rgba:-"])
 
 
@@ -92,47 +92,54 @@ def test_successful_tex_cleanup(
 
 
 @pytest.mark.parametrize("metadata_flag", ["", "preserve_colors", "hide"])
-def test_finalize_pngs(
+def test_finalize_assets(
     metadata_flag: str, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Preserve both PNGs, recolor only eligible previews, and propagate failures."""
+    """Keep the PNG master, preserve AVIF resolution/alpha, and recolor eligible previews."""
     base_path = f"{tmp_path}/diagram"
     metadata = f"{metadata_flag}: true" if metadata_flag else "title: Test"
     (tmp_path / "diagram.yml").write_text(metadata)
     colors = [(0, 0, 0, 255), (255, 255, 255, 255), (0, 0, 0, 128), (0, 0, 0, 0)]
     colors.extend((shade, shade, shade, 255) for shade in range(256))
     original = bytes(channel for color in colors for channel in color)
-    for suffix in (".png", "-hd.png"):
-        with pytest.raises(FileNotFoundError, match=f"diagram{suffix}"):
-            finalize_pngs(base_path)
-        subprocess.run(
-            [
-                "magick",
-                "-size",
-                "260x1",
-                "-depth",
-                "8",
-                "rgba:-",
-                f"{base_path}{suffix}",
-            ],
-            input=original,
-            check=True,
+    with pytest.raises(FileNotFoundError, match="diagram-hd.png"):
+        finalize_assets(base_path)
+    subprocess.run(
+        ["magick", "-size", "260x1", "-depth", "8", "rgba:-", f"{base_path}-hd.png"],
+        input=original,
+        check=True,
+    )
+    finalize_assets(base_path)
+    assert read_rgba(f"{base_path}-hd.png") == original
+    pixels = read_rgba(f"{base_path}.avif")
+    assert len(pixels) == len(original)
+    # AVIF is lossy: allow at most 2/255 alpha levels of quantization on this ramp.
+    assert (
+        max(
+            abs(actual - expected)
+            for actual, expected in zip(pixels[3::4], original[3::4], strict=True)
         )
-    finalize_pngs(base_path)
-    for suffix in (".png", "-hd.png"):
-        assert read_rgba(f"{base_path}{suffix}") == original
-    dark_path = f"{base_path}-dark.png"
+        <= 2
+    )
+    assert not os.path.isfile(f"{base_path}.png")
+    dark_path = f"{base_path}-dark.avif"
     assert os.path.isfile(dark_path) is not bool(metadata_flag)
     if not metadata_flag:
         pixels = read_rgba(dark_path)
-        assert pixels[3::4] == original[3::4]  # Includes opaque fills and transparency.
-        assert min(pixels[:3]) >= 229  # Black ink becomes light.
-        assert max(pixels[4:7]) <= 26  # White fills become dark, remaining opaque.
+        assert (
+            max(
+                abs(actual - expected)
+                for actual, expected in zip(pixels[3::4], original[3::4], strict=True)
+            )
+            <= 2
+        )
+        assert min(pixels[:3]) >= 227  # Black ink becomes light.
+        assert max(pixels[4:7]) <= 28  # White fills become dark, remaining opaque.
     # Exercise a real failing subprocess without depending on the installed optimizer.
     (tmp_path / "zopflipng").symlink_to("/usr/bin/false")
     monkeypatch.setenv("PATH", str(tmp_path))
     with pytest.raises(subprocess.CalledProcessError):
-        finalize_pngs(base_path)
+        finalize_assets(base_path)
 
 
 def test_readme_preview_files_exist() -> None:
@@ -161,7 +168,7 @@ def test_readme_theme_sources(
     asset_dir.mkdir(parents=True)
     (asset_dir / "diagram.typ").touch()
     diagram = DiagramInfo("diagram", 'A "quoted" title', preserve_colors)
-    suffixes = (".png",) if preserve_colors else (".png", "-dark.png")
+    suffixes = (".avif",) if preserve_colors else (".avif", "-dark.avif")
     for suffix in suffixes:
         with pytest.raises(FileNotFoundError, match=f"diagram{suffix}"):
             table_cell(diagram)
@@ -169,7 +176,7 @@ def test_readme_theme_sources(
     _, image = table_cell(diagram)
     assert 'alt="A &quot;quoted&quot; title"' in image
     assert ("prefers-color-scheme: dark" in image) is not preserve_colors
-    assert ("-dark.png" in image) is not preserve_colors
+    assert ("-dark.avif" in image) is not preserve_colors
 
 
 @pytest.mark.parametrize(

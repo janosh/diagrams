@@ -6,24 +6,19 @@
   let {
     item,
     format = `full`,
-    preload = false,
+    prefetch = false,
     ...rest
   }: HTMLAttributes<HTMLAnchorElement> & {
     item: Diagram
     format?: `short` | `full`
-    preload?: boolean
+    prefetch?: boolean
   } = $props()
   let { slug, title, description, tags } = $derived(item)
 </script>
 
 <svelte:head>
-  {#if preload}
-    <link
-      rel="preload"
-      as="image"
-      type="image/avif"
-      imagesrcset={item.images.hd.sources.avif}
-    />
+  {#if prefetch}
+    <link rel="prefetch" as="image" type="image/avif" href={item.image} />
   {/if}
 </svelte:head>
 
@@ -40,16 +35,16 @@
       {#if format === `full`}
         <Tags {tags} style="color: var(--text-color); margin-block: 0 1em" />
       {/if}
-      {#if item.images.sd}
-        {#key slug}
-          <enhanced:img
-            src={item.images.sd}
-            alt={title}
-            class="diagram"
-            data-preserve-colors={item.preserve_colors || undefined}
-          />
-        {/key}
-      {/if}
+      {#key slug}
+        <enhanced:img
+          src={item.thumbnail}
+          sizes="(max-width: 600px) 100vw, (max-width: 1000px) 50vw, 33vw"
+          loading="lazy"
+          alt={title}
+          class="diagram"
+          data-preserve-colors={item.preserve_colors || undefined}
+        />
+      {/key}
     </a>
   {/snippet}
   {@html description ?? ``}

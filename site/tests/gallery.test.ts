@@ -36,20 +36,18 @@ const typst_sources = import.meta.glob<string>(`../../assets/**/*.typ`, {
   import: `default`,
 })
 
+const shared_layout_sources = Object.entries(typst_sources).filter(([path]) =>
+  readFileSync(new URL(path, import.meta.url), `utf-8`).includes(`../_shared/layout.typ`),
+)
+
 it(`keeps gallery sources standalone with only package imports`, () => {
-  expect(Object.keys(typst_sources).length).toBeGreaterThan(0)
+  expect(shared_layout_sources.length).toBeGreaterThan(0)
   for (const [path, source] of Object.entries(typst_sources)) {
     expect(source, path).not.toMatch(/#(?:import|include)\s+["'](?!@)/u)
   }
 })
 
-it.each(
-  Object.entries(typst_sources).filter(([path]) =>
-    readFileSync(new URL(path, import.meta.url), `utf-8`).includes(
-      `../_shared/layout.typ`,
-    ),
-  ),
-)(
+it.each(shared_layout_sources)(
   `renders copied %s exactly like its repository source`,
   // The fractal atlas can exceed 25 seconds; allow a minute for each compilation.
   { timeout: 125_000 },
@@ -95,9 +93,11 @@ it(`keeps visible gallery entries complete and internal links resolvable after c
   const visible = new Set(visible_entries.map(([path]) => path.split(`/`).at(-2)))
   for (const [path, data] of visible_entries) {
     const base = path.slice(0, -4)
-    for (const extension of [`.png`, `-hd.png`, `.pdf`]) {
+    for (const extension of [`.avif`, `-hd.png`, `.pdf`]) {
       expect(files.has(`${base}${extension}`), `${path}: missing ${extension}`).toBe(true)
     }
+    expect(files.has(`${base}.png`), `${path}: obsolete SD PNG`).toBe(false)
+    expect(files.has(`${base}-dark.png`), `${path}: obsolete dark PNG`).toBe(false)
     expect(files.has(`${base}.typ`) || files.has(`${base}.tex`), path).toBe(true)
     for (const match of (data.description ?? ``).matchAll(
       /href="(?:\.\.\/|https:\/\/(?:diagrams\.janosh\.dev|janosh\.github\.io\/diagrams)\/)(?<slug>[^/"#?]+)(?:["#?])/gu,
@@ -168,13 +168,18 @@ it.each([
     throw new Error(`Missing YAML transform`)
   const result = await plugin.transform(
     JSON.stringify({ title: `Example`, description }),
-    `/assets/example/example.yml`,
+    `${import.meta.dirname}/../../assets/complex-sign-function/complex-sign-function.yml`,
   )
   if (!result) throw new Error(`Expected YAML module`)
   const { default: data } = await import(
     /* @vite-ignore */ `data:text/javascript,${encodeURIComponent(result.code)}`
   )
-  expect(data).toEqual({ title: `Example`, description: expected })
+  expect(data).toEqual({
+    title: `Example`,
+    description: expected,
+    image_width: 4333,
+    image_height: 3402,
+  })
 })
 
 it.each([
