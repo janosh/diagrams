@@ -4,7 +4,7 @@
 #import pull-eh: ccw, cw, wind
 
 #set page(width: auto, height: auto, margin: 5mm, fill: none)
-#set text(0.9em)
+#set text(size: 12pt)
 
 #let tackle-block(coord, (w, h), ..args) = {
   // use the given coord as the center of the rect

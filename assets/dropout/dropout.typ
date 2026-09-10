@@ -15,6 +15,7 @@
 #let node-stroke = 0.8pt
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 
 #canvas({
   let spacing = (layer: 2.5, node: 1.5)
@@ -64,7 +65,7 @@
   )
   content(
     "dropout-arrow.mid",
-    text(weight: "bold", size: 1.2em)[dropout],
+    text(weight: "bold", size: 16pt)[dropout],
     anchor: "south",
     padding: 3pt,
   )

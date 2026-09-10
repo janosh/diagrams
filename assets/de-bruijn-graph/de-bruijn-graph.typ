@@ -2,7 +2,7 @@
 #import draw: arc, circle, content, line
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
-#set text(font: "DejaVu Sans Mono", size: 9pt)
+#set text(font: "DejaVu Sans Mono", size: 12pt)
 
 #let pure-red = rgb(255, 0, 0)
 #let node-r = .43

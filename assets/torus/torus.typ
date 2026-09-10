@@ -38,22 +38,15 @@
       let (u, v) = (u-idx * u-step, v-idx * v-step)
       let u-next = calc.rem(u-idx + 1, 48) * u-step
       let v-next = if v-idx < 43 { v + v-step } else { v-max }
-      let (p1, p2, p3, p4) = (
+      let corners = (
         torus-pt(u, v),
         torus-pt(u-next, v),
         torus-pt(u-next, v-next),
         torus-pt(u, v-next),
       )
-      let cx = (p1.at(0) + p2.at(0) + p3.at(0) + p4.at(0)) / 4
-      let cy = (p1.at(1) + p2.at(1) + p3.at(1) + p4.at(1)) / 4
-      let cz = (p1.at(2) + p2.at(2) + p3.at(2) + p4.at(2)) / 4
-      quads.push((
-        depth: weights.at(0) * cx + weights.at(1) * cy + weights.at(2) * cz,
-        p1: p1,
-        p2: p2,
-        p3: p3,
-        p4: p4,
-      ))
+      let center = range(3).map(axis => corners.map(point => point.at(axis)).sum() / 4)
+      let depth = weights.zip(center).map(((weight, position)) => weight * position).sum()
+      quads.push((depth, corners))
     }
   }
 
@@ -64,29 +57,19 @@
 
   // Torus surface (painter's algorithm: far quads first).
   set-style(stroke: rgb("#9a9a9a") + 0.22pt, fill: rgb("#cdd3da"))
-  for quad in quads.sorted(key: q => -q.depth) {
-    line(quad.p1, quad.p2, quad.p3, quad.p4, close: true)
+  for (_, corners) in quads.sorted(key: quad => -quad.first()) {
+    line(..corners, close: true)
   }
 
   // upper z-axis on top (its lower half is drawn earlier, behind the torus), then axis tips.
-  line((0, 0, 0), (0, 0, 10), stroke: ax-stroke, mark: arrow, name: "z")
-  content("z.end", $z$, anchor: "south", padding: 2pt)
-  line(
-    (outer-rim, 0, 0),
-    (axis-len, 0, 0),
-    stroke: ax-stroke,
-    mark: arrow,
-    name: "x",
-  )
-  content("x.end", $x$, anchor: "west", padding: 2pt)
-  line(
-    (0, -outer-rim, 0),
-    (0, -axis-len, 0),
-    stroke: ax-stroke,
-    mark: arrow,
-    name: "y",
-  )
-  content("y.end", $y$, anchor: "north-east", padding: 2pt)
+  for (start, end, name, label, anchor) in (
+    ((0, 0, 0), (0, 0, 10), "z", $z$, "south"),
+    ((outer-rim, 0, 0), (axis-len, 0, 0), "x", $x$, "west"),
+    ((0, -outer-rim, 0), (0, -axis-len, 0), "y", $y$, "north-east"),
+  ) {
+    line(start, end, stroke: ax-stroke, mark: arrow, name: name)
+    content(name + ".end", label, anchor: anchor, padding: 2pt)
+  }
 
   // R (blue): origin to tube center at far open slice.
   let v-end = v-max * 1deg

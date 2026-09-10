@@ -1,10 +1,27 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import "@preview/cetz-plot:0.1.4": plot
 #import draw: content
+#let label-size = 12pt
+#let paragraph-size = 14pt
+#let heading-size = 16pt
 
-#set page(width: 780pt, height: auto, margin: 22pt, fill: none)
-#set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
-#set par(leading: 0.55em)
+#let card_body(title, body, caption) = block(
+  width: 100%,
+  inset: 12pt,
+  radius: 8pt,
+  fill: rgb("#cdd3da"),
+  breakable: false,
+)[
+  #text(size: heading-size, weight: "bold", title)
+  #v(8pt)
+  // Measure unconstrained artwork before scaling, including content wider than its card.
+  #layout(size => {
+    let artwork = text(size: label-size, body)
+    std.scale(size.width / measure(artwork).width * 100%, reflow: true, artwork)
+  })
+  #v(7pt)
+  #text(size: paragraph-size, caption)
+]
 
 #let card-grid(columns: 2, ..cards) = layout(size => {
   let rows = cards
@@ -12,57 +29,45 @@
     .chunks(columns)
     .map(row => {
       let ratios = row.map(card => {
-        let bounds = measure(card.at(1))
+        let bounds = measure(text(size: label-size, card.at(1)))
         bounds.width / bounds.height
       })
       let available = size.width - 12pt * (row.len() - 1) - 24pt * row.len()
       grid(
         columns: ratios.map(ratio => 24pt + available * ratio / ratios.sum()),
         gutter: 12pt,
-        ..row.map(((title, body, caption)) => block(
-          width: 100%,
-          inset: 12pt,
-          radius: 8pt,
-          fill: rgb("#cdd3da"),
-          breakable: false,
-        )[
-          #text(size: 13pt, weight: "bold", title)
-          #v(8pt)
-          // Fill the available width; each drawing keeps its own aspect ratio.
-          #layout(size => std.scale(
-            size.width / measure(body).width * 100%,
-            reflow: true,
-            body,
-          ))
-          #v(7pt)
-          #caption
-        ]),
+        ..row.map(args => card_body(..args)),
       )
     })
   stack(dir: ttb, spacing: 12pt, ..rows)
 })
-#let takeaway = block.with(
+
+#let takeaway(body) = block(
   width: 100%,
   inset: 12pt,
   radius: 6pt,
   fill: rgb("#c6d8d2"),
   breakable: false,
+  text(size: paragraph-size, body),
 )
+
+#set page(width: 780pt, height: auto, margin: 22pt, fill: none)
+#set text(font: "Avenir Next", size: paragraph-size, fill: rgb("#19324f"))
+#set par(leading: 0.55em)
 
 // Mean occupation per single-particle state; zero-point energy is not occupation.
 #let bose-occupation(x) = {
   assert(x > 0, message: "Bose occupation requires epsilon > mu")
   1 / (calc.exp(x) - 1)
 }
+#let fermi-dirac(x) = 1 / (calc.exp(x) + 1)
 
 // === 1  Compare occupation laws ===
 #let figure-0 = [
   // Distribution functions
-  #let bose-einstein(x) = 1 / (calc.exp(x) - 1)
   #let boltzmann(x) = 1 / calc.exp(x)
-  #let fermi-dirac(x) = 1 / (calc.exp(x) + 1)
 
-  #canvas({
+  #canvas(length: 1.45cm, {
     draw.set-style(legend: (fill: rgb("#cdd3da")))
     let axis-mark = (end: "stealth", fill: black)
     draw.set-style(axes: (
@@ -87,32 +92,20 @@
       // Compact legend with a thin border.
       legend-style: (item: (spacing: 0.15), padding: 0.15, stroke: 0.5pt),
       {
-        // Bose-Einstein distribution
-        plot.add(
-          style: (stroke: rgb("#0B5FA5") + 1.5pt),
-          domain: (0.1, 7), // Avoid x=0 since BE diverges there
-          samples: 200,
-          label: "Bose-Einstein",
-          bose-einstein,
-        )
-
-        // Boltzmann distribution
-        plot.add(
-          style: (stroke: rgb("#C2570A") + 1.5pt),
-          domain: (-1, 7),
-          samples: 100,
-          label: "Boltzmann",
-          boltzmann,
-        )
-
-        // Fermi-Dirac distribution
-        plot.add(
-          style: (stroke: rgb("#12793F") + 1.5pt),
-          domain: (-7, 7),
-          samples: 100,
-          label: "Fermi-Dirac",
-          fermi-dirac,
-        )
+        // Start the Bose curve above zero, where its occupation diverges.
+        for (label, distribution, color, minimum, samples) in (
+          ("Bose-Einstein", bose-occupation, rgb("#0B5FA5"), 0.1, 200),
+          ("Boltzmann", boltzmann, rgb("#C2570A"), -1, 100),
+          ("Fermi-Dirac", fermi-dirac, rgb("#12793F"), -7, 100),
+        ) {
+          plot.add(
+            style: (stroke: color + 1.5pt),
+            domain: (minimum, 7),
+            samples: samples,
+            label: label,
+            distribution,
+          )
+        }
       },
     )
   })
@@ -120,9 +113,7 @@
 
 // === 2  Fermions: a smeared step ===
 #let figure-1 = [
-  #let n-F(x, beta, mu: 1) = 1 / (calc.exp(beta * (x - mu)) + 1)
-
-  #canvas({
+  #canvas(length: 1.04cm, {
     draw.set-style(legend: (fill: rgb("#cdd3da")))
     let axis-mark = (end: "stealth", fill: black)
     draw.set-style(axes: (
@@ -153,7 +144,7 @@
             style: (stroke: color + 1.5pt),
             domain: (0, 2.3),
             samples: 150,
-            x => n-F(x, beta),
+            x => fermi-dirac(beta * (x - chem-pot)),
             label: $k_"B" T = mu \/ #beta$,
           )
         }
@@ -181,7 +172,7 @@
 ]
 
 // === 3  Bosons: shared states ===
-#let figure-2 = canvas({
+#let figure-2 = canvas(length: 1.45cm, {
   draw.set-style(legend: (fill: rgb("#cdd3da")))
   plot.plot(
     size: (8, 6),
@@ -189,7 +180,7 @@
     x-max: 4,
     y-min: 0,
     y-max: 4,
-    x-label: $(epsilon-mu) \/ (k_"B" T_0)$,
+    x-label: none,
     y-label: $bar(n)$,
     x-tick-step: 1,
     y-tick-step: 1,
@@ -207,11 +198,13 @@
       }
     },
   )
+  draw.content((4, -.8), $(epsilon-mu) \/ (k_"B" T_0)$)
 })
 
 // === 4  The same variable in three formulas ===
-#let figure-3 = [
-  #align(center)[
+#let figure-3 = box(width: 230pt, height: 330pt)[
+  #align(center + horizon)[
+    #set text(size: paragraph-size)
     #text(fill: rgb("#0b5fa5"))[*Bose–Einstein*]\
     $bar(n) = 1/(e^x-1)$\
     #v(13pt)

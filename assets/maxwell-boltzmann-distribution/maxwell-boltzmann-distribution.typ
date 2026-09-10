@@ -2,6 +2,7 @@
 #import "@preview/cetz-plot:0.1.4": plot
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 
 // Constants (in SI units)
 #let k-B = 1.38e-23 // Boltzmann constant

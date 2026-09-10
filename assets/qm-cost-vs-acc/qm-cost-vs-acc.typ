@@ -18,26 +18,26 @@
 
 #canvas({
   let plot_x(exponent) = (exponent - 2) * 2.3
-  content((0, 6.95), text(size: 11pt, scope), anchor: "west")
+  content((0, 6.95), text(size: 14pt, scope), anchor: "west")
 
   let arrow = (mark: (end: "stealth", scale: 0.7), stroke: 0.9pt)
   line((0, 0), (13.2, 0), ..arrow)
   line((0, 0), (0, 6.4), ..arrow)
   content((0.15, 6.25), [higher accuracy], anchor: "west")
-  content((0.15, 5.75), text(size: 10pt)[qualitative], anchor: "west")
+  content((0.15, 5.75), text(size: 12pt)[qualitative], anchor: "west")
 
   for exponent in range(3, 8) {
     let axis_x = plot_x(exponent)
     line((axis_x, -0.08), (axis_x, 0.08), stroke: 0.7pt)
     content((axis_x, -0.4), $O(N^#exponent)$)
   }
-  content((6.6, -1.0), [Conventional scaling · $N$ = basis functions])
+  content((6.6, -1.0), text(size: 14pt)[Conventional scaling · $N$ = basis functions])
 
   for method in methods {
     let point = (plot_x(method.exponent), method.height)
     circle(point, radius: 0.085, fill: method.color, stroke: none)
     content((point.at(0), point.at(1) + 0.36), text(weight: "bold", method.name))
   }
-  content((plot_x(3), 2.95), text(size: 10pt)[functional-dependent])
-  content((6.6, -1.8), text(size: 10.5pt, qualification))
+  content((plot_x(3), 2.95), text(size: 12pt)[functional-dependent])
+  content((6.6, -1.8), text(size: 14pt, qualification))
 })

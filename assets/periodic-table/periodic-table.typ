@@ -2,6 +2,7 @@
 #import draw: content, rect
 
 #set page(width: auto, height: auto, margin: 15pt, fill: none)
+#set text(size: 12pt)
 
 // Element colors
 #let colors = (

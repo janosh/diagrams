@@ -7,33 +7,84 @@ on:
     branches: [main]
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
 jobs:
   check:
+    if: always()
+    needs: checks
     runs-on: ubuntu-latest
     steps:
+      - run: test '${{ needs.checks.result }}' = success
+
+  checks:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        task: [lint, unit]
+    steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - uses: typst-community/setup-typst@v5
+      - uses: astral-sh/setup-uv@v10.0.1
+        with:
+          python-version: '3.14'
       - uses: actions/setup-node@v7
         with:
           node-version: 24
+      - uses: actions/cache@v5
+        with:
+          path: |
+            ~/.cache/pnpm
+            ~/.npm
+            ~/.cache/typst/packages
+          key: checks-${{ runner.os }}-${{ hashFiles('site/package.json', 'assets/**/*.typ') }}
+          restore-keys: checks-${{ runner.os }}-
       - name: Install site dependencies
         run: |
           corepack enable
           printf 'allowBuilds:\n  svelte-widgets: true\n  sharp: true\n' > pnpm-workspace.yaml
           # npm prepares Git dependencies; avoid its conflicting optional Vitest peers.
-          NPM_CONFIG_LEGACY_PEER_DEPS=true pnpm install --no-lockfile
+          NPM_CONFIG_LEGACY_PEER_DEPS=true pnpm install --no-lockfile --store-dir ~/.cache/pnpm
         working-directory: site
       - name: Unit tests
+        if: matrix.task == 'unit'
         run: pnpm test
         working-directory: site
 
       - name: Run prek
+        if: matrix.task == 'lint'
         uses: j178/prek-action@v3.0.0
+
+  python-tests:
+    # Artwork uses macOS fonts, including Avenir Next; match the authoring environment.
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v10.0.1
+        with:
+          python-version: '3.14'
+      - uses: typst-community/setup-typst@v5
+      - name: Install image tools
+        run: brew install imagemagick zopfli
+      - name: Python tests
+        run: uv run --no-project --with pytest --with pyyaml pytest -q
 
   link-check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Discover broken links
         uses: lycheeverse/lychee-action@v2
         with:
@@ -43,15 +94,20 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v7
         with:
           node-version: 24
+      - uses: actions/cache@v5
+        with:
+          path: |
+            ~/.cache/pnpm
+            ~/.npm
+          key: build-deps-${{ runner.os }}-${{ hashFiles('site/package.json') }}
+          restore-keys: build-deps-${{ runner.os }}-
       - uses: actions/cache/restore@v6
         id: images
         with:
@@ -63,9 +119,9 @@ jobs:
           corepack enable
           printf 'allowBuilds:\n  svelte-widgets: true\n  sharp: true\n' > pnpm-workspace.yaml
           # npm prepares Git dependencies; avoid its conflicting optional Vitest peers.
-          NPM_CONFIG_LEGACY_PEER_DEPS=true pnpm install --no-lockfile
+          NPM_CONFIG_LEGACY_PEER_DEPS=true pnpm install --no-lockfile --store-dir ~/.cache/pnpm
         working-directory: site
-      - run: pnpm exec vp build
+      - run: pnpm exec vite build
         working-directory: site
       - uses: actions/cache/save@v6
         if: steps.images.outputs.cache-hit != 'true'
@@ -93,7 +149,7 @@ jobs:
 
   deploy:
     if: github.ref == 'refs/heads/main'
-    needs: build
+    needs: [check, python-tests, build]
     runs-on: ubuntu-latest
     permissions:
       pages: write

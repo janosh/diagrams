@@ -2,6 +2,7 @@
 #import draw: circle, content, line
 
 #set page(width: auto, height: auto, margin: 5pt, fill: none)
+#set text(size: 12pt)
 
 #canvas({
   let (xr, yr) = (5, 1)

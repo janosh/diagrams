@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content, line, rect
 #set page(width: 660pt, height: auto, margin: 20pt, fill: none)
-#set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
+#set text(font: "Avenir Next", size: 14pt, fill: rgb("#19324f"))
 #set par(leading: 0.55em)
 #let panel = block.with(
   width: 100%,
@@ -39,7 +39,7 @@
   content((-12, 62), rotate(-90deg, reflow: true)[$theta_2: 0 arrow.r 2pi$])
 })
 #panel[
-  #text(size: 14pt, weight: "bold")[1  One oscillator: volume, contour, shell]
+  #text(size: 16pt, weight: "bold")[1  One oscillator: volume, contour, shell]
   #v(9pt)
   #grid(
     columns: (280pt, 1fr),
@@ -65,7 +65,7 @@
       line((-125, 0), (125, 0), stroke: rgb("#19324f") + .7pt, mark: (end: "stealth"))
       line((0, -83), (0, 83), stroke: rgb("#19324f") + .7pt, mark: (end: "stealth"))
       content((130, 0), $q$)
-      content((0, 90), $p$)
+      content((0, 106), $p$)
       content((52, 20), $H < E$)
       content((45, -84), text(fill: rgb("#0b5fa5"))[$H=E$])
       line((45, -75), (55, -53), stroke: rgb("#0b5fa5") + .7pt)
@@ -87,14 +87,14 @@
   columns: (1fr, 1fr),
   gutter: 12pt,
   panel[
-    #text(size: 14pt, weight: "bold")[2  Rational: closed orbit]
+    #text(size: 16pt, weight: "bold")[2  Rational: closed orbit]
     #v(8pt)
     #align(center, orbit(2))
     #v(8pt)
     #align(center)[$omega_2 \/ omega_1=2$ · Opposite edges identified.]
   ],
   panel[
-    #text(size: 14pt, weight: "bold")[3  Irrational: dense orbit]
+    #text(size: 16pt, weight: "bold")[3  Irrational: dense orbit]
     #v(8pt)
     #align(center, orbit(calc.sqrt(2), turns: 24))
     #v(8pt)

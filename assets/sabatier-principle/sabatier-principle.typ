@@ -2,6 +2,7 @@
 #import draw: content, hobby, line, rect
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 
 #let limitations = ("activation of reactant", "desorption of product")
 // Maximum of the Hobby spline below, rather than its nearby (4.5, 3.7) control point.

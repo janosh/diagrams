@@ -1,0 +1,29 @@
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["scripts"]
+
+[tool.ruff]
+target-version = "py314"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "B", "I", "UP"]
+
+[tool.ty.environment]
+python-version = "3.14"
+extra-paths = ["scripts"]
+
+[tool.ty.src]
+include = ["scripts", "tests"]
+
+[tool.typos.default]
+locale = "en-us"
+extend-ignore-words-re = [
+  "\\b[Nn]oe\\b", # Names: Frank Noe
+  "\\b[Bb]a\\b",  # Chemical element: Barium
+  "\\b[Nn]d\\b",  # Chemical element: Neodymium
+  "\\b[Tt]e\\b",  # Chemical element: Tellurium
+  "\\bket\\b",    # Physics: bra-ket notation
+  "\\bPN\\b",     # Acronym: PNG (in context of file formats)
+  "\\bBA\\b",     # Math: $G_{BA}$ generator subscript in cyclegan
+  "\\bdscribe\\b", # Materials descriptor library
+]

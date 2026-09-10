@@ -6,6 +6,7 @@
 #let leader = (paint: rgb("#78828C"), thickness: 0.5pt)
 
 #set page(width: auto, height: auto, margin: 3pt, fill: none)
+#set text(size: 12pt)
 
 #canvas({
   let (rx, ry) = (4, 2.2)

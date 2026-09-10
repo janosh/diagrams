@@ -2,6 +2,7 @@
 #import draw: circle, content, line
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 
 #let x-range = 3
 #let y-range = 3

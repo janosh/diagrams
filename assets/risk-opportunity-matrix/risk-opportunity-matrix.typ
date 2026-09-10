@@ -2,7 +2,7 @@
 #import cetz.draw: content, line, rect
 
 #set page(width: auto, height: auto, margin: 4mm, fill: none)
-#set text(0.8em)
+#set text(size: 12pt)
 // #set text(lang: "de")
 
 #let en-de(en, de) = context {
@@ -54,7 +54,7 @@
 
   // risk/opportunity grid labels
   let big-label(..args, label) = content(..args, {
-    set text(2.4em, weight: "bold", fill: black, stroke: 0.3pt + gray)
+    set text(21.12pt, weight: "bold", fill: black, stroke: 0.3pt + gray)
     set align(center + horizon)
     label
   })
@@ -65,8 +65,8 @@
   // intensity grid labels
   for (i, intensity) in intensities.enumerate() {
     let intensity = pad(4pt, align(center + horizon, intensity))
-    content(..cell(-1, i), intensity)
-    content(..cell(width, i), intensity)
+    content(..cell(-1.25, i), intensity)
+    content(..cell(width + 0.25, i), intensity)
     content(..cell(i, -1), intensity)
     content(..cell(width - i - 1, -1), intensity)
   }
@@ -87,10 +87,10 @@
 
   let arrow-inset = 0.3
   for (start, end, name, label, dir, align) in (
-    ((-1, arrow-inset), (-1, height - arrow-inset), "probability1", probability, ltr, top),
+    ((-1.6, arrow-inset), (-1.6, height - arrow-inset), "probability1", probability, ltr, top),
     (
-      (width + 1, arrow-inset),
-      (width + 1, height - arrow-inset),
+      (width + 1.6, arrow-inset),
+      (width + 1.6, height - arrow-inset),
       "probability2",
       probability,
       rtl,

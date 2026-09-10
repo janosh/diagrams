@@ -4,6 +4,7 @@
 #let horizontal-dist = 4
 #let vertical-dist = 2
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 #let mark-style = (end: "stealth", fill: black)
 
 #canvas(length: 1cm, {

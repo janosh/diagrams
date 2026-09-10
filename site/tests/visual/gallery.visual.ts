@@ -1,15 +1,14 @@
 import { expect, test, type Locator, type Page } from '@playwright/test'
+import { readFileSync } from 'node:fs'
 // oxlint-disable vitest/prefer-each -- Playwright uses loops for parameterization and has no test.each.
 
 // The production pages are the fixtures: retain native fullscreen, real images, and CSS.
 const open_diagram = async (page: Page, slug: string) => {
-  await page.goto(`/${slug}`)
+  await page.goto(`/${slug}`, { waitUntil: `domcontentloaded` })
   await expect(page.getByRole(`heading`, { level: 1 })).not.toBeEmpty()
-  await expect(page.locator(`.diagram-wrapper source`).first()).toHaveAttribute(
-    `srcset`,
-    /^\S+ \d+w(?:, \S+ \d+w)*$/u,
-  )
   const diagram = page.locator(`.diagram-wrapper img`)
+  await expect(diagram).toHaveAttribute(`src`, /\.avif$/u)
+  await expect(page.locator(`.diagram-wrapper source`)).toHaveCount(0)
   await expect(diagram).toBeVisible()
   await expect
     .poll(() =>
@@ -18,6 +17,14 @@ const open_diagram = async (page: Page, slug: string) => {
       ),
     )
     .toBe(true)
+  const dimensions = await diagram.evaluate((image: HTMLImageElement) => ({
+    width: Number(image.getAttribute(`width`)),
+    height: Number(image.getAttribute(`height`)),
+    natural_width: image.naturalWidth,
+    natural_height: image.naturalHeight,
+  }))
+  expect(dimensions.width).toBe(dimensions.natural_width)
+  expect(dimensions.height).toBe(dimensions.natural_height)
   await page.evaluate(() => document.fonts.ready)
   return page.locator(`.diagram-wrapper`)
 }
@@ -45,6 +52,145 @@ test.beforeEach(async ({ page }) => {
   // Analytics is irrelevant to screenshots and must not depend on external availability.
   await page.route(`https://plausible.io/**`, (route) => route.abort())
 })
+
+test(`gallery info buttons reveal descriptions on hover and keyboard focus`, async ({
+  page,
+}) => {
+  await page.goto(`/`, { waitUntil: `domcontentloaded` })
+  const search = page.getByPlaceholder(`Search...`, { exact: true })
+  await search.fill(`Convex Hull of Stability`)
+  await expect(page.locator(`head link[rel="prefetch"][as="image"]`)).toHaveCount(0)
+  const hull_info = page.getByRole(`button`, { name: `About Convex Hull of Stability` })
+  await expect(hull_info).toHaveCSS(`opacity`, `0`)
+  await page.locator(`a[href="convex-hull-of-stability"]`).first().hover()
+  const hull_description = page.getByRole(`dialog`, { name: `Convex Hull of Stability` })
+  await expect(hull_description).toHaveCount(0)
+  await expect(hull_info).toHaveCSS(`opacity`, `1`)
+  await expect(hull_info).toHaveCSS(`padding`, `0px`)
+  await expect(hull_info).toHaveCSS(`border-width`, `0px`)
+  await expect(hull_info.locator(`svg`)).toHaveCSS(`width`, `18px`)
+  await expect(hull_info).toHaveCSS(
+    `color`,
+    await page.locator(`body`).evaluate((body) => getComputedStyle(body).color),
+  )
+  await hull_info.hover()
+  await expect(hull_description).toBeVisible()
+  await expect(page).toHaveURL(/\/$/u)
+  for (const selector of [`p`, `li`]) {
+    await expect(hull_description.locator(selector).first()).toHaveCSS(
+      `text-align`,
+      `left`,
+    )
+  }
+  await search.hover()
+  await expect(hull_description).toBeHidden()
+  await search.fill(`Euler Angles`)
+  const card = page.locator(`a[href="euler-angles"]`).first()
+  const thumbnail = card.locator(`img`)
+  await expect(thumbnail).toHaveAttribute(`loading`, `lazy`)
+  await expect(card.locator(`picture`)).toHaveCount(0)
+  await expect(thumbnail).toHaveAttribute(`src`, /\.avif$/u)
+  await expect(thumbnail).toHaveAttribute(`srcset`, /\S+ 480w, \S+ 960w/u)
+  await expect(thumbnail).toHaveAttribute(`sizes`, /33vw/u)
+  await card.focus()
+  const description = page.getByRole(`dialog`, { name: `Euler Angles` })
+  await expect(description).toHaveCount(0)
+  // Tag filters precede the info button in the card's tab order.
+  await card.getByRole(`button`).last().focus()
+  await page.keyboard.press(`Tab`)
+  const info = page.getByRole(`button`, { name: `About Euler Angles` })
+  await expect(info).toBeFocused()
+  await expect(info).toHaveCSS(`opacity`, `1`)
+  await expect(description).toBeVisible()
+  await expect(
+    description.locator(`a[href="../cartesian-vs-polar-coordinates"]`),
+  ).toBeVisible()
+  expect(await description.evaluate((element) => element.closest(`a`))).toBeNull()
+  await page.keyboard.press(`Escape`)
+  await expect(description).toBeHidden()
+  await card.click()
+  for (const [language, extension] of [
+    [`TikZ`, `tex`],
+    [`Typst`, `typ`],
+  ]) {
+    await page.getByRole(`tab`, { name: language, exact: true }).click()
+    await expect(page.locator(`pre`)).toHaveCount(1)
+    await expect(page.locator(`pre`)).toHaveAttribute(
+      `aria-label`,
+      `euler-angles.${extension}`,
+    )
+  }
+})
+
+test.describe(`touch gallery`, () => {
+  test.use({ hasTouch: true, isMobile: true, viewport: { width: 390, height: 844 } })
+  test(`info buttons open descriptions without hover`, async ({ page }) => {
+    await page.goto(`/`)
+    await page.getByPlaceholder(`Search...`, { exact: true }).fill(`Euler Angles`)
+    const info = page.getByRole(`button`, { name: `About Euler Angles` })
+    await expect(info).toHaveCSS(`opacity`, `1`)
+    await info.tap()
+    await expect(page.getByRole(`dialog`, { name: `Euler Angles` })).toBeVisible()
+    await expect(page).toHaveURL(/\/$/u)
+  })
+})
+
+for (const direction of [`Next`, `Previous`]) {
+  test(`${direction} navigation clears old artwork while the new image loads`, async ({
+    page,
+  }) => {
+    let release_images = () => {}
+    const images_released = new Promise<void>((resolve) => {
+      release_images = resolve
+    })
+    await page.route(`**/*`, async (route) => {
+      const url = route.request().url()
+      if (url.endsWith(`.avif`) && !url.includes(`euler-angles`)) await images_released
+      await route.fallback()
+    })
+    try {
+      const wrapper = await open_diagram(page, `euler-angles`)
+      // Exercise a handler first so navigation happens after hydration.
+      await enter_fullscreen(wrapper)
+      await wrapper.getByRole(`button`, { name: `Exit fullscreen` }).click()
+      const artwork = page.locator(`.diagram-wrapper img, .prev-next img`)
+      await expect(artwork).toHaveCount(3)
+      const old_images = await artwork.elementHandles()
+      const nav_link = page.getByRole(`link`, { name: new RegExp(direction) })
+      const target = await nav_link.getAttribute(`href`)
+      if (!target) throw new Error(`Missing ${direction} navigation target`)
+      const nav_card = page.locator(`.prev-next a[href="${target}"]:has(img)`)
+      await expect(page.locator(`.prev-next button[aria-haspopup]`)).toHaveCount(0)
+      await expect(nav_card).not.toHaveAttribute(`aria-haspopup`)
+      await nav_card.hover()
+      await expect(page.getByRole(`dialog`)).toHaveCount(0)
+      await nav_card.focus()
+      await expect(page.getByRole(`dialog`)).toHaveCount(0)
+      await expect(page.locator(`head link[rel="preload"][as="image"]`)).toHaveCount(0)
+      const prefetched_images = await page
+        .locator(`head link[rel="prefetch"][as="image"]`)
+        .evaluateAll((links) =>
+          links.map((link) => link.getAttribute(`href`)?.replaceAll(location.origin, ``)),
+        )
+      await nav_link.click()
+      await expect(page).toHaveURL(new RegExp(`/${target}$`))
+      await expect(wrapper.locator(`img`)).not.toHaveAttribute(`alt`, `Euler Angles`)
+      for (const image of old_images) {
+        expect(await image.evaluate((element) => element.isConnected)).toBe(false)
+      }
+      const new_image = wrapper.locator(`img`)
+      await expect(new_image).toHaveJSProperty(`naturalWidth`, 0)
+      expect(prefetched_images).toContain(await new_image.getAttribute(`src`))
+      release_images()
+      await expect(new_image).toHaveJSProperty(`complete`, true)
+      await expect(new_image).not.toHaveJSProperty(`naturalWidth`, 0)
+      await enter_fullscreen(wrapper)
+      await wrapper.getByRole(`button`, { name: `Exit fullscreen` }).click()
+    } finally {
+      release_images()
+    }
+  })
+}
 
 for (const theme of [`light`, `dark`] as const) {
   test(`transparent diagram keeps its background in fullscreen (${theme})`, async ({
@@ -76,9 +222,29 @@ for (const theme of [`light`, `dark`] as const) {
 
   test(`tall diagram scrolls with a reachable exit (${theme})`, async ({ page }) => {
     const wrapper = await open_diagram(page, `xc-functional`)
+    const artwork = wrapper.locator(`img`)
+    const normal_size = await artwork.evaluate((image: HTMLImageElement) => {
+      const {
+        paddingLeft: padding_left,
+        paddingRight: padding_right,
+        paddingTop: padding_top,
+        paddingBottom: padding_bottom,
+      } = getComputedStyle(image)
+      return {
+        // eslint-disable-next-line unicorn/prefer-number-coercion -- Computed CSS lengths include px.
+        width: image.clientWidth - parseFloat(padding_left) - parseFloat(padding_right),
+        // eslint-disable-next-line unicorn/prefer-number-coercion -- Computed CSS lengths include px.
+        height: image.clientHeight - parseFloat(padding_top) - parseFloat(padding_bottom),
+        aspect: image.naturalHeight / image.naturalWidth,
+      }
+    })
+    // Use the available width; fitting tall artwork into one viewport makes text tiny.
+    expect(normal_size.height).toBeGreaterThan(720)
+    expect(
+      Math.abs(normal_size.height - normal_size.width * normal_size.aspect),
+    ).toBeLessThanOrEqual(1) // client dimensions round to whole CSS pixels.
     await set_theme(page, theme)
     await enter_fullscreen(wrapper)
-    const artwork = wrapper.locator(`img`)
     const top_bounds = await artwork.boundingBox()
     if (!top_bounds) throw new Error(`Missing fullscreen artwork bounds`)
     expect(top_bounds.y).toBeGreaterThanOrEqual(0)
@@ -138,6 +304,12 @@ test(`theme overrides apply to cards while atom surface colors stay fixed`, asyn
     .getByPlaceholder(`Search...`, { exact: true })
     .fill(`Feynman Building Blocks`)
   const artwork = page.locator(`a[href='feynman-building-blocks'] img`)
+  await artwork.hover()
+  await page.getByRole(`button`, { name: `About Feynman Building Blocks` }).hover()
+  const description = page.getByRole(`dialog`, { name: `Feynman Building Blocks` })
+  await expect(description.locator(`p`)).toContainText(`Lines connect fields`)
+  await page.keyboard.press(`Escape`)
+  await expect(description).toBeHidden()
   await page.getByRole(`button`, { name: `Switch to light theme` }).click()
   await page.getByRole(`button`, { name: `Switch to system (auto) theme` }).click()
   await expect(artwork).toHaveCSS(`filter`, `invert(0.9) hue-rotate(180deg)`)
@@ -147,6 +319,11 @@ test(`theme overrides apply to cards while atom surface colors stay fixed`, asyn
   await expect(artwork).toHaveCSS(`filter`, `invert(0.9) hue-rotate(180deg)`)
   for (const theme of [`light`, `dark`] as const) {
     await set_theme(page, theme)
+    await artwork.hover()
+    await expect(page.locator(`a[href='feynman-building-blocks'] h2`)).toHaveCSS(
+      `color`,
+      await page.locator(`body`).evaluate((body) => getComputedStyle(body).color),
+    )
     await expect(artwork).toHaveCSS(
       `filter`,
       theme === `dark` ? `invert(0.9) hue-rotate(180deg)` : `none`,
@@ -243,13 +420,38 @@ for (const slug of [`xc-functional`, `regulated-and-unregulated-propagators`]) {
   })
 }
 
-for (const slug of [`which-band-gap-do-you-mean`, `how-atoms-become-energy-bands`]) {
-  test(`new diagram ${slug} has rendered artwork and source`, async ({ page }) => {
+for (const slug of [
+  `which-band-gap-do-you-mean`,
+  `how-atoms-become-energy-bands`,
+  `complex-sign-function`,
+]) {
+  test(`diagram ${slug} has rendered artwork, downloads, and source`, async ({
+    page,
+  }) => {
     await open_diagram(page, slug)
+    const image_url = await page.locator(`.diagram-wrapper img`).getAttribute(`src`)
+    if (!image_url) throw new Error(`Missing AVIF URL for ${slug}`)
+    const response = await page.request.get(image_url)
+    expect(await response.body()).toEqual(
+      readFileSync(`${import.meta.dirname}/../../../assets/${slug}/${slug}.avif`),
+    )
     await expect(page.locator(`pre`)).toContainText(`@preview/cetz`)
+    await expect(page.locator(`section.description p`).first()).toHaveCSS(
+      `text-align`,
+      `left`,
+    )
     await expect(page.getByRole(`link`, { name: `PDF`, exact: true })).toHaveAttribute(
       `href`,
       new RegExp(`/assets/${slug}/${slug}\\.pdf$`),
     )
+    await expect(page.getByRole(`link`, { name: `PNG`, exact: true })).toHaveAttribute(
+      `href`,
+      new RegExp(`/assets/${slug}/${slug}\\.png$`),
+    )
+    await expect(page.locator(`meta[property="og:image"]`)).toHaveAttribute(
+      `content`,
+      new RegExp(`/assets/${slug}/${slug}\\.png$`),
+    )
+    await expect(page.getByRole(`link`, { name: `PNG (HD)`, exact: true })).toHaveCount(0)
   })
 }

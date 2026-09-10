@@ -7,6 +7,7 @@ import subprocess
 import sys
 import xml.etree.ElementTree as ET
 from itertools import batched, pairwise
+from math import fsum
 from pathlib import Path
 
 import pytest
@@ -77,6 +78,55 @@ def test_atomistic_flowchart_has_visible_forward_arrows(tmp_path: Path) -> None:
         displacement = re.search(r"h (-?[\d.]+)$", shaft)
         # A shaft must run rightward and exceed the roughly 6pt arrowhead length.
         assert displacement and float(displacement[1]) > 6, shaft
+
+
+def test_train_test_split_preserves_rows_and_table_bounds(tmp_path: Path) -> None:
+    """Split seven schematic rows into 4/3 with correct highlights and table bounds."""
+    output_path = tmp_path / "train-test-split.svg"
+    subprocess.run(
+        [
+            "typst",
+            "compile",
+            "--root",
+            ROOT,
+            f"{ROOT}/assets/train-test-split/train-test-split.typ",
+            str(output_path),
+        ],
+        check=True,
+    )
+    row_height = 72 / 2.54  # CeTZ's default unit is 1 cm, SVG coordinates are points.
+    tables: list[list[tuple[float, float, str]]] = []
+    for node in ET.parse(output_path).iter("{http://www.w3.org/2000/svg}path"):
+        path = node.get("d", "")
+        if node.get("stroke") != "#0099cc" or "Z" not in path:
+            continue
+        height_match = re.search(r"v ([\d.]+)", path)
+        position_match = re.fullmatch(
+            r"translate\([-\d.]+ ([-\d.]+)\)", node.get("transform", "")
+        )
+        assert height_match and position_match, node.attrib
+        height, top = float(height_match[1]), float(position_match[1])
+        if height > 1.5 * row_height:
+            tables.append([])  # Each table is drawn before its header and row fills.
+        tables[-1].append((top, height, node.get("fill", "")))
+
+    # Full dataset is unstriped; feature/target tables show 7 rows, then 4 + 3.
+    assert [len(table) - 2 for table in tables] == [0, 7, 7, 4, 4, 3, 3]
+    for table, row_count in zip(tables, [7, 7, 7, 4, 4, 3, 3], strict=True):
+        top, height, _fill = table[0]
+        # SVG serializes 9 decimal places; 1e-7pt covers accumulated serialization error.
+        assert height == pytest.approx((row_count + 1) * row_height, rel=0, abs=1e-7)
+        for row_idx, (row_top, height, _fill) in enumerate(table[1:]):
+            assert row_top == pytest.approx(top + row_idx * row_height, rel=0, abs=1e-7)
+            assert height == pytest.approx(row_height, rel=0, abs=1e-7)
+    for source_idx, split_idx, highlight in [(1, 5, "#80dfdf"), (2, 6, "#ffe680")]:
+        selected = [
+            row_idx
+            for row_idx, (_top, _height, fill) in enumerate(tables[source_idx][2:])
+            if fill == highlight
+        ]
+        assert selected == [1, 4, 6]
+        assert len(selected) == len(tables[split_idx]) - 2 == 3
 
 
 @pytest.mark.parametrize(
@@ -216,6 +266,130 @@ def evaluate_diagram(slug: str, expression: str) -> list:
     )
 
 
+def test_wannier_equation_keeps_position_outside_subscripts() -> None:
+    """Keep x as the function argument, separate from Wannier and Bloch state indices."""
+    source = """
+#show math.equation: item => [#metadata(repr(item.body)) <formula>#item]
+#include "/assets/wannierization-and-wannier-centers/wannierization-and-wannier-centers.typ"
+"""
+    formula = "$w_(R)(x) = 1 / sqrt(N_k) sum_k e^(-i k R) e^(i phi(k)) psi_(k)(x)$"
+    assert evaluate_typst(
+        f"(query(<formula>).any(item => item.value == repr({formula}.body)),)",
+        source=source,
+    ) == [True]
+
+
+@pytest.mark.parametrize("cell_idx", [-14, -7, *range(-3, 4), 7, 14])
+def test_wannier_phase_arrows_reinforce_or_close(cell_idx: int) -> None:
+    """Add seven unit phases at each periodic target and cancel in other cells."""
+    vertices = evaluate_diagram(
+        "wannierization-and-wannier-centers",
+        f"diagram.phase_vertices({cell_idx})",
+    )
+    assert len(vertices) == 8
+    # Seven unit vectors evaluated with f64 trig; allow 64 eps for accumulated error.
+    tolerance = 64 * sys.float_info.epsilon
+    for start, end in pairwise(vertices):
+        length_squared = fsum(
+            (end_coord - start_coord) ** 2
+            for start_coord, end_coord in zip(start, end, strict=True)
+        )
+        assert length_squared == pytest.approx(1, rel=0, abs=tolerance)
+    assert vertices[-1] == pytest.approx(
+        [7 if cell_idx % 7 == 0 else 0, 0], rel=0, abs=tolerance
+    )
+
+
+def test_wannier_gauge_preserves_total_occupied_density() -> None:
+    """Change individual orbital weights while preserving the filled-band density."""
+    probabilities, densities = evaluate_diagram(
+        "wannierization-and-wannier-centers",
+        """(
+          (diagram.localized_gauge.probabilities, diagram.spread_gauge.probabilities),
+          (range(281).map(sample_idx => -3.5 + sample_idx / 40) + (
+            -4, -3.36, -0.360000000001, -0.36, -0.359999999999,
+            0.359999999999, 0.36, 0.360000000001, 3.36, 4,
+          )).map(position => (
+            (diagram.localized_gauge.density)(position),
+            (diagram.spread_gauge.density)(position),
+            diagram.cell_indices.map(cell_idx =>
+              calc.pow(diagram.local_orbital(position - cell_idx), 2)).sum(),
+          )),
+        )""",
+    )
+    # Several seven-term sums and products: 128 eps covers their accumulated f64 error.
+    tolerance = 128 * sys.float_info.epsilon
+    for gauge_probabilities in probabilities:
+        assert min(gauge_probabilities) >= 0
+        assert fsum(gauge_probabilities) == pytest.approx(1, rel=0, abs=tolerance)
+    assert probabilities[0][3] == pytest.approx(1, rel=0, abs=tolerance)
+    assert probabilities[1][3] < 0.5
+    for constant_gauge, spread_gauge, site_density in densities:
+        assert (constant_gauge, spread_gauge) == pytest.approx(
+            (site_density, site_density), rel=tolerance, abs=tolerance
+        )
+
+
+@pytest.mark.parametrize(
+    ("example_name", "expected_center"),
+    [("center_example", 0.7), ("si_bond", 0.5), ("gaas_bond", 0.617)],
+)
+def test_wannier_center_matches_drawn_density_and_balance(
+    example_name: str, expected_center: float
+) -> None:
+    """Normalize the center and chemical-bond examples and verify their first moments."""
+    density, center, left_weight, sigma = evaluate_diagram(
+        "wannierization-and-wannier-centers",
+        f"""{{
+          let bond = diagram.{example_name}
+          (
+            range(2801).map(sample_idx => (bond.density)(-3 + sample_idx / 400)),
+            bond.center, bond.left_weight, bond.sigma,
+          )
+        }}""",
+    )
+    # At least 64 points per Gaussian sigma; tails outside [-3, 4] are <1e-22.
+    # Allow 128 f64 eps for sampling, weighted summation, and Typst serialization.
+    tolerance = 128 * sys.float_info.epsilon
+    assert center == pytest.approx(expected_center, rel=0, abs=tolerance)
+    moments = [
+        fsum(
+            sample
+            * (-3 + sample_idx / 400) ** order
+            * (0.5 if sample_idx in (0, len(density) - 1) else 1)
+            for sample_idx, sample in enumerate(density)
+        )
+        / 400
+        for order in range(3)
+    ]
+    assert moments == pytest.approx(
+        [1, center, sigma**2 + center], rel=0, abs=tolerance
+    )
+    assert left_weight * center == pytest.approx(
+        (1 - left_weight) * (1 - center), rel=0, abs=tolerance
+    )
+
+
+@pytest.mark.parametrize("caller_font_size", [8, 20])
+def test_compound_typography_uses_consistent_readable_sizes(caller_font_size: int) -> None:
+    """Keep labels, headings, captions, and takeaways independent of caller text size."""
+    source = f"""
+#import "/assets/atomistic-simulation-methods/atomistic-simulation-methods.typ": card, takeaway
+#set page(width: 300pt, height: auto, margin: 0pt)
+#set text(size: {caller_font_size}pt)
+#show text: item => context [#metadata((item.text, text.size / 1pt)) <typography>#item]
+#card([Panel heading], box(width: 200pt, height: 80pt)[Diagram label], [Panel caption])
+#takeaway[Takeaway paragraph]
+"""
+    sizes = dict(evaluate_typst("query(<typography>).map(item => item.value)", source=source))
+    assert sizes == {
+        "Panel heading": 16,
+        "Diagram label": 12,
+        "Panel caption": 14,
+        "Takeaway paragraph": 14,
+    }
+
+
 def test_sabatier_binding_regimes(tmp_path: Path) -> None:
     """Label the correct binding regimes and anchor the optimum above the spline peak."""
     assert evaluate_diagram("sabatier-principle", "diagram.limitations") == [
@@ -246,7 +420,9 @@ def test_sabatier_binding_regimes(tmp_path: Path) -> None:
     start = 0j
     points = []
     for command, raw in commands:
-        coordinates = [complex(*pair) for pair in batched(map(float, raw.split()), 2)]
+        coordinates = [
+            complex(*pair) for pair in batched(map(float, raw.split()), 2, strict=True)
+        ]
         if command == "M":
             start = coordinates[0]
         elif command == "m":
@@ -456,11 +632,11 @@ def test_semi_supervised_panels_share_bounds() -> None:
 @pytest.mark.parametrize(
     "slug,captions,min_font_size",
     [
-        ("ergodic", ["Opposite edges identified.", "Finite segment shown."], 10.5),
+        ("ergodic", ["Opposite edges identified.", "Finite segment shown."], 14),
         (
             "semi-supervised-learning",
             ["Gray samples ignored.", "Boundary follows the low-density gap."],
-            10.5,
+            14,
         ),
         ("matsubara-contours", ["Bosons", "Fermions"], 14),
     ],

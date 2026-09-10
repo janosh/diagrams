@@ -2,13 +2,14 @@
 #import draw: circle, content, line, rect
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 14pt)
 
 #canvas({
-  let rung-sep = 2 // Vertical separation between rungs
-  let width = 8.4 // Width of each rung
-  let height = 1 // Height of each rung
+  let rung-sep = 2.2 // Vertical separation between rungs
+  let width = 12.4 // Width of each rung
+  let height = 1.5 // Height of each rung
   let circle-r = 0.8 // Radius of symbol circles
-  let circle-offset = -3.2 // X offset for symbol circles
+  let circle-offset = -width / 2 + 1.15 // Keep the symbols near the left edge
 
   let draw-rung(y, color, text-content, symbol) = {
     rect(
@@ -21,7 +22,7 @@
     // Add text content, left-aligned relative to circle and vertically centered
     content(
       (circle-offset + circle-r + 0.2, y + height / 2),
-      text(size: 10pt)[#align(horizon)[#text-content]],
+      text(size: 14pt)[#align(horizon)[#text-content]],
       anchor: "west", // Left align text
     )
 

@@ -2,6 +2,7 @@
 #import draw: arc, circle, content, line, on-layer
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 
 #let green-color = rgb("#77d477") // Adjust green to match target
 #let blue-color = rgb("#1a1aff") // Lighter blue to match target

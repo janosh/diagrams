@@ -2,6 +2,7 @@ import os
 import re
 import unicodedata
 from collections import Counter
+from datetime import date
 from difflib import SequenceMatcher
 from glob import glob
 from itertools import combinations
@@ -24,14 +25,97 @@ EXPANSIONS: Final[dict[str, str]] = {
 }
 
 
-def load_yaml(yaml_file: str) -> dict:
+def load_yaml(yaml_file: str) -> dict[str, object]:
     """Parse a YAML file into a dict, annotating any error with the file path."""
     try:
         with open(yaml_file) as file:
-            return yaml.safe_load(file) or {}
+            data = yaml.safe_load(file)
+        if not isinstance(data, dict):
+            raise ValueError("Expected a metadata mapping")
+        validate_metadata(data)
+        return data
     except Exception as exc:
         exc.add_note(f"{yaml_file=}")
         raise
+
+
+def is_text(value: object) -> bool:
+    """Recognize nonempty text, including rejection of whitespace-only strings."""
+    return isinstance(value, str) and bool(value.strip())
+
+
+def validate_metadata(data: dict[str, object]) -> None:
+    """Validate gallery fields while retaining structured provenance and date precision."""
+    strings = {
+        "title",
+        "description",
+        "creator",
+        "creator_url",
+        "url",
+        "source",
+        "citation",
+    }
+    string_lists = {"tags", "authors"}
+    flags = {"hide", "preserve_colors"}
+    allowed = strings | string_lists | flags | {"date", "references", "attribution"}
+    if unknown := data.keys() - allowed:
+        raise ValueError(f"Unknown metadata fields: {sorted(map(str, unknown))}")
+    if missing := {"title", "description", "tags"} - data.keys():
+        raise ValueError(f"Missing metadata fields: {sorted(missing)}")
+    for key, value in data.items():
+        if key in strings:
+            if not is_text(value):
+                raise ValueError(f"{key}: expected a nonempty string, got {value!r}")
+        elif key in string_lists:
+            if not isinstance(value, list) or not value or not all(map(is_text, value)):
+                raise ValueError(
+                    f"{key}: expected a nonempty list of nonempty strings, got {value!r}"
+                )
+            if len(value) != len(set(value)):
+                raise ValueError(f"{key}: duplicate entries in {value!r}")
+        elif key in flags:
+            if type(value) is not bool:
+                raise ValueError(f"{key}: expected a boolean, got {value!r}")
+        elif key == "date":
+            # Month precision is meaningful; do not invent a day in stored metadata.
+            if type(value) is date:
+                continue
+            if not isinstance(value, str) or not re.fullmatch(
+                r"\d{4}-\d{2}(?:-\d{2})?", value
+            ):
+                raise ValueError(f"date: expected YYYY-MM or YYYY-MM-DD, got {value!r}")
+            try:
+                date.fromisoformat(value + "-01" if len(value) == 7 else value)
+            except ValueError as exc:
+                raise ValueError(f"date: invalid calendar date {value!r}") from exc
+        elif key == "references":
+            if (
+                not isinstance(value, list)
+                or not value
+                or any(
+                    not isinstance(entry, dict)
+                    or not entry
+                    or any(
+                        not is_text(ref_id)
+                        or not isinstance(reference, dict)
+                        or not reference
+                        for ref_id, reference in entry.items()
+                    )
+                    for entry in value
+                )
+            ):
+                raise ValueError(
+                    f"references: expected a list of named reference mappings, got {value!r}"
+                )
+        elif key == "attribution":
+            if (
+                not isinstance(value, dict)
+                or not value
+                or not all(is_text(item) for pair in value.items() for item in pair)
+            ):
+                raise ValueError(
+                    f"attribution: expected a nonempty mapping of strings, got {value!r}"
+                )
 
 
 def expand_folder_name(name: str) -> set[str]:
@@ -115,113 +199,30 @@ def report_similar_tags(yaml_files: list[str]) -> None:
             )
 
 
-def check_yaml_titles(yaml_files: list[str]) -> int:
-    errors: dict[str, str] = {}
-
-    for yaml_file in yaml_files:
-        file_name = os.path.basename(yaml_file).split(".")[0]
-        if file_name in IGNORE_SET:
-            continue
-
-        data = load_yaml(yaml_file)
-        if "title" not in data:
-            errors[yaml_file] = "Missing title"
-            continue
-
-        title = data["title"]
-        param_title = to_param_case(title)
-
-        # pass if any folder-name expansion matches an expansion of the param-cased title
-        if not (expand_folder_name(file_name) & expand_folder_name(param_title)):
-            errors[yaml_file] = (
-                f"should match YAML {title=} after param-casing: {param_title!r}"
-            )
-
-    for idx, (yaml_file, error) in enumerate(errors.items()):
-        print(f"{idx + 1}/{len(errors)} {yaml_file}\n  {error}")
-
-    return len(errors)
-
-
-def remove_duplicate_tags(yaml_files: list[str]) -> list[str]:
-    """Remove duplicate tags from all YAML files."""
-
-    files_changed: list[str] = []
-
-    print("\nChecking for duplicate tags...")
-
+def check_yaml_files(yaml_files: list[str]) -> int:
+    """Report invalid metadata and title/filename mismatches without rewriting files."""
+    errors = 0
     for yaml_file in yaml_files:
         try:
-            # Read file content to preserve comments
-            with open(yaml_file) as file:
-                content = file.read()
-                data = yaml.safe_load(content)
-
-            if not data or "tags" not in data or not isinstance(data["tags"], list):
-                continue
-
-            # Get unique tags while preserving order
-            original_tags = data["tags"]
-            unique_tags = list(dict.fromkeys(original_tags))
-
-            # Check if there were any duplicates
-            if len(unique_tags) < len(original_tags):
-                files_changed.append(yaml_file)
-                removed_count = len(original_tags) - len(unique_tags)
-                duplicates = [
-                    tag for tag in original_tags if original_tags.count(tag) > 1
-                ]
-                print(f"\n{yaml_file}:")
-                print(
-                    f"  Removed {removed_count} duplicate tags: {', '.join(set(duplicates))}"
+            data = load_yaml(yaml_file)
+            file_name = os.path.splitext(os.path.basename(yaml_file))[0]
+            title = data["title"]
+            assert isinstance(title, str)  # Established by validate_metadata.
+            if file_name not in IGNORE_SET and not (
+                expand_folder_name(file_name) & expand_folder_name(to_param_case(title))
+            ):
+                raise ValueError(
+                    f"Filename {file_name!r} does not match title {title!r}"
                 )
-
-                # Replace tags section while preserving rest of file
-                tag_section = "tags:\n" + "".join(f"  - {tag}\n" for tag in unique_tags)
-                tag_pattern = r"tags:\n(?:  - .*\n)+"
-                new_content = re.sub(tag_pattern, tag_section, content)
-
-                # Write back preserving original format
-                with open(yaml_file, "w") as file:
-                    file.write(new_content)
-
-        except Exception as exc:
-            exc.add_note(f"{yaml_file=}")
-            raise
-
-    if not files_changed:
-        print("No duplicate tags found.")
-    else:
-        print(f"\nRemoved duplicates from {len(files_changed)} files.")
-
-    return files_changed
-
-
-def check_missing_descriptions(yaml_files: list[str]) -> list[str]:
-    """Find and print all YAML files with missing descriptions."""
-
-    missing_desc: list[str] = []
-
-    for yaml_file in yaml_files:
-        data = load_yaml(yaml_file)
-        if data and not str(data.get("description") or "").strip():
-            missing_desc.append(yaml_file)
-
-    if missing_desc:
-        print(f"\n {len(missing_desc)} files with missing descriptions:")
-        print("-" * 40)
-        for file in missing_desc:
-            print(file)
-    else:
-        print("\nNo files with missing descriptions found.")
-
-    return missing_desc
+        except (ValueError, yaml.YAMLError) as exc:
+            errors += 1
+            print(f"{yaml_file}: {exc}")
+    return errors
 
 
 if __name__ == "__main__":
     yaml_files = glob("./assets/**/*.yml")
-    errors = check_yaml_titles(yaml_files)
-    report_similar_tags(yaml_files)
-    remove_duplicate_tags(yaml_files)
-    missing = check_missing_descriptions(yaml_files)
-    raise SystemExit(errors or bool(missing))  # Exit with error if any checks fail
+    errors = check_yaml_files(yaml_files)
+    if not errors:
+        report_similar_tags(yaml_files)
+    raise SystemExit(bool(errors))

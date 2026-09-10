@@ -2,6 +2,7 @@
 #import draw: circle, content, hobby, line
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 
 #let unit = 5
 

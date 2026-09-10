@@ -2,6 +2,7 @@
 #import draw: content, line, on-layer, rect
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 
 #canvas({
   rect(
@@ -19,7 +20,7 @@
   // Enclosure label
   on-layer(1, content(
     "enclosure.north",
-    text(weight: "bold", size: 1.2em)[Kohn-Sham method],
+    text(weight: "bold", size: 16pt)[Kohn-Sham method],
     frame: "rect",
     stroke: .5pt,
     fill: rgb("#cdd3da"),

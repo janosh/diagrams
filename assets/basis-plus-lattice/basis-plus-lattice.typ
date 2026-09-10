@@ -17,6 +17,7 @@
 }
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 14pt)
 
 #let atom(pos, color) = sphere(pos, fill: color)
 
@@ -29,7 +30,7 @@
     atom((motif-x, 0.8), blue)
     atom((motif-x + .5, 1.3), red)
   })
-  content((motif-x, -1), text(size: 10pt)[Motif/Basis])
+  content((motif-x, -1), text(size: 14pt)[Motif/Basis])
 
   // Plus sign
   content((motif-x + 0.45 * spacing, 1), text(size: 22pt)[+])
@@ -46,7 +47,7 @@
       }
     }
   })
-  content((lattice-x + 1, -1), text(size: 10pt)[Point Lattice])
+  content((lattice-x + 1, -1), text(size: 14pt)[Point Lattice])
 
   // Equals sign
   content((lattice-x + 0.72 * spacing, 1), text(size: 22pt)[=])
@@ -61,5 +62,5 @@
       }
     }
   })
-  content((crystal-x + 1.5, -1), text(size: 10pt)[Crystal Structure])
+  content((crystal-x + 1.5, -1), text(size: 14pt)[Crystal Structure])
 })

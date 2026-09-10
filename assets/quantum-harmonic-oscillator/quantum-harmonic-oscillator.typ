@@ -1,9 +1,26 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import "@preview/cetz-plot:0.1.4": plot
+#let label-size = 12pt
+#let paragraph-size = 14pt
+#let heading-size = 16pt
 
-#set page(width: 780pt, height: auto, margin: 22pt, fill: none)
-#set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
-#set par(leading: 0.55em)
+#let card_body(title, body, caption) = block(
+  width: 100%,
+  inset: 12pt,
+  radius: 8pt,
+  fill: rgb("#cdd3da"),
+  breakable: false,
+)[
+  #text(size: heading-size, weight: "bold", title)
+  #v(8pt)
+  // Measure unconstrained artwork before scaling, including content wider than its card.
+  #layout(size => {
+    let artwork = text(size: label-size, body)
+    std.scale(size.width / measure(artwork).width * 100%, reflow: true, artwork)
+  })
+  #v(7pt)
+  #text(size: paragraph-size, caption)
+]
 
 #let card-grid(columns: 2, ..cards) = layout(size => {
   let rows = cards
@@ -11,42 +28,31 @@
     .chunks(columns)
     .map(row => {
       let ratios = row.map(card => {
-        let bounds = measure(card.at(1))
+        let bounds = measure(text(size: label-size, card.at(1)))
         bounds.width / bounds.height
       })
       let available = size.width - 12pt * (row.len() - 1) - 24pt * row.len()
       grid(
         columns: ratios.map(ratio => 24pt + available * ratio / ratios.sum()),
         gutter: 12pt,
-        ..row.map(((title, body, caption)) => block(
-          width: 100%,
-          inset: 12pt,
-          radius: 8pt,
-          fill: rgb("#cdd3da"),
-          breakable: false,
-        )[
-          #text(size: 13pt, weight: "bold", title)
-          #v(8pt)
-          // Fill the available width; each drawing keeps its own aspect ratio.
-          #layout(size => std.scale(
-            size.width / measure(body).width * 100%,
-            reflow: true,
-            body,
-          ))
-          #v(7pt)
-          #caption
-        ]),
+        ..row.map(args => card_body(..args)),
       )
     })
   stack(dir: ttb, spacing: 12pt, ..rows)
 })
-#let takeaway = block.with(
+
+#let takeaway(body) = block(
   width: 100%,
   inset: 12pt,
   radius: 6pt,
   fill: rgb("#c6d8d2"),
   breakable: false,
+  text(size: paragraph-size, body),
 )
+
+#set page(width: 780pt, height: auto, margin: 22pt, fill: none)
+#set text(font: "Avenir Next", size: paragraph-size, fill: rgb("#19324f"))
+#set par(leading: 0.55em)
 
 // Stable coth form preserves the classical limit and avoids exp overflow.
 #let energy-in-quanta(x) = {
@@ -59,7 +65,7 @@
 }
 
 // Both views use the same horizontal variable and plot geometry, but different energy units.
-#let energy-plot(thermal-units: false) = canvas({
+#let energy-plot(thermal-units: false) = canvas(length: 1cm, {
   draw.set-style(legend: (fill: rgb("#cdd3da")))
   plot.plot(
     size: (9, 6),

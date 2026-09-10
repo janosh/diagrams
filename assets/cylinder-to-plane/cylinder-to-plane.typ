@@ -2,6 +2,7 @@
 #import draw: arc, circle, content, line
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 
 #let arrow-style = (
   mark: (end: "stealth", fill: black, scale: 0.7),

@@ -2,6 +2,7 @@
 #import draw: anchor, circle, content, group, line, rotate, set-origin
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 
 // === Circuit symbol toolkit ===
 // Each symbol is a named cetz group carrying its own terminal anchors, so the schematic
@@ -20,7 +21,7 @@
   label-pos: "center",
   label-anchor: "center",
   label-offset: (0, 0),
-  label-size: 8pt,
+  label-size: 12pt,
   rotate-by: 0deg,
   ..styling,
 ) = {
@@ -219,7 +220,7 @@
   radius: 0.3,
   lead: 0.3,
   arrow-offset: 0.7,
-  label-size: 8pt,
+  label-size: 12pt,
   ..opts,
 ) = {
   let arrow-x = -radius * (1 + arrow-offset)
@@ -340,7 +341,7 @@
     rotate-by: 90deg,
     label: $C_L$,
     label-pos: "east",
-    label-offset: (-0.2, -0.5),
+    label-offset: (0.1, -0.55),
     ..thin,
   )
   node(

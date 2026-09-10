@@ -1,0 +1,27 @@
+title: Wannierization and Wannier Centers
+tags:
+  - physics
+  - quantum mechanics
+  - electronic structure
+  - solid state physics
+description: |
+  One combined diagram explains phase alignment, Fourier synthesis, localization, and Wannier centers. Seven Bloch states feed one orbital, with phase arrows showing reinforcement and cancellation. A gauge comparison preserves the total occupied density, while a 30/70 Gaussian mixture and balance diagram place the mean at 0.7a. Applications contrast symmetric Si–Si and polar Ga–As bonding, then illustrate an insulator's polarization response to an electric field.
+
+  The one-band toy model uses seven disjoint normalized cosine orbitals and orthonormal Bloch states in a periodic supercell. Exact single-cell confinement is specific to this model; the brackets show cell ranges, not RMS widths. Gauge probabilities use exp(i 1.5 cos(ka)) and constant phases. Bond clouds are schematic Gaussian mixtures. Individual centers depend on gauge. Polarization changes assume fixed occupations and cell volume along a continuous insulating path; follow centers across cell boundaries and add ionic contributions for total polarization. Entangled bands first require a suitable subspace, and the selected bands must admit localized Wannier functions.
+references:
+  - marzari_2012:
+      title: "Maximally localized Wannier functions: Theory and applications"
+      authors: Nicola Marzari, Arash A. Mostofi, Jonathan R. Yates, Ivo Souza, David Vanderbilt
+      year: 2012
+      doi: 10.1103/RevModPhys.84.1419
+  - marzari_vanderbilt_1997:
+      title: Maximally localized generalized Wannier functions for composite energy bands
+      authors: Nicola Marzari, David Vanderbilt
+      year: 1997
+      doi: 10.1103/PhysRevB.56.12847
+  - wannier90_batio3:
+      title: "Wannier90 tutorial 9: Cubic BaTiO3"
+      url: https://wannier90.readthedocs.io/en/latest/tutorials/tutorial_9/
+  - wannier90_methodology:
+      title: Wannier90 methodology
+      url: https://wannier90.readthedocs.io/en/latest/user_guide/wannier90/methodology/

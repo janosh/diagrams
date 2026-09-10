@@ -2,38 +2,33 @@ import os
 import subprocess
 import sys
 
-sys.path.append(os.path.dirname(__file__))
-
 from convert_assets import pdf_to_svg_png_compressed
 
-# Get name of directory containing the TeX file.
-tex_file = sys.argv[1]
-# Get base path of TeX file, i.e. path without extension.
-base_path = os.path.splitext(tex_file)[0]
-dirname = os.path.dirname(tex_file)
 
-print("Running latexmk to generate PDF from TeX file")
-ret_val = subprocess.run(
-    ["latexmk", "-silent", "-pdf", f"-jobname={base_path}", tex_file],
-    # discard latexmk's chatter (the .log file is printed on CI failure below)
-    stdout=subprocess.DEVNULL,
-    stderr=subprocess.DEVNULL,
-).returncode
+def render_tikz(input_file: str) -> None:
+    """Compile TeX and convert successful output without cleaning up failed builds."""
+    base_path = os.path.splitext(input_file)[0]
 
-if os.getenv("CI") == "true":
-    print("Detected CI=true")
-    if ret_val != 0:
-        with open(f"{base_path}.log", mode="r") as file:
-            print(file.read())
-        raise SystemExit(f"latexmk failed with return code {ret_val}. See log above.")
+    print("Running latexmk to generate PDF from TeX file")
+    subprocess.run(
+        ["latexmk", "-pdf", f"-jobname={base_path}", input_file],
+        check=True,
+    )
 
-print("Delete LaTeX auxiliary files")
-for file in os.listdir(dirname):
-    if file.endswith((".aux", ".log", ".fls", ".fdb_latexmk")):
-        os.remove(f"{dirname}/{file}")
+    print("Delete LaTeX auxiliary files")
+    for suffix in (".aux", ".log", ".fls", ".fdb_latexmk"):
+        auxiliary = f"{base_path}{suffix}"
+        if os.path.isfile(auxiliary):
+            os.remove(auxiliary)
 
-pdf_to_svg_png_compressed(f"{base_path}.pdf")
+    pdf_to_svg_png_compressed(f"{base_path}.pdf")
 
-print("Update readme table listing all figures in assets/")
-# best-effort post-step (assets are already written); don't fail the render if it errors
-subprocess.run([sys.executable, f"{os.path.dirname(__file__)}/update_readme_table.py"])
+
+if __name__ == "__main__":
+    render_tikz(sys.argv[1])
+
+    print("Update readme table listing all figures in assets/")
+    # best-effort post-step (assets are already written); don't fail the render if it errors
+    subprocess.run(
+        [sys.executable, f"{os.path.dirname(__file__)}/update_readme_table.py"]
+    )

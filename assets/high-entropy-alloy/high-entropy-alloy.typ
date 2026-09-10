@@ -17,6 +17,7 @@
 }
 
 #set page(width: auto, height: auto, margin: 5pt, fill: none)
+#set text(size: 12pt)
 
 #let atom(pos, color, radius: 0.3, element: none, name: none) = {
   sphere(pos, radius: radius, fill: color)
@@ -24,7 +25,7 @@
   if element != none {
     content(
       pos,
-      text(fill: white, weight: "bold", size: 10pt)[#element],
+      text(fill: white, weight: "bold", size: 12pt)[#element],
       anchor: "center",
       name: name,
     )

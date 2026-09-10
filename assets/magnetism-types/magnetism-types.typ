@@ -37,7 +37,7 @@
 // Centered small print for panel captions. Pass `width` to make long captions wrap inside
 // their panel instead of running out past its frame; 1 canvas unit is 1cm.
 #let caption-text(body, width: auto) = text(
-  size: 8.5pt,
+  size: 19pt,
   fill: ink.annotation,
   box(width: width, align(center, par(leading: 0.5em, body))),
 )
@@ -200,7 +200,7 @@
 
 #set page(width: auto, height: auto, margin: 8pt, fill: page-fill)
 // Titles and axis labels inherit this, so they have to flip with the background.
-#set text(font: "New Computer Modern", fill: if dark { rgb("#E6EDF3") } else { black })
+#set text(size: 16pt, font: "New Computer Modern", fill: if dark { rgb("#E6EDF3") } else { black })
 
 #let mark-to(color, scale: 0.4) = (end: "stealth", fill: color, stroke: color, scale: scale)
 #let hairline = (paint: ink.hairline, thickness: 0.5pt)
@@ -209,28 +209,28 @@
 #let annotate-mark = mark-to(ink.annotation)
 #let frame-stroke = 0.6pt + (if dark { rgb("#39424E") } else { rgb("#C3CAD2") })
 
-// Landscape matrix so the figure drops onto a 16:9 slide: the three orders that are never
-// mistaken for an altermagnet stack down a narrow left column, and the three collinear orders
+// The three orders that are never mistaken for an altermagnet stack down the left column,
+// and the three collinear orders
 // run as rows against the four observables that tell them apart.
-#let row-y = (3.76, 0.0, -3.76)
-#let frame-half = 1.84
+#let row-y = (7.8, 0.0, -7.8)
+#let frame-half = 3.8
 // panels sit slightly high in their row so the note below them has room
-#let panel-rise = 0.38
-#let note-drop = 0.98
-#let (side-x, side-half) = (-8.5, 2.15)
+#let panel-rise = 0.9
+#let note-drop = 0.75
+#let (side-x, side-half) = (-11, 3.3)
 #let side-text-width = (2 * side-half - 0.3) * 1cm
-#let label-x = -5.8
-#let label-width = 4.0cm
+#let label-x = -6.9
+#let label-width = 4.8cm
 // The four observables the collinear rows are compared across: column center, header, and the
 // note width each one may use. The widths overlap the gutters slightly, which is fine as no
 // two notes collide.
 #let obs-columns = (
-  (x: 0.5, header: [real-space structure], note-width: 3.6cm),
-  (x: 4.0, header: [response $M(H)$], note-width: 2.9cm),
-  (x: 7.9, header: [spin-resolved bands], note-width: 3.8cm),
-  (x: 11.65, header: [spin splitting $Delta(bold(k))$], note-width: 3.0cm),
+  (x: 1, header: [real-space structure], note-width: 4.8cm),
+  (x: 6, header: [response $M(H)$], note-width: 4.6cm),
+  (x: 11.3, header: [spin-resolved bands], note-width: 5.0cm),
+  (x: 16.7, header: [spin splitting $Delta(bold(k))$], note-width: 4.8cm),
 )
-#let (right-x0, right-x1) = (-6.05, 13.3)
+#let (right-x0, right-x1) = (-7.2, 19.3)
 #let right-mid = (right-x0 + right-x1) / 2
 
 #let cell-frame(x0, x1, y) = rect(
@@ -247,8 +247,8 @@
   let tip = mark-to(ink.annotation, scale: 0.3)
   line((-sx - 0.12, 0), (sx + 0.18, 0), stroke: axis-stroke, mark: tip)
   line((0, -sy - 0.12), (0, sy + 0.18), stroke: axis-stroke, mark: tip)
-  content((sx + 0.28, -0.02), text(size: 8pt, fill: ink.annotation)[$H$])
-  content((-0.1, sy + 0.28), text(size: 8pt, fill: ink.annotation)[$M$], anchor: "east")
+  content((sx + 0.28, -0.02), text(size: 16pt, fill: ink.annotation)[$H$])
+  content((-0.1, sy + 0.28), text(size: 16pt, fill: ink.annotation)[$M$], anchor: "east")
   for (func, stroke) in branches {
     plot-curve(func, sx, sy, stroke: stroke)
   }
@@ -269,9 +269,9 @@
     stroke: 2pt + ink.hairline,
     mark: mark-to(ink.hairline, scale: 0.42),
   )
-  content((0.62, 0.72), text(size: 8.5pt, fill: ink.annotation)[$bold(B)$])
+  content((0.62, 0.72), text(size: 16pt, fill: ink.annotation)[$bold(B)$])
   spin((1.12, 0.06), -90deg, len: 0.5, paint: ink.annotation, thickness: 1.2pt)
-  content((1.14, -0.44), text(size: 7.5pt, fill: ink.annotation)[$bold(m)_"orb"$])
+  content((1.14, -0.44), text(size: 16pt, fill: ink.annotation)[$bold(m)_"orb"$])
 }
 
 // The dashed box is load-bearing: it says the vanishing moment is a supercell average, not
@@ -338,10 +338,10 @@
   rect((-band-sx, -band-sy), (band-sx, band-sy), stroke: 0.6pt + ink.hairline)
   line((0, -band-sy), (0, band-sy), stroke: hairline)
   line((-band-sx, 0), (band-sx, 0), stroke: (..hairline, dash: "dashed"))
-  content((band-sx + 0.3, 0), text(size: 8.5pt, fill: ink.annotation)[$E_F$])
+  content((band-sx + 0.3, 0), text(size: 16pt, fill: ink.annotation)[$E_F$])
   content(
     (-band-sx - 0.06, band-sy + 0.04),
-    text(size: 9pt, fill: ink.annotation)[$E$],
+    text(size: 16pt, fill: ink.annotation)[$E$],
     anchor: "south-east",
   )
   for (func, stroke) in bands {
@@ -351,7 +351,7 @@
   // along the two diagonals differ by a reciprocal lattice vector and are the same k point,
   // so naming them M and M' would imply an inequivalence that does not exist.
   for (x, glyph) in ((-band-sx, $(-k, k)$), (0, $Gamma$), (band-sx, $(k, k)$)) {
-    content((x, -band-sy - 0.08), text(size: 8.5pt, fill: ink.annotation, glyph), anchor: "north")
+    content((x, -band-sy - 0.08), text(size: 16pt, fill: ink.annotation, glyph), anchor: "north")
   }
   if split-at != none {
     let ys = bands.map(band => band.at(0)(split-at) * band-sy)
@@ -365,7 +365,7 @@
     )
     content(
       (x + 0.16, (upper + lower) / 2),
-      text(size: 9pt, fill: ink.annotation)[$Delta$],
+      text(size: 16pt, fill: ink.annotation)[$Delta$],
       anchor: "west",
     )
   }
@@ -403,15 +403,15 @@
   }
   content(
     (0, 0),
-    text(size: 8pt, fill: ink.annotation)[$Gamma$],
+    text(size: 16pt, fill: ink.annotation)[$Gamma$],
     frame: "rect",
     fill: if dark { page-fill } else { rgb("#cdd3da") },
     stroke: none,
     padding: 0.5pt,
   )
   contours
-  content((bz-size / 2 + 0.22, 0), text(size: 8.5pt)[$k_x$])
-  content((0, bz-size / 2), text(size: 8.5pt)[$k_y$], anchor: "south")
+  content((bz-size / 2 + 0.22, 0), text(size: 16pt)[$k_x$])
+  content((0, bz-size / 2), text(size: 16pt)[$k_y$], anchor: "south")
 }
 
 #canvas({
@@ -441,13 +441,13 @@
   for (idx, (name, icon, branches, note)) in side.enumerate() {
     let y = row-y.at(idx)
     cell-frame(side-x - side-half, side-x + side-half, y)
-    content((side-x, y + 1.44), text(weight: "bold", size: 11.5pt, name))
+    content((side-x, y + 3.2), text(weight: "bold", size: 21pt, name))
     scope({
-      translate((side-x - 0.88, y + 0.16))
+      translate((side-x - 1.6, y + 0.8))
       icon
     })
     scope({
-      translate((side-x + 1.05, y + 0.16))
+      translate((side-x + 1.5, y + 0.8))
       response-cell(branches, sx: 0.6, sy: 0.44)
     })
     content((side-x, y - 0.66), caption-text(note, width: side-text-width), anchor: "north")
@@ -484,7 +484,7 @@
         line((-1.5 * cell, t-y), (-0.5 * cell, t-y), stroke: annotate, mark: annotate-mark)
         content(
           (-1.5 * cell - 0.12, t-y),
-          text(size: 9.5pt, fill: ink.annotation)[$bold(t)$],
+          text(size: 16pt, fill: ink.annotation)[$bold(t)$],
           anchor: "east",
         )
       },
@@ -513,7 +513,7 @@
           stroke: annotate,
           mark: annotate-mark,
         )
-        content((0, 0), text(size: 9pt, fill: ink.annotation)[$C_4$])
+        content((0, 0), text(size: 16pt, fill: ink.annotation)[$C_4$])
       },
       structure-note: [ligand axes rotated $90degree$],
       branches: linear-response(0.4),
@@ -531,28 +531,36 @@
     ),
   )
 
-  let (banner-y, header-y) = (6.75, 5.85)
+  let (banner-y, header-y) = (16.3, 12.2)
   content(
     (right-mid, banner-y),
-    text(size: 9pt, fill: ink.annotation)[
+    box(width: (right-x1 - right-x0) * 1cm, align(center, text(size: 19pt, fill: ink.annotation)[
       all three rows are collinear; $M(H)$ singles out the ferromagnet, and only the spin
       splitting $Delta(bold(k)) = E_arrow.t (bold(k)) - E_arrow.b (bold(k))$ separates the other two
-    ],
+    ])),
   )
   for col in obs-columns {
-    content((col.x, header-y), text(weight: "bold", size: 9.5pt, col.header))
+    content(
+      (col.x, header-y),
+      box(width: col.note-width, align(center, text(weight: "bold", size: 21pt, col.header))),
+      anchor: "south",
+    )
   }
 
   for (idx, order) in orders.enumerate() {
     let y = row-y.at(idx)
     cell-frame(right-x0, right-x1, y)
     content(
+      (label-x, y + 3.2),
+      text(weight: "bold", size: 21pt, order.name),
+      anchor: "west",
+    )
+    content(
       (label-x, y),
-      box(width: label-width)[
-        #text(weight: "bold", size: 11pt, order.name)
-        #v(2pt)
-        #text(size: 8.5pt, fill: ink.annotation, par(leading: 0.5em, order.subtitle))
-      ],
+      box(width: label-width, text(size: 19pt, fill: ink.annotation, par(
+        leading: 0.5em,
+        order.subtitle,
+      ))),
       anchor: "west",
     )
     let cells = (
@@ -573,8 +581,8 @@
   let frame-bottom = row-y.at(2) - frame-half
 
   content(
-    (right-mid - 1.2, frame-bottom - 0.71),
-    align(center, text(size: 9pt, fill: ink.annotation)[
+    (right-mid - 1.2, frame-bottom - 1.5),
+    box(width: (right-x1 - right-x0) * 1cm, align(center, text(size: 19pt, fill: ink.annotation)[
       #box(width: 12pt, height: 1.5pt, fill: spin-up) #h(2pt) $E_arrow.t$
       #h(9pt)
       #box(width: 12pt, height: 1.5pt, fill: spin-down) #h(2pt) $E_arrow.b$
@@ -585,6 +593,6 @@
       #box(fill: spin-down.transparentize(30%), width: 10pt, height: 7pt) #h(2pt) $Delta < 0$ \
       non-relativistic limit throughout; $M(H)$ axes not to scale across panels;
       $d$-wave altermagnet shown, $g$- and $i$-wave also exist
-    ]),
+    ])),
   )
 })

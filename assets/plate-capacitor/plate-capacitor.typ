@@ -2,6 +2,7 @@
 #import draw: anchor, content, group, line, rect
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 
 #let height = 5
 #let width = 4

@@ -1,6 +1,7 @@
 #import "@preview/plotsy-3d:0.2.1": plot-3d-surface
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 
 #let domain-size = 2
 

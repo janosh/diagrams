@@ -11,7 +11,7 @@
   mark: (end: "stealth", fill: black, scale: 0.2),
   stroke: (thickness: 0.4pt),
 )
-#set text(size: 8pt)
+#set text(size: 12pt)
 
 // TODO this figure needs revisiting to get the gray-shaded areas right without overlaying opaque fills once CetZ implements path clipping
 // https://github.com/cetz-package/cetz/discussions/813#discussioncomment-12218646

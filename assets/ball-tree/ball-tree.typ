@@ -2,7 +2,7 @@
 #import draw: circle, content, line
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
-#set text(size: 10pt) // Set default text size
+#set text(size: 12pt) // Set default text size
 
 #canvas({
   let node-layout = (radius: 0.25, sep: (x: 1.2, y: 1.2))

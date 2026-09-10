@@ -2,6 +2,7 @@
 #import draw: bezier, circle, content, line
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 
 #canvas({
   let top = ("CAA", "AAT", "ATG", "TGG", "GGC")
@@ -15,7 +16,7 @@
         stroke: 1pt,
         name: name,
       )
-      content(name, text(size: .8em, raw(name)))
+      content(name, text(size: 12pt, raw(name)))
     }
   }
 

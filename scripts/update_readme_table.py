@@ -94,15 +94,15 @@ def table_cell(diagram: DiagramInfo | None) -> tuple[str, str]:
         return "", ""
     name, title = diagram.name, diagram.title
     base_path = f"assets/{name}/{name}"
-    suffixes = (".png",) if diagram.preserve_colors else (".png", "-dark.png")
+    suffixes = (".avif",) if diagram.preserve_colors else (".avif", "-dark.avif")
     for suffix in suffixes:
         if not os.path.isfile(f"{ROOT}/{base_path}{suffix}"):
             raise FileNotFoundError(f"Missing README preview: {base_path}{suffix}")
-    image = f'<img alt="{escape(title, quote=True)}" src="{base_path}.png">'
+    image = f'<img alt="{escape(title, quote=True)}" src="{base_path}.avif">'
     if not diagram.preserve_colors:
         image = (
             f'<picture><source media="(prefers-color-scheme: dark)" '
-            f'srcset="{base_path}-dark.png">{image}</picture>'
+            f'srcset="{base_path}-dark.avif">{image}</picture>'
         )
     return (
         f"[{title}]({SITE_URL}/{name}) {get_code_links(name)}",

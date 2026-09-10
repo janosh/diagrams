@@ -1,40 +1,46 @@
 #import "@preview/cetz:0.5.2": canvas, draw
+#let label-size = 12pt
+#let paragraph-size = 14pt
+#let heading-size = 16pt
 
-#set page(width: 780pt, height: auto, margin: 22pt, fill: none)
-#set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
-#set par(leading: 0.55em)
+#let card_body(title, body, caption) = block(
+  width: 100%,
+  inset: 12pt,
+  radius: 8pt,
+  fill: rgb("#cdd3da"),
+  breakable: false,
+)[
+  #text(size: heading-size, weight: "bold", title)
+  #v(8pt)
+  // Measure unconstrained artwork before scaling, including content wider than its card.
+  #layout(size => {
+    let artwork = text(size: label-size, body)
+    std.scale(size.width / measure(artwork).width * 100%, reflow: true, artwork)
+  })
+  #v(7pt)
+  #text(size: paragraph-size, caption)
+]
 
 #let card(title, body, caption) = grid(
   columns: (100%,),
-  block(
-    width: 100%,
-    inset: 12pt,
-    radius: 8pt,
-    fill: rgb("#cdd3da"),
-    breakable: false,
-  )[
-    #text(size: 13pt, weight: "bold", title)
-    #v(8pt)
-    // Fill the available width; each drawing keeps its own aspect ratio.
-    #layout(size => std.scale(
-      size.width / measure(body).width * 100%,
-      reflow: true,
-      body,
-    ))
-    #v(7pt)
-    #caption
-  ],
+  card_body(title, body, caption),
 )
-#let takeaway = block.with(
+
+#let takeaway(body) = block(
   width: 100%,
   inset: 12pt,
   radius: 6pt,
   fill: rgb("#c6d8d2"),
   breakable: false,
+  text(size: paragraph-size, body),
 )
 
+#set page(width: 780pt, height: auto, margin: 22pt, fill: none)
+#set text(font: "Avenir Next", size: paragraph-size, fill: rgb("#19324f"))
+#set par(leading: 0.55em)
+
 // === 1  What is evaluated? ===
-#let figure-0 = canvas({
+#let figure-0 = canvas(length: 1.7cm, {
   let rows = (
     (
       [Classical force field],
@@ -89,6 +95,7 @@
 
 // === 2  What must be validated? ===
 #let figure-1 = [
+  #set text(size: paragraph-size)
   #box(width: 680pt)[#table(
     columns: (1fr, 2fr),
     inset: 9pt,

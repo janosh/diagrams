@@ -6,7 +6,6 @@ import { assert_ok, create_markdown } from 'svelte-widgets/markdown'
 import { readFileSync } from 'node:fs'
 import { make_config } from 'svelte-widgets/vite-config'
 import { yaml_plugin } from 'svelte-widgets/yaml'
-import type { Plugin } from 'vite'
 import type { YamlMetadata } from './src/lib/index.ts'
 
 // passed inline to sveltekit() (Kit >= 2.62) so no separate svelte.config.ts is needed;
@@ -23,17 +22,6 @@ export default {
   resolve: { dedupe: [`svelte`] },
   ...make_config(), // shared lint/fmt/build/staged
   plugins: [
-    {
-      // serve .tex/.typ files as raw text so rolldown doesn't try to parse them as JS
-      name: `raw-text-loader`,
-      enforce: `pre`,
-      load(id) {
-        const clean_id = id.split(`?`)[0]
-        if (clean_id.endsWith(`.tex`) || clean_id.endsWith(`.typ`))
-          return `export default ${JSON.stringify(readFileSync(clean_id, `utf-8`))}`
-        return null
-      },
-    } satisfies Plugin,
     enhancedImages(),
     sveltekit(svelte_config),
     yaml_plugin({
@@ -41,6 +29,19 @@ export default {
       // the client bundle. Vite watches the imported file for metadata and prose edits.
       async transform(data, filename) {
         const metadata = data as YamlMetadata
+        // PNG stores intrinsic dimensions in its IHDR header (before pixel data).
+        // The AVIF is encoded at exactly the same dimensions as this lossless master.
+        if (!metadata.hide) {
+          const png_path = filename.replace(/\.yml$/u, `.png`)
+          const png = readFileSync(png_path)
+          if (
+            png.toString(`hex`, 0, 8) !== `89504e470d0a1a0a` ||
+            png.toString(`ascii`, 12, 16) !== `IHDR`
+          )
+            throw new Error(`Invalid PNG header: ${png_path}`)
+          metadata.image_width = png.readUInt32BE(16)
+          metadata.image_height = png.readUInt32BE(20)
+        }
         const { description } = metadata
         if (!description?.trim()) return { ...metadata, description: null }
         return {

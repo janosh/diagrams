@@ -3,17 +3,13 @@ import shutil
 import subprocess
 import sys
 
-sys.path.append(os.path.dirname(__file__))
-
-from convert_assets import PNG_VARIANTS, finalize_pngs
-
-ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+from convert_assets import PNG_PPI, finalize_assets
 
 
 def render_typst(input_file: str) -> None:
-    """Compile a Typst file to PDF, SVG, and PNG outputs."""
+    """Compile a Typst file to PDF, SVG, PNG, and AVIF outputs."""
     base_path = os.path.splitext(input_file)[0]
-    compile_cmd = ["typst", "compile", "--root", ROOT, input_file]
+    compile_cmd = ["typst", "compile", input_file]
 
     print("Compiling Typst → PDF")
     subprocess.run(compile_cmd, check=True)
@@ -24,13 +20,12 @@ def render_typst(input_file: str) -> None:
     if shutil.which("svgo"):
         subprocess.run(["svgo", "--multipass", svg_path])
 
-    for suffix, ppi in PNG_VARIANTS:
-        print(f"Compiling Typst → PNG ({ppi} ppi)")
-        subprocess.run(
-            [*compile_cmd, f"{base_path}{suffix}", "--pages", "1", "--ppi", ppi],
-            check=True,
-        )
-    finalize_pngs(base_path)
+    print(f"Compiling Typst → PNG ({PNG_PPI} ppi)")
+    subprocess.run(
+        [*compile_cmd, f"{base_path}.png", "--pages", "1", "--ppi", PNG_PPI],
+        check=True,
+    )
+    finalize_assets(base_path)
 
 
 if __name__ == "__main__":

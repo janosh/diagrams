@@ -1,9 +1,26 @@
 #import "@preview/cetz:0.5.2": canvas, draw, matrix
 #import draw: circle, content, line, on-layer, rotate, scale, set-style, set-transform, translate
+#let label-size = 12pt
+#let paragraph-size = 14pt
+#let heading-size = 16pt
 
-#set page(width: 780pt, height: auto, margin: 22pt, fill: none)
-#set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
-#set par(leading: 0.55em)
+#let card_body(title, body, caption) = block(
+  width: 100%,
+  inset: 12pt,
+  radius: 8pt,
+  fill: rgb("#cdd3da"),
+  breakable: false,
+)[
+  #text(size: heading-size, weight: "bold", title)
+  #v(8pt)
+  // Measure unconstrained artwork before scaling, including content wider than its card.
+  #layout(size => {
+    let artwork = text(size: label-size, body)
+    std.scale(size.width / measure(artwork).width * 100%, reflow: true, artwork)
+  })
+  #v(7pt)
+  #text(size: paragraph-size, caption)
+]
 
 #let card-grid(columns: 2, ..cards) = layout(size => {
   let rows = cards
@@ -11,46 +28,35 @@
     .chunks(columns)
     .map(row => {
       let ratios = row.map(card => {
-        let bounds = measure(card.at(1))
+        let bounds = measure(text(size: label-size, card.at(1)))
         bounds.width / bounds.height
       })
       let available = size.width - 12pt * (row.len() - 1) - 24pt * row.len()
       grid(
         columns: ratios.map(ratio => 24pt + available * ratio / ratios.sum()),
         gutter: 12pt,
-        ..row.map(((title, body, caption)) => block(
-          width: 100%,
-          inset: 12pt,
-          radius: 8pt,
-          fill: rgb("#cdd3da"),
-          breakable: false,
-        )[
-          #text(size: 13pt, weight: "bold", title)
-          #v(8pt)
-          // Fill the available width; each drawing keeps its own aspect ratio.
-          #layout(size => std.scale(
-            size.width / measure(body).width * 100%,
-            reflow: true,
-            body,
-          ))
-          #v(7pt)
-          #caption
-        ]),
+        ..row.map(args => card_body(..args)),
       )
     })
   stack(dir: ttb, spacing: 12pt, ..rows)
 })
-#let takeaway = block.with(
+
+#let takeaway(body) = block(
   width: 100%,
   inset: 12pt,
   radius: 6pt,
   fill: rgb("#c6d8d2"),
   breakable: false,
+  text(size: paragraph-size, body),
 )
+
+#set page(width: 780pt, height: auto, margin: 22pt, fill: none)
+#set text(font: "Avenir Next", size: paragraph-size, fill: rgb("#19324f"))
+#set par(leading: 0.55em)
 
 // === 1  A ring of minima ===
 #let figure-0 = [
-  #set text(size: 15pt, fill: black)
+  #set text(fill: black)
 
   #let radius-domain = (0.0, 1.25)
   #let angle-steps = 84
@@ -72,7 +78,7 @@
     )
   }
 
-  #canvas({
+  #canvas(length: 1.55cm, {
     set-transform(matrix.transform-rotate-dir((2.5, 0.6, -2), (0, 1, 0.3)))
     // z must scale positive: negating it turns the hat's central bump into a pit, which
     // puts the symmetric vacuum below the broken one and points the downhill arrow uphill
@@ -150,12 +156,8 @@
     let arrow-radius-stop = 1.02
     let arrow-clearance = 0.05
     let downhill-point(radius-val, theta-deg) = {
-      let theta = theta-deg * 1deg
-      (
-        calc.sin(theta) * radius-val,
-        calc.cos(theta) * radius-val,
-        mexican-hat-height(radius-val) + arrow-clearance,
-      )
+      let (coord_x, coord_y, height) = surface-point(radius-val, theta-deg)
+      (coord_x, coord_y, height + arrow-clearance)
     }
     on-layer(9, {
       // sample the surface profile at a fixed bearing, lifted clear of the mesh
@@ -184,7 +186,7 @@
 ]
 
 // === 2  Radial and angular directions ===
-#let figure-1 = canvas({
+#let figure-1 = canvas(length: 1.63cm, {
   draw.circle((0, 0), radius: 2, stroke: rgb("#008580") + 2pt)
   draw.circle((0, 0), radius: .07, fill: gray)
   draw.circle((2, 0), radius: .12, fill: rgb("#c2570a"))

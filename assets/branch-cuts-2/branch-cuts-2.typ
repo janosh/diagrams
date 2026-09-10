@@ -2,6 +2,7 @@
 #import draw: bezier, content, line
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 
 // Functions for the branch cuts - adjusted to better match the original
 // Increased vertical scaling to spread the curves further apart
@@ -32,22 +33,14 @@
   )
   content((rel: (0.2, 0), to: "y-axis.end"), $"Im"(q_0)$, anchor: "north-west")
 
-  let draw-curve(f, domain: (1, 9), samples: 100, stroke: black) = {
-    let points = ()
+  let draw-curve(func, domain: (1, 9), samples: 100, stroke: black) = {
     let step = (domain.at(1) - domain.at(0)) / samples
-
-    for i in range(samples + 1) {
-      let x = domain.at(0) + i * step
-      let y = f(x)
-      points.push((x, y))
-    }
-
-    for i in range(samples) {
-      line(
-        points.at(i),
-        points.at(i + 1),
-        stroke: stroke,
-      )
+    let points = range(samples + 1).map(idx => {
+      let coord = domain.at(0) + idx * step
+      (coord, func(coord))
+    })
+    for (start, end) in points.windows(2) {
+      line(start, end, stroke: stroke)
     }
   }
 
@@ -57,32 +50,20 @@
   draw-curve(f3, stroke: blue + 2pt)
   draw-curve(f4, stroke: blue + 2pt)
 
-  // Calculate points on the curves for arrow start positions
-  let top-red-x = 4
-  let top-red-y = f2(top-red-x) // Use the second red curve (higher one)
-
-  let bottom-blue-x = 4
-  let bottom-blue-y = f4(bottom-blue-x) // Use the fourth curve (lower blue one)
-
-  // First arrow (from top red curve to origin) - flipped curve direction
-  bezier(
-    (top-red-x, top-red-y), // start point - on the red curve
-    (3.5, 0), // end point - at the origin
-    (3.6, top-red-y * 0.7), // control point - flipped direction
-    stroke: (dash: "dashed", thickness: 1pt),
-    mark: (end: "stealth", fill: black, scale: 0.8),
-    name: "arrow1",
-  )
-  content((rel: (0.15, 0), to: "arrow1.80%"), $k arrow.r 0$, anchor: "west")
-
-  // Second arrow (from bottom blue curve to origin) - flipped curve direction
-  bezier(
-    (bottom-blue-x, bottom-blue-y), // start point - on the lower blue curve
-    (3.5, 0), // end point - at the origin
-    (3.6, bottom-blue-y * 0.7), // control point - flipped direction
-    stroke: (dash: "dashed", thickness: 1pt),
-    mark: (end: "stealth", fill: black, scale: 0.8),
-    name: "arrow2",
-  )
-  content((rel: (-0.15, 0), to: "arrow2.80%"), $k arrow.r 0$, anchor: "east")
+  // Dashed arrows start on the outer curves and approach the real axis.
+  for (func, name, offset, anchor) in (
+    (f2, "arrow1", 0.15, "west"),
+    (f4, "arrow2", -0.15, "east"),
+  ) {
+    let height = func(4)
+    bezier(
+      (4, height),
+      (3.5, 0),
+      (3.6, height * 0.7),
+      stroke: (dash: "dashed", thickness: 1pt),
+      mark: (end: "stealth", fill: black, scale: 0.8),
+      name: name,
+    )
+    content((rel: (offset, 0), to: name + ".80%"), $k arrow.r 0$, anchor: anchor)
+  }
 })

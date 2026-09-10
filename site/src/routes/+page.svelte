@@ -113,7 +113,7 @@
     </button>{/each},<br />
   <button onclick={clear_filters}>{diagrams.length} total</button>,
   <button onclick={() => filter_by_tag(`cetz`)}>
-    {diagrams.filter((diagram) => diagram.code.typst).length}
+    {diagrams.filter((diagram) => diagram.source_types.includes(`typ`)).length}
   </button>
   made with
   <a href="https://cetz-package.github.io/docs/">
@@ -121,7 +121,7 @@
   </a>
   and
   <button onclick={() => filter_by_tag(`tikz`)}>
-    {diagrams.filter((diagram) => diagram.code.tex).length}
+    {diagrams.filter((diagram) => diagram.source_types.includes(`tex`)).length}
   </button>
   made with
   <a href="https://tikz.dev"><Icon icon={LaTeX} />TikZ</a>.
@@ -149,7 +149,7 @@
   <MultiSelect
     options={tags.map(([label, count]) => ({ label, count }))}
     placeholder="Filter by tag..."
-    bind:selected={filters.tags}
+    bind:value={filters.tags}
     style="max-width: 34rem; --sms-bg: var(--input-bg); --sms-options-bg: var(--page-bg)"
   >
     {#snippet option({ option }: { option: ObjectOption })}

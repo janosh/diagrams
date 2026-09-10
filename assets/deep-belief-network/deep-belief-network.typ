@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content, line, rect
 #set page(width: 540pt, height: auto, margin: 20pt, fill: none)
-#set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
+#set text(font: "Avenir Next", size: 14pt, fill: rgb("#19324f"))
 #set par(leading: 0.55em)
 #show math.equation: set text(size: 14pt)
 
@@ -34,7 +34,7 @@
   ) {
     content(
       (205, height),
-      block(width: 225pt)[#text(size: 14pt, weight: "bold", title) #v(6pt) #body],
+      block(width: 225pt)[#text(size: 16pt, weight: "bold", title) #v(6pt) #body],
       anchor: "west",
       padding: 0pt,
     )

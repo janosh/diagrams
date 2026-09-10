@@ -1,8 +1,25 @@
 #import "@preview/cetz:0.5.2": canvas, draw
+#let label-size = 12pt
+#let paragraph-size = 14pt
+#let heading-size = 16pt
 
-#set page(width: 780pt, height: auto, margin: 22pt, fill: none)
-#set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
-#set par(leading: 0.55em)
+#let card_body(title, body, caption) = block(
+  width: 100%,
+  inset: 12pt,
+  radius: 8pt,
+  fill: rgb("#cdd3da"),
+  breakable: false,
+)[
+  #text(size: heading-size, weight: "bold", title)
+  #v(8pt)
+  // Measure unconstrained artwork before scaling, including content wider than its card.
+  #layout(size => {
+    let artwork = text(size: label-size, body)
+    std.scale(size.width / measure(artwork).width * 100%, reflow: true, artwork)
+  })
+  #v(7pt)
+  #text(size: paragraph-size, caption)
+]
 
 #let card-grid(columns: 2, ..cards) = layout(size => {
   let rows = cards
@@ -10,44 +27,32 @@
     .chunks(columns)
     .map(row => {
       let ratios = row.map(card => {
-        let bounds = measure(card.at(1))
+        let bounds = measure(text(size: label-size, card.at(1)))
         bounds.width / bounds.height
       })
       let available = size.width - 12pt * (row.len() - 1) - 24pt * row.len()
       grid(
         columns: ratios.map(ratio => 24pt + available * ratio / ratios.sum()),
         gutter: 12pt,
-        ..row.map(((title, body, caption)) => block(
-          width: 100%,
-          inset: 12pt,
-          radius: 8pt,
-          fill: rgb("#cdd3da"),
-          breakable: false,
-        )[
-          #text(size: 13pt, weight: "bold", title)
-          #v(8pt)
-          // Fill the available width; each drawing keeps its own aspect ratio.
-          #layout(size => std.scale(
-            size.width / measure(body).width * 100%,
-            reflow: true,
-            body,
-          ))
-          #v(7pt)
-          #caption
-        ]),
+        ..row.map(args => card_body(..args)),
       )
     })
   stack(dir: ttb, spacing: 12pt, ..rows)
 })
-#let takeaway = block.with(
+
+#let takeaway(body) = block(
   width: 100%,
   inset: 12pt,
   radius: 6pt,
   fill: rgb("#c6d8d2"),
   breakable: false,
+  text(size: paragraph-size, body),
 )
 
-#let panel-size = 4.5cm
+#set page(width: 780pt, height: auto, margin: 22pt, fill: none)
+#set text(font: "Avenir Next", size: paragraph-size, fill: rgb("#19324f"))
+#set par(leading: 0.55em)
+
 // Unit steps for the square and hexagonal lattice headings.
 #let square-steps = ((1.0, 0.0), (0.0, 1.0), (-1.0, 0.0), (0.0, -1.0))
 #let hexagonal-steps = (
@@ -59,14 +64,14 @@
   (0.5, -calc.sqrt(3.0) / 2.0),
 )
 // Equal-width panels retain their natural aspect ratios.
-#let stage-panels(stages, draw-stage) = grid(
+#let stage-panels(panel-size, stages, draw-stage) = grid(
   columns: stages.len(),
   column-gutter: 14pt,
   row-gutter: 6pt,
   ..stages.map(order => box(width: panel-size, align(center + horizon, draw-stage(order)))),
-  ..stages.map(order => align(center, text(size: 10pt)[$n = #order$])),
+  ..stages.map(order => align(center, text(size: label-size)[$n = #order$])),
 )
-#let curve-stages(stages, steps, rules, axiom, drawing-symbols) = {
+#let curve-stages(panel-size, stages, steps, rules, axiom, drawing-symbols) = {
   let draw-stage(order) = {
     // Repeatedly replace symbols to build the curve path.
     let pattern = regex(rules.keys().join("|"))
@@ -108,11 +113,12 @@
     })
   }
 
-  stage-panels(stages, draw-stage)
+  stage-panels(panel-size, stages, draw-stage)
 }
 
 // === Dragon Curve ===
 #let figure-0 = curve-stages(
+  2cm,
   (5, 9, 13),
   square-steps,
   ("X": "X+YF+", "Y": "-FX-Y"),
@@ -122,6 +128,7 @@
 
 // === Koch Curve ===
 #let figure-1 = curve-stages(
+  7.9cm,
   (2, 3, 4),
   hexagonal-steps,
   ("F": "F+F--F+F"),
@@ -131,6 +138,7 @@
 
 // === 3  Gosper Curve ===
 #let figure-2 = curve-stages(
+  2cm,
   (1, 2, 3),
   hexagonal-steps,
   ("A": "A-B--B+A++AA+B-", "B": "+A-BB--B-A++A+B"),
@@ -141,6 +149,7 @@
 // === 4  Sierpinski Curve ===
 // Even orders keep the same triangle orientation.
 #let figure-3 = curve-stages(
+  2.35cm,
   (2, 4, 6),
   hexagonal-steps,
   ("A": "B-A-B", "B": "A+B+A"),
@@ -150,6 +159,7 @@
 
 // === 5  Sierpinski Carpet ===
 #let figure-4 = [
+  #let panel-size = 3.5cm
   #let stages = (2, 3, 4)
 
   // Subdivide a square into 3×3 cells, drop the center, and recurse until unit cells.
@@ -179,11 +189,12 @@
     canvas(length: panel-size / size, carpet(size))
   }
 
-  #stage-panels(stages, draw-stage)
+  #stage-panels(panel-size, stages, draw-stage)
 ]
 
 // === 6  Eisenstein ===
 #let figure-5 = [
+  #let panel-size = 3.5cm
   // Complex arithmetic for the Eisenstein lattice construction.
   #let complex-multiply(left, right) = (
     left.at(0) * right.at(0) - left.at(1) * right.at(1),
@@ -251,7 +262,7 @@
 
   #let stages = (2, 3, 4)
 
-  #stage-panels(stages, draw-stage)
+  #stage-panels(panel-size, stages, draw-stage)
 ]
 
 Simple repeated rules create intricate shapes. Within each row the iteration increases from left to right; each panel is resized to make its structure visible.

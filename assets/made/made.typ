@@ -5,6 +5,7 @@
 #let node-stroke = 0.8pt
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 
 #canvas({
   let arrow-style = (
@@ -67,9 +68,12 @@
   let mask-base-size = 1.25
   let mask-sep = 2.5
 
-  let draw-mask(x, y, rows, cols, filled-cells) = {
+  // Bounding box, label, and mask grid share one set of dimensions.
+  let mask-box(x, y, rows, cols, filled-cells, label) = {
     let width = mask-base-size * cols / 3
     let height = mask-base-size * rows / 3
+    rect((x - width / 2, y), (x + width / 2, y + height))
+    content((x - width / 2 - 0.8, y + height / 2), label)
     let cell-width = width / cols
     let cell-height = height / rows
     for i in range(cols + 1) {
@@ -96,15 +100,6 @@
         fill: black,
       )
     }
-  }
-
-  // bounding box + left label + the mask grid
-  let mask-box(x, y, rows, cols, filled, label) = {
-    let width = mask-base-size * cols / 3
-    let height = mask-base-size * rows / 3
-    rect((x - width / 2, y), (x + width / 2, y + height))
-    content((x - width / 2 - 0.8, y + height / 2), label)
-    draw-mask(x, y, rows, cols, filled)
   }
 
   mask-box(
@@ -148,24 +143,19 @@
     )
   }
 
-  for (from, tos) in ((0, ()), (1, (0, 1, 2, 3)), (2, (0, 2, 3))) {
-    for to in tos {
-      line("made0-" + str(from), "made1-" + str(to), ..arrow-style)
-    }
-  }
-  for (from, tos) in (
-    (0, (1, 2)),
-    (1, (0, 1, 2, 3)),
-    (2, (1, 2)),
-    (3, (1, 2)),
-  ) {
-    for to in tos {
-      line("made1-" + str(from), "made2-" + str(to), ..arrow-style)
-    }
-  }
-  for (from, tos) in ((0, (0, 2)), (1, (0,)), (2, (0,)), (3, (0, 2))) {
-    for to in tos {
-      line("made2-" + str(from), "made3-" + str(to), ..arrow-style)
+  for (layer_idx, connections) in (
+    ((), (0, 1, 2, 3), (0, 2, 3)),
+    ((1, 2), (0, 1, 2, 3), (1, 2), (1, 2)),
+    ((0, 2), (0,), (0,), (0, 2)),
+  ).enumerate() {
+    for (from_idx, destinations) in connections.enumerate() {
+      for to_idx in destinations {
+        line(
+          "made" + str(layer_idx) + "-" + str(from_idx),
+          "made" + str(layer_idx + 1) + "-" + str(to_idx),
+          ..arrow-style,
+        )
+      }
     }
   }
 
@@ -181,18 +171,13 @@
 
   let label-size = 1.5em
   let bottom-y = -1.5
-  content((fcnn-x, bottom-y), text(
-    weight: "bold",
-    size: label-size,
-  )[autoencoder])
-  content((mask-x - 2, bottom-y), text(
-    weight: "bold",
-    size: label-size,
-  )[$times$])
-  content((mask-x, bottom-y), text(weight: "bold", size: label-size)[masks])
-  content((mask-x + 2, bottom-y), text(
-    weight: "bold",
-    size: label-size,
-  )[$arrow.r$])
-  content((made-x, bottom-y), text(weight: "bold", size: label-size)[MADE])
+  for (center_x, label) in (
+    (fcnn-x, [autoencoder]),
+    (mask-x - 2, [$times$]),
+    (mask-x, [masks]),
+    (mask-x + 2, [$arrow.r$]),
+    (made-x, [MADE]),
+  ) {
+    content((center_x, bottom-y), text(weight: "bold", size: label-size, label))
+  }
 })

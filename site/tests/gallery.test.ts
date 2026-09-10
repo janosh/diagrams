@@ -1,22 +1,66 @@
 import { render } from 'svelte/server'
 import { execFileSync } from 'node:child_process'
+import { readFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import { expect, it, vi } from 'vitest'
 import { gallery_count_for } from '../src/lib/gallery'
 import euler_angles from '../../assets/euler-angles/euler-angles.yml'
 import euler_angles_source from '../../assets/euler-angles/euler-angles.typ?raw'
+import euler_angles_tex from '../../assets/euler-angles/euler-angles.tex?raw'
 import Layout from '../src/routes/+layout.svelte'
+import { load } from '../src/routes/[slug]/+page.server'
 import config from '../vite.config'
 
-vi.mock(`$lib`, () => ({
-  diagrams: [
-    { slug: `euler-angles`, title: `Euler Angles` },
+vi.mock(`$lib`, () => {
+  const diagrams = [
+    { slug: `euler-angles`, title: `Euler Angles`, source_types: [`typ`, `tex`] },
     { slug: `euler-angles-alternative`, title: `Euler Angles` },
-  ],
-}))
+    {
+      slug: `which-band-gap-do-you-mean`,
+      title: `Which Band Gap Do You Mean?`,
+      source_types: [`typ`],
+    },
+  ]
+  return { diagrams, sorted_diagrams: diagrams }
+})
 vi.mock(`$app/navigation`, () => ({ goto: vi.fn() }))
 
 it(`renders the gallery command menu with unique IDs even when titles repeat`, () => {
   expect(() => render(Layout)).not.toThrow()
+})
+
+it(`loads only the requested diagram and rejects unknown slugs`, async () => {
+  const event = { params: { slug: `euler-angles` } } as Parameters<typeof load>[0]
+  expect(await load(event)).toEqual({
+    diagram: {
+      slug: `euler-angles`,
+      title: `Euler Angles`,
+      source_types: [`typ`, `tex`],
+      sources: [
+        { ext: `typ`, code: euler_angles_source },
+        { ext: `tex`, code: euler_angles_tex },
+      ],
+    },
+  })
+  event.params.slug = `which-band-gap-do-you-mean`
+  expect(await load(event)).toMatchObject({
+    diagram: {
+      slug: event.params.slug,
+      sources: [
+        {
+          ext: `typ`,
+          code: typst_sources[
+            `../../assets/${event.params.slug}/${event.params.slug}.typ`
+          ],
+        },
+      ],
+    },
+  })
+  event.params.slug = `unknown`
+  await expect(Promise.resolve().then(() => load(event))).rejects.toMatchObject({
+    status: 404,
+    body: { message: `Page 'unknown' not found` },
+  })
 })
 
 it(`loads YAML metadata with string dates and rendered descriptions`, () => {
@@ -28,17 +72,42 @@ it(`loads YAML metadata with string dates and rendered descriptions`, () => {
   )
 })
 
-it(`keeps diagram sources standalone with only package imports`, () => {
-  const sources = import.meta.glob<string>(`../../assets/**/*.typ`, {
-    eager: true,
-    query: `?raw`,
-    import: `default`,
-  })
-  expect(Object.keys(sources).length).toBeGreaterThan(0)
-  for (const [path, source] of Object.entries(sources)) {
+const typst_sources = import.meta.glob<string>(`../../assets/**/*.typ`, {
+  eager: true,
+  query: `?raw`,
+  import: `default`,
+})
+
+const compound_sources = Object.entries(typst_sources).filter(([, source]) =>
+  source.includes(`#let card_body(`),
+)
+
+it(`keeps gallery sources standalone with only package imports`, () => {
+  expect(compound_sources.length).toBeGreaterThan(0)
+  for (const [path, source] of Object.entries(typst_sources)) {
+    expect(source, path).toBe(readFileSync(new URL(path, import.meta.url), `utf-8`))
     expect(source, path).not.toMatch(/#(?:import|include)\s+["'](?!@)/u)
   }
 })
+
+it.each(compound_sources)(
+  `compiles copied %s without repository files`,
+  // The fractal atlas can exceed 25 seconds; allow a minute for each compilation.
+  { timeout: 65_000 },
+  (_path, source) => {
+    const svg = execFileSync(
+      `typst`,
+      [`compile`, `--format`, `svg`, `--pages`, `1`, `-`, `-`],
+      {
+        input: source,
+        cwd: tmpdir(),
+        timeout: 60_000,
+        maxBuffer: 32 * 1024 ** 2,
+      },
+    )
+    expect(svg.toString()).toMatch(/^<svg\b/u)
+  },
+)
 
 // A cold Typst package cache can exceed Vitest's default five-second limit in CI.
 it(`renders coincident Euler axes without zero-length arcs`, { timeout: 30_000 }, () => {
@@ -60,9 +129,11 @@ it(`keeps visible gallery entries complete and internal links resolvable after c
   const visible = new Set(visible_entries.map(([path]) => path.split(`/`).at(-2)))
   for (const [path, data] of visible_entries) {
     const base = path.slice(0, -4)
-    for (const extension of [`.png`, `-hd.png`, `.pdf`]) {
+    for (const extension of [`.avif`, `.png`, `.pdf`]) {
       expect(files.has(`${base}${extension}`), `${path}: missing ${extension}`).toBe(true)
     }
+    expect(files.has(`${base}-hd.png`), `${path}: obsolete HD suffix`).toBe(false)
+    expect(files.has(`${base}-dark.png`), `${path}: obsolete dark PNG`).toBe(false)
     expect(files.has(`${base}.typ`) || files.has(`${base}.tex`), path).toBe(true)
     for (const match of (data.description ?? ``).matchAll(
       /href="(?:\.\.\/|https:\/\/(?:diagrams\.janosh\.dev|janosh\.github\.io\/diagrams)\/)(?<slug>[^/"#?]+)(?:["#?])/gu,
@@ -122,7 +193,9 @@ it.each([
   [`---\n\n**Visible**`, `<hr>\n<p><strong>Visible</strong></p>\n`],
   [
     `---\ntitle: Keep me\n---\nAfter`,
-    `<hr>\n<h2 id="title-keep-me">title: Keep me</h2>\n<p>After</p>\n`,
+    expect.stringMatching(
+      /^<hr>\n<h2 id="title-keep-me">title: Keep me<a data-heading-anchor[^>]* href="#title-keep-me">[\s\S]+<\/a><\/h2>\n<p>After<\/p>\n$/u,
+    ),
   ],
   [`  `, null],
 ])(`renders YAML description %j without frontmatter`, async (description, expected) => {
@@ -131,13 +204,18 @@ it.each([
     throw new Error(`Missing YAML transform`)
   const result = await plugin.transform(
     JSON.stringify({ title: `Example`, description }),
-    `/assets/example/example.yml`,
+    `${import.meta.dirname}/../../assets/complex-sign-function/complex-sign-function.yml`,
   )
   if (!result) throw new Error(`Expected YAML module`)
   const { default: data } = await import(
     /* @vite-ignore */ `data:text/javascript,${encodeURIComponent(result.code)}`
   )
-  expect(data).toEqual({ title: `Example`, description: expected })
+  expect(data).toEqual({
+    title: `Example`,
+    description: expected,
+    image_width: 4333,
+    image_height: 3402,
+  })
 })
 
 it.each([

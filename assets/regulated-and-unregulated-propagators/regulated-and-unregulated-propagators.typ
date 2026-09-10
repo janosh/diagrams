@@ -1,38 +1,44 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content, line, mark
+#let label-size = 12pt
+#let paragraph-size = 14pt
+#let heading-size = 16pt
 
-#set page(width: 780pt, height: auto, margin: 22pt, fill: none)
-#set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
-#set par(leading: 0.55em)
+#let card_body(title, body, caption) = block(
+  width: 100%,
+  inset: 12pt,
+  radius: 8pt,
+  fill: rgb("#cdd3da"),
+  breakable: false,
+)[
+  #text(size: heading-size, weight: "bold", title)
+  #v(8pt)
+  // Measure unconstrained artwork before scaling, including content wider than its card.
+  #layout(size => {
+    let artwork = text(size: label-size, body)
+    std.scale(size.width / measure(artwork).width * 100%, reflow: true, artwork)
+  })
+  #v(7pt)
+  #text(size: paragraph-size, caption)
+]
 
 #let card(title, body, caption) = grid(
   columns: (100%,),
-  block(
-    width: 100%,
-    inset: 12pt,
-    radius: 8pt,
-    fill: rgb("#cdd3da"),
-    breakable: false,
-  )[
-    #text(size: 13pt, weight: "bold", title)
-    #v(8pt)
-    // Fill the available width; each drawing keeps its own aspect ratio.
-    #layout(size => std.scale(
-      size.width / measure(body).width * 100%,
-      reflow: true,
-      body,
-    ))
-    #v(7pt)
-    #caption
-  ],
+  card_body(title, body, caption),
 )
-#let takeaway = block.with(
+
+#let takeaway(body) = block(
   width: 100%,
   inset: 12pt,
   radius: 6pt,
   fill: rgb("#c6d8d2"),
   breakable: false,
+  text(size: paragraph-size, body),
 )
+
+#set page(width: 780pt, height: auto, margin: 22pt, fill: none)
+#set text(font: "Avenir Next", size: paragraph-size, fill: rgb("#19324f"))
+#set par(leading: 0.55em)
 
 // Diagonal hatching marking a vertex as dressed rather than bare.
 #let hatched = tiling(size: (.1cm, .1cm))[
@@ -44,17 +50,19 @@
 // off-diagram vertex captions.
 #let leader = (paint: rgb("#78828C"), thickness: 0.5pt)
 
+// Dressed vertices use hatching; trailing options position their labels.
+#let dressed_vertex(pos, label, offset, radius: 0.25, stroke: 0.5pt, name: none, ..style) = {
+  circle(pos, radius: radius, fill: hatched, name: name, stroke: stroke)
+  content((rel: offset, to: pos), $#label$, ..style)
+}
+
 // === 1  Recognize the two topologies ===
 #let figure-0 = [
 
   #let radius = 1 // \radius in original
-  // Dressed vertices use hatching; trailing options position their labels.
-  #let vertex(pos, label, offset, radius: 0.25 * radius, name: none, ..style) = {
-    circle(pos, radius: radius, fill: hatched, name: name, stroke: auto)
-    content((rel: offset, to: pos), $#label$, anchor: "south", ..style)
-  }
+  #let vertex = dressed_vertex.with(radius: 0.25 * radius, stroke: auto, anchor: "south")
 
-  #canvas({
+  #canvas(length: 2.63cm, {
     // Gamma^(3) loop: two dressed three-point vertices on the external legs
     circle((0, 0), radius: radius, stroke: 1pt, name: "loop")
     line((-2 * radius, 0), (-radius, 0), stroke: 1pt, name: "left-external")
@@ -81,11 +89,7 @@
 
   #let radius = 1.25
   #let med-rad = 0.175 * radius
-  // Dressed vertices use hatching; trailing options position their labels.
-  #let vertex(pos, label, offset, radius: 0.15 * radius, name: none, ..style) = {
-    circle(pos, radius: radius, fill: hatched, name: name, stroke: 0.5pt)
-    content((rel: offset, to: pos), $#label$, ..style)
-  }
+  #let vertex = dressed_vertex.with(radius: 0.15 * radius)
   // Momentum labels and arrowheads around the loop; fractions set their positions.
   #let momenta(momenta) = {
     for (idx, fraction) in momenta {
@@ -93,7 +97,7 @@
       // trail the label a few degrees behind its arrowhead
       let lag = turn - 3deg
       let offset = ((0.75 * radius) * calc.cos(lag), (0.75 * radius) * calc.sin(lag))
-      content((rel: offset, to: "loop"), $p_#idx$, size: 8pt)
+      content((rel: offset, to: "loop"), $p_#idx$, size: label-size)
       mark(
         (name: "loop", anchor: turn),
         (name: "loop", anchor: turn + 1deg),
@@ -126,7 +130,7 @@
   #stack(
     dir: ltr,
     spacing: 12pt,
-    canvas({
+    canvas(length: 1.61cm, {
       circle((0, 0), radius: radius, stroke: 1pt, name: "loop")
       momenta(((1, 0.125), (2, 0.375), (3, 0.625), (4, 0.875)))
 
@@ -149,7 +153,7 @@
         circle((side * radius, 0), radius: med-rad, fill: hatched, stroke: 0.5pt)
       }
     }),
-    canvas({
+    canvas(length: 1.61cm, {
       circle((0, 0), radius: radius, stroke: 1pt, name: "loop")
       momenta(((1, 0), (2, 0.5)))
 
@@ -191,11 +195,7 @@
 
   #let radius = 1.25 // \lrad in original
   #let med-rad = 0.13 * radius
-  // Dressed vertices use hatching; trailing options position their labels.
-  #let vertex(pos, label, offset, radius: 0.1 * radius, name: none, ..style) = {
-    circle(pos, radius: radius, fill: hatched, name: name, stroke: 0.5pt)
-    content((rel: offset, to: pos), $#label$, ..style)
-  }
+  #let vertex = dressed_vertex.with(radius: 0.1 * radius)
   #let q-arrow = (
     mark: (end: "barbed", fill: black, scale: .5, width: .25, length: .2, angle: 60deg),
     stroke: .5pt,
@@ -213,7 +213,7 @@
       // trail the label a few degrees behind its arrowhead
       let lag = turn - 3deg
       let offset = ((0.75 * radius) * calc.cos(lag), (0.75 * radius) * calc.sin(lag))
-      content((rel: offset, to: "main-loop"), $p_#idx$, size: 8pt)
+      content((rel: offset, to: "main-loop"), $p_#idx$, size: label-size)
       mark(
         (name: "main-loop", anchor: turn),
         (name: "main-loop", anchor: turn + 0.1deg),
@@ -268,7 +268,7 @@
   #stack(
     dir: ltr,
     spacing: 12pt,
-    canvas({
+    canvas(length: 1.02cm, {
       circle((0, 0), radius: radius, stroke: 1pt, name: "main-loop")
       loop-momenta(((6, 0.0625), (1, 0.1875), (2, 0.3125), (3, 0.4375), (4, 0.625), (5, 0.875)))
 
@@ -288,7 +288,7 @@
         0,
       )))
     }),
-    canvas({
+    canvas(length: 1.02cm, {
       circle((0, 0), radius: radius, stroke: 1pt, name: "main-loop")
       loop-momenta(((6, 0.125), (3, 0.375), (4, 0.5625), (1, 0.6875), (2, 0.8125), (5, 0.9375)))
 
@@ -313,7 +313,7 @@
         "vertex-right-external",
       )
     }),
-    canvas({
+    canvas(length: 1.02cm, {
       circle((0, 0), radius: radius, stroke: 1pt, name: "main-loop")
       loop-momenta(((1, 0.125), (2, 0.375), (3, 0.625), (4, 0.875)))
 

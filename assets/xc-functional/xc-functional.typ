@@ -11,7 +11,7 @@
 // https://dft.uci.edu/pubs/B97.pdf (XC holes),
 // https://www.bristol.ac.uk/physics/media/theory-theses/archer-aj-thesis.pdf (chapter 2).
 #set page(width: auto, height: auto, margin: 0pt, fill: none)
-#set text(font: "Avenir Next", size: 14pt, fill: rgb("#22334B"))
+#set text(font: "Avenir Next", size: 18pt, fill: rgb("#22334B"))
 #set par(leading: 0.5em)
 #set math.equation(numbering: none)
 
@@ -24,7 +24,7 @@
 #let pale_blue = rgb("#c8d3e2")
 #let pale_orange = rgb("#e1d3c9")
 
-#let label(left, top, width, body, size: 14pt, color: ink, weight: "regular", centered: false) = {
+#let label(left, top, width, body, size: 16pt, color: ink, weight: "regular", centered: false) = {
   content(
     (left, -top),
     block(width: width * 1pt)[
@@ -143,14 +143,16 @@
     size: 18pt,
     color: color,
   )
-  label(left - 15, baseline - 8, 13, [0], size: 11pt, color: muted)
-  label(left + 130, top + 94, 90, [separation →], size: 11pt, color: muted)
-  label(left + 76, top + 65, 75, [deficit], size: 11pt, color: color)
-  if kind == "correlation" { label(left + 99, top + 2, 90, [excess], size: 11pt, color: teal) }
+  label(left - 15, baseline - 8, 13, [0], size: 16pt, color: muted)
+  label(left + 110, top + 94, 110, [separation →], size: 16pt, color: muted)
+  label(left + 76, top + 65, 75, [deficit], size: 16pt, color: color)
+  if kind == "correlation" { label(left + 99, top + 2, 90, [excess], size: 16pt, color: teal) }
 }
 
+#let centered_label = label.with(centered: true)
+
 #canvas(length: 1pt, {
-  rect((0, -51), (1100, -1225), fill: none, stroke: none)
+  rect((0, -51), (1100, -1550), fill: none, stroke: none)
   rect((0, -51), (1100, -59), fill: teal, stroke: none)
   label(
     32,
@@ -166,7 +168,7 @@
     110,
     1036,
     [A *functional* maps the whole density to an energy. Kohn-Sham uses *noninteracting electrons at the same density*.],
-    size: 13.5pt,
+    size: 18pt,
   )
   translate((0, -40))
 
@@ -178,7 +180,7 @@
     (935, [$E_"xc"$], [the missing correction], purple),
   ) {
     label(center_x - 100, 200, 200, title, size: 29pt, color: color, centered: true)
-    label(center_x - 115, 234, 230, caption, size: 13pt, color: color, centered: true)
+    label(center_x - 115, 234, 230, caption, size: 18pt, color: color, centered: true)
   }
   // Orbital wave: Ts is already quantum.
   line((103, -178), (237, -178), stroke: 0.7pt + teal.lighten(65%))
@@ -187,7 +189,7 @@
     -159 + 18 * calc.sin(idx / 100 * 4 * calc.pi),
   ))
   line(..wave_points, stroke: 2.8pt + teal)
-  label(107, 117, 130, [already quantum], size: 11pt, color: teal, centered: true)
+  label(107, 117, 130, [already quantum], size: 16pt, color: teal, centered: true)
   // Electron-nucleus attraction.
   nucleus(390, 156, radius: 15)
   electron(468, 156, radius: 11)
@@ -204,26 +206,25 @@
   centered_symbol(955, 155, [$c$], color: orange)
   label(20, 203, 89, [$E[n] =$], size: 23pt)
   for center_x in (297, 552, 807) { label(center_x - 10, 202, 28, [$+$], size: 25pt, color: muted) }
-  label(
+  centered_label(
     30,
     270,
     1040,
     [$E_"xc" = underbrace(T - T_s, "kinetic correction") + underbrace(V_(e e) - E_H, "interaction correction") = E_x + E_c$],
     size: 23pt,
     color: purple,
-    centered: true,
   )
 
   // === Exchange: swapping amplitudes and the same-spin hole ===
-  panel(28, 323, 514, 466, pale_blue)
-  panel(558, 323, 514, 466, pale_orange)
+  panel(28, 323, 514, 506, pale_blue)
+  panel(558, 323, 514, 506, pale_orange)
   label(49, 339, 468, [EXCHANGE], size: 25pt, color: blue, weight: "bold")
   label(
     49,
     377,
     468,
     [Antisymmetry: swapping fermions changes the sign.],
-    size: 13.5pt,
+    size: 18pt,
     color: blue,
   )
 
@@ -232,60 +233,45 @@
   curve((130, -419), (255, -419), (159, -390), (226, -390), color: blue)
   curve((256, -463), (133, -463), (227, -490), (164, -490), color: blue)
   centered_symbol(193.5, 441, [swap], size: 15pt, color: blue)
-  label(100, 474, 51, [$bold(r)_1$], size: 13pt, centered: true)
-  label(240, 474, 51, [$bold(r)_2$], size: 13pt, centered: true)
+  label(100, 474, 51, [$bold(r)_1$], size: 16pt, centered: true)
+  label(240, 474, 51, [$bold(r)_2$], size: 16pt, centered: true)
   centered_symbol(418.5, 441, [$Psi -> -Psi$], size: 27pt, color: blue)
-  label(328, 460, 181, [same position → $Psi = 0$], size: 13pt, centered: true)
-  label(
+  label(328, 460, 181, [same position → $Psi = 0$], size: 16pt, centered: true)
+  centered_label(
     56,
     510,
     457,
-    [Pauli exclusion • same spin only • present in one determinant],
-    size: 12.5pt,
+    [Pauli exclusion • same spin only • one determinant],
+    size: 18pt,
     color: blue,
-    centered: true,
   )
 
-  label(
+  centered_label(
     63,
     532,
     443,
     [Opposite-spin pairs have no exchange hole.],
-    size: 11.5pt,
+    size: 18pt,
     color: blue,
-    centered: true,
   )
 
-  density_map(142, 621)
-  label(59, 702, 166, [same-spin probability], size: 11pt, color: blue, centered: true)
-  hole_plot(282, 563, "exchange", blue)
-  label(
-    270,
-    678,
-    247,
+  // Both holes use the same map, integral, and summary layout.
+  let hole_summary(offset, kind, color, probability, integral, summary, footer) = {
+    density_map(142 + offset, 646, kind: kind, color: color)
+    label(59 + offset, 727, 166, probability, size: 16pt, color: color, centered: true)
+    hole_plot(282 + offset, 588, kind, color)
+    label(270 + offset, 703, 247, integral, size: 23pt, color: color, centered: true)
+    label(63 + offset, 760, 443, summary, size: 20pt, weight: "bold", color: color, centered: true)
+    label(63 + offset, 793, 443, footer, size: 18pt, color: muted, centered: true)
+  }
+  hole_summary(
+    0,
+    "exchange",
+    blue,
+    [same-spin probability],
     [$integral h_x dif^3 bold(r)' = -1$],
-    size: 23pt,
-    color: blue,
-    centered: true,
-  )
-  label(
-    63,
-    735,
-    443,
     [One missing electron. No extra force.],
-    size: 16pt,
-    weight: "bold",
-    color: blue,
-    centered: true,
-  )
-  label(
-    63,
-    763,
-    443,
     [The hole persists without Coulomb repulsion.],
-    size: 12pt,
-    color: muted,
-    centered: true,
   )
 
   // === Correlation: three recognizable physical mechanisms ===
@@ -295,7 +281,7 @@
     377,
     468,
     [Joint probabilities beyond the KS determinant.],
-    size: 13.5pt,
+    size: 18pt,
     color: orange,
   )
   // Dynamic correlation: spatial avoidance.
@@ -304,8 +290,8 @@
   electron(646, 447, spin: "down", color: orange)
   connect((603, -447), (582, -447), color: orange)
   connect((657, -447), (678, -447), color: orange)
-  label(573, 492, 140, [DYNAMIC], size: 12.5pt, weight: "bold", color: orange, centered: true)
-  label(573, 514, 140, [short-range avoidance\ and screening], size: 11.5pt, centered: true)
+  label(573, 484, 140, [DYNAMIC], size: 20pt, weight: "bold", color: orange, centered: true)
+  label(554, 510, 178, [short-range\ avoidance and\ screening], size: 18pt, centered: true)
 
   // Static correlation: the two separated-atom spin configurations of a singlet.
   for (row_y, first_spin, second_spin) in ((424, "up", "down"), (469, "down", "up")) {
@@ -316,14 +302,13 @@
     electron(829, row_y, spin: second_spin, color: orange, radius: 10)
   }
   centered_symbol(794, 447, [$-$], size: 19pt)
-  label(724, 492, 140, [STATIC], size: 12.5pt, weight: "bold", color: orange, centered: true)
-  label(
+  label(724, 484, 140, [STATIC], size: 20pt, weight: "bold", color: orange, centered: true)
+  centered_label(
     718,
-    514,
+    510,
     151,
-    [several configurations\ stretched-bond singlet],
-    size: 11.5pt,
-    centered: true,
+    [stretched-bond\ singlet: several\ configurations],
+    size: 18pt,
   )
 
   // Dispersion: correlated instantaneous dipoles, not permanent ones.
@@ -334,184 +319,149 @@
     connect((center_x - 17, -478), (center_x + 23, -478), color: orange)
   }
   line((956, -445), (978, -445), stroke: (paint: orange, thickness: 1.4pt, dash: "dashed"))
-  label(890, 492, 155, [DISPERSION], size: 12.5pt, weight: "bold", color: orange, centered: true)
-  label(
+  label(890, 484, 155, [DISPERSION], size: 20pt, weight: "bold", color: orange, centered: true)
+  centered_label(
     883,
-    514,
+    510,
     170,
-    [coupled fluctuations\ even at zero temperature],
-    size: 11.5pt,
-    centered: true,
+    [coupled\ fluctuations, even\ at zero temperature],
+    size: 18pt,
   )
 
-  density_map(672, 621, kind: "correlation", color: orange)
-  label(589, 702, 166, [change in probability], size: 11pt, color: orange, centered: true)
-  hole_plot(812, 563, "correlation", orange)
-  label(
-    800,
-    678,
-    247,
+  hole_summary(
+    530,
+    "correlation",
+    orange,
+    [change in probability],
     [$integral h_c dif^3 bold(r)' = 0$],
-    size: 23pt,
-    color: orange,
-    centered: true,
-  )
-  label(
-    593,
-    735,
-    443,
     [Same-spin and opposite-spin pairs.],
-    size: 16pt,
-    weight: "bold",
-    color: orange,
-    centered: true,
-  )
-  label(
-    593,
-    763,
-    443,
     [A near deficit is balanced by an excess farther away.],
-    size: 12pt,
-    color: muted,
-    centered: true,
   )
 
   // === Compact energy ledger: preserve the kinetic correction ===
-  label(
+  centered_label(
     47,
-    807,
+    847,
     484,
     [$E_x = chevron.l Phi_s bar.v hat(V)_(e e) bar.v Phi_s chevron.r - E_H <= 0$],
     size: 21pt,
     color: blue,
-    centered: true,
   )
-  label(
+  centered_label(
     577,
-    802,
+    842,
     477,
     [$E_c = underbrace(T - T_s, T_c >= 0) + underbrace(V_(e e) - E_H - E_x, U_c) <= 0$],
     size: 22pt,
     color: orange,
-    centered: true,
   )
-  label(
+  centered_label(
     45,
-    846,
+    886,
     485,
     [$Phi_s$: antisymmetric KS orbital state. $T$, $V_(e e)$: exact interacting values at the same density.],
-    size: 11.5pt,
+    size: 18pt,
     color: muted,
-    centered: true,
   )
-  label(
+  centered_label(
     580,
-    861,
+    901,
     475,
     [Correlation balances reduced repulsion against a kinetic cost.],
-    size: 12pt,
+    size: 18pt,
     color: orange,
-    centered: true,
   )
 
   // === The sum rule: the picture to remember ===
-  panel(28, 900, 1044, 69, rgb("#d2ccde"))
-  label(45, 914, 275, [ONE REFERENCE ELECTRON], size: 13pt, color: purple, weight: "bold")
-  label(45, 941, 275, [Only $N - 1$ others remain.], size: 12pt, color: purple)
-  label(336, 916, 397, [$n_"cond" = n + h_x + h_c$], size: 26pt, color: purple, centered: true)
-  label(758, 914, 285, [net hole: $-1 + 0 = -1$], size: 23pt, color: purple, centered: true)
-  label(
+  panel(28, 980, 1044, 100, rgb("#d2ccde"))
+  label(45, 994, 275, [ONE REFERENCE ELECTRON], size: 20pt, color: purple, weight: "bold")
+  label(45, 1048, 275, [Only $N - 1$ others remain.], size: 18pt, color: purple)
+  label(336, 996, 397, [$n_"cond" = n + h_x + h_c$], size: 26pt, color: purple, centered: true)
+  label(758, 994, 285, [net hole: $-1 + 0 = -1$], size: 23pt, color: purple, centered: true)
+  centered_label(
     758,
-    948,
+    1028,
     285,
     [probability deficit, not an empty cavity],
-    size: 10.5pt,
+    size: 18pt,
     color: muted,
-    centered: true,
   )
 
   // === Classical contrast, exact one-electron check, and the KS feedback loop ===
-  label(34, 991, 310, [CLASSICAL CHARGES], size: 13pt, color: teal, weight: "bold")
-  electron(70, 1038, color: teal, radius: 12)
-  electron(132, 1038, color: teal, radius: 12)
-  connect((50, -1038), (30, -1038), color: teal)
-  connect((151, -1038), (165, -1038), color: teal)
-  label(36, 1061, 152, [correlated positions], size: 11pt, color: teal, centered: true)
-  label(179, 1016, 172, [Correlation: *yes*\ Pauli exchange: *no*], size: 13pt, color: teal)
+  label(34, 1110, 310, [CLASSICAL CHARGES], size: 20pt, color: teal, weight: "bold")
+  electron(70, 1170, color: teal, radius: 12)
+  electron(132, 1170, color: teal, radius: 12)
+  connect((50, -1170), (30, -1170), color: teal)
+  connect((151, -1170), (165, -1170), color: teal)
+  label(36, 1200, 152, [correlated positions], size: 18pt, color: teal, centered: true)
+  label(179, 1150, 172, [Correlation: *yes*\ Pauli exchange: *no*], size: 18pt, color: teal)
 
-  label(
+  centered_label(
     383,
-    991,
+    1110,
     258,
-    [ONE ELECTRON: NO SELF-REPULSION],
-    size: 11.5pt,
+    [ONE ELECTRON\ NO SELF-REPULSION],
+    size: 20pt,
     color: purple,
     weight: "bold",
-    centered: true,
   )
-  electron(410, 1038, color: purple, radius: 12)
-  label(
+  electron(410, 1170, color: purple, radius: 12)
+  centered_label(
     385,
-    1074,
+    1220,
     260,
     [Approximate XC can violate this cancellation.],
-    size: 10.5pt,
+    size: 18pt,
     color: muted,
-    centered: true,
   )
-  label(435, 1020, 204, [$E_H + E_x = 0$\ $E_c = 0$], size: 19pt, color: purple, centered: true)
+  label(435, 1170, 204, [$E_H + E_x = 0$\ $E_c = 0$], size: 19pt, color: purple, centered: true)
 
-  label(
+  centered_label(
     700,
-    991,
+    1110,
     350,
     [XC FEEDS BACK INTO THE DENSITY],
-    size: 12pt,
+    size: 20pt,
     color: purple,
     weight: "bold",
-    centered: true,
   )
-  centered_symbol(765.5, 1040, [$v_"xc" = (delta E_"xc") / (delta n)$], size: 19pt, color: purple)
-  connect((840, -1040), (873, -1040), color: purple)
-  centered_symbol(919, 1040, [orbitals], size: 14pt, color: purple)
-  connect((964, -1040), (994, -1040), color: purple)
-  centered_symbol(1018, 1040, [$n$], size: 22pt, color: purple)
-  curve((1018, -1058), (756, -1060), (1018, -1094), (756, -1094), color: purple)
+  centered_symbol(765.5, 1170, [$v_"xc" = (delta E_"xc") / (delta n)$], size: 19pt, color: purple)
+  connect((840, -1170), (873, -1170), color: purple)
+  centered_symbol(919, 1170, [orbitals], size: 18pt, color: purple)
+  connect((964, -1170), (994, -1170), color: purple)
+  centered_symbol(1018, 1170, [$n$], size: 22pt, color: purple)
+  curve((1018, -1188), (756, -1190), (1018, -1224), (756, -1224), color: purple)
 
-  label(
+  centered_label(
     30,
-    1100,
+    1290,
     1040,
     [*Why approximate?* Exact XC is formally defined, but no practical general expression is known.],
-    size: 12pt,
+    size: 18pt,
     color: muted,
-    centered: true,
   )
-  label(
+  centered_label(
     30,
-    1124,
+    1325,
     1040,
     [LDA: local electron gas · GGA: density gradients · hybrids: orbital exchange. Ordinary LDA/GGA miss long-range dispersion.],
-    size: 11.5pt,
+    size: 18pt,
     color: muted,
-    centered: true,
   )
-  label(
+  centered_label(
     30,
-    1150,
+    1375,
     1040,
     [Schematic maps / curves; map center = reference electron. Hole sums are 3D integrals. Fixed nuclei; spin labels suppressed; atomic units; nuclear repulsion added separately.],
-    size: 9.5pt,
+    size: 18pt,
     color: muted,
-    centered: true,
   )
-  label(
+  centered_label(
     30,
-    1169,
+    1428,
     1040,
     [#link("https://dft.uci.edu/teaching/lausanne/ABCDFT.pdf")[Burke: The ABC of DFT, §§7, 11–13] · #link("https://dft.uci.edu/pubs/B97.pdf")[The exchange-correlation hole] · #link("https://www.bristol.ac.uk/physics/media/theory-theses/archer-aj-thesis.pdf")[Archer: Classical fluids, ch. 2]],
-    size: 9pt,
+    size: 18pt,
     color: muted,
-    centered: true,
   )
 })

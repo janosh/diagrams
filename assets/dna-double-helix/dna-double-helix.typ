@@ -2,6 +2,7 @@
 #import draw: line
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 
 #let pure-red = rgb(255, 0, 0)
 #let pure-blue = rgb(0, 0, 255)

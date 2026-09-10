@@ -2,43 +2,30 @@
 #import draw: content, line, on-layer, rect
 
 #set page(width: auto, height: auto, margin: 5pt, fill: none)
+#set text(size: 12pt)
 
 #canvas({
-  let cell-size = 0.6
+  let cell-size = 1.0
   let matrix-sep = 1.5
   let highlight = rgb(255, 200, 150) // orange!30
   let kernel-color = rgb("#9ae7e1") // teal!30
   let result-color = rgb(200, 200, 255) // blue!30
 
-  let draw-cell(pos, value, fill: none, name: none) = {
-    rect(
-      pos,
-      (pos.at(0) + cell-size, pos.at(1) + cell-size),
-      fill: fill,
-      name: name,
-      stroke: .5pt,
-    )
-    if value != none {
-      content(
-        (pos.at(0) + cell-size / 2, pos.at(1) + cell-size / 2),
-        $#value$,
-      )
-    }
-  }
-
-  let draw-matrix(origin, shape, values, highlights: (), name: none) = {
-    let (rows, cols) = shape
-    for ii in range(rows) {
-      for jj in range(cols) {
-        let pos = (origin.at(0) + jj * cell-size, origin.at(1) - ii * cell-size)
-        let idx = ii * cols + jj
-        let cell-name = if name != none { name + "-" + str(ii) + "-" + str(jj) }
-        draw-cell(
-          pos,
-          if idx < values.len() { values.at(idx) },
-          fill: if (ii, jj) in highlights { highlight },
-          name: cell-name,
+  let draw-matrix(origin, values, name, highlighted: false) = {
+    for (row_idx, row) in values.enumerate() {
+      for (col_idx, value) in row.enumerate() {
+        let (coord_x, coord_y) = (
+          origin.at(0) + col_idx * cell-size,
+          origin.at(1) - row_idx * cell-size,
         )
+        rect(
+          (coord_x, coord_y),
+          (coord_x + cell-size, coord_y + cell-size),
+          fill: if highlighted and row_idx < 3 and 3 <= col_idx and col_idx <= 5 { highlight },
+          name: name + "-" + str(row_idx) + "-" + str(col_idx),
+          stroke: .5pt,
+        )
+        content((coord_x + cell-size / 2, coord_y + cell-size / 2), $#value$)
       }
     }
   }
@@ -48,34 +35,19 @@
   )
 
   let input-origin = (0, 4)
+  let matrix-label-y = input-origin.at(1) - 6 * cell-size - 0.55
   let input-values = (
-    ..(0, 1, 1, 1, 0, 0, 0),
-    ..(0, 0, 1, 1, 1, 0, 0),
-    ..(0, 0, 0, 1, 1, 1, 0),
-    ..(0, 0, 0, 1, 1, 0, 0),
-    ..(0, 0, 1, 1, 0, 0, 0),
-    ..(0, 1, 1, 0, 0, 0, 0),
-    ..(1, 1, 0, 0, 0, 0, 0),
+    (0, 1, 1, 1, 0, 0, 0),
+    (0, 0, 1, 1, 1, 0, 0),
+    (0, 0, 0, 1, 1, 1, 0),
+    (0, 0, 0, 1, 1, 0, 0),
+    (0, 0, 1, 1, 0, 0, 0),
+    (0, 1, 1, 0, 0, 0, 0),
+    (1, 1, 0, 0, 0, 0, 0),
   )
-  draw-matrix(
-    input-origin,
-    (7, 7),
-    input-values,
-    highlights: (
-      (0, 3),
-      (0, 4),
-      (0, 5),
-      (1, 3),
-      (1, 4),
-      (1, 5),
-      (2, 3),
-      (2, 4),
-      (2, 5),
-    ),
-    name: "I",
-  )
+  draw-matrix(input-origin, input-values, "I", highlighted: true)
   content(
-    (input-origin.at(0) + 7 * cell-size / 2, 0),
+    (input-origin.at(0) + 7 * cell-size / 2, matrix-label-y),
     $bold(I)$,
     name: "I-label",
   )
@@ -86,13 +58,8 @@
     input-origin.at(0) + 7 * cell-size + matrix-sep,
     input-origin.at(1) - 2 * cell-size,
   )
-  let kernel-values = (1, 0, 1, 0, 1, 0, 1, 0, 1)
-  draw-matrix(
-    kernel-origin,
-    (3, 3),
-    kernel-values,
-    name: "K",
-  )
+  let kernel-values = ((1, 0, 1), (0, 1, 0), (1, 0, 1))
+  draw-matrix(kernel-origin, kernel-values, "K")
   // Fill kernel matrix background
   rect(
     cell-anchor("K", 0, 0, "north-west"),
@@ -101,9 +68,9 @@
     stroke: none,
   )
   // Redraw matrix on top of background
-  draw-matrix(kernel-origin, (3, 3), kernel-values, name: "K")
+  draw-matrix(kernel-origin, kernel-values, "K")
   content(
-    (kernel-origin.at(0) + 3 * cell-size / 2, 0),
+    (kernel-origin.at(0) + 3 * cell-size / 2, matrix-label-y),
     $bold(K)$,
     name: "K-label",
   )
@@ -115,13 +82,13 @@
     input-origin.at(1) - cell-size,
   )
   let result-values = (
-    ..(1, 4, 3, 4, 1),
-    ..(1, 2, 4, 3, 3),
-    ..(1, 2, 3, 4, 1),
-    ..(1, 3, 3, 1, 1),
-    ..(3, 3, 1, 1, 0),
+    (1, 4, 3, 4, 1),
+    (1, 2, 4, 3, 3),
+    (1, 2, 3, 4, 1),
+    (1, 3, 3, 1, 1),
+    (3, 3, 1, 1, 0),
   )
-  draw-matrix(result-origin, (5, 5), result-values, name: "R")
+  draw-matrix(result-origin, result-values, "R")
   on-layer(-1, rect(
     cell-anchor("R", 0, 3, "north-west"),
     cell-anchor("R", 0, 3, "south-east"),
@@ -129,7 +96,7 @@
     stroke: none,
   ))
   content(
-    (result-origin.at(0) + 5 * cell-size / 2, 0),
+    (result-origin.at(0) + 5 * cell-size / 2, matrix-label-y),
     $bold(I * K)$,
     name: "R-label",
   )
@@ -160,7 +127,7 @@
     for jj in (3, 4, 5) {
       content(
         cell-anchor("I", ii, jj, "south-west"),
-        text(size: 6pt)[×#calc.rem(ii + jj, 2)],
+        text(size: 12pt)[×#calc.rem(ii + jj, 2)],
         anchor: "south-west",
         padding: 1pt,
       )

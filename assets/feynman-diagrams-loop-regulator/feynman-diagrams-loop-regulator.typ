@@ -2,6 +2,7 @@
 #import draw: arc, circle, content, group, line, translate
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 
 #canvas({
   let radius = 1.5

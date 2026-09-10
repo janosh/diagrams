@@ -42,7 +42,7 @@
 #let palette = (C: rgb("#404040"), N: rgb("#4444ff"), O: rgb("#ff4444"), H: rgb("#cdd3da"))
 
 #canvas({
-  let caption(center_x, body) = content((center_x, -3.75), text(weight: "bold", body))
+  let caption(center_x, body) = content((center_x, -4.35), text(size: 16pt, weight: "bold", body))
   let molecule_pos(pos) = (pos.at(0), pos.at(1) + 0.5)
 
   // Draw bonds first so atom spheres conceal the endpoints.
@@ -82,7 +82,7 @@
   caption(0, [Molecular structure])
 
   // Rounded entries retain one decimal below one so small interactions stay visible.
-  let cell_size = 0.65
+  let cell_size = 0.8
   let matrix_top = atoms.len() * cell_size / 2
   let matrix_left = 8.5 - matrix_top
   let matrix_right = 8.5 + matrix_top
@@ -100,7 +100,7 @@
       )
       content(
         (cell_left + cell_size / 2, cell_top - cell_size / 2),
-        text(size: 9pt, fill: if intensity > 0.65 { white } else { black })[
+        text(size: 12pt, fill: if intensity > 0.65 { white } else { black })[
           #calc.round(value, digits: if value < 1 { 1 } else { 0 })
         ],
       )
@@ -140,7 +140,7 @@
   content((23.1, 0), text(size: 42pt)[$hat(alpha)_"iso"$])
   caption(23.1, [Predicted property])
 
-  for (start_x, end_x) in ((3.5, 5.1), (matrix_right + 0.6, 13.1), (20, 21.6)) {
+  for (start_x, end_x) in ((3.5, matrix_left - 0.5), (matrix_right + 0.6, 13.1), (20, 21.6)) {
     line((start_x, 0), (end_x, 0), stroke: rgb("#888") + 3pt, mark: (end: "stealth", size: 12pt))
   }
 })

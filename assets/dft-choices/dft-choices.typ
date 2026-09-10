@@ -91,44 +91,40 @@
     name: "phi2",
   ) // Wavefunction 2
 
-  let comment(pos, text, target-name, name: none) = {
-    content(pos, align(center, text), name: name)
-    line(name, target-name, ..arrow-style)
+  let comment(pos, body, target) = {
+    let name = target + "-comment"
+    content(pos, align(center, body), name: name)
+    line(name, target, ..arrow-style)
   }
 
   for spec in (
     (
-      pos: (node-sep, 3),
-      body: [non-rel. Schrödinger equation\ or relativistic Dirac equation],
-      target: "kinetic",
-      name: "kinetic-comment",
+      (node-sep, 3),
+      [non-rel. Schrödinger equation\ or relativistic Dirac equation],
+      "kinetic",
     ),
     (
-      pos: (rel: (-2, -3), to: "ext"),
-      body: [pseudopotential\ (ultrasoft/PAW/norm-conserving)\ or all-electron],
-      target: "ext",
-      name: "ext-comment",
+      (rel: (-2, -3), to: "ext"),
+      [pseudopotential\ (ultrasoft/PAW/norm-conserving)\ or all-electron],
+      "ext",
     ),
     (
-      pos: (4.9 * node-sep, -3),
-      body: [Hartree potential\ from solving Poisson eq.\ or integrating charge density],
-      target: "hartree",
-      name: "hartree-comment",
+      (4.9 * node-sep, -3),
+      [Hartree potential\ from solving Poisson eq.\ or integrating charge density],
+      "hartree",
     ),
-    (pos: (5 * node-sep, 3), body: [LDA or GGA\ or hybrids], target: "xc", name: "xc-comment"),
+    ((5 * node-sep, 3), [LDA or GGA\ or hybrids], "xc"),
     (
-      pos: (rel: (2, 3), to: "phi1"),
-      body: [physical orbitals or not\ mesh density and basis set],
-      target: "phi1",
-      name: "phi-comment",
+      (rel: (2, 3), to: "phi1"),
+      [physical orbitals or not\ mesh density and basis set],
+      "phi1",
     ),
-  ) { comment(spec.pos, spec.body, spec.target, name: spec.name) }
-  line("phi-comment", "phi2", ..arrow-style)
+  ) { comment(..spec) }
+  line("phi1-comment", "phi2", ..arrow-style)
 
   comment(
     (rel: (0, -3), to: "energy"),
     [view EVs as mere Lagrange\ multipliers or band structure approx],
     "energy",
-    name: "energy-comment",
   )
 })
