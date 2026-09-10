@@ -3,8 +3,6 @@ import shutil
 import subprocess
 import sys
 
-sys.path.append(os.path.dirname(__file__))
-
 from convert_assets import PNG_VARIANTS, finalize_pngs
 
 ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))

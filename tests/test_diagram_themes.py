@@ -6,10 +6,7 @@ import sys
 from pathlib import Path
 
 import pytest
-
-ROOT = os.path.dirname(os.path.dirname(__file__))
-sys.path.insert(0, f"{ROOT}/scripts")
-
+import render_tikz
 from convert_assets import finalize_pngs
 from update_readme_table import (
     DiagramInfo,
@@ -18,10 +15,80 @@ from update_readme_table import (
     table_cell,
 )
 
+ROOT = os.path.dirname(os.path.dirname(__file__))
+
+
+@pytest.mark.parametrize("ci", ["false", "true"])
+@pytest.mark.parametrize(
+    "renderer, compiler, extension",
+    [
+        ("render_typst.py", "typst", ".typ"),
+        ("render_tikz.py", "latexmk", ".tex"),
+    ],
+)
+def test_failed_compilation_preserves_outputs(
+    renderer: str, compiler: str, extension: str, ci: str, tmp_path: Path
+) -> None:
+    """Stop before conversion or cleanup when either compiler fails locally or in CI."""
+    source = tmp_path / f"diagram{extension}"
+    source.write_text("invalid source")
+    (tmp_path / compiler).symlink_to("/usr/bin/false")
+    outputs = [
+        tmp_path / f"diagram{suffix}"
+        for suffix in (
+            ".pdf",
+            ".svg",
+            ".png",
+            "-hd.png",
+            "-dark.png",
+            ".aux",
+            ".log",
+        )
+    ]
+    for output in outputs:
+        output.write_bytes(b"previous output")
+    result = subprocess.run(
+        [sys.executable, f"{ROOT}/scripts/{renderer}", str(source)],
+        env={**os.environ, "PATH": str(tmp_path), "CI": ci},
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode != 0
+    assert compiler in result.stderr
+    assert all(
+        output.is_file() and output.read_bytes() == b"previous output"
+        for output in outputs
+    )
+
 
 def read_rgba(png_path: str) -> bytes:
     """Decode PNG pixels independently of palette and compression choices."""
     return subprocess.check_output(["magick", png_path, "-depth", "8", "rgba:-"])
+
+
+def test_successful_tex_cleanup(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Convert successful TeX output and remove only that diagram's auxiliary files."""
+    source = tmp_path / "diagram.tex"
+    source.touch()
+    auxiliary = [
+        tmp_path / f"diagram{suffix}"
+        for suffix in (".aux", ".log", ".fls", ".fdb_latexmk")
+    ]
+    for output in auxiliary:
+        output.touch()
+    other_log = tmp_path / "other.log"
+    other_log.write_text("another diagram's build")
+    (tmp_path / "latexmk").symlink_to("/usr/bin/true")
+    monkeypatch.setenv("PATH", str(tmp_path))
+    converted: list[str] = []
+    monkeypatch.setattr(render_tikz, "pdf_to_svg_png_compressed", converted.append)
+    render_tikz.render_tikz(str(source))
+    assert converted == [str(tmp_path / "diagram.pdf")]
+    assert all(not output.is_file() for output in auxiliary)
+    assert other_log.read_text() == "another diagram's build"
 
 
 @pytest.mark.parametrize("metadata_flag", ["", "preserve_colors", "hide"])

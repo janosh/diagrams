@@ -14,6 +14,17 @@ repos:
 
   - repo: local
     hooks:
+      - id: ruff
+        name: Python lint (Ruff)
+        entry: uvx ruff check
+        language: system
+        types: [python]
+      - id: ty
+        name: Python type check (ty)
+        entry: uv run --no-project --python 3.14 --with ty --with pytest --with pyyaml ty check
+        language: system
+        types: [python]
+        pass_filenames: false
       - id: vp-check
         name: Format + lint (oxfmt + oxlint)
         # sync first so type-aware lint has .svelte-kit/tsconfig.json (provides
@@ -63,7 +74,7 @@ repos:
         types: [file]
 
       - id: check-yaml-files
-        name: Check YAML files match folder names, have descriptions and unique tags
+        name: Validate diagram metadata and titles
         entry: python scripts/check_yaml_files.py
         language: python
         pass_filenames: false
@@ -94,4 +105,4 @@ repos:
       - id: typos
         types: [text]
         exclude_types: [svg]
-        args: [--config, scripts/pyproject.toml]
+        args: [--config, pyproject.toml]

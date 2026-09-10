@@ -13,6 +13,9 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: typst-community/setup-typst@v5
+      - uses: astral-sh/setup-uv@v10
+        with:
+          python-version: '3.14'
       - uses: actions/setup-node@v7
         with:
           node-version: 24
@@ -29,6 +32,20 @@ jobs:
 
       - name: Run prek
         uses: j178/prek-action@v3.0.0
+
+  python-tests:
+    # Artwork uses macOS fonts, including Avenir Next; match the authoring environment.
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
+        with:
+          python-version: '3.14'
+      - uses: typst-community/setup-typst@v5
+      - name: Install ImageMagick
+        run: brew install imagemagick
+      - name: Python tests
+        run: uv run --no-project --with pytest --with pyyaml pytest -q
 
   link-check:
     runs-on: ubuntu-latest
@@ -93,7 +110,7 @@ jobs:
 
   deploy:
     if: github.ref == 'refs/heads/main'
-    needs: build
+    needs: [check, python-tests, build]
     runs-on: ubuntu-latest
     permissions:
       pages: write

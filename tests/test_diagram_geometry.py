@@ -246,7 +246,9 @@ def test_sabatier_binding_regimes(tmp_path: Path) -> None:
     start = 0j
     points = []
     for command, raw in commands:
-        coordinates = [complex(*pair) for pair in batched(map(float, raw.split()), 2)]
+        coordinates = [
+            complex(*pair) for pair in batched(map(float, raw.split()), 2, strict=True)
+        ]
         if command == "M":
             start = coordinates[0]
         elif command == "m":

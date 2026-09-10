@@ -175,6 +175,14 @@ To run `pdf-compressor` directly or to use it as part of the [`render-(typst|tik
 pdf-compressor --set-api-key project_public_7c854a9db0...
 ```
 
+## Python and metadata checks
+
+Run `uv run --no-project --python 3.14 --with pytest --with pyyaml pytest -q` for geometry, theme, renderer failure, and metadata tests. Rendering tests require Typst, ImageMagick 7 (`magick`), and the artwork's fonts. CI runs these tests on macOS to provide fonts such as Avenir Next, and deployment requires the Python tests, site checks, and build to pass.
+
+Run `uvx ruff check scripts tests` and `uv run --no-project --python 3.14 --with ty --with pytest --with pyyaml ty check` for Python linting and typing. Both also run through prek. Tool configuration lives in `pyproject.toml`.
+
+Diagram metadata requires a nonempty title, description, and list of unique, nonempty tags. The validator rejects unknown fields and incorrect field types; optional dates accept `YYYY-MM` or `YYYY-MM-DD`. Attribution and reference records remain supported. Validation reports errors without rewriting YAML.
+
 ## Site visual checks
 
 The browser suite checks transparent and tall diagrams in light and dark themes, native fullscreen scrolling and exit controls, mobile source headers, and the new band diagrams. Screenshots cover diagram artwork and SVG controls; text layout is checked geometrically to avoid platform font differences.
