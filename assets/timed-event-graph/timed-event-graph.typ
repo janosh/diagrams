@@ -1,6 +1,7 @@
 #import "@preview/cetz:0.5.2"
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 
 #let transition(coords, name: none, content: none, color: black) = {
   cetz.draw.group(name: name, {

@@ -1,9 +1,9 @@
 #import "@preview/cetz:0.5.2": canvas, draw, matrix
 #import draw: content, group, line, rect, scale, set-transform
-#import "../_shared/layout.typ": card-grid, takeaway
+#import "../_shared/layout.typ": card-grid, label-size, paragraph-size, takeaway
 
 #set page(width: 780pt, height: auto, margin: 22pt, fill: none)
-#set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
+#set text(font: "Avenir Next", size: paragraph-size, fill: rgb("#19324f"))
 #set par(leading: 0.55em)
 
 // === 1  Locate the quadrant ===
@@ -12,7 +12,7 @@
   #let gap = 0.15 // gap between squares
   #let axes-extend = 0.3
 
-  #canvas({
+  #canvas(length: 1.2cm, {
     draw.line(
       (-size / 2, 0),
       (size / 2 + axes-extend, 0),
@@ -48,9 +48,9 @@
 
 // === 2  Lift the value to a height ===
 #let figure-1 = [
-  #set text(size: 8pt)
+  #set text(size: label-size)
 
-  #canvas({
+  #canvas(length: 3cm, {
     draw.set-style(line: (stroke: none))
     // Set up the transformation matrix for 3D perspective
     set-transform(matrix.transform-rotate-dir((1, 1, -2), (0, 2, .3)))

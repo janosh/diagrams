@@ -5,15 +5,16 @@
 #let node-stroke = 0.8pt
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 
 #canvas({
   let arrow = (mark: (end: "stealth", fill: black, scale: .55), stroke: .8pt)
   let perceptron-radius = .48
-  let small(name, pos, label: none, radius: .18) = {
+  let small(name, pos, label: none, radius: .28) = {
     circle(pos, radius: radius, fill: rgb("#cdd3da"), stroke: node-stroke, name: name)
     if label != none { content(name, label) }
   }
-  let right-rim(pos, radius: .18) = (pos.at(0) + radius, pos.at(1))
+  let right-rim(pos, radius: .28) = (pos.at(0) + radius, pos.at(1))
   let rim-from(pos) = {
     let length = calc.sqrt(pos.at(0) * pos.at(0) + pos.at(1) * pos.at(1))
     (
@@ -38,7 +39,7 @@
     ("xn", -1.75, $x_n$, $w_n$, -1.05),
   ) {
     let pos = (-2, y)
-    small(name, pos, label: text(size: 7pt)[#label])
+    small(name, pos, label: text(size: 12pt)[#label])
     bezier(
       right-rim(pos),
       rim-from((-.85, ctrl-y)),
@@ -48,7 +49,7 @@
     )
     content(
       (-1.25, (y + ctrl-y) / 2 + .12),
-      text(size: 8pt)[#weight],
+      text(size: 12pt)[#weight],
       anchor: "south",
     )
   }

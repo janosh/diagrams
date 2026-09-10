@@ -2,11 +2,11 @@
 #import draw: bezier, circle, content, line, on-layer, rect
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
-#set text(weight: "bold")
+#set text(size: 12pt, weight: "bold")
 
-#let (main-r, item-r, spacing) = (1.2, 2.2, 6)
+#let (main-r, item-r, spacing) = (1.6, 3.4, 8.5)
 #let (main-stroke, item-stroke, arrow-stroke) = (1pt, 1pt, 1.5pt)
-#let (main-font, item-font) = (11pt, 7pt)
+#let (main-font, item-font) = (16pt, 12pt)
 #let (data-color, descriptor-color, model-color) = (
   rgb(255, 200, 150),
   rgb(255, 255, 150),
@@ -14,7 +14,7 @@
 )
 #let (item-bg, item-border) = (rgb("#cdd3da"), black)
 #let (arrow-offset, arrow-scale) = (1.5, 1.2)
-#let (length-factor, base-offset) = (0.02, 0)
+#let (length-factor, base-offset) = (0.035, 0)
 
 #let challenge-node(pos, txt, color, name) = {
   circle(pos, radius: main-r, fill: color, stroke: main-stroke + item-border, name: name)

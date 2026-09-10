@@ -17,6 +17,7 @@
 }
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 
 #canvas({
   let arrow-style = (mark: (end: "stealth", fill: black, scale: .75))

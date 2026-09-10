@@ -1,9 +1,9 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content, line, mark
-#import "../_shared/layout.typ": card, takeaway
+#import "../_shared/layout.typ": card, label-size, paragraph-size, takeaway
 
 #set page(width: 780pt, height: auto, margin: 22pt, fill: none)
-#set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
+#set text(font: "Avenir Next", size: paragraph-size, fill: rgb("#19324f"))
 #set par(leading: 0.55em)
 
 // Diagonal hatching marking a vertex as dressed rather than bare.
@@ -28,7 +28,7 @@
   #let radius = 1 // \radius in original
   #let vertex = dressed_vertex.with(radius: 0.25 * radius, stroke: auto, anchor: "south")
 
-  #canvas({
+  #canvas(length: 2.63cm, {
     // Gamma^(3) loop: two dressed three-point vertices on the external legs
     circle((0, 0), radius: radius, stroke: 1pt, name: "loop")
     line((-2 * radius, 0), (-radius, 0), stroke: 1pt, name: "left-external")
@@ -63,7 +63,7 @@
       // trail the label a few degrees behind its arrowhead
       let lag = turn - 3deg
       let offset = ((0.75 * radius) * calc.cos(lag), (0.75 * radius) * calc.sin(lag))
-      content((rel: offset, to: "loop"), $p_#idx$, size: 8pt)
+      content((rel: offset, to: "loop"), $p_#idx$, size: label-size)
       mark(
         (name: "loop", anchor: turn),
         (name: "loop", anchor: turn + 1deg),
@@ -96,7 +96,7 @@
   #stack(
     dir: ltr,
     spacing: 12pt,
-    canvas({
+    canvas(length: 1.61cm, {
       circle((0, 0), radius: radius, stroke: 1pt, name: "loop")
       momenta(((1, 0.125), (2, 0.375), (3, 0.625), (4, 0.875)))
 
@@ -119,7 +119,7 @@
         circle((side * radius, 0), radius: med-rad, fill: hatched, stroke: 0.5pt)
       }
     }),
-    canvas({
+    canvas(length: 1.61cm, {
       circle((0, 0), radius: radius, stroke: 1pt, name: "loop")
       momenta(((1, 0), (2, 0.5)))
 
@@ -179,7 +179,7 @@
       // trail the label a few degrees behind its arrowhead
       let lag = turn - 3deg
       let offset = ((0.75 * radius) * calc.cos(lag), (0.75 * radius) * calc.sin(lag))
-      content((rel: offset, to: "main-loop"), $p_#idx$, size: 8pt)
+      content((rel: offset, to: "main-loop"), $p_#idx$, size: label-size)
       mark(
         (name: "main-loop", anchor: turn),
         (name: "main-loop", anchor: turn + 0.1deg),
@@ -234,7 +234,7 @@
   #stack(
     dir: ltr,
     spacing: 12pt,
-    canvas({
+    canvas(length: 1.02cm, {
       circle((0, 0), radius: radius, stroke: 1pt, name: "main-loop")
       loop-momenta(((6, 0.0625), (1, 0.1875), (2, 0.3125), (3, 0.4375), (4, 0.625), (5, 0.875)))
 
@@ -254,7 +254,7 @@
         0,
       )))
     }),
-    canvas({
+    canvas(length: 1.02cm, {
       circle((0, 0), radius: radius, stroke: 1pt, name: "main-loop")
       loop-momenta(((6, 0.125), (3, 0.375), (4, 0.5625), (1, 0.6875), (2, 0.8125), (5, 0.9375)))
 
@@ -279,7 +279,7 @@
         "vertex-right-external",
       )
     }),
-    canvas({
+    canvas(length: 1.02cm, {
       circle((0, 0), radius: radius, stroke: 1pt, name: "main-loop")
       loop-momenta(((1, 0.125), (2, 0.375), (3, 0.625), (4, 0.875)))
 

@@ -2,6 +2,7 @@
 #import draw: circle, content, line, mark
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 
 #let rad = 0.8
 #canvas({
@@ -24,7 +25,7 @@
   circle(loop-left, radius: 0.075, fill: black, name: "dot")
   content(
     loop-right,
-    text(size: 10pt)[$times.o$],
+    text(size: 12pt)[$times.o$],
     name: "regulator",
     fill: rgb("#cdd3da"),
     frame: "circle",

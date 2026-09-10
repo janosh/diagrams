@@ -2,7 +2,7 @@
 #import draw: content, line
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
-#set text(font: "DejaVu Sans Mono")
+#set text(size: 12pt, font: "DejaVu Sans Mono")
 
 #let t-str = "ACAACG"
 #let n-chars = t-str.len()

@@ -2,6 +2,7 @@
 #import draw: circle, content, line
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 
 #let pure-blue = rgb(0, 0, 255)
 
@@ -47,7 +48,7 @@
     )
     content(
       name + ".mid",
-      text(fill: color, size: .85em, raw(label)),
+      text(fill: color, size: 12pt, raw(label)),
       fill: rgb("#cdd3da"),
       frame: "rect",
       stroke: none,

@@ -2,6 +2,7 @@
 #import draw: circle, content, intersections, line, rect
 
 #set page(width: auto, height: auto, margin: 3pt, fill: none)
+#set text(size: 12pt)
 
 #canvas({
   // Diagram dimensions and styles
@@ -139,7 +140,7 @@
   )
   content(
     (rel: (0.1, 0), to: "arrow-a2x5.mid"),
-    text(fill: rgb("#4d8000"), size: 10pt)[4/5 AX + 3/5 A₂X₇ → A₂X₅],
+    text(fill: rgb("#4d8000"), size: 12pt)[4/5 AX + 3/5 A₂X₇ → A₂X₅],
     frame: "rect",
     padding: (1pt, 3pt),
     stroke: rgb("#4d8000") + .3pt,

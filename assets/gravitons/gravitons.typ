@@ -2,6 +2,7 @@
 #import draw: arc, circle, content, line, mark
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 
 #let wavy = (amplitude: .1, segment-length: .18, stroke: .9pt)
 #let radius = 1.15

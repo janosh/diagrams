@@ -2,18 +2,15 @@
 #import draw: circle, content, line, on-layer
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
-#set text(weight: "bold")
+#set text(size: 12pt, weight: "bold")
 
-// Circle size and label size for each of the three levels of the map. Labels grow
-// steeply towards the center. Each level sits just inside what its widest label
-// allows: "Physics" overflows past 23pt, "High-Energy" past 11.5pt and "Quantum
-// Field Theory" past 8pt.
+// Circle radii and branch spacing accommodate 16pt headings and 12pt leaf labels.
 #let (hub-style, branch-style, leaf-style) = (
   (radius: 1.5, font-size: 21pt),
-  (radius: 1.2, font-size: 11pt),
-  (radius: 0.8, font-size: 7.5pt),
+  (radius: 1.75, font-size: 16pt),
+  (radius: 1.3, font-size: 12pt),
 )
-#let (branch-dist, leaf-dist) = (3.75, 3.0)
+#let (branch-dist, leaf-dist) = (5.2, 4.4)
 // connector half-widths as fractions of the radius of the node at either end
 #let (taper-wide, taper-narrow) = (0.14, 0.08)
 

@@ -242,7 +242,6 @@
     box-sizing: border-box;
     max-width: 100%;
     height: auto;
-    max-height: 90vh;
     object-fit: scale-down;
     border-radius: 1ex;
     display: block;

@@ -57,7 +57,7 @@
     let at = (:)
     for (name, dx, y, _) in nodes { at.insert(name, (x + dx, y)) }
     group(name: box-name, padding: (0.45, 0.5, 0.35, 0.35), {
-      content((x - label-inset, -1.32), label, anchor: "west")
+      content((x - label-inset, -1.32), text(size: 16pt, label), anchor: "west")
       for (from, to, arrow) in edges { tree-edge(at.at(from), at.at(to), arrow: arrow) }
       for (name, _, _, fill) in nodes { tree-node(at.at(name), fill) }
     })
@@ -166,7 +166,7 @@
   content((3.2, -3.55), text(size: 1.8em)[$dots.c$])
   node-box(
     (0, -7.8),
-    [mean in regression or majority vote in classification],
+    text(size: 14pt)[mean in regression or majority vote in classification],
     "mean",
   )
   node-box((0, -9.2), [prediction], "pred")

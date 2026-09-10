@@ -1,13 +1,13 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import "@preview/cetz-plot:0.1.4": plot
-#import "../_shared/layout.typ": card-grid, takeaway
+#import "../_shared/layout.typ": card-grid, paragraph-size, takeaway
 
 #set page(width: 780pt, height: auto, margin: 22pt, fill: none)
-#set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
+#set text(font: "Avenir Next", size: paragraph-size, fill: rgb("#19324f"))
 #set par(leading: 0.55em)
 
 // === 1  A worked competition ===
-#let figure-0 = canvas({
+#let figure-0 = canvas(length: 1.21cm, {
   draw.set-style(legend: (fill: rgb("#cdd3da")))
   plot.plot(
     size: (9, 6),
@@ -15,7 +15,7 @@
     x-max: 600,
     y-min: -25,
     y-max: 30,
-    x-label: [$T$ (K)],
+    x-label: none,
     y-label: [kJ/mol],
     axis-style: "left",
     x-tick-step: 100,
@@ -44,10 +44,11 @@
       plot.add(style: (stroke: (paint: gray, dash: "dashed")), domain: (0, 600), x => 0)
     },
   )
+  draw.content((4.5, -.8), [$T$ (K)])
 })
 
 // === 2  Direction is not speed ===
-#let figure-1 = canvas({
+#let figure-1 = canvas(length: 1.4cm, {
   draw.set-style(legend: (fill: rgb("#cdd3da")))
   let points = range(101).map(idx => {
     let coord = idx / 20
@@ -56,7 +57,7 @@
   draw.line((-0.3, -2), (5.5, -2), mark: (end: "stealth"))
   draw.line((-.3, -2), (-.3, 3.2), mark: (end: "stealth"))
   draw.line(..points, stroke: rgb("#008580") + 1.8pt)
-  draw.content((0, .35), [reactants], anchor: "south")
+  draw.content((0, .35), [reactants], anchor: "south-west")
   draw.content((4.8, -1.35), [products], anchor: "south")
   draw.content((2.3, 3.4), [activation barrier], anchor: "south")
   draw.content((2.6, -2.5), [reaction coordinate])

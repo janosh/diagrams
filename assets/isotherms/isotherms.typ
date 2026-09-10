@@ -2,6 +2,7 @@
 #import "@preview/cetz-plot:0.1.4": plot
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 
 #let gas-constant = 8.31 // Gas constant
 #let temperature = 300 // Temperature

@@ -1,12 +1,12 @@
 #import "@preview/cetz:0.5.2": canvas, draw
-#import "../_shared/layout.typ": card, takeaway
+#import "../_shared/layout.typ": card, paragraph-size, takeaway
 
 #set page(width: 780pt, height: auto, margin: 22pt, fill: none)
-#set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
+#set text(font: "Avenir Next", size: paragraph-size, fill: rgb("#19324f"))
 #set par(leading: 0.55em)
 
 // === 1  What is evaluated? ===
-#let figure-0 = canvas({
+#let figure-0 = canvas(length: 1.7cm, {
   let rows = (
     (
       [Classical force field],
@@ -61,6 +61,7 @@
 
 // === 2  What must be validated? ===
 #let figure-1 = [
+  #set text(size: paragraph-size)
   #box(width: 680pt)[#table(
     columns: (1fr, 2fr),
     inset: 9pt,

@@ -2,6 +2,7 @@
 #import draw: bezier, circle, content, line, set-style
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 
 #let (V, p) = (9, 6)
 

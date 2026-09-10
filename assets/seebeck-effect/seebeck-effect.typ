@@ -2,6 +2,7 @@
 #import draw: circle, content, line, on-layer, rect
 
 #set page(width: auto, height: auto, margin: 4pt, fill: none)
+#set text(size: 12pt)
 
 #let dy = 0.45
 #let sink-dx = 0.84
@@ -119,12 +120,12 @@
   let x-offset = if label-side == "west" { 0.18 } else { -0.18 }
   content(
     (x + x-offset, y-start),
-    text(size: 11pt, fill: field-color)[#top-label],
+    text(size: 12pt, fill: field-color)[#top-label],
     anchor: label-side,
   )
   content(
     (x + x-offset, y-end),
-    text(size: 11pt, fill: field-color)[#bottom-label],
+    text(size: 12pt, fill: field-color)[#bottom-label],
     anchor: label-side,
   )
 }

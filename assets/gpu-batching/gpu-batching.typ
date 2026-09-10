@@ -1,13 +1,13 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: bezier, circle, content, line, rect
-#import "../_shared/layout.typ": card, takeaway
+#import "../_shared/layout.typ": card, label-size, paragraph-size, takeaway
 
 #set page(width: 780pt, height: auto, margin: 22pt, fill: none)
-#set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
+#set text(font: "Avenir Next", size: paragraph-size, fill: rgb("#19324f"))
 #set par(leading: 0.55em)
 
 // Size of compact annotations shared by both panels.
-#let annotation-size = 9pt
+#let annotation-size = label-size
 
 // === 1  Compare scheduling strategies ===
 #let figure-0 = [
@@ -89,7 +89,7 @@
     calc.round(100 * busy / (timeline.len() * slots))
   }
 
-  #canvas({
+  #canvas(length: .95cm, {
     let dark-gray = rgb("#5D6B7A")
     let section-bg = rgb("#d1d6db")
     let idle-stroke = rgb("#C7D0D9")
@@ -100,8 +100,8 @@
     let x0 = 5.0 // left edge of step 0
     let cell = 1.0 // one step per tick, so the grid never drifts off the axis
     let box-width = 0.88
-    let row-height = 0.3
-    let row-gap = 0.14
+    let row-height = 0.55
+    let row-gap = 0.12
     let radius = 0.05
 
     // step i spans [x0 + i, x0 + i + 1]; its tick and label sit under the center
@@ -110,14 +110,14 @@
     let slot-y(base, slot) = base + slot * (row-height + row-gap)
 
     let panels = (
-      (8.4, "Unbatched\nSimulations", unbatched-schedule),
-      (4.6, "Binning\nAutoBatcher", binning-schedule),
+      (11.2, "Unbatched\nSimulations", unbatched-schedule),
+      (6.0, "Binning\nAutoBatcher", binning-schedule),
       (0.8, "InFlight\nAutoBatcher", inflight-schedule),
     )
 
     content(
-      (plot-width / 2, 10.6),
-      text(size: 11pt, fill: dark-gray)[
+      (plot-width / 2, 14.2),
+      text(size: label-size, fill: dark-gray)[
         Ten structures needing #steps-needed.map(str).join(", ") ionic steps, on #slots GPU slots
       ],
     )
@@ -136,18 +136,18 @@
 
       // occupancy meter, sized to its own text so the label cannot overflow it
       let busy = utilization(schedule)
-      let meter = 2.6
+      let meter = 3.6
       rect(
-        (1.0, base-y - 0.55),
-        (1.0 + meter, base-y - 0.15),
+        (1.0, base-y - 0.65),
+        (1.0 + meter, base-y - 0.05),
         fill: rgb("#c6cdd6"),
         stroke: 0.5pt,
         radius: 0.08,
         name: "meter-" + name,
       )
       rect(
-        (1.0, base-y - 0.55),
-        (1.0 + meter * busy / 100, base-y - 0.15),
+        (1.0, base-y - 0.65),
+        (1.0 + meter * busy / 100, base-y - 0.05),
         fill: if busy < 40 { bad.lighten(60%) } else if busy < 75 {
           rgb("#F9A825").lighten(55%)
         } else { good.lighten(60%) },
@@ -156,8 +156,8 @@
       )
       content("meter-" + name, text(size: annotation-size, weight: "bold")[#busy% slots busy])
       content(
-        (1.0, base-y - 0.95),
-        text(size: annotation-size, fill: dark-gray)[#schedule.len() steps to finish all 10],
+        (1.0, base-y - 1.3),
+        text(size: annotation-size, fill: dark-gray)[#schedule.len() steps\ to finish all 10],
         anchor: "west",
       )
 
@@ -234,7 +234,7 @@
 // === 2  Follow a replacement ===
 #let figure-1 = [
 
-  #canvas({
+  #canvas(length: 1.12cm, {
     let arrow-style = (mark: (end: "stealth", fill: black, scale: 0.5))
     let plot = (width: 18, height: 8)
     let structure = (width: 2.4, row-height: 1.4)
@@ -310,7 +310,7 @@
     line((0, 7), (plot.width, 7), stroke: (dash: "dotted", thickness: 1pt), name: "memory-limit")
     content(
       (rel: (0.2, -0.1), to: "memory-limit.start"),
-      text(size: 9pt)[Maximum memory threshold\ (based on GPU capacity)],
+      text(size: label-size)[Maximum memory threshold\ (based on GPU capacity)],
       anchor: "north-west",
     )
 

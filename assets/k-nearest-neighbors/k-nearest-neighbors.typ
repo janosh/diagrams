@@ -2,7 +2,7 @@
 #import draw: circle, content, line, n-star, polygon
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
-#set text(weight: "bold")
+#set text(size: 12pt, weight: "bold")
 
 #let draw-star(pos, size: 0.3, fill: red) = {
   n-star(pos, 5, radius: size, inner-radius: .4 * size, fill: fill, stroke: .5pt, show-inner: false)

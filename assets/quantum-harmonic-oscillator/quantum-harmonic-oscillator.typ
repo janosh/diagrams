@@ -1,9 +1,9 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import "@preview/cetz-plot:0.1.4": plot
-#import "../_shared/layout.typ": card-grid, takeaway
+#import "../_shared/layout.typ": card-grid, paragraph-size, takeaway
 
 #set page(width: 780pt, height: auto, margin: 22pt, fill: none)
-#set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
+#set text(font: "Avenir Next", size: paragraph-size, fill: rgb("#19324f"))
 #set par(leading: 0.55em)
 
 // Stable coth form preserves the classical limit and avoids exp overflow.
@@ -17,7 +17,7 @@
 }
 
 // Both views use the same horizontal variable and plot geometry, but different energy units.
-#let energy-plot(thermal-units: false) = canvas({
+#let energy-plot(thermal-units: false) = canvas(length: 1cm, {
   draw.set-style(legend: (fill: rgb("#cdd3da")))
   plot.plot(
     size: (9, 6),

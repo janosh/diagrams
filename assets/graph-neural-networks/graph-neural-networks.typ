@@ -1,54 +1,64 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content, line
-#import "../_shared/layout.typ": card-grid, takeaway
+#import "../_shared/layout.typ": card-grid, paragraph-size, takeaway
 
 #set page(width: 780pt, height: auto, margin: 22pt, fill: none)
-#set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
+#set text(font: "Avenir Next", size: paragraph-size, fill: rgb("#19324f"))
 #set par(leading: 0.55em)
 
-#let neighborhood(mode) = canvas({
-  let sites = ((-2, 1.3), (-2, -1.3), (0, 2), (0, -2))
-  for (idx, pos) in sites.enumerate() {
+#let neighborhood(mode) = canvas(
+  length: if mode == "aggregate" { 1.08cm } else { 1.52cm },
+  {
+    let sites = ((-2, 1.3), (-2, -1.3), (0, 2), (0, -2))
+    for (idx, pos) in sites.enumerate() {
+      draw.circle(
+        pos,
+        radius: .35,
+        fill: rgb("#d6e9f8"),
+        stroke: rgb("#537da0") + .7pt,
+        name: "neighbor" + str(idx),
+      )
+      draw.content(pos, $h_#(idx + 1)$)
+    }
     draw.circle(
-      pos,
-      radius: .35,
-      fill: rgb("#d6e9f8"),
-      stroke: rgb("#537da0") + .7pt,
-      name: "neighbor" + str(idx),
+      (0, 0),
+      radius: .42,
+      fill: rgb("#d3ede5"),
+      stroke: rgb("#008580") + 1pt,
+      name: "center",
     )
-    draw.content(pos, $h_#(idx + 1)$)
-  }
-  draw.circle(
-    (0, 0),
-    radius: .42,
-    fill: rgb("#d3ede5"),
-    stroke: rgb("#008580") + 1pt,
-    name: "center",
-  )
-  draw.content((0, 0), $h_v$)
-  for (idx, pos) in sites.enumerate() {
-    let width = if mode == "attention" { (.5, 1, 2, 3).at(idx) * 1pt } else { 1pt }
-    draw.line("neighbor" + str(idx), "center", stroke: rgb("#008580") + width, mark: (
-      end: "stealth",
-      scale: .5,
-    ))
-  }
-  draw.line("center", (3, 0), stroke: rgb("#008580") + 1.5pt, mark: (end: "stealth"))
-  draw.content((3.6, 0), $h′_v$, frame: "circle", padding: 7pt, fill: rgb("#fbe4d4"), stroke: none)
-  draw.content((2.2, .65), if mode == "attention" { [weighted sum] } else if mode == "message" {
-    [message + update]
-  } else { [aggregate + update] })
-  if mode == "attention" {
-    draw.content((-.8, -2.8), [thicker arrow = larger learned weight])
-  } else if mode == "message" {
-    draw.content((-.4, -2.8), $m_(u v)=M(h_u,h_v,e_(u v))$)
-  } else {
-    draw.content((-.4, -2.8), [sum or mean ignores neighbor ordering])
-  }
-})
+    draw.content((0, 0), $h_v$)
+    for (idx, pos) in sites.enumerate() {
+      let width = if mode == "attention" { (.5, 1, 2, 3).at(idx) * 1pt } else { 1pt }
+      draw.line("neighbor" + str(idx), "center", stroke: rgb("#008580") + width, mark: (
+        end: "stealth",
+        scale: .5,
+      ))
+    }
+    draw.line("center", (3, 0), stroke: rgb("#008580") + 1.5pt, mark: (end: "stealth"))
+    draw.content(
+      (3.6, 0),
+      $h′_v$,
+      frame: "circle",
+      padding: 7pt,
+      fill: rgb("#fbe4d4"),
+      stroke: none,
+    )
+    draw.content((2.2, .65), if mode == "attention" { [weighted sum] } else if mode == "message" {
+      [message + update]
+    } else { [aggregate + update] })
+    if mode == "attention" {
+      draw.content((-.8, -2.8), [thicker arrow = larger learned weight])
+    } else if mode == "message" {
+      draw.content((-.4, -2.8), $m_(u v)=M(h_u,h_v,e_(u v))$)
+    } else {
+      draw.content((-.4, -2.8), [sum or mean ignores neighbor ordering])
+    }
+  },
+)
 
 // === 2  Stack layers to reach farther ===
-#let figure-1 = canvas({
+#let figure-1 = canvas(length: .89cm, {
   let arrow-style = (
     mark: (end: "stealth", fill: black, scale: 0.5, offset: 2pt),
     stroke: 0.5pt,

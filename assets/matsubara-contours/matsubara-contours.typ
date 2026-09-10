@@ -1,9 +1,9 @@
 #import "@preview/cetz:0.5.2": canvas, decorations, draw
 #import draw: arc, circle, content, line
-#import "../_shared/layout.typ": card-grid, takeaway
+#import "../_shared/layout.typ": card-grid, label-size, paragraph-size, takeaway
 
 #set page(width: 780pt, height: auto, margin: 22pt, fill: none)
-#set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
+#set text(font: "Avenir Next", size: paragraph-size, fill: rgb("#19324f"))
 #set par(leading: 0.55em)
 
 // Hairline tying a label to whatever it names: pole callouts, semi-axis leaders,
@@ -101,7 +101,7 @@
   #let axis = (..axis-arrow, stroke: 0.5pt)
   #let contour = (stroke: dark-blue, mark: (end: "stealth", scale: 0.5))
 
-  #canvas({
+  #canvas(length: 1.39cm, {
     line((-range-xy - 1, 0), (range-xy + 1, 0), ..axis, name: "x-axis")
     content("x-axis.end", $"Re"(p_0)$, anchor: "south-east", padding: 2pt)
 
@@ -137,7 +137,7 @@
   #let main-radius = y-range + 1.5
   #let axis = (mark: (end: "stealth", scale: 0.5))
 
-  #canvas({
+  #canvas(length: 1.3cm, {
     line((-main-radius, 0), (main-radius, 0), ..axis, name: "x-axis")
     content("x-axis.end", $"Re"(p_0)$, anchor: "south-east", padding: 2pt)
 
@@ -196,7 +196,7 @@
   #let y-offset = 0.25
   #let axis = (mark: (end: "stealth", scale: 0.5))
 
-  #canvas({
+  #canvas(length: 1.18cm, {
     line(
       (-main-radius - y-offset, 0),
       (main-radius + y-offset, 0),
@@ -222,7 +222,7 @@
   #let main-radius = y-range + 0.75
   #let y-offset = 0.25
 
-  #canvas({
+  #canvas(length: 1.4cm, {
     // Right zigzag stops where the x-axis meets the right arc.
     cut-axis(-x-range - 0.4, y-offset + main-radius, amplitude: 0.15, segment-length: 0.25)
     content("x-axis.end", $"Re"(p_0)$, anchor: "south-east", padding: 2pt)
@@ -250,7 +250,7 @@
   #let (x-range, y-range) = (3, 1)
   #let radius = y-range / 4
 
-  #canvas({
+  #canvas(length: 2.06cm, {
     cut-axis(-1.05 * x-range, 1.05 * x-range)
     content("x-axis.end", $"Re"(p_0)$, anchor: "west", padding: 2pt)
 
@@ -295,7 +295,7 @@
   [*thermal-factor contour integral*],
   $ arrow.b $,
   [*pole residues + cut integrals*],
-  text(size: 9pt)[with signs fixed by contour orientation],
+  text(size: label-size)[with signs fixed by contour orientation],
 ))
 
 A thermal frequency sum can be rewritten as a contour integral. Follow which singularities are enclosed, and keep track of the orientation when the contour changes.

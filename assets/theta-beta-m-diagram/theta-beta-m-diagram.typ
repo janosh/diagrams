@@ -3,6 +3,8 @@
 #import "@preview/epsilon:0.1.0": secant
 #import "@preview/lilaq:0.4.0" as lq
 
+#set text(size: 12pt)
+
 #{
   let KAPPA = 1.4
 
@@ -204,7 +206,7 @@
 
   let mach-1-plot = polar-curve-plot(mach-1-data, stroke: (dash: "dash-dotted"))
 
-  let label-text-size = 9pt
+  let label-text-size = 12pt
   let custom-label-placements = (
     "3.4": (coordinates: (34, 68), line: ((34.7, 67.9), 67)),
     "3.8": (coordinates: (38.8, 68.5), line: ((38.8, 68.5), 67.3)),
@@ -333,7 +335,7 @@
 
       content(
         ("shock-line.start", 65%, "shock-line.end"),
-        text(size: 8pt)[shock],
+        text(size: 12pt)[shock],
         angle: "shock-line.end",
         anchor: "south",
       )
@@ -362,7 +364,7 @@
       + label-plots
   )
 
-  set page(margin: 1cm, fill: none)
+  set page(width: auto, height: auto, margin: 1cm, fill: none)
   set text(font: "New Computer Modern")
   set align(center)
 
@@ -370,14 +372,14 @@
   let dof = calc.round(2 / (KAPPA - 1), digits: 3)
 
   lq.diagram(
-    width: 18cm,
+    width: 24cm,
     height: 26cm,
     xlim: (0, 46),
     ylim: (0, 90),
     xaxis: axis,
     yaxis: axis,
     legend: (fill: rgb("#cdd3da")),
-    title: [Diatomic gas ($f = dof$, $kappa = KAPPA$)],
+    title: text(size: 16pt)[Diatomic gas ($f = dof$, $kappa = KAPPA$)],
     xlabel: [deflection angle $theta$ [°]],
     ylabel: [shock angle $beta$ [°]],
     ..plots,

@@ -1,14 +1,14 @@
 #import "@preview/cetz:0.5.2": canvas, draw, matrix
 #import draw: circle, content, line, on-layer, rotate, scale, set-style, set-transform, translate
-#import "../_shared/layout.typ": card-grid, takeaway
+#import "../_shared/layout.typ": card-grid, paragraph-size, takeaway
 
 #set page(width: 780pt, height: auto, margin: 22pt, fill: none)
-#set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
+#set text(font: "Avenir Next", size: paragraph-size, fill: rgb("#19324f"))
 #set par(leading: 0.55em)
 
 // === 1  A ring of minima ===
 #let figure-0 = [
-  #set text(size: 15pt, fill: black)
+  #set text(fill: black)
 
   #let radius-domain = (0.0, 1.25)
   #let angle-steps = 84
@@ -30,7 +30,7 @@
     )
   }
 
-  #canvas({
+  #canvas(length: 1.55cm, {
     set-transform(matrix.transform-rotate-dir((2.5, 0.6, -2), (0, 1, 0.3)))
     // z must scale positive: negating it turns the hat's central bump into a pit, which
     // puts the symmetric vacuum below the broken one and points the downhill arrow uphill
@@ -138,7 +138,7 @@
 ]
 
 // === 2  Radial and angular directions ===
-#let figure-1 = canvas({
+#let figure-1 = canvas(length: 1.63cm, {
   draw.circle((0, 0), radius: 2, stroke: rgb("#008580") + 2pt)
   draw.circle((0, 0), radius: .07, fill: gray)
   draw.circle((2, 0), radius: .12, fill: rgb("#c2570a"))

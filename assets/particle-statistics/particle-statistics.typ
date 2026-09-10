@@ -1,10 +1,10 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import "@preview/cetz-plot:0.1.4": plot
 #import draw: content
-#import "../_shared/layout.typ": card-grid, takeaway
+#import "../_shared/layout.typ": card-grid, paragraph-size, takeaway
 
 #set page(width: 780pt, height: auto, margin: 22pt, fill: none)
-#set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
+#set text(font: "Avenir Next", size: paragraph-size, fill: rgb("#19324f"))
 #set par(leading: 0.55em)
 
 // Mean occupation per single-particle state; zero-point energy is not occupation.
@@ -19,7 +19,7 @@
   // Distribution functions
   #let boltzmann(x) = 1 / calc.exp(x)
 
-  #canvas({
+  #canvas(length: 1.45cm, {
     draw.set-style(legend: (fill: rgb("#cdd3da")))
     let axis-mark = (end: "stealth", fill: black)
     draw.set-style(axes: (
@@ -65,7 +65,7 @@
 
 // === 2  Fermions: a smeared step ===
 #let figure-1 = [
-  #canvas({
+  #canvas(length: 1.04cm, {
     draw.set-style(legend: (fill: rgb("#cdd3da")))
     let axis-mark = (end: "stealth", fill: black)
     draw.set-style(axes: (
@@ -124,7 +124,7 @@
 ]
 
 // === 3  Bosons: shared states ===
-#let figure-2 = canvas({
+#let figure-2 = canvas(length: 1.45cm, {
   draw.set-style(legend: (fill: rgb("#cdd3da")))
   plot.plot(
     size: (8, 6),
@@ -132,7 +132,7 @@
     x-max: 4,
     y-min: 0,
     y-max: 4,
-    x-label: $(epsilon-mu) \/ (k_"B" T_0)$,
+    x-label: none,
     y-label: $bar(n)$,
     x-tick-step: 1,
     y-tick-step: 1,
@@ -150,11 +150,13 @@
       }
     },
   )
+  draw.content((4, -.8), $(epsilon-mu) \/ (k_"B" T_0)$)
 })
 
 // === 4  The same variable in three formulas ===
-#let figure-3 = [
-  #align(center)[
+#let figure-3 = box(width: 230pt, height: 330pt)[
+  #align(center + horizon)[
+    #set text(size: paragraph-size)
     #text(fill: rgb("#0b5fa5"))[*Bose–Einstein*]\
     $bar(n) = 1/(e^x-1)$\
     #v(13pt)

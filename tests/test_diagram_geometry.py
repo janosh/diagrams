@@ -265,6 +265,26 @@ def evaluate_diagram(slug: str, expression: str) -> list:
     )
 
 
+@pytest.mark.parametrize("caller_font_size", [8, 20])
+def test_compound_typography_uses_consistent_readable_sizes(caller_font_size: int) -> None:
+    """Keep labels, headings, captions, and takeaways independent of caller text size."""
+    source = f"""
+#import "/assets/_shared/layout.typ": card, takeaway
+#set page(width: 300pt, height: auto, margin: 0pt)
+#set text(size: {caller_font_size}pt)
+#show text: item => context [#metadata((item.text, text.size / 1pt)) <typography>#item]
+#card([Panel heading], box(width: 200pt, height: 80pt)[Diagram label], [Panel caption])
+#takeaway[Takeaway paragraph]
+"""
+    sizes = dict(evaluate_typst("query(<typography>).map(item => item.value)", source=source))
+    assert sizes == {
+        "Panel heading": 16,
+        "Diagram label": 12,
+        "Panel caption": 14,
+        "Takeaway paragraph": 14,
+    }
+
+
 def test_sabatier_binding_regimes(tmp_path: Path) -> None:
     """Label the correct binding regimes and anchor the optimum above the spline peak."""
     assert evaluate_diagram("sabatier-principle", "diagram.limitations") == [
@@ -507,11 +527,11 @@ def test_semi_supervised_panels_share_bounds() -> None:
 @pytest.mark.parametrize(
     "slug,captions,min_font_size",
     [
-        ("ergodic", ["Opposite edges identified.", "Finite segment shown."], 10.5),
+        ("ergodic", ["Opposite edges identified.", "Finite segment shown."], 14),
         (
             "semi-supervised-learning",
             ["Gray samples ignored.", "Boundary follows the low-density gap."],
-            10.5,
+            14,
         ),
         ("matsubara-contours", ["Bosons", "Fermions"], 14),
     ],

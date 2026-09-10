@@ -159,6 +159,8 @@ Page backgrounds are transparent. Nested panels, legends, and symbol backgrounds
 
 Compound diagrams fill each card's available width and preserve the drawing's aspect ratio. Each row allocates column widths in proportion to its drawings, with captions wrapping below. Page height follows the content automatically.
 
+Typst diagrams use a minimum 12pt base label size, with 14pt paragraphs and captions and 16pt compound-panel headings. Wider posters use proportionally larger text to preserve readability at gallery width. Mathematical subscripts and superscripts retain their natural smaller size. Compound artwork is sized to keep neighboring labels consistent after fitting; gallery detail pages let tall diagrams extend vertically instead of shrinking their text to fit one viewport.
+
 Compound diagrams share [`assets/_shared/layout.typ`](assets/_shared/layout.typ). Compile repository sources with `typst compile --root . assets/<slug>/<slug>.typ`. The gallery inlines the shared layout into its source viewer, so copied code still compiles as a single file.
 
 To run the scripts requires the following dependencies:

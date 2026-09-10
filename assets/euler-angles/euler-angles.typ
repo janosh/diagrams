@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 
 #set page(width: auto, height: auto, margin: 12pt, fill: none)
-#set text(font: "New Computer Modern", size: 10pt, fill: rgb("243247"))
+#set text(font: "New Computer Modern", size: 12pt, fill: rgb("243247"))
 
 #let precession = 25deg
 #let nutation = 25deg
@@ -47,7 +47,9 @@
 
 #canvas({
   draw.content((0, 5.0), text(size: 16pt, weight: "bold")[Euler angles: three ordered rotations])
-  draw.content((0, 4.58), [Intrinsic $Z$–$Y$–$Z$ convention · axes move with the frame])
+  draw.content((0, 4.35), text(
+    size: 14pt,
+  )[Intrinsic $Z$–$Y$–$Z$ convention · axes move with the frame])
   draw.scope({
     // Orthographic viewing transform; subsequent rotations act in the moving frame.
     draw.rotate(x: -70deg)
@@ -78,16 +80,16 @@
   })
 
   for (position, color, heading, detail) in (
-    (-3, precession_color, [1. Precession $psi$], [Rotate about $z$]),
+    (-5.2, precession_color, [1. Precession $psi$], [Rotate about $z$]),
     (0, nutation_color, [2. Nutation $theta$], [Tilt about $v$]),
-    (3, rotation_color, [3. Spin $phi$], [Rotate about $z_1$]),
+    (5.2, rotation_color, [3. Spin $phi$], [Rotate about $z_1$]),
   ) {
-    draw.content((position, -4.35), text(fill: color, weight: "bold", heading))
-    draw.content((position, -4.78), text(size: 8pt, detail))
+    draw.content((position, -4.35), text(size: 16pt, fill: color, weight: "bold", heading))
+    draw.content((position, -4.95), text(size: 14pt, detail))
   }
-  draw.content((0, -5.35), $R = R_z (psi) R_y (theta) R_z (phi)$)
-  draw.content((0, -5.78), text(
-    size: 8pt,
+  draw.content((0, -5.65), $R = R_z (psi) R_y (theta) R_z (phi)$)
+  draw.content((0, -6.2), text(
+    size: 14pt,
     fill: rgb("697586"),
   )[The final basis is $(x_1, y_1, z_1)$. Changing the rotation order changes the orientation.])
 })

@@ -149,7 +149,7 @@
   <MultiSelect
     options={tags.map(([label, count]) => ({ label, count }))}
     placeholder="Filter by tag..."
-    bind:selected={filters.tags}
+    bind:value={filters.tags}
     style="max-width: 34rem; --sms-bg: var(--input-bg); --sms-options-bg: var(--page-bg)"
   >
     {#snippet option({ option }: { option: ObjectOption })}

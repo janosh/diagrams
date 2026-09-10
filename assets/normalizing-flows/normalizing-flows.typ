@@ -1,10 +1,10 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import "@preview/cetz-plot:0.1.4": plot
 #import draw: circle, content, group, hobby, line, polygon, rect, translate
-#import "../_shared/layout.typ": card-grid, takeaway
+#import "../_shared/layout.typ": card-grid, paragraph-size, takeaway
 
 #set page(width: 780pt, height: auto, margin: 22pt, fill: none)
-#set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
+#set text(font: "Avenir Next", size: paragraph-size, fill: rgb("#19324f"))
 #set par(leading: 0.55em)
 
 // === 1  Compose invertible maps ===
@@ -48,7 +48,7 @@
     })
   }
 
-  #canvas({
+  #canvas(length: .82cm, {
     // Constants for layout
     let node-spacing = 3
     let y-base = 0
@@ -59,7 +59,7 @@
       circle(
         fill: gray.transparentize(70%),
         (x, y-base),
-        radius: 0.4,
+        radius: 0.5,
         stroke: special,
         name: name,
       )
@@ -103,7 +103,7 @@
 ]
 
 // === 2  A coupling layer is reversible ===
-#let figure-1 = canvas({
+#let figure-1 = canvas(length: .65cm, {
   let spacing = (node: 2.5, row: 2.5)
 
   // Node styles
@@ -113,14 +113,14 @@
   )
 
   let diamond(pos, name, label, fill: none) = {
-    polygon(pos, 4, radius: 0.7, angle: 90deg, stroke: 0.7pt, fill: fill, name: name)
+    polygon(pos, 4, radius: 1.1, angle: 90deg, stroke: 0.7pt, fill: fill, name: name)
     content(pos, label, anchor: "center")
   }
 
   let circle-node(pos, name, label) = {
     circle(
       pos,
-      radius: 0.4,
+      radius: 0.5,
       name: name,
       stroke: 0.7pt,
       fill: rgb("#ffa64d").lighten(40%),
@@ -150,15 +150,15 @@
     line(name(if inverse { "x1" } else { "z1" }), name("m"), ..arrow-style)
     line(name("m"), name("g"), ..arrow-style)
     content(
-      (rel: (0, -1), to: name("g")),
+      (rel: (0, -1.4), to: name("g")),
       if inverse { [inverse pass] } else { [forward pass] },
-      anchor: "south",
+      anchor: "north",
     )
   }
 })
 
 // === 3  Affine coupling ===
-#let figure-2 = canvas({
+#let figure-2 = canvas(length: 1.2cm, {
   let node-width = 1
   let node-height = 0.6
   let horiz-sep = 1.2
@@ -266,7 +266,7 @@
 })
 
 // === 4  Autoregressive conditioning ===
-#let figure-3 = canvas({
+#let figure-3 = canvas(length: 1.5cm, {
   for idx in range(4) {
     for (prefix, row, label, fill) in (
       ("x", 0, $x_#(idx + 1)$, rgb("#d6e9f8")),

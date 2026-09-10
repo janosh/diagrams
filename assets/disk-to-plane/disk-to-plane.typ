@@ -2,6 +2,7 @@
 #import draw: arc, circle, content, line, rect
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 
 #let radius = 1
 #let axis-length = 2.5

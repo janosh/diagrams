@@ -4,6 +4,7 @@
 #import draw: content, grid, group, line, rotate, scale, set-transform
 
 #set page(width: auto, height: auto, margin: .5cm, fill: none)
+#set text(size: 12pt)
 
 #canvas({
   // Set up the transformation matrix

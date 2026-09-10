@@ -2,9 +2,10 @@
 #import draw: content, line, on-layer, rect
 
 #set page(width: auto, height: auto, margin: 5pt, fill: none)
+#set text(size: 12pt)
 
 #canvas({
-  let cell-size = 0.6
+  let cell-size = 1.0
   let matrix-sep = 1.5
   let highlight = rgb(255, 200, 150) // orange!30
   let kernel-color = rgb("#9ae7e1") // teal!30
@@ -34,6 +35,7 @@
   )
 
   let input-origin = (0, 4)
+  let matrix-label-y = input-origin.at(1) - 6 * cell-size - 0.55
   let input-values = (
     (0, 1, 1, 1, 0, 0, 0),
     (0, 0, 1, 1, 1, 0, 0),
@@ -45,7 +47,7 @@
   )
   draw-matrix(input-origin, input-values, "I", highlighted: true)
   content(
-    (input-origin.at(0) + 7 * cell-size / 2, 0),
+    (input-origin.at(0) + 7 * cell-size / 2, matrix-label-y),
     $bold(I)$,
     name: "I-label",
   )
@@ -68,7 +70,7 @@
   // Redraw matrix on top of background
   draw-matrix(kernel-origin, kernel-values, "K")
   content(
-    (kernel-origin.at(0) + 3 * cell-size / 2, 0),
+    (kernel-origin.at(0) + 3 * cell-size / 2, matrix-label-y),
     $bold(K)$,
     name: "K-label",
   )
@@ -94,7 +96,7 @@
     stroke: none,
   ))
   content(
-    (result-origin.at(0) + 5 * cell-size / 2, 0),
+    (result-origin.at(0) + 5 * cell-size / 2, matrix-label-y),
     $bold(I * K)$,
     name: "R-label",
   )
@@ -125,7 +127,7 @@
     for jj in (3, 4, 5) {
       content(
         cell-anchor("I", ii, jj, "south-west"),
-        text(size: 6pt)[×#calc.rem(ii + jj, 2)],
+        text(size: 12pt)[×#calc.rem(ii + jj, 2)],
         anchor: "south-west",
         padding: 1pt,
       )

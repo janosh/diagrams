@@ -1,9 +1,9 @@
 #import "@preview/cetz-plot:0.1.4": plot
 #import "@preview/cetz:0.5.2": canvas, draw
-#import "../_shared/layout.typ": card-grid, takeaway
+#import "../_shared/layout.typ": card-grid, paragraph-size, takeaway
 
 #set page(width: 780pt, height: auto, margin: 22pt, fill: none)
-#set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
+#set text(font: "Avenir Next", size: paragraph-size, fill: rgb("#19324f"))
 #set par(leading: 0.55em)
 
 #let plot-height = 1.6
@@ -44,7 +44,7 @@
   #let carrier(x) = 2 * calc.sin(6 * domain-x(x))
   #let am(x) = (2.5 + msg(x)) * carrier(x)
 
-  #canvas({
+  #canvas(length: 1.05cm, {
     draw.set-style(legend: (fill: rgb("#cdd3da")))
     signal-row("msg", 4.6, $x(t)$, msg, black, (-2.4, 2.4))
     signal-row("carrier", 2.05, [carrier wave], carrier, blue, (-2.4, 2.4))
@@ -65,7 +65,7 @@
       )
   )
 
-  #canvas({
+  #canvas(length: 1.05cm, {
     draw.set-style(legend: (fill: rgb("#cdd3da")))
     let green = green.darken(15%)
     signal-row("msg", 4.6, $x(t)$, msg, black, (-2.4, 2.4))

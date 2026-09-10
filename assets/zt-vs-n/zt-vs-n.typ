@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import "@preview/cetz-plot:0.1.4": plot
 #set page(width: 500pt, height: auto, margin: 20pt, fill: none)
-#set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
+#set text(font: "Avenir Next", size: 12pt, fill: rgb("#19324f"))
 #set par(leading: 0.55em)
 
 #let curves = (
@@ -278,7 +278,7 @@
   draw.line("plot.peak", (rel: (0, .6)), stroke: curves.first().color + .6pt, name: "peak-leader")
   draw.content(
     "peak-leader.end",
-    text(size: 9pt)[sampled peak: #calc.round(zt_peak.at(1), digits: 3)],
+    text(size: 12pt)[sampled peak: #calc.round(zt_peak.at(1), digits: 3)],
     anchor: "south",
   )
   draw.content((rel: (0, -.4), to: "plot.south"), [$n$ ($"cm"^(-3)$)], anchor: "north")
@@ -288,6 +288,6 @@
     fill: curve.color,
   )[― #curve.label #if idx == 0 [(actual)]] #h(7pt)]]
 #v(6pt)
-#align(center)[Transport curves scaled individually: $f(n) \/ (max f)$.]
+#align(center, text(size: 14pt)[Transport curves scaled individually: $f(n) \/ (max f)$.])
 #v(8pt)
 #align(center)[$z T = S^2 sigma T / kappa$]

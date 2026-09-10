@@ -46,6 +46,23 @@ test.beforeEach(async ({ page }) => {
   await page.route(`https://plausible.io/**`, (route) => route.abort())
 })
 
+test(`gallery descriptions preserve rich links and open from keyboard focus`, async ({
+  page,
+}) => {
+  await page.goto(`/`, { waitUntil: `domcontentloaded` })
+  await page.getByPlaceholder(`Search...`, { exact: true }).fill(`Euler Angles`)
+  const card = page.locator(`a[href="euler-angles"]`).first()
+  await card.focus()
+  const description = page.getByRole(`dialog`, { name: `Euler Angles` })
+  await expect(description).toBeVisible()
+  await expect(
+    description.locator(`a[href="../cartesian-vs-polar-coordinates"]`),
+  ).toBeVisible()
+  expect(await description.evaluate((element) => element.closest(`a`))).toBeNull()
+  await page.keyboard.press(`Escape`)
+  await expect(description).toBeHidden()
+})
+
 for (const direction of [`Next`, `Previous`]) {
   test(`${direction} navigation clears old artwork while the new image loads`, async ({
     page,
@@ -134,9 +151,29 @@ for (const theme of [`light`, `dark`] as const) {
 
   test(`tall diagram scrolls with a reachable exit (${theme})`, async ({ page }) => {
     const wrapper = await open_diagram(page, `xc-functional`)
+    const artwork = wrapper.locator(`img`)
+    const normal_size = await artwork.evaluate((image: HTMLImageElement) => {
+      const {
+        paddingLeft: padding_left,
+        paddingRight: padding_right,
+        paddingTop: padding_top,
+        paddingBottom: padding_bottom,
+      } = getComputedStyle(image)
+      return {
+        // eslint-disable-next-line unicorn/prefer-number-coercion -- Computed CSS lengths include px.
+        width: image.clientWidth - parseFloat(padding_left) - parseFloat(padding_right),
+        // eslint-disable-next-line unicorn/prefer-number-coercion -- Computed CSS lengths include px.
+        height: image.clientHeight - parseFloat(padding_top) - parseFloat(padding_bottom),
+        aspect: image.naturalHeight / image.naturalWidth,
+      }
+    })
+    // Use the available width; fitting tall artwork into one viewport makes text tiny.
+    expect(normal_size.height).toBeGreaterThan(720)
+    expect(
+      Math.abs(normal_size.height - normal_size.width * normal_size.aspect),
+    ).toBeLessThanOrEqual(1) // client dimensions round to whole CSS pixels.
     await set_theme(page, theme)
     await enter_fullscreen(wrapper)
-    const artwork = wrapper.locator(`img`)
     const top_bounds = await artwork.boundingBox()
     if (!top_bounds) throw new Error(`Missing fullscreen artwork bounds`)
     expect(top_bounds.y).toBeGreaterThanOrEqual(0)
@@ -196,6 +233,11 @@ test(`theme overrides apply to cards while atom surface colors stay fixed`, asyn
     .getByPlaceholder(`Search...`, { exact: true })
     .fill(`Feynman Building Blocks`)
   const artwork = page.locator(`a[href='feynman-building-blocks'] img`)
+  await artwork.hover()
+  const description = page.getByRole(`dialog`, { name: `Feynman Building Blocks` })
+  await expect(description.locator(`p`)).toContainText(`Lines connect fields`)
+  await page.keyboard.press(`Escape`)
+  await expect(description).toBeHidden()
   await page.getByRole(`button`, { name: `Switch to light theme` }).click()
   await page.getByRole(`button`, { name: `Switch to system (auto) theme` }).click()
   await expect(artwork).toHaveCSS(`filter`, `invert(0.9) hue-rotate(180deg)`)

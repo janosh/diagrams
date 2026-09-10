@@ -2,6 +2,7 @@
 #import draw: circle, content, hobby, line, on-layer
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 
 #canvas({
   // Style definitions
@@ -20,7 +21,7 @@
     if caption != none {
       content(
         name + ".mid",
-        text(size: 0.8em, caption),
+        text(size: 14pt, caption),
         anchor: "north",
         padding: caption-padding,
       )
@@ -42,12 +43,12 @@
   // Output node
   content(
     (9, y-real / 2),
-    text(size: 0.9em, baseline: -1pt)[real?],
+    text(size: 12pt, baseline: -1pt)[real?],
     name: "out",
     padding: 2pt,
   )
 
-  annotated-arrow((-2.5, y-fake), "zin", "zin-line", $p_theta (arrow(z))$, caption: [latent noise])
+  annotated-arrow((-3.2, y-fake), "zin", "zin-line", $p_theta (arrow(z))$, caption: [latent noise])
   annotated-arrow("zin", "fake", "fake-line", $G(arrow(x))$, caption: [generator])
   annotated-arrow((-2, y-real), "real", "real-line", $p_"data" (arrow(x))$)
 
@@ -82,6 +83,6 @@
     "disc-line",
     $D(arrow(x))$,
     caption: [discriminator],
-    caption-padding: 0.15,
+    caption-padding: 0.45,
   )
 })

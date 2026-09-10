@@ -22,6 +22,7 @@
 }
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 
 #let unit = 1
 #let ext-len = 2 * unit

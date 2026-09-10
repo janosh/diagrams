@@ -10,7 +10,7 @@
 // https://ocw.mit.edu/courses/3-23-electrical-optical-and-magnetic-properties-of-materials-fall-2007/resources/lec10/
 // Ashcroft & Mermin, Solid State Physics (1976), chapters 10 and 11.
 #set page(width: auto, height: auto, margin: 0pt, fill: none)
-#set text(font: "Avenir Next", size: 14pt, fill: rgb("#19304E"))
+#set text(font: "Avenir Next", size: 18pt, fill: rgb("#19304E"))
 #set par(leading: 0.55em)
 #set math.equation(numbering: none)
 
@@ -20,7 +20,7 @@
 #let teal = rgb("#087F7C")
 #let orange = rgb("#BC502D")
 #let purple = rgb("#7948AD")
-#let label(left, top, width, body, size: 14pt, color: ink, weight: "regular", centered: false) = {
+#let label(left, top, width, body, size: 18pt, color: ink, weight: "regular", centered: false) = {
   content(
     (left, -top),
     block(width: width * 1pt)[
@@ -63,44 +63,45 @@
 }
 
 #canvas(length: 1pt, {
-  rect((0, -49), (1000, -1040), fill: none, stroke: none)
+  rect((0, -49), (1000, -1312), fill: none, stroke: none)
   rect((0, -49), (1000, -56), fill: teal, stroke: none)
   label(
     30,
     74,
     940,
     [Atomic orbitals combine into electron waves spread across the solid.],
-    size: 17pt,
+    size: 21pt,
     color: muted,
   )
   label(
     30,
-    106,
+    120,
     940,
     [Follow one orbital per atom: coupling creates the energy spread; electron filling decides what the solid can do.],
-    size: 14pt,
+    size: 18pt,
   )
 
-  panel(24, 146, 952, 274, rgb("#c7d3e1"))
+  draw.translate((0, -30))
+  panel(24, 146, 952, 294, rgb("#c7d3e1"))
   label(
     42,
     163,
     916,
     [1  MORE ATOMS → MORE ALLOWED LEVELS],
-    size: 19pt,
+    size: 24pt,
     color: blue,
     weight: "bold",
   )
-  label(638, 168, 320, [Each line is one allowed wave pattern.], size: 12pt, color: blue)
+  label(638, 164, 320, [Each line is one allowed wave pattern.], size: 18pt, color: blue)
   arrow(58, 380, 58, 278, color: muted)
-  symbol(58, 264, $E$, size: 16pt, color: muted)
+  symbol(58, 264, $E$, size: 21pt, color: muted)
   for (center_x, atom_count, heading) in (
     (142, 1, [1 atom]),
     (366, 2, [2 atoms]),
     (590, 6, [6 atoms]),
     (822, 40, [many atoms]),
   ) {
-    label(center_x - 95, 201, 190, heading, size: 16pt, weight: "bold", centered: true)
+    label(center_x - 95, 201, 190, heading, size: 21pt, weight: "bold", centered: true)
     let shown = calc.min(atom_count, 7)
     for idx in range(shown) { atom(center_x + (idx - (shown - 1) / 2) * 21, 245, radius: 12) }
     if atom_count > shown { symbol(center_x + 88, 245, $dots.c$, size: 18pt, color: blue) }
@@ -120,43 +121,47 @@
       if atom_count == 1 { [1 spatial state] } else if atom_count == 40 {
         [$N$ states → a dense band]
       } else { [#atom_count spatial states] },
-      size: 12pt,
+      size: 18pt,
       color: blue,
       centered: true,
     )
   }
   for center_x in (252, 477, 704) { arrow(center_x - 16, 327, center_x + 16, 327, color: muted) }
-  label(310, 273, 111, [antibonding], size: 10pt, color: orange, centered: true)
-  label(316, 365, 100, [bonding], size: 10pt, color: teal, centered: true)
+  label(310, 273, 111, [antibonding], size: 16pt, color: orange, centered: true)
+  label(316, 365, 100, [bonding], size: 16pt, color: teal, centered: true)
 
-  panel(24, 435, 952, 60, rgb("#c7d8d1"))
+  draw.translate((0, -22))
+  panel(24, 435, 952, 104, rgb("#c7d8d1"))
   label(
     42,
     447,
     916,
     [*$N$ atomic orbitals → $N$ spatial states → room for $2N$ electrons.*],
-    size: 19pt,
+    size: 24pt,
     color: teal,
     centered: true,
   )
   label(
     42,
-    478,
+    488,
     916,
     [Two opposite spins fit in each spatial state. Pauli exclusion controls occupation; coupling causes the splitting.],
-    size: 11pt,
+    size: 18pt,
     color: muted,
     centered: true,
   )
 
-  label(30, 515, 940, [2  THE BAND IS A FAMILY OF WAVES], size: 20pt, weight: "bold")
+  draw.translate((0, -45))
+  label(30, 515, 940, [2  THE BAND IS A FAMILY OF WAVES], size: 26pt, weight: "bold")
   label(
     30,
-    547,
+    552,
     930,
     [Minimal model: identical atoms, spacing $a$, one orbital each, and coupling $-t$ between neighbors ($t > 0$).],
-    size: 13pt,
+    size: 18pt,
   )
+
+  draw.translate((0, -25))
 
   // Band dispersion. Horizontal coordinate is k, not position.
   let plot_left = 80
@@ -182,48 +187,49 @@
     dash: "dashed",
   ))
   for (fraction, tick) in ((0, $-pi \/ a$), (0.5, $0$), (1, $pi \/ a$)) {
-    symbol(plot_left + plot_width * fraction, 800, tick, size: 16pt)
+    symbol(plot_left + plot_width * fraction, 800, tick, size: 21pt)
   }
-  symbol(52, energy_y(0), $epsilon_0$, size: 16pt, color: muted)
+  symbol(52, energy_y(0), $epsilon_0$, size: 21pt, color: muted)
   symbol(48, 585, $E$, size: 18pt)
   symbol(526, 800, $k$, size: 18pt)
   label(111, 576, 362, [$E(k) = epsilon_0 - 2t cos(k a)$], size: 22pt, color: blue, centered: true)
   arrow(513, 770, 513, 597, color: teal, both: true)
-  label(533, 659, 95, [$W = 4t$], size: 17pt, color: teal)
+  label(533, 659, 95, [$W = 4t$], size: 21pt, color: teal)
   label(
     93,
-    815,
+    830,
     442,
     [$k$: phase change per distance; $epsilon_0$: isolated orbital energy.\ This interval is one Brillouin zone: distinct lattice phases.],
-    size: 11pt,
+    size: 18pt,
     color: muted,
   )
 
   // Phase patterns at the band extrema: colors indicate sign, not electric charge.
-  label(651, 583, 300, [HIGH ENERGY  •  $k = pi \/ a$], size: 14pt, color: orange, weight: "bold")
+  label(651, 583, 300, [HIGH ENERGY  •  $k = pi \/ a$], size: 21pt, color: orange, weight: "bold")
   for idx in range(7) {
     atom(667 + idx * 42, 631, phase: if calc.rem(idx, 2) == 0 { 1 } else { -1 }, radius: 23)
   }
-  label(652, 666, 300, [Alternating phase: antibonding.], size: 12pt, color: orange)
-  label(651, 708, 300, [LOW ENERGY  •  $k = 0$], size: 14pt, color: teal, weight: "bold")
+  label(652, 666, 300, [Alternating phase: antibonding.], size: 18pt, color: orange)
+  label(651, 708, 300, [LOW ENERGY  •  $k = 0$], size: 21pt, color: teal, weight: "bold")
   for idx in range(7) { atom(667 + idx * 42, 751, radius: 23) }
-  label(652, 784, 300, [Same phase on neighbors: bonding.], size: 12pt, color: teal)
+  label(652, 784, 300, [Same phase on neighbors: bonding.], size: 18pt, color: teal)
   label(
     650,
-    820,
+    830,
     302,
     [Blue / orange = wavefunction sign, not charge. Each pattern extends across the chain.],
-    size: 11pt,
+    size: 18pt,
     color: muted,
   )
 
-  panel(24, 864, 952, 149, rgb("#d2cbdc"))
+  draw.translate((0, -55))
+  panel(24, 884, 952, 215, rgb("#d2cbdc"))
   label(
     42,
-    880,
+    900,
     916,
     [3  FILLING MATTERS AS MUCH AS BANDWIDTH],
-    size: 19pt,
+    size: 24pt,
     color: purple,
     weight: "bold",
   )
@@ -236,7 +242,7 @@
     925,
     236,
     [*Partly filled band*\ Nearby empty states permit a metallic response.],
-    size: 13pt,
+    size: 18pt,
   )
   rect((495, -966), (631, -981), fill: blue.lighten(30%), stroke: none)
   rect((495, -923), (631, -938), fill: blue.lighten(87%), stroke: none)
@@ -246,14 +252,14 @@
     923,
     286,
     [*Full band + gap above it*\ A band insulator; a small gap can allow thermally excited carriers.],
-    size: 13pt,
+    size: 18pt,
   )
   label(
     42,
-    990,
+    1040,
     908,
     [Dark: occupied; pale: empty. Dashed: Fermi level, the filling boundary at zero temperature. This independent-electron picture can change with overlapping bands, correlations, or symmetry breaking.],
-    size: 10pt,
+    size: 18pt,
     color: muted,
   )
 })

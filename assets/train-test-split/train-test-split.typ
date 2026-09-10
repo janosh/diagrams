@@ -2,6 +2,7 @@
 #import draw: circle, content, line, rect
 
 #set page(width: auto, height: auto, margin: 5pt, fill: none)
+#set text(size: 12pt)
 
 #canvas({
   let data-color = rgb("#00bfbf")
@@ -12,10 +13,10 @@
   let test-target-color = rgb("#ffe680")
   let (data-header, target-header) = (rgb("#008080"), rgb("#cc9900"))
   let arrow-style = (stroke: black + 2pt, mark: (end: "stealth", size: 10pt))
-  let step-text-style = (fill: black, weight: "bold", size: 14.3pt)
+  let step-text-style = (fill: black, weight: "bold", size: 16pt)
   let label-text-style = (fill: black, weight: "bold", size: 18.2pt)
   let header-text-style = (fill: white, weight: "bold", size: 13pt)
-  let neuron-text-style = (fill: black, weight: "bold", size: 11.7pt)
+  let neuron-text-style = (fill: black, weight: "bold", size: 12pt)
   let matrix-stroke = 0.5pt + rgb("#0099cc")
 
   let vertical-center = 0

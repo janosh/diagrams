@@ -161,6 +161,7 @@
 
 // === Output ===
 #set page(width: auto, height: auto, margin: if show-grid { 12pt } else { 8pt }, fill: none)
+#set text(size: 12pt)
 
 #if show-grid {
   grid(
@@ -171,7 +172,7 @@
       dir: ttb,
       spacing: 6pt,
       render-fx(grad, scale: 0.5cm),
-      align(center, text(size: 8pt, weight: "bold", name)),
+      align(center, text(size: 12pt, weight: "bold", name)),
     ))
   )
 } else {

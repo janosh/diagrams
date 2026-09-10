@@ -2,6 +2,7 @@
 #import draw: bezier, content, line
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 
 // Functions for the branch cuts - adjusted to better match the original
 // Increased vertical scaling to spread the curves further apart

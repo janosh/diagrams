@@ -2,6 +2,7 @@
 #import draw: bezier, content, line, rect
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 
 #canvas({
   let arrow = (mark: (end: "stealth", fill: black, scale: .55), stroke: .9pt)

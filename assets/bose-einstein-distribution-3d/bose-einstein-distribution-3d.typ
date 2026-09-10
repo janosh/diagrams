@@ -2,7 +2,7 @@
 #import draw: content, grid, line, set-style, set-transform
 
 #set page(width: auto, height: auto, margin: 18pt, fill: none)
-#set text(fill: black)
+#set text(size: 12pt, fill: black)
 
 #let x-domain = (-10.0, 10.0)
 #let y-domain = (-10.0, 10.0)

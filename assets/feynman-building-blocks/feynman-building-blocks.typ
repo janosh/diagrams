@@ -1,9 +1,9 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content, line
-#import "../_shared/layout.typ": card-grid, takeaway
+#import "../_shared/layout.typ": card-grid, paragraph-size, takeaway
 
 #set page(width: 780pt, height: auto, margin: 22pt, fill: none)
-#set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
+#set text(font: "Avenir Next", size: paragraph-size, fill: rgb("#19324f"))
 #set par(leading: 0.55em)
 
 // Diagonal hatching marking a vertex as dressed rather than bare.
@@ -13,41 +13,44 @@
 ]
 
 // The propagator and regulator insertion share external legs and momentum arrows.
-#let two-point(regulator: false) = canvas({
-  let momentum-arrow = (
-    mark: (end: "stealth", fill: black, scale: .5),
-    stroke: (thickness: 0.75pt),
-  )
-  line((-2.25, 0), (2.25, 0), stroke: 1pt, name: "a-to-b")
-  content("a-to-b.start", $phi_a$, anchor: "east", padding: 3pt)
-  content("a-to-b.end", $phi_b$, anchor: "west", padding: 3pt)
-  for (idx, x-start) in ((1, -2), (2, 1)) {
-    line((x-start, 0.15), (x-start + 1, 0.15), ..momentum-arrow)
-    content((x-start + 0.5, 0.45), $p_#idx$)
-  }
-  if regulator {
-    content(
-      (0, 0),
-      text(size: 16pt, baseline: -0.3pt)[$times.o$],
-      stroke: none,
-      fill: rgb("#cdd3da"),
-      frame: "circle",
-      padding: -2.4pt,
-      name: "vertex",
+#let two-point(regulator: false) = canvas(
+  length: if regulator { 2.3cm } else { 2.1cm },
+  {
+    let momentum-arrow = (
+      mark: (end: "stealth", fill: black, scale: .5),
+      stroke: (thickness: 0.75pt),
     )
-  } else {
-    circle((0, 0), radius: 0.25, fill: hatched, name: "vertex")
-  }
-  content(
-    (rel: (0, 0.5), to: "vertex"),
-    if regulator { $partial_t R_(k,a b)(p_1,p_2)$ } else { $G_(k,a b)(p_1,p_2)$ },
-  )
-})
+    line((-2.25, 0), (2.25, 0), stroke: 1pt, name: "a-to-b")
+    content("a-to-b.start", $phi_a$, anchor: "east", padding: 3pt)
+    content("a-to-b.end", $phi_b$, anchor: "west", padding: 3pt)
+    for (idx, x-start) in ((1, -2), (2, 1)) {
+      line((x-start, 0.15), (x-start + 1, 0.15), ..momentum-arrow)
+      content((x-start + 0.5, 0.45), $p_#idx$)
+    }
+    if regulator {
+      content(
+        (0, 0),
+        text(size: 16pt, baseline: -0.3pt)[$times.o$],
+        stroke: none,
+        fill: rgb("#cdd3da"),
+        frame: "circle",
+        padding: -2.4pt,
+        name: "vertex",
+      )
+    } else {
+      circle((0, 0), radius: 0.25, fill: hatched, name: "vertex")
+    }
+    content(
+      (rel: (0, 0.5), to: "vertex"),
+      if regulator { $partial_t R_(k,a b)(p_1,p_2)$ } else { $G_(k,a b)(p_1,p_2)$ },
+    )
+  },
+)
 
 // === 3  Three-point vertex ===
 #let figure-2 = [
 
-  #canvas({
+  #canvas(length: 2.85cm, {
     let arrow = (mark: (end: "stealth", fill: black, scale: .3), stroke: (thickness: 0.5pt))
 
     line((-2, 0), (0, 0), name: "in")
@@ -82,7 +85,7 @@
   // draw the four-point vertex on axes rotated 45 deg so the legs run diagonally
   #let rot45(x, y) = ((x - y) / calc.sqrt(2), (x + y) / calc.sqrt(2))
 
-  #canvas({
+  #canvas(length: 3cm, {
     let arrow = (mark: (end: "stealth", fill: black, scale: .3), stroke: (thickness: 0.5pt))
 
     line(rot45(-2, 0), rot45(2, 0), name: "horiz")

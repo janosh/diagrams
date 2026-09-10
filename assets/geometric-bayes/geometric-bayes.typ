@@ -3,7 +3,7 @@
 
 #set page(width: auto, height: auto, margin: 3pt, fill: none)
 
-#set text(fill: white)
+#set text(size: 12pt, fill: white)
 
 #canvas({
   let width = 8

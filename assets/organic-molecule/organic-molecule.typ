@@ -2,6 +2,7 @@
 #import draw: circle, content, line, on-layer
 
 #set page(width: auto, height: auto, margin: 5pt, fill: none)
+#set text(size: 12pt)
 
 // Atom with 3D shading effect
 #let atom(pos, color, element, radius: 0.3, name: none) = {
@@ -21,7 +22,7 @@
   let text-color = if color == rgb("#333333") { white } else { black }
 
   // Calculate text size based on radius
-  let text-size = if radius < 0.4 { 10pt } else { 14pt }
+  let text-size = if radius < 0.4 { 12pt } else { 14pt }
 
   content(
     pos,

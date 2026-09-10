@@ -1,14 +1,14 @@
 #import "@preview/fractusist:0.3.0": lsystem, lsystem-use
 
 #set page(width: auto, height: auto, margin: 0pt, fill: none)
-#set text(fill: white, size: 6pt)
+#set text(fill: white, size: 12pt)
 
 // Sierpiński triangle with Au(100) surface background
 #box({
   let triangle-size = 128pt
-  let margin = 12pt
+  let margin = 20pt
   let canvas-width = triangle-size + 2 * margin
-  let canvas-height = triangle-size * calc.pow(3, 0.5) / 2 + 2 * margin
+  let canvas-height = triangle-size * calc.pow(3, 0.5) / 2 + 2 * margin + 50pt
 
   rect(
     width: canvas-width,
@@ -41,7 +41,7 @@
       // Sierpiński triangle
       place(
         dx: margin / 2,
-        dy: margin / 2,
+        dy: margin / 2 + 50pt,
         {
           lsystem(
             ..lsystem-use("Sierpinski Triangle"),
@@ -56,7 +56,7 @@
 
       // 10nm scale bar
       let scale-bar-width = horizontal-spacing * 8
-      let (scale-bar-height, scale-bar-margin) = (2pt, 12pt)
+      let (scale-bar-height, scale-bar-margin) = (2pt, 20pt)
 
       place(
         dx: canvas-width - scale-bar-width - scale-bar-margin,
@@ -65,13 +65,13 @@
       )
 
       place(
-        dx: canvas-width - scale-bar-width - scale-bar-margin + scale-bar-width / 2 - 7pt,
+        dx: canvas-width - scale-bar-width - scale-bar-margin + scale-bar-width / 2 - 14pt,
         dy: scale-bar-margin / 5 + scale-bar-height + 2pt,
         [10 nm],
       )
 
       // Legend
-      let color-square-size = 4pt
+      let color-square-size = 8pt
       let legend-items = (
         (rgb(200, 50, 50), [Au(100)]),
         (rgb(255, 230, 100), [Fe/C3PC]),

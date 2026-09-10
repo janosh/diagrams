@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 
 #set page(width: auto, height: auto, margin: 12pt, fill: none)
-#set text(font: "New Computer Modern", size: 10pt, fill: rgb("243247"))
+#set text(font: "New Computer Modern", size: 12pt, fill: rgb("243247"))
 
 #let incident_color = rgb("2563eb")
 #let scattered_color = rgb("c26418")
@@ -24,8 +24,8 @@
 })
 
 #canvas({
-  draw.content((0, 3.15), text(size: 15pt, weight: "bold")[Thomson scattering])
-  draw.content((0, 2.73), [Elastic scattering by a free electron])
+  draw.content((0, 3.7), text(size: 16pt, weight: "bold")[Thomson scattering])
+  draw.content((0, 3.12), text(size: 14pt)[Elastic scattering by a free electron])
 
   draw.scope({
     draw.scale(1.4)
@@ -39,7 +39,7 @@
       thickness: 0.6pt,
       dash: "dashed",
     ))
-    draw.content((2.85, -0.2), text(size: 8pt, fill: rgb("697586"))[forward direction])
+    draw.content((2.85, -0.2), text(size: 12pt, fill: rgb("697586"))[forward direction])
 
     wave(-3.1, 0deg, 5, incident_color)
     draw.content((-2.0, 0.48), text(fill: incident_color)[Incident wave])
@@ -63,19 +63,19 @@
       start: "stealth",
       ..arrow(electron_color),
     ))
-    draw.circle((0, 0), radius: 0.21, fill: electron_color, stroke: none)
-    draw.content((0, 0), text(fill: white, size: 8pt)[$e^-$])
-    draw.content((0, -0.72), text(fill: electron_color, size: 9pt)[Electron])
+    draw.circle((0, 0), radius: 0.27, fill: electron_color, stroke: none)
+    draw.content((0, 0), text(fill: white, size: 12pt)[$e^-$])
+    draw.content((0, -1.08), text(fill: electron_color, size: 12pt)[Electron])
   })
 
   draw.content((0, -2.32), text(
     size: 12pt,
   )[$lambda_"out" = lambda_"in" quad h nu_"out" = h nu_"in"$])
-  draw.content((0, -2.83), text(
-    size: 9pt,
+  draw.content((0, -3.0), text(
+    size: 14pt,
   )[The electric field drives the electron; the accelerated charge reradiates.])
-  draw.content((0, -3.21), text(
-    size: 8pt,
+  draw.content((0, -3.6), text(
+    size: 14pt,
     fill: rgb("697586"),
   )[Classical limit: photon energy $h nu lt.double m_e c^2$; recoil is neglected.])
 })

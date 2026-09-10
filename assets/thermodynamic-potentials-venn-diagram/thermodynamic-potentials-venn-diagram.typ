@@ -2,10 +2,11 @@
 #import draw: arc-through, circle, content, merge-path, rect, rotate, scale, scope
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
+#set text(size: 12pt)
 
 #canvas({
   // Scale up the diagram
-  scale(2.5)
+  scale(4)
 
   let mechanical-center = (-0.65, 0.375)
   let thermal-center = (0.65, 0.375)
@@ -77,16 +78,24 @@
   }
 
   for spec in (
-    (pos: (-0.992, 0.573), body: [Mechanical\ $F_[mu] = -P V$], args: (anchor: "center")),
-    (pos: (-0.95, 0.28), body: text(.8em)[(Grand potential)], args: (anchor: "center")),
-    (pos: (0.992, 0.573), body: [Thermal\ $H_[mu] = T S$], args: (anchor: "center")),
-    (pos: (0, -1.146), body: [Chemical\ $G = mu N$], args: (anchor: "center")),
+    (
+      pos: (-0.992, 0.573),
+      body: [#text(size: 16pt)[Mechanical]\ $F_[mu] = -P V$],
+      args: (anchor: "center"),
+    ),
+    (pos: (-0.95, 0.28), body: text(size: 14pt)[(Grand potential)], args: (anchor: "center")),
+    (
+      pos: (0.992, 0.573),
+      body: [#text(size: 16pt)[Thermal]\ $H_[mu] = T S$],
+      args: (anchor: "center"),
+    ),
+    (pos: (0, -1.146), body: [#text(size: 16pt)[Chemical]\ $G = mu N$], args: (anchor: "center")),
     (pos: (0, 0.523), body: align(center, $U_[mu] =\ T S - P V$), args: (anchor: "center")),
-    (pos: (0, 0), body: text(.8em, align(center, $U = T S -\ P V + mu N$)), args: (:)),
+    (pos: (0, 0), body: text(12pt, align(center, $U = T S -\ P V + mu N$)), args: (:)),
     (pos: (-0.496, -0.336), body: align(center, $F =\ -P V + mu N$), args: (anchor: "center")),
     (pos: (0.496, -0.336), body: align(center, $H =\ T S + mu N$), args: (anchor: "center")),
     (pos: (0, 1.6), body: $G_[mu]$, args: (:)),
-    (pos: (0, 1.4), body: text(.8em)[(Gibbs-Duhem)], args: (:)),
+    (pos: (0, 1.4), body: text(size: 14pt)[(Gibbs-Duhem)], args: (:)),
   ) { content(spec.pos, spec.body, ..spec.args) }
   circle((0, 0), radius: 1.75, fill: rgb(70%, 70%, 90%, 20%), stroke: rgb(
     0%,

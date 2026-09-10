@@ -157,7 +157,9 @@ it.each([
   [`---\n\n**Visible**`, `<hr>\n<p><strong>Visible</strong></p>\n`],
   [
     `---\ntitle: Keep me\n---\nAfter`,
-    `<hr>\n<h2 id="title-keep-me">title: Keep me</h2>\n<p>After</p>\n`,
+    expect.stringMatching(
+      /^<hr>\n<h2 id="title-keep-me">title: Keep me<a data-heading-anchor[^>]* href="#title-keep-me">[\s\S]+<\/a><\/h2>\n<p>After<\/p>\n$/u,
+    ),
   ],
   [`  `, null],
 ])(`renders YAML description %j without frontmatter`, async (description, expected) => {

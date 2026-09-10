@@ -16,7 +16,7 @@
 // Sources: Fuchs et al., JCP 122, 094116 (2005), doi:10.1063/1.1858371;
 // Burke, The ABC of DFT, chapters 4, 7, 11, 13; Hehre et al., JCP 51, 2657 (1969).
 #set page(width: auto, height: auto, margin: 0pt, fill: none)
-#set text(font: "Avenir Next", size: 14pt, fill: rgb("#20334C"))
+#set text(font: "Avenir Next", size: 20pt, fill: rgb("#20334C"))
 #set par(leading: 0.5em)
 #set math.equation(numbering: none)
 
@@ -30,7 +30,7 @@
 #let pale_orange = rgb("#e1d2c7")
 #let pale_teal = rgb("#c7d8d1")
 
-#let label(left, top, width, body, size: 14pt, color: ink, weight: "regular", centered: false) = {
+#let label(left, top, width, body, size: 20pt, color: ink, weight: "regular", centered: false) = {
   content(
     (left, -top),
     block(width: width * 1pt)[
@@ -210,18 +210,18 @@
 
 #let energy_point(distance, energy) = (
   88 + (distance - 0.25) / 5.75 * 510,
-  -570 - (0.4 - energy) / 0.64 * 180,
+  -625 - (0.4 - energy) / 0.64 * 180,
 )
 #let occupation_point(distance, occupation) = (
   764 + (distance - 0.25) / 5.75 * 270,
-  -570 - (2 - occupation) / 2 * 180,
+  -625 - (2 - occupation) / 2 * 180,
 )
 
 #let probability_map(left, top, correlated: false) = {
   let cell_size = 55
   for (col_idx, atom) in ([A], [B]).enumerate() {
-    symbol(left + col_idx * cell_size + cell_size / 2, top - 17, atom, size: 16pt)
-    symbol(left - 17, top + col_idx * cell_size + cell_size / 2, atom, size: 16pt)
+    symbol(left + col_idx * cell_size + cell_size / 2, top - 17, atom, size: 23pt)
+    symbol(left - 17, top + col_idx * cell_size + cell_size / 2, atom, size: 23pt)
   }
   for row_idx in range(2) {
     for col_idx in range(2) {
@@ -250,22 +250,23 @@
 #let centered_label = label.with(centered: true)
 
 #canvas(length: 1pt, {
-  rect((0, -45), (1100, -1424), fill: none, stroke: none)
+  rect((0, -45), (1100, -2270), fill: none, stroke: none)
   rect((0, -45), (1100, -53), fill: teal, stroke: none)
   label(
     32,
     65,
     1036,
     [Bond breaking is central to chemical reactions; H₂ is the simplest test of whether DFT gets the electron rearrangement right.],
-    size: 16pt,
+    size: 23pt,
     color: muted,
   )
+  draw.translate((0, -24))
   label(
     30,
     98,
     1040,
     [1  Stretch the bond: a second configuration becomes essential],
-    size: 19pt,
+    size: 24pt,
     weight: "bold",
   )
 
@@ -275,9 +276,9 @@
     (386, [STRETCHED], [Antibonding-pair configuration gains weight], pale_orange),
     (744, [SEPARATED], [One electron on each neutral H atom], pale_teal),
   ) {
-    panel(left, 126, 328, 144, fill)
-    label(left + 13, 138, 302, title, size: 16pt, weight: "bold", centered: true)
-    label(left + 13, 245, 302, caption, size: 12.5pt, centered: true)
+    panel(left, 126, 328, 178, fill)
+    label(left + 13, 138, 302, title, size: 23pt, weight: "bold", centered: true)
+    label(left + 13, 245, 302, caption, size: 20pt, centered: true)
   }
   orbital_cloud(192, 198, 88, 35)
   nucleus(168, 198)
@@ -292,23 +293,25 @@
   nucleus(986, 198)
   connect((361, -198), (381, -198), color: teal)
   connect((719, -198), (739, -198), color: teal)
-  label(785, 232, 90, [H (A)], size: 12pt, centered: true)
-  label(941, 232, 90, [H (B)], size: 12pt, centered: true)
+  label(785, 232, 90, [H (A)], size: 17pt, centered: true)
+  label(941, 232, 90, [H (B)], size: 17pt, centered: true)
+
+  draw.translate((0, -38))
 
   // === Decode the orbital names through phase and symmetry ===
-  panel(28, 280, 686, 156, rgb("#cdd3da"))
-  panel(744, 280, 328, 156, rgb("#cdd3da"))
-  label(42, 289, 300, [$sigma_g$: bonding], size: 17pt, color: blue, weight: "bold")
+  panel(28, 280, 686, 310, rgb("#cdd3da"))
+  panel(744, 280, 328, 310, rgb("#cdd3da"))
+  label(42, 289, 300, [$sigma_g$: bonding], size: 23pt, color: blue, weight: "bold")
   label(
     400,
     289,
     300,
     [$sigma_u$: antibonding (also $sigma_u^*$)],
-    size: 17pt,
+    size: 23pt,
     color: orange,
     weight: "bold",
   )
-  label(758, 289, 300, [READ THE SYMBOLS], size: 14pt, weight: "bold")
+  label(758, 289, 300, [READ THE SYMBOLS], size: 23pt, weight: "bold")
   orbital_cloud(106, 340, 61, 22)
   symbol(78, 340, [$+$], size: 21pt, color: blue)
   symbol(134, 340, [$+$], size: 21pt, color: blue)
@@ -317,29 +320,29 @@
   symbol(446, 340, [$+$], size: 21pt, color: blue)
   symbol(504, 340, [$-$], size: 21pt, color: orange)
   line((475, -315), (475, -364), stroke: (paint: muted, thickness: 0.8pt, dash: "dashed"))
-  label(424, 367, 100, [node: zero amplitude], size: 9pt, color: muted, centered: true)
+  label(409, 375, 131, [node:\ zero amplitude], size: 17pt, color: muted, centered: true)
   label(
     182,
     320,
     162,
     [*g = gerade (even)*\ Invert through midpoint:\ orbital keeps its sign.],
-    size: 11.5pt,
+    size: 20pt,
   )
   label(
     540,
     320,
     162,
     [*u = ungerade (odd)*\ Invert through midpoint:\ orbital flips its sign.],
-    size: 11.5pt,
+    size: 20pt,
   )
-  label(42, 389, 300, [1s waves add → density builds between nuclei.], size: 11.5pt, color: blue)
-  label(400, 389, 300, [1s waves subtract → a node between nuclei.], size: 11.5pt, color: orange)
+  label(42, 459, 300, [1s waves add → density builds between nuclei.], size: 20pt, color: blue)
+  label(400, 459, 300, [1s waves subtract → a node between nuclei.], size: 20pt, color: orange)
   label(
     42,
-    417,
+    530,
     658,
     [+/− show wavefunction sign (phase), not electric charge. Inversion maps each point through the bond center.],
-    size: 9.5pt,
+    size: 20pt,
     color: muted,
   )
   label(
@@ -347,8 +350,10 @@
     317,
     298,
     [$sigma$: unchanged by rotation around the H–H axis.\ $sigma_g^2$: two opposite-spin electrons in $sigma_g$.\ Configuration = an orbital-occupation pattern.\ g/u label symmetry, not bonding in general; an asterisk marks antibonding.],
-    size: 11.5pt,
+    size: 20pt,
   )
+
+  draw.translate((0, -160))
 
   // === Calculated dissociation and natural occupations ===
   label(
@@ -356,25 +361,25 @@
     458,
     1040,
     [2  Watch the energy and the real-electron occupations],
-    size: 19pt,
+    size: 24pt,
     weight: "bold",
   )
-  label(65, 490, 583, [Energy relative to two separated H atoms], size: 16pt, weight: "bold")
+  label(65, 490, 583, [Energy relative to two separated H atoms], size: 23pt, weight: "bold")
   for (start_x, color, name, description, dashed) in (
     (81, orange, [RHF], [Restricted\ Hartree-Fock], false),
     (257, purple, [UHF], [Unrestricted\ Hartree-Fock], true),
     (433, teal, [FCI], [Full configuration\ interaction], false),
   ) {
-    line((start_x, -521), (start_x + 25, -521), stroke: (
+    line((start_x, -535), (start_x + 25, -535), stroke: (
       paint: color,
       thickness: 2.4pt,
       dash: if dashed { "dashed" } else { "solid" },
     ))
     // Anchor actual glyph bounds to the same centerline as the line sample.
     content(
-      (start_x + 34, -521),
+      (start_x + 34, -535),
       text(
-        size: 12pt,
+        size: 20pt,
         fill: color,
         weight: "bold",
         top-edge: "bounds",
@@ -384,7 +389,7 @@
       anchor: "west",
       padding: 0pt,
     )
-    label(start_x + 34, 533, 142, description, size: 10.5pt, color: color)
+    label(start_x + 34, 548, 142, description, size: 20pt, color: color)
   }
   for energy in (-0.2, 0, 0.2, 0.4) {
     let point = energy_point(0.25, energy)
@@ -393,7 +398,7 @@
       thickness: if energy == 0 { 1pt } else { 0.65pt },
       dash: "dashed",
     ))
-    label(43, -point.at(1) - 8, 37, [#energy], size: 11pt, color: muted)
+    label(43, -point.at(1) - 8, 37, [#energy], size: 17pt, color: muted)
   }
   line(
     energy_point(0.25, 0.4),
@@ -409,7 +414,7 @@
       -point.at(1) + 8,
       24,
       [#distance],
-      size: 11pt,
+      size: 17pt,
       color: muted,
       centered: true,
     )
@@ -422,33 +427,33 @@
       dash: if dashed { "dashed" } else { "solid" },
     ))
   }
-  label(35, 544, 40, [$E_h$], size: 12pt, color: muted)
-  label(603, 672.5, 62, [2 H], size: 12pt, color: muted)
-  label(391, 576, 210, [RHF: wrong dissociation limit], size: 11.5pt, color: orange)
+  label(35, 601, 40, [$E_h$], size: 17pt, color: muted)
+  label(603, 727.5, 62, [2 H], size: 17pt, color: muted)
+  label(328, 612, 270, [RHF: wrong dissociation limit], size: 17pt, color: orange)
   label(
     238,
-    722,
+    746,
     360,
     [Static correlation: several configurations are needed],
-    size: 11.5pt,
+    size: 20pt,
     color: teal,
   )
-  label(240, 776, 240, [H–H distance $R$ (angstrom)], size: 12pt, color: muted, centered: true)
+  label(140, 849, 420, [H–H distance $R$ (angstrom)], size: 20pt, color: muted, centered: true)
 
   centered_label(
     726,
     490,
     329,
-    [Interacting natural occupations],
-    size: 16pt,
+    [Natural occupations],
+    size: 23pt,
     weight: "bold",
   )
   centered_label(
     720,
     516,
     340,
-    [Average electrons per natural orbital; together they sum to 2.],
-    size: 10.5pt,
+    [Electrons per orbital; total = 2.],
+    size: 20pt,
     color: muted,
   )
   for occupation in (0, 1, 2) {
@@ -458,7 +463,7 @@
       thickness: 0.7pt,
       dash: "dashed",
     ))
-    label(738, -point.at(1) - 8, 20, [#occupation], size: 11pt, color: muted)
+    label(738, -point.at(1) - 8, 20, [#occupation], size: 17pt, color: muted)
   }
   line(
     occupation_point(0.25, 2),
@@ -472,37 +477,39 @@
       stroke: 2.6pt + color,
     )
   }
-  label(894, 601, 133, [bonding $sigma_g$], size: 12pt, color: blue)
-  label(889, 688, 155, [antibonding $sigma_u$], size: 12pt, color: orange)
+  label(894, 656, 133, [bonding $sigma_g$], size: 20pt, color: blue)
+  label(889, 743, 155, [antibonding $sigma_u$], size: 20pt, color: orange)
   for distance in (1, 3, 6) {
     let point = occupation_point(distance, 0)
-    label(point.at(0) - 13, 758, 26, [#distance], size: 11pt, color: muted, centered: true)
+    label(point.at(0) - 13, 813, 26, [#distance], size: 17pt, color: muted, centered: true)
   }
-  label(838, 776, 146, [$R$ (angstrom)], size: 12pt, color: muted, centered: true)
+  label(838, 849, 146, [$R$ (angstrom)], size: 20pt, color: muted, centered: true)
   centered_label(
     727,
-    544,
+    575,
     329,
     [Bonding/antibonding: $(2, 0)$ → $(1, 1)$.],
-    size: 12pt,
+    size: 20pt,
     color: ink,
   )
   centered_label(
     88,
-    800,
+    880,
     968,
     [Basis = allowed orbital building blocks; STO-3G uses one 1s (lowest atomic orbital) per H. FCI mixes all allowed configurations and is *exact in this basis*.],
-    size: 10pt,
+    size: 20pt,
     color: muted,
   )
+
+  draw.translate((0, -125))
 
   // === Pair probabilities expose the error in the separated-atom limit ===
   label(
     30,
     831,
     1040,
-    [3  At infinite separation: correct average density, wrong pair probabilities],
-    size: 19pt,
+    [3  Separated atoms: density can hide wrong pair probabilities],
+    size: 24pt,
     weight: "bold",
   )
   centered_label(
@@ -510,7 +517,7 @@
     864,
     266,
     [Restricted $sigma_g^2$ reference],
-    size: 16pt,
+    size: 23pt,
     color: orange,
     weight: "bold",
   )
@@ -519,52 +526,52 @@
     864,
     266,
     [Correlated singlet],
-    size: 16pt,
+    size: 23pt,
     color: teal,
     weight: "bold",
   )
-  label(96, 923, 180, [spin-up electron], size: 11pt, color: muted, centered: true)
-  label(420, 923, 180, [spin-up electron], size: 11pt, color: muted, centered: true)
-  probability_map(125, 959)
-  probability_map(450, 959, correlated: true)
-  label(34, 994, 63, [spin-down\ electron], size: 10.5pt, color: muted, centered: true)
-  label(359, 994, 63, [spin-down\ electron], size: 10.5pt, color: muted, centered: true)
-  connect((278, -1014), (342, -1014), color: teal)
-  label(272, 971, 80, [correlate], size: 11.5pt, color: teal, centered: true)
+  label(96, 1010, 180, [spin-up electron], size: 17pt, color: muted, centered: true)
+  label(420, 1010, 180, [spin-up electron], size: 17pt, color: muted, centered: true)
+  probability_map(125, 1060)
+  probability_map(450, 1060, correlated: true)
+  label(10, 1095, 80, [spin-down\ electron], size: 17pt, color: muted, centered: true)
+  label(335, 1095, 80, [spin-down\ electron], size: 17pt, color: muted, centered: true)
+  connect((278, -1115), (342, -1115), color: teal)
+  label(272, 1072, 80, [correlate], size: 17pt, color: teal, centered: true)
   centered_label(
     62,
-    1081,
+    1182,
     255,
     [50% ionic weight],
-    size: 17pt,
+    size: 23pt,
     color: orange,
     weight: "bold",
   )
-  label(387, 1081, 255, [0% ionic weight], size: 17pt, color: teal, weight: "bold", centered: true)
+  label(387, 1182, 255, [0% ionic weight], size: 23pt, color: teal, weight: "bold", centered: true)
   centered_label(
     63,
-    1110,
+    1211,
     577,
     [Ionic weight = chance both electrons are on the same atom.\ Orange diagonal: charged $"H"^- + "H"^+$; blue off-diagonal: neutral $"H" + "H"$.],
-    size: 11.5pt,
+    size: 20pt,
     color: muted,
   )
 
-  panel(690, 862, 382, 278, rgb("#cad4e0"))
+  panel(690, 862, 382, 450, rgb("#cad4e0"))
   centered_label(
     708,
     912,
     348,
     [A/B: 1s orbitals on atoms A/B; (1)/(2): electron labels.],
-    size: 10.5pt,
+    size: 20pt,
     color: muted,
   )
   centered_label(
     708,
-    1075,
+    1150,
     348,
     [$Psi_S$: the pair’s spatial wave; $abs(Psi_S)^2$: probability density.],
-    size: 10.5pt,
+    size: 20pt,
     color: muted,
   )
   centered_label(
@@ -572,20 +579,20 @@
     877,
     352,
     [Cancel the ionic amplitudes],
-    size: 19pt,
+    size: 24pt,
     color: blue,
     weight: "bold",
   )
   centered_label(
     708,
-    931,
+    975,
     348,
     [$sigma_g = (A + B) / sqrt(2) quad sigma_u = (A - B) / sqrt(2)$],
-    size: 19pt,
+    size: 24pt,
   )
   centered_label(
     700,
-    984,
+    1037,
     362,
     [$Psi_S = frac(1, sqrt(2)) (sigma_g (1) sigma_g (2) - sigma_u (1) sigma_u (2))$],
     size: 18pt,
@@ -593,7 +600,7 @@
   )
   centered_label(
     708,
-    1039,
+    1105,
     348,
     [$= frac(1, sqrt(2)) (A(1) B(2) + B(1) A(2))$],
     size: 20pt,
@@ -601,29 +608,31 @@
   )
   centered_label(
     709,
-    1101,
+    1205,
     347,
     [Superposition: add waves first, then square to get probabilities.\ Same-atom terms cancel; only one-on-each-atom terms survive.],
-    size: 11.5pt,
+    size: 20pt,
     color: muted,
   )
 
   centered_label(
     46,
-    885,
+    903,
     266,
     [Restricted: both spins share one spatial orbital.],
-    size: 10.5pt,
+    size: 20pt,
     color: muted,
   )
   centered_label(
     371,
-    885,
+    903,
     266,
     [Singlet: spins combine to zero. Measured along any shared axis, they give opposite results.],
-    size: 10.5pt,
+    size: 20pt,
     color: teal,
   )
+
+  draw.translate((0, -180))
 
   // === The KS distinction is the central DFT takeaway ===
   label(
@@ -631,18 +640,18 @@
     1158,
     1040,
     [4  What this means for density-functional theory (DFT)],
-    size: 19pt,
+    size: 24pt,
     weight: "bold",
   )
   for (left, fill) in ((28, pale_blue), (386, pale_orange), (744, pale_teal)) {
-    panel(left, 1188, 328, 144, fill)
+    panel(left, 1188, 328, 270, fill)
   }
   for (left, color, title, title_size, caption, illustration, body) in (
     (
       43,
       blue,
-      [KOHN–SHAM (KS): ONE ORBITAL],
-      13pt,
+      [KOHN–SHAM ORBITAL],
+      23pt,
       [$n$: electron density · $phi_"KS"$: model orbital],
       symbol(192, 1244, [$phi_"KS" = sqrt(n / 2)$], size: 24pt, color: blue),
       [Its occupation stays 2. Exact XC supplies correlation; this model electron pair is not the real state.],
@@ -650,8 +659,8 @@
     (
       401,
       orange,
-      [LOWER ENERGY, WRONG SPIN STATE],
-      12.5pt,
+      [UHF: MIXED SPIN STATE],
+      23pt,
       none,
       {
         circle((510, -1244), radius: 23, fill: rgb("#cdd3da"), stroke: 0.8pt + orange.lighten(65%))
@@ -664,8 +673,8 @@
     (
       759,
       teal,
-      [THE FUNCTIONAL MUST DO THE WORK],
-      12.5pt,
+      [THE XC FUNCTIONAL],
+      23pt,
       [Exchange–correlation (XC) energy functional],
       symbol(908, 1244, [$E_"xc" [n]$], size: 27pt, color: teal),
       [A functional maps density to energy. Common approximations can miss static correlation; exact DFT need not.],
@@ -673,34 +682,34 @@
   ) {
     centered_label(left, 1201, 298, title, size: title_size, color: color, weight: "bold")
     if caption != none {
-      centered_label(left + 1, 1264, 296, caption, size: 10.5pt, color: color)
+      centered_label(left + 1, 1264, 296, caption, size: 20pt, color: color)
     }
     illustration
-    centered_label(left + 1, 1284, 296, body, size: 12pt)
+    centered_label(left + 1, 1320, 296, body, size: 20pt)
   }
 
   centered_label(
     30,
-    1350,
+    1500,
     1040,
     [H₂ exposes a central DFT challenge: the density can look right while the energy is wrong unless XC captures how electrons avoid each other.],
-    size: 13pt,
+    size: 20pt,
     color: teal,
   )
   centered_label(
     30,
-    1380,
+    1560,
     1040,
     [Fixed nuclei; curves include nuclear repulsion. $E_h$: hartree, the atomic energy unit. Natural occupations: eigenvalues of the one-electron density matrix. Maps/formula: nonoverlapping 1s orbitals; singlet spin factor suppressed. Clouds are schematic.],
-    size: 9.5pt,
+    size: 20pt,
     color: muted,
   )
   centered_label(
     30,
-    1404,
+    1670,
     1040,
     [#link("https://dft.uci.edu/pubs/FNGB05.pdf")[Fuchs et al., JCP 122, 094116 (2005)] · #link("https://dft.uci.edu/teaching/lausanne/ABCDFT.pdf")[Burke: The ABC of DFT, §§4, 7, 11, 13] · #link("https://doi.org/10.1063/1.1672392")[Hehre et al., STO-3G (1969)] · #link("https://ocw.mit.edu/courses/5-61-physical-chemistry-fall-2017/resources/mit5_61f17_lec25/")[MIT: orbital symmetry] · #link("https://web.mit.edu/2.111/www/notes09/spring.pdf")[MIT: singlet spins]],
-    size: 9pt,
+    size: 20pt,
     color: muted,
   )
 })

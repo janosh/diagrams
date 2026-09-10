@@ -2,10 +2,10 @@
 #import draw: content, grid, line, rect
 
 // Size of compact annotations.
-#let annotation-size = 9pt
+#let annotation-size = 12pt
 
 #set page(width: auto, height: auto, margin: 10pt, fill: none)
-#set text(size: 11pt)
+#set text(size: 12pt)
 
 // Each edge pair keeps its color through every stage, so it stays visible which edge of
 // the square becomes which circle on the torus.
@@ -133,8 +133,8 @@
 }
 
 #let caption(x, body) = content(
-  (x, -2.35),
-  text(size: annotation-size, fill: rgb("#4A5560"))[#body],
+  (x, -2.6),
+  text(size: 14pt, fill: rgb("#4A5560"))[#body],
   anchor: "north",
 )
 

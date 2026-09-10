@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { tooltip } from 'svelte-widgets/attachments'
+  import { Popover } from 'svelte-widgets'
   import type { HTMLAttributes } from 'svelte/elements'
   import { type Diagram, Tags } from './index'
 
@@ -14,7 +14,6 @@
     preload?: boolean
   } = $props()
   let { slug, title, description, tags } = $derived(item)
-  let tooltip_content = $derived(description?.replaceAll(/\r\n?|\n/g, ` `))
 </script>
 
 <svelte:head>
@@ -28,23 +27,33 @@
   {/if}
 </svelte:head>
 
-<a href={slug} {...rest}>
-  <h2 id={slug}>{title}</h2>
-  {#if format === `full`}
-    <Tags {tags} style="color: var(--text-color); margin-block: 0 1em" />
-  {/if}
-  {#if item.images.sd}
-    {#key slug}
-      <enhanced:img
-        src={item.images.sd}
-        alt={title}
-        class="diagram"
-        data-preserve-colors={item.preserve_colors || undefined}
-        {@attach tooltip({ content: tooltip_content, allow_html: true })}
-      />
-    {/key}
-  {/if}
-</a>
+<Popover
+  trigger_mode="hover"
+  trap_focus={false}
+  placement="top"
+  class="diagram-description"
+  aria-label={title}
+>
+  {#snippet trigger(trigger_props)}
+    <a href={slug} {...rest} {...description ? trigger_props : {}}>
+      <h2 id={slug}>{title}</h2>
+      {#if format === `full`}
+        <Tags {tags} style="color: var(--text-color); margin-block: 0 1em" />
+      {/if}
+      {#if item.images.sd}
+        {#key slug}
+          <enhanced:img
+            src={item.images.sd}
+            alt={title}
+            class="diagram"
+            data-preserve-colors={item.preserve_colors || undefined}
+          />
+        {/key}
+      {/if}
+    </a>
+  {/snippet}
+  {@html description ?? ``}
+</Popover>
 
 <style>
   a {
@@ -75,17 +84,17 @@
     border-radius: 4pt;
     height: auto;
   }
-  /* Tooltip is portaled to body; compact HTML description spacing. */
-  :global(.custom-tooltip :is(p, ul, ol)) {
+  /* The popover is rendered outside the card link so description links remain usable. */
+  :global(.diagram-description :is(p, ul, ol)) {
     margin-block: 0.4em;
   }
-  :global(.custom-tooltip :is(p, ul, ol):first-child) {
+  :global(.diagram-description :is(p, ul, ol):first-child) {
     margin-block-start: 0;
   }
-  :global(.custom-tooltip :is(p, ul, ol):last-child) {
+  :global(.diagram-description :is(p, ul, ol):last-child) {
     margin-block-end: 0;
   }
-  :global(.custom-tooltip :is(ul, ol)) {
+  :global(.diagram-description :is(ul, ol)) {
     padding-inline-start: 1.25em;
   }
 </style>

@@ -1,7 +1,7 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, line, rect
 #set page(width: 660pt, height: auto, margin: 20pt, fill: none)
-#set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
+#set text(font: "Avenir Next", size: 14pt, fill: rgb("#19324f"))
 #set par(leading: 0.55em)
 #let panel = block.with(
   width: 100%,
@@ -84,7 +84,7 @@
     ([1  Labeled data only], false, [Gray samples ignored.]),
     ([2  Include unlabeled data], true, [Boundary follows the low-density gap.]),
   ).map(((title, use_unlabeled, caption)) => panel[
-    #text(size: 14pt, weight: "bold", title)
+    #text(size: 16pt, weight: "bold", title)
     #v(10pt)
     #align(center, example(use_unlabeled: use_unlabeled))
     #v(8pt)
