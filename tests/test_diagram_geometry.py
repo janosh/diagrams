@@ -79,6 +79,50 @@ def test_atomistic_flowchart_has_visible_forward_arrows(tmp_path: Path) -> None:
         assert displacement and float(displacement[1]) > 6, shaft
 
 
+def test_train_test_split_preserves_rows_and_table_bounds(tmp_path: Path) -> None:
+    """Render all seven samples exactly once per split without overflowing tables."""
+    output_path = tmp_path / "train-test-split.svg"
+    subprocess.run(
+        [
+            "typst",
+            "compile",
+            "--root",
+            ROOT,
+            f"{ROOT}/assets/train-test-split/train-test-split.typ",
+            str(output_path),
+        ],
+        check=True,
+    )
+    row_height = 72 / 2.54  # CeTZ's default unit is 1 cm, SVG coordinates are points.
+    tables: list[list[tuple[float, float, str]]] = []
+    for node in ET.parse(output_path).iter("{http://www.w3.org/2000/svg}path"):
+        path = node.get("d", "")
+        if node.get("stroke") != "#0099cc" or "Z" not in path:
+            continue
+        height_match = re.search(r"v ([\d.]+)", path)
+        position_match = re.fullmatch(
+            r"translate\([-\d.]+ ([-\d.]+)\)", node.get("transform", "")
+        )
+        assert height_match and position_match, node.attrib
+        height, top = float(height_match[1]), float(position_match[1])
+        if height > 1.5 * row_height:
+            tables.append([])  # Each table is drawn before its header and row fills.
+        tables[-1].append((top, height, node.get("fill", "")))
+
+    # Full dataset is unstriped; feature/target tables show 7 rows, then 4 + 3.
+    assert [len(table) - 2 for table in tables] == [0, 7, 7, 4, 4, 3, 3]
+    for table, row_count in zip(tables, [7, 7, 7, 4, 4, 3, 3], strict=True):
+        top, height, _fill = table[0]
+        # SVG serializes 9 decimal places; 1e-7pt covers accumulated serialization error.
+        assert height == pytest.approx((row_count + 1) * row_height, rel=0, abs=1e-7)
+        for row_idx, (row_top, height, _fill) in enumerate(table[1:]):
+            assert row_top == pytest.approx(top + row_idx * row_height, rel=0, abs=1e-7)
+            assert height == pytest.approx(row_height, rel=0, abs=1e-7)
+    for source_idx, split_idx, highlight in [(1, 5, "#80dfdf"), (2, 6, "#ffe680")]:
+        selected = sum(fill == highlight for _top, _height, fill in tables[source_idx][2:])
+        assert selected == len(tables[split_idx]) - 2 == 3
+
+
 @pytest.mark.parametrize(
     "slug",
     [

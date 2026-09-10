@@ -22,13 +22,12 @@
   let label-offset = 0.7
 
   let full-data-width = 6
-  let full-data-height = 8
   let feature-width = 5
   let target-width = 1
-  let train-height = 5.0
-  let test-height = 3.0
   let header-height = 1.0
   let row-height = 1.0
+  let dataset-rows = 7
+  let full-data-height = header-height + dataset-rows * row-height
 
   let full-data-x = -15
   let features-x = -6
@@ -42,6 +41,8 @@
 
   // rows selected for the test set (0-indexed), simulating random sampling
   let test-indices = (1, 4, 6)
+  let test-rows = test-indices.len()
+  let train-rows = dataset-rows - test-rows
   let feature-headers = ("X1", "X2", "X3", "X4", "X5")
 
   // color a data row: test rows are highlighted, the rest alternate two shades
@@ -71,7 +72,7 @@
       headers: feature-headers,
       fill: data-color,
       header-fill: data-header,
-      rows: 7,
+      rows: dataset-rows,
       row-color: striped(data-color, data-color-alt, test-data-color),
     ),
     (
@@ -83,13 +84,13 @@
       headers: ("Y",),
       fill: target-color,
       header-fill: target-header,
-      rows: 7,
+      rows: dataset-rows,
       row-color: striped(target-color, target-color-alt, test-target-color),
     ),
     ..{
-      for (base_x, center_y, height, split, rows, feature_fill, target_fill) in (
-        (train-x, vertical-center, train-height, [train], 5, data-color, target-color),
-        (test-x, test-y, test-height, [test], 3, test-data-color, test-target-color),
+      for (base_x, center_y, split, rows, feature_fill, target_fill) in (
+        (train-x, vertical-center, [train], train-rows, data-color, target-color),
+        (test-x, test-y, [test], test-rows, test-data-color, test-target-color),
       ) {
         for (offset, width, label, headers, fill, header_fill) in (
           (0, feature-width, [X], feature-headers, feature_fill, data-header),
@@ -100,7 +101,7 @@
               x: base_x + offset,
               y: center_y,
               width: width,
-              height: height,
+              height: header-height + rows * row-height,
               label: [#label#sub(split)],
               headers: headers,
               fill: fill,
