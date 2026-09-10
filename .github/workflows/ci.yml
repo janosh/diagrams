@@ -7,13 +7,18 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - uses: typst-community/setup-typst@v5
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@v10.0.1
         with:
           python-version: '3.14'
       - uses: actions/setup-node@v7
@@ -38,7 +43,9 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v10.0.1
         with:
           python-version: '3.14'
       - uses: typst-community/setup-typst@v5
@@ -51,6 +58,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Discover broken links
         uses: lycheeverse/lychee-action@v2
         with:
@@ -60,12 +69,10 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v7
         with:
           node-version: 24
@@ -82,7 +89,7 @@ jobs:
           # npm prepares Git dependencies; avoid its conflicting optional Vitest peers.
           NPM_CONFIG_LEGACY_PEER_DEPS=true pnpm install --no-lockfile
         working-directory: site
-      - run: pnpm exec vp build
+      - run: pnpm exec vite build
         working-directory: site
       - uses: actions/cache/save@v6
         if: steps.images.outputs.cache-hit != 'true'

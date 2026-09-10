@@ -190,7 +190,7 @@ The browser suite checks transparent and tall diagrams in light and dark themes,
 ```sh
 cd site
 pnpm exec playwright install --only-shell chromium
-pnpm exec vp build
+pnpm exec vite build
 pnpm test:visual
 ```
 

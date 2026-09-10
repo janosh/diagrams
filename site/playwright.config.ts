@@ -27,7 +27,7 @@ export default defineConfig({
   },
   snapshotPathTemplate: `{testDir}/screenshots/{arg}{ext}`,
   webServer: {
-    command: `vp preview --host 127.0.0.1 --port 4173 --strictPort`,
+    command: `vite preview --host 127.0.0.1 --port 4173 --strictPort`,
     url: `http://127.0.0.1:4173`,
   },
 })

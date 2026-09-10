@@ -62,7 +62,7 @@ for (const direction of [`Next`, `Previous`]) {
         !url.includes(`euler-angles`)
       )
         await images_released
-      await route.continue()
+      await route.fallback()
     })
     try {
       const wrapper = await open_diagram(page, `euler-angles`)
