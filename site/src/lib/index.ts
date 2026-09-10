@@ -1,4 +1,5 @@
 import { building } from '$app/environment'
+import type { Picture } from '@sveltejs/enhanced-img'
 
 export { default as CodeBlock } from './CodeBlock.svelte'
 export { default as DiagramCard } from './DiagramCard.svelte'
@@ -9,8 +10,8 @@ export type Diagram = {
   downloads: string[]
   code: { tex?: string; typst?: string }
   images: {
-    hd: string // TODO fix type, actual is {sources: png: string, avif, string, ...}
-    sd: string
+    hd: Picture
+    sd: Picture
   }
 } & YamlMetadata
 
@@ -39,7 +40,7 @@ const asset_files = import.meta.glob<{ default: string }>(
   [`$assets/**/*.png`, `$assets/**/*.pdf`, `$assets/**/*.svg`, `!$assets/**/*-dark.png`],
   { eager: true, query: `?url` },
 )
-const image_files = import.meta.glob<{ default: string }>(
+const image_files = import.meta.glob<{ default: Picture }>(
   [`$assets/**/*.png`, `!$assets/**/*-dark.png`],
   {
     eager: true,

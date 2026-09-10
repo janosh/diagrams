@@ -6,14 +6,27 @@
   let {
     item,
     format = `full`,
+    preload = false,
     ...rest
   }: HTMLAttributes<HTMLAnchorElement> & {
     item: Diagram
     format?: `short` | `full`
+    preload?: boolean
   } = $props()
   let { slug, title, description, tags } = $derived(item)
   let tooltip_content = $derived(description?.replaceAll(/\r\n?|\n/g, ` `))
 </script>
+
+<svelte:head>
+  {#if preload}
+    <link
+      rel="preload"
+      as="image"
+      type="image/avif"
+      imagesrcset={item.images.hd.sources.avif}
+    />
+  {/if}
+</svelte:head>
 
 <a href={slug} {...rest}>
   <h2 id={slug}>{title}</h2>
@@ -21,13 +34,15 @@
     <Tags {tags} style="color: var(--text-color); margin-block: 0 1em" />
   {/if}
   {#if item.images.sd}
-    <enhanced:img
-      src={item.images.sd}
-      alt={title}
-      class="diagram"
-      data-preserve-colors={item.preserve_colors || undefined}
-      {@attach tooltip({ content: tooltip_content, allow_html: true })}
-    />
+    {#key slug}
+      <enhanced:img
+        src={item.images.sd}
+        alt={title}
+        class="diagram"
+        data-preserve-colors={item.preserve_colors || undefined}
+        {@attach tooltip({ content: tooltip_content, allow_html: true })}
+      />
+    {/key}
   {/if}
 </a>
 

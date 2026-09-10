@@ -112,12 +112,14 @@
   aria-label="{title} diagram"
   tabindex="0"
 >
-  <enhanced:img
-    src={images.hd}
-    alt={title}
-    class="diagram"
-    data-preserve-colors={data.diagram.preserve_colors || undefined}
-  />
+  {#key slug}
+    <enhanced:img
+      src={images.hd}
+      alt={title}
+      class="diagram"
+      data-preserve-colors={data.diagram.preserve_colors || undefined}
+    />
+  {/key}
   <FullscreenButton
     wrapper={diagram_wrapper}
     placement="corner"
@@ -181,6 +183,7 @@
       </h3>
       <DiagramCard
         item={diagram}
+        preload
         style="max-width: 280px; font-size: 10pt"
         format="short"
       />

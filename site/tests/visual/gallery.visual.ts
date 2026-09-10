@@ -3,7 +3,7 @@ import { expect, test, type Locator, type Page } from '@playwright/test'
 
 // The production pages are the fixtures: retain native fullscreen, real images, and CSS.
 const open_diagram = async (page: Page, slug: string) => {
-  await page.goto(`/${slug}`)
+  await page.goto(`/${slug}`, { waitUntil: `domcontentloaded` })
   await expect(page.getByRole(`heading`, { level: 1 })).not.toBeEmpty()
   await expect(page.locator(`.diagram-wrapper source`).first()).toHaveAttribute(
     `srcset`,
@@ -45,6 +45,64 @@ test.beforeEach(async ({ page }) => {
   // Analytics is irrelevant to screenshots and must not depend on external availability.
   await page.route(`https://plausible.io/**`, (route) => route.abort())
 })
+
+for (const direction of [`Next`, `Previous`]) {
+  test(`${direction} navigation clears old artwork while the new image loads`, async ({
+    page,
+  }) => {
+    let release_images = () => {}
+    const images_released = new Promise<void>((resolve) => {
+      release_images = resolve
+    })
+    await page.route(`**/*`, async (route) => {
+      const url = route.request().url()
+      if (
+        route.request().resourceType() === `image` &&
+        url.includes(`-hd`) &&
+        !url.includes(`euler-angles`)
+      )
+        await images_released
+      await route.continue()
+    })
+    try {
+      const wrapper = await open_diagram(page, `euler-angles`)
+      // Exercise a handler first so navigation happens after hydration.
+      await enter_fullscreen(wrapper)
+      await wrapper.getByRole(`button`, { name: `Exit fullscreen` }).click()
+      const artwork = page.locator(`.diagram-wrapper img, .prev-next img`)
+      await expect(artwork).toHaveCount(3)
+      const old_images = await artwork.elementHandles()
+      const nav_link = page.getByRole(`link`, { name: new RegExp(direction) })
+      const target = await nav_link.getAttribute(`href`)
+      if (!target) throw new Error(`Missing ${direction} navigation target`)
+      const preloaded_srcset = await page
+        .locator(`head link[rel="preload"][as="image"]`)
+        .evaluateAll((links) =>
+          links.map((link) =>
+            link.getAttribute(`imagesrcset`)?.replaceAll(location.origin, ``),
+          ),
+        )
+      await nav_link.click()
+      await expect(page).toHaveURL(new RegExp(`/${target}$`))
+      await expect(wrapper.locator(`img`)).not.toHaveAttribute(`alt`, `Euler Angles`)
+      for (const image of old_images) {
+        expect(await image.evaluate((element) => element.isConnected)).toBe(false)
+      }
+      const new_image = wrapper.locator(`img`)
+      await expect(new_image).toHaveJSProperty(`naturalWidth`, 0)
+      expect(preloaded_srcset).toContain(
+        await wrapper.locator(`source[type="image/avif"]`).getAttribute(`srcset`),
+      )
+      release_images()
+      await expect(new_image).toHaveJSProperty(`complete`, true)
+      await expect(new_image).not.toHaveJSProperty(`naturalWidth`, 0)
+      await enter_fullscreen(wrapper)
+      await wrapper.getByRole(`button`, { name: `Exit fullscreen` }).click()
+    } finally {
+      release_images()
+    }
+  })
+}
 
 for (const theme of [`light`, `dark`] as const) {
   test(`transparent diagram keeps its background in fullscreen (${theme})`, async ({
