@@ -80,7 +80,7 @@ def test_atomistic_flowchart_has_visible_forward_arrows(tmp_path: Path) -> None:
 
 
 def test_train_test_split_preserves_rows_and_table_bounds(tmp_path: Path) -> None:
-    """Render all seven samples exactly once per split without overflowing tables."""
+    """Split seven schematic rows into 4/3 with correct highlights and table bounds."""
     output_path = tmp_path / "train-test-split.svg"
     subprocess.run(
         [
@@ -119,8 +119,13 @@ def test_train_test_split_preserves_rows_and_table_bounds(tmp_path: Path) -> Non
             assert row_top == pytest.approx(top + row_idx * row_height, rel=0, abs=1e-7)
             assert height == pytest.approx(row_height, rel=0, abs=1e-7)
     for source_idx, split_idx, highlight in [(1, 5, "#80dfdf"), (2, 6, "#ffe680")]:
-        selected = sum(fill == highlight for _top, _height, fill in tables[source_idx][2:])
-        assert selected == len(tables[split_idx]) - 2 == 3
+        selected = [
+            row_idx
+            for row_idx, (_top, _height, fill) in enumerate(tables[source_idx][2:])
+            if fill == highlight
+        ]
+        assert selected == [1, 4, 6]
+        assert len(selected) == len(tables[split_idx]) - 2 == 3
 
 
 @pytest.mark.parametrize(
