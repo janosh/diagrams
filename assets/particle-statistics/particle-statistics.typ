@@ -1,66 +1,23 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import "@preview/cetz-plot:0.1.4": plot
 #import draw: content
+#import "../_shared/layout.typ": card-grid, takeaway
 
 #set page(width: 780pt, height: auto, margin: 22pt, fill: none)
 #set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
 #set par(leading: 0.55em)
-
-#let card-grid(columns: 2, ..cards) = layout(size => {
-  let rows = cards
-    .pos()
-    .chunks(columns)
-    .map(row => {
-      let ratios = row.map(card => {
-        let bounds = measure(card.at(1))
-        bounds.width / bounds.height
-      })
-      let available = size.width - 12pt * (row.len() - 1) - 24pt * row.len()
-      grid(
-        columns: ratios.map(ratio => 24pt + available * ratio / ratios.sum()),
-        gutter: 12pt,
-        ..row.map(((title, body, caption)) => block(
-          width: 100%,
-          inset: 12pt,
-          radius: 8pt,
-          fill: rgb("#cdd3da"),
-          breakable: false,
-        )[
-          #text(size: 13pt, weight: "bold", title)
-          #v(8pt)
-          // Fill the available width; each drawing keeps its own aspect ratio.
-          #layout(size => std.scale(
-            size.width / measure(body).width * 100%,
-            reflow: true,
-            body,
-          ))
-          #v(7pt)
-          #caption
-        ]),
-      )
-    })
-  stack(dir: ttb, spacing: 12pt, ..rows)
-})
-#let takeaway = block.with(
-  width: 100%,
-  inset: 12pt,
-  radius: 6pt,
-  fill: rgb("#c6d8d2"),
-  breakable: false,
-)
 
 // Mean occupation per single-particle state; zero-point energy is not occupation.
 #let bose-occupation(x) = {
   assert(x > 0, message: "Bose occupation requires epsilon > mu")
   1 / (calc.exp(x) - 1)
 }
+#let fermi-dirac(x) = 1 / (calc.exp(x) + 1)
 
 // === 1  Compare occupation laws ===
 #let figure-0 = [
   // Distribution functions
-  #let bose-einstein(x) = 1 / (calc.exp(x) - 1)
   #let boltzmann(x) = 1 / calc.exp(x)
-  #let fermi-dirac(x) = 1 / (calc.exp(x) + 1)
 
   #canvas({
     draw.set-style(legend: (fill: rgb("#cdd3da")))
@@ -87,32 +44,20 @@
       // Compact legend with a thin border.
       legend-style: (item: (spacing: 0.15), padding: 0.15, stroke: 0.5pt),
       {
-        // Bose-Einstein distribution
-        plot.add(
-          style: (stroke: rgb("#0B5FA5") + 1.5pt),
-          domain: (0.1, 7), // Avoid x=0 since BE diverges there
-          samples: 200,
-          label: "Bose-Einstein",
-          bose-einstein,
-        )
-
-        // Boltzmann distribution
-        plot.add(
-          style: (stroke: rgb("#C2570A") + 1.5pt),
-          domain: (-1, 7),
-          samples: 100,
-          label: "Boltzmann",
-          boltzmann,
-        )
-
-        // Fermi-Dirac distribution
-        plot.add(
-          style: (stroke: rgb("#12793F") + 1.5pt),
-          domain: (-7, 7),
-          samples: 100,
-          label: "Fermi-Dirac",
-          fermi-dirac,
-        )
+        // Start the Bose curve above zero, where its occupation diverges.
+        for (label, distribution, color, minimum, samples) in (
+          ("Bose-Einstein", bose-occupation, rgb("#0B5FA5"), 0.1, 200),
+          ("Boltzmann", boltzmann, rgb("#C2570A"), -1, 100),
+          ("Fermi-Dirac", fermi-dirac, rgb("#12793F"), -7, 100),
+        ) {
+          plot.add(
+            style: (stroke: color + 1.5pt),
+            domain: (minimum, 7),
+            samples: samples,
+            label: label,
+            distribution,
+          )
+        }
       },
     )
   })
@@ -120,8 +65,6 @@
 
 // === 2  Fermions: a smeared step ===
 #let figure-1 = [
-  #let n-F(x, beta, mu: 1) = 1 / (calc.exp(beta * (x - mu)) + 1)
-
   #canvas({
     draw.set-style(legend: (fill: rgb("#cdd3da")))
     let axis-mark = (end: "stealth", fill: black)
@@ -153,7 +96,7 @@
             style: (stroke: color + 1.5pt),
             domain: (0, 2.3),
             samples: 150,
-            x => n-F(x, beta),
+            x => fermi-dirac(beta * (x - chem-pot)),
             label: $k_"B" T = mu \/ #beta$,
           )
         }

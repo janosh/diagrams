@@ -17,11 +17,8 @@
   let denominator = (
     calc.exp(2 * x-val) - 2 * calc.exp(x-val) * calc.cos(y-val * 1rad) + 1
   )
-  if denominator <= 0.001 { return 2.0 }
-
-  let z-val = calc.pow(denominator, -0.5)
-  if x-val >= -2 and x-val <= 1 and z-val > 2.0 { return 2.0 }
-  calc.max(0.0, z-val)
+  // Clip the divergent peak at height 2 before taking the inverse square root.
+  calc.pow(calc.max(denominator, 0.25), -0.5)
 }
 
 #let surface-color(z-val) = {

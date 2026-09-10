@@ -1,52 +1,10 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content, line
+#import "../_shared/layout.typ": card-grid, takeaway
 
 #set page(width: 780pt, height: auto, margin: 22pt, fill: none)
 #set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
 #set par(leading: 0.55em)
-
-#let card-grid(columns: 2, ..cards) = layout(size => {
-  let rows = cards
-    .pos()
-    .chunks(columns)
-    .map(row => {
-      let ratios = row.map(card => {
-        let bounds = measure(card.at(1))
-        bounds.width / bounds.height
-      })
-      let available = size.width - 12pt * (row.len() - 1) - 24pt * row.len()
-      grid(
-        columns: ratios.map(ratio => 24pt + available * ratio / ratios.sum()),
-        gutter: 12pt,
-        ..row.map(((title, body, caption)) => block(
-          width: 100%,
-          inset: 12pt,
-          radius: 8pt,
-          fill: rgb("#cdd3da"),
-          breakable: false,
-        )[
-          #text(size: 13pt, weight: "bold", title)
-          #v(8pt)
-          // Fill the available width; each drawing keeps its own aspect ratio.
-          #layout(size => std.scale(
-            size.width / measure(body).width * 100%,
-            reflow: true,
-            body,
-          ))
-          #v(7pt)
-          #caption
-        ]),
-      )
-    })
-  stack(dir: ttb, spacing: 12pt, ..rows)
-})
-#let takeaway = block.with(
-  width: 100%,
-  inset: 12pt,
-  radius: 6pt,
-  fill: rgb("#c6d8d2"),
-  breakable: false,
-)
 
 #let neighborhood(mode) = canvas({
   let sites = ((-2, 1.3), (-2, -1.3), (0, 2), (0, -2))
@@ -121,19 +79,14 @@
   }
 
   // Input Graph (left side)
-  let target-pos = (-1.5, 1.2)
-  let b-pos = (0.5, 2)
-  let c-pos = (1, 1)
-  let d-pos = (-2.5, -.7)
-  let e-pos = (-0.25, -1.25)
-  let f-pos = (1.5, 0)
-
-  draw-node(target-pos, "A", "target")
-  draw-node(b-pos, "B", "b")
-  draw-node(c-pos, "C", "c")
-  draw-node(d-pos, "D", "d")
-  draw-node(e-pos, "E", "e")
-  draw-node(f-pos, "F", "f")
+  for (pos, label, name) in (
+    ((-1.5, 1.2), "A", "target"),
+    ((0.5, 2), "B", "b"),
+    ((1, 1), "C", "c"),
+    ((-2.5, -.7), "D", "d"),
+    ((-0.25, -1.25), "E", "e"),
+    ((1.5, 0), "F", "f"),
+  ) { draw-node(pos, label, name) }
 
   content((rel: (0, 1.5), to: "target"), "Target Node", name: "target-label")
   line("target-label.south", "target", ..arrow-style)
@@ -180,11 +133,11 @@
   content((rel: (0, .7), to: "a-to-b"), "Hop 1")
 
   // Draw aggregation boxes for each first layer node
-  for node in ("a-to-b", "a-to-c", "a-to-d") {
-    let letter = node.split("-").at(-1)
+  for (_, _, label, node) in first-layer {
+    let letter = lower(label)
     content(
       (rel: (2, 0), to: node),
-      [Aggr(#upper(letter))],
+      [Aggr(#label)],
       fill: rgb("ddd"),
       frame: "rect",
       stroke: 0.2pt,

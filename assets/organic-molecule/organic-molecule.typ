@@ -101,9 +101,7 @@
 
   // Combine all heavy atom positions for lookup
   let heavy-atoms = (:)
-  for (name, pos) in c-positions { heavy-atoms.insert(name, pos) }
-  for (name, pos) in n-positions { heavy-atoms.insert(name, pos) }
-  for (name, pos) in o-positions { heavy-atoms.insert(name, pos) }
+  for (name, pos) in c-positions + n-positions + o-positions { heavy-atoms.insert(name, pos) }
 
   // Adjust hydrogen positions
   let h-positions = (:)
@@ -113,33 +111,24 @@
     h-positions.insert(name, adjust-h-position(pos, connected-pos))
   }
 
-  // Further adjust overlapping hydrogens
-  // Adjust H1 and H2 which overlap in the top left
-  let h1-pos = h-positions.at("H1")
-  let h2-pos = h-positions.at("H2")
-  h-positions.insert("H1", (h1-pos.at(0) - 0.2, h1-pos.at(1) + 0.2))
-  h-positions.insert("H2", (h2-pos.at(0) - 0.2, h2-pos.at(1) - 0.2))
-
-  // Adjust H8 and H9 which overlap near the right N atom
-  let h8-pos = h-positions.at("H8")
-  let h9-pos = h-positions.at("H9")
-  h-positions.insert("H8", (h8-pos.at(0) + 0.3, h8-pos.at(1) - 0.2))
-  h-positions.insert("H9", (h9-pos.at(0) - 0.3, h9-pos.at(1) - 0.2))
-
-  for (name, pos) in c-positions {
-    atom(pos, carbon-color, "C", radius: heavy-radius, name: name)
+  // Separate overlapping hydrogens at the top left and beside the right N atom.
+  for (name, shift_x, shift_y) in (
+    ("H1", -0.2, 0.2),
+    ("H2", -0.2, -0.2),
+    ("H8", 0.3, -0.2),
+    ("H9", -0.3, -0.2),
+  ) {
+    let (coord_x, coord_y) = h-positions.at(name)
+    h-positions.insert(name, (coord_x + shift_x, coord_y + shift_y))
   }
 
-  for (name, pos) in n-positions {
-    atom(pos, nitrogen-color, "N", radius: heavy-radius, name: name)
-  }
-
-  for (name, pos) in o-positions {
-    atom(pos, oxygen-color, "O", radius: heavy-radius, name: name)
-  }
-
-  for (name, pos) in h-positions {
-    atom(pos, hydrogen-color, "H", radius: h-radius, name: name)
+  for (positions, color, element, radius) in (
+    (c-positions, carbon-color, "C", heavy-radius),
+    (n-positions, nitrogen-color, "N", heavy-radius),
+    (o-positions, oxygen-color, "O", heavy-radius),
+    (h-positions.pairs(), hydrogen-color, "H", h-radius),
+  ) {
+    for (name, pos) in positions { atom(pos, color, element, radius: radius, name: name) }
   }
 
   // bonds on a background layer (behind atoms); resolve H vs heavy-atom lookups
@@ -147,20 +136,21 @@
     heavy-atoms.at(name)
   }
   let chain = ("H1", "C1", "N1", "C2", "C3", "C4", "O1")
-  let bonds = ()
-  for i in range(chain.len() - 1) { bonds.push((chain.at(i), chain.at(i + 1))) }
-  bonds += (
-    ("H2", "C1"),
-    ("H3", "C1"),
-    ("N1", "H4"),
-    ("C2", "H5"),
-    ("C2", "H6"),
-    ("C3", "H7"),
-    ("C3", "N2"),
-    ("N2", "H8"),
-    ("N2", "H9"),
-    ("C4", "O2"),
-    ("O2", "H10"),
+  let bonds = (
+    chain.windows(2)
+      + (
+        ("H2", "C1"),
+        ("H3", "C1"),
+        ("N1", "H4"),
+        ("C2", "H5"),
+        ("C2", "H6"),
+        ("C3", "H7"),
+        ("C3", "N2"),
+        ("N2", "H8"),
+        ("N2", "H9"),
+        ("C4", "O2"),
+        ("O2", "H10"),
+      )
   )
   on-layer(-1, {
     for (from, to) in bonds {

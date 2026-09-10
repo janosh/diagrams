@@ -1,5 +1,7 @@
 import { render } from 'svelte/server'
 import { execFileSync } from 'node:child_process'
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { expect, it, vi } from 'vitest'
 import { gallery_count_for } from '../src/lib/gallery'
 import euler_angles from '../../assets/euler-angles/euler-angles.yml'
@@ -28,17 +30,50 @@ it(`loads YAML metadata with string dates and rendered descriptions`, () => {
   )
 })
 
-it(`keeps diagram sources standalone with only package imports`, () => {
-  const sources = import.meta.glob<string>(`../../assets/**/*.typ`, {
-    eager: true,
-    query: `?raw`,
-    import: `default`,
-  })
-  expect(Object.keys(sources).length).toBeGreaterThan(0)
-  for (const [path, source] of Object.entries(sources)) {
+const typst_sources = import.meta.glob<string>(`../../assets/**/*.typ`, {
+  eager: true,
+  query: `?raw`,
+  import: `default`,
+})
+
+it(`keeps gallery sources standalone with only package imports`, () => {
+  expect(Object.keys(typst_sources).length).toBeGreaterThan(0)
+  for (const [path, source] of Object.entries(typst_sources)) {
     expect(source, path).not.toMatch(/#(?:import|include)\s+["'](?!@)/u)
   }
 })
+
+it.each(
+  Object.entries(typst_sources).filter(([path]) =>
+    readFileSync(new URL(path, import.meta.url), `utf-8`).includes(
+      `../_shared/layout.typ`,
+    ),
+  ),
+)(
+  `renders copied %s exactly like its repository source`,
+  // The fractal atlas can exceed 25 seconds; allow a minute for each compilation.
+  { timeout: 125_000 },
+  (path, source) => {
+    const compile_args = [`compile`, `--format`, `svg`, `--pages`, `1`]
+    const compile_options = { timeout: 60_000, maxBuffer: 32 * 1024 ** 2 }
+    const standalone = execFileSync(`typst`, [...compile_args, `-`, `-`], {
+      input: source,
+      ...compile_options,
+    })
+    const repository = execFileSync(
+      `typst`,
+      [
+        ...compile_args,
+        `--root`,
+        `${import.meta.dirname}/../..`,
+        fileURLToPath(new URL(path, import.meta.url)),
+        `-`,
+      ],
+      compile_options,
+    )
+    expect(standalone.equals(repository)).toBe(true)
+  },
+)
 
 // A cold Typst package cache can exceed Vitest's default five-second limit in CI.
 it(`renders coincident Euler axes without zero-length arcs`, { timeout: 30_000 }, () => {

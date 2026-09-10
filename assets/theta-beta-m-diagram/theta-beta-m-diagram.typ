@@ -32,11 +32,6 @@
     )
   }
 
-  /// Calculate the normal mach number before the shock.
-  let normal-mach(M, beta) = M * calc.sin(beta)
-  /// Calculate the mach number after the shock from the normal mach number after the shock.
-  let mach-shock(M-normal, beta, theta) = M-normal / calc.sin(beta - theta)
-
   /// Calculate the normal mach number after a shock.
   let normal-mach-shock(M) = (
     calc.sqrt(
@@ -45,11 +40,9 @@
   )
 
   /// Calculate the mach number after the shock from the mach number before the shock.
-  let shock-mach(M, beta, theta) = {
-    let M-normal = normal-mach(M, beta)
-    let M-normal-shock = normal-mach-shock(M-normal)
-    mach-shock(M-normal-shock, beta, theta)
-  }
+  let shock-mach(mach_number, beta, theta) = (
+    normal-mach-shock(mach_number * calc.sin(beta)) / calc.sin(beta - theta)
+  )
 
   /// Shock angle that maximizes deflection for Mach $M$.
   let max-shock-angle(M) = golden-section-search(
@@ -285,24 +278,20 @@
       )
 
       // angles
-      cetz.angle.angle(
-        (0, 0),
-        (1, 0),
-        (1, calc.tan(beta)),
-        radius: 0.45,
-        label: $#sym.beta$,
-        label-radius: 80%,
-        mark: (end: ">", scale: 0.5),
-      )
-      cetz.angle.angle(
-        (0, 0),
-        (1, 0),
-        (1, calc.tan(theta)),
-        radius: 0.54,
-        label: $#sym.theta$,
-        label-radius: 120%,
-        mark: (end: ">", scale: 0.5),
-      )
+      for (angle, radius, label, label_radius) in (
+        (beta, 0.45, $#sym.beta$, 80%),
+        (theta, 0.54, $#sym.theta$, 120%),
+      ) {
+        cetz.angle.angle(
+          (0, 0),
+          (1, 0),
+          (1, calc.tan(angle)),
+          radius: radius,
+          label: label,
+          label-radius: label_radius,
+          mark: (end: ">", scale: 0.5),
+        )
+      }
 
       let strong-stroke = (thickness: 1.2pt)
 

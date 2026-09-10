@@ -4,6 +4,7 @@ import { sveltekit } from '@sveltejs/kit/vite'
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
 import { assert_ok, create_markdown } from 'svelte-widgets/markdown'
 import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { make_config } from 'svelte-widgets/vite-config'
 import { yaml_plugin } from 'svelte-widgets/yaml'
 import type { Plugin } from 'vite'
@@ -18,6 +19,9 @@ const svelte_config = {
 }
 
 const engine = create_markdown({ math: { throwOnError: false }, frontmatter: false })
+const layout_path = fileURLToPath(
+  new URL(`../assets/_shared/layout.typ`, import.meta.url),
+)
 
 export default {
   resolve: { dedupe: [`svelte`] },
@@ -29,8 +33,17 @@ export default {
       enforce: `pre`,
       load(id) {
         const clean_id = id.split(`?`)[0]
-        if (clean_id.endsWith(`.tex`) || clean_id.endsWith(`.typ`))
-          return `export default ${JSON.stringify(readFileSync(clean_id, `utf-8`))}`
+        if (clean_id.endsWith(`.tex`) || clean_id.endsWith(`.typ`)) {
+          // Keep gallery source self-contained while the repository shares panel code.
+          const source = readFileSync(clean_id, `utf-8`).replaceAll(
+            /^#import "\.\.\/_shared\/layout\.typ": .+$/gmu,
+            () => {
+              this.addWatchFile(layout_path)
+              return readFileSync(layout_path, `utf-8`).trimEnd()
+            },
+          )
+          return `export default ${JSON.stringify(source)}`
+        }
         return null
       },
     } satisfies Plugin,

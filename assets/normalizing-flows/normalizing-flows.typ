@@ -1,53 +1,11 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import "@preview/cetz-plot:0.1.4": plot
 #import draw: circle, content, group, hobby, line, polygon, rect, translate
+#import "../_shared/layout.typ": card-grid, takeaway
 
 #set page(width: 780pt, height: auto, margin: 22pt, fill: none)
 #set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
 #set par(leading: 0.55em)
-
-#let card-grid(columns: 2, ..cards) = layout(size => {
-  let rows = cards
-    .pos()
-    .chunks(columns)
-    .map(row => {
-      let ratios = row.map(card => {
-        let bounds = measure(card.at(1))
-        bounds.width / bounds.height
-      })
-      let available = size.width - 12pt * (row.len() - 1) - 24pt * row.len()
-      grid(
-        columns: ratios.map(ratio => 24pt + available * ratio / ratios.sum()),
-        gutter: 12pt,
-        ..row.map(((title, body, caption)) => block(
-          width: 100%,
-          inset: 12pt,
-          radius: 8pt,
-          fill: rgb("#cdd3da"),
-          breakable: false,
-        )[
-          #text(size: 13pt, weight: "bold", title)
-          #v(8pt)
-          // Fill the available width; each drawing keeps its own aspect ratio.
-          #layout(size => std.scale(
-            size.width / measure(body).width * 100%,
-            reflow: true,
-            body,
-          ))
-          #v(7pt)
-          #caption
-        ]),
-      )
-    })
-  stack(dir: ttb, spacing: 12pt, ..rows)
-})
-#let takeaway = block.with(
-  width: 100%,
-  inset: 12pt,
-  radius: 6pt,
-  fill: rgb("#c6d8d2"),
-  breakable: false,
-)
 
 // === 1  Compose invertible maps ===
 #let figure-0 = [
@@ -91,14 +49,13 @@
   }
 
   #canvas({
-    draw.set-style(legend: (fill: rgb("#cdd3da")))
     // Constants for layout
     let node-spacing = 3
     let y-base = 0
     let y-distro = y-base - 2 // vertical offset for distributions
 
     // Helper function for z-nodes
-    let z-node(x, label, special: none, name: none, ..rest) = {
+    let z-node(x, label, special: none, name: none) = {
       circle(
         fill: gray.transparentize(70%),
         (x, y-base),
@@ -106,7 +63,7 @@
         stroke: special,
         name: name,
       )
-      content(name, label, ..rest)
+      content(name, label)
     }
 
     // Draw all nodes first
@@ -147,7 +104,6 @@
 
 // === 2  A coupling layer is reversible ===
 #let figure-1 = canvas({
-  draw.set-style(legend: (fill: rgb("#cdd3da")))
   let spacing = (node: 2.5, row: 2.5)
 
   // Node styles
@@ -203,7 +159,6 @@
 
 // === 3  Affine coupling ===
 #let figure-2 = canvas({
-  draw.set-style(legend: (fill: rgb("#cdd3da")))
   let node-width = 1
   let node-height = 0.6
   let horiz-sep = 1.2
@@ -312,26 +267,21 @@
 
 // === 4  Autoregressive conditioning ===
 #let figure-3 = canvas({
-  draw.set-style(legend: (fill: rgb("#cdd3da")))
   for idx in range(4) {
-    draw.content(
-      (idx * 2.1, 0),
-      $x_#(idx + 1)$,
-      name: "x" + str(idx),
-      frame: "rect",
-      padding: 8pt,
-      fill: rgb("#d6e9f8"),
-      stroke: none,
-    )
-    draw.content(
-      (idx * 2.1, -2),
-      $z_#(idx + 1)$,
-      name: "z" + str(idx),
-      frame: "rect",
-      padding: 8pt,
-      fill: rgb("#fbe4d4"),
-      stroke: none,
-    )
+    for (prefix, row, label, fill) in (
+      ("x", 0, $x_#(idx + 1)$, rgb("#d6e9f8")),
+      ("z", -2, $z_#(idx + 1)$, rgb("#fbe4d4")),
+    ) {
+      draw.content(
+        (idx * 2.1, row),
+        label,
+        name: prefix + str(idx),
+        frame: "rect",
+        padding: 8pt,
+        fill: fill,
+        stroke: none,
+      )
+    }
     draw.line(
       "x" + str(idx) + ".south",
       "z" + str(idx) + ".north",

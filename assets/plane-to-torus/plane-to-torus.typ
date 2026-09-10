@@ -108,6 +108,30 @@
   }
 }
 
+// Draw a tube's mesh, longitudinal seam, and circumferential rims in that order.
+#let tube_panel(axis, tube, center_x, mesh, seam_steps, seam_arrows, rims, rim_arrows) = {
+  let origin = (center_x, 0)
+  draw-tube(axis, tube, ..mesh, origin)
+  draw-visible(
+    phase => tube-point(axis, tube, phase, 0.25),
+    phase => tube-normal(axis, phase, 0.25),
+    seam_steps,
+    origin,
+    seam-color + edge-weight,
+    arrows: seam_arrows,
+  )
+  for rim in rims {
+    draw-visible(
+      phase => tube-point(axis, tube, rim, phase),
+      phase => tube-normal(axis, rim, phase),
+      44,
+      origin,
+      rim-color + edge-weight,
+      arrows: rim_arrows,
+    )
+  }
+}
+
 #let caption(x, body) = content(
   (x, -2.35),
   text(size: annotation-size, fill: rgb("#4A5560"))[#body],
@@ -207,54 +231,17 @@
   // === 3. glue the horizontal pair -> cylinder ===
   step-arrow(7.6, align(center)[glue\ top & bottom], seam-color)
 
-  let (cyl-x, tube-r) = (11.3, 0.62)
-  let cyl-axis = straight-axis(2.7)
-  draw-tube(cyl-axis, tube-r, 20, 18, (cyl-x, 0))
-  // the glued pair is now a single seam running the length of the tube
-  draw-visible(
-    t => tube-point(cyl-axis, tube-r, t, 0.25),
-    t => tube-normal(cyl-axis, t, 0.25),
-    24,
-    (cyl-x, 0),
-    seam-color + edge-weight,
-    arrows: (0.46,),
-  )
-  // the rims are still open: they are the two vertical edges of the square
-  for end-u in (0.0, 1.0) {
-    draw-visible(
-      t => tube-point(cyl-axis, tube-r, end-u, t),
-      t => tube-normal(cyl-axis, end-u, t),
-      44,
-      (cyl-x, 0),
-      rim-color + edge-weight,
-      arrows: (0.60, 0.635),
-    )
-  }
+  let cyl-x = 11.3
+  // The glued pair is a seam; the two vertical edges are still open rims.
+  tube_panel(straight-axis(2.7), .62, cyl-x, (20, 18), 24, (.46,), (0.0, 1.0), (.60, .635))
   caption(cyl-x, [cylinder])
 
   // === 4. bend it round and glue the rims -> torus ===
   step-arrow(13.5, align(center)[glue\ rim to rim], rim-color)
 
-  let (torus-x, torus-tube) = (17.1, 0.5)
-  let torus-axis = ring-axis(1.32)
-  draw-tube(torus-axis, torus-tube, 36, 16, (torus-x, 0))
-  // the seam closed into the long way round; the two rims fused into one short circle
-  draw-visible(
-    t => tube-point(torus-axis, torus-tube, t, 0.25),
-    t => tube-normal(torus-axis, t, 0.25),
-    72,
-    (torus-x, 0),
-    seam-color + edge-weight,
-    arrows: (0.60,),
-  )
-  draw-visible(
-    t => tube-point(torus-axis, torus-tube, 0.2, t),
-    t => tube-normal(torus-axis, 0.2, t),
-    44,
-    (torus-x, 0),
-    rim-color + edge-weight,
-    arrows: (0.86, 0.895),
-  )
+  let torus-x = 17.1
+  // The seam closes the long way round; the two rims fuse into one short circle.
+  tube_panel(ring-axis(1.32), .5, torus-x, (36, 16), 72, (.60,), (.2,), (.86, .895))
   content(
     (torus-x - 0.1, 1.02),
     text(size: annotation-size, fill: seam-color)[$b$],

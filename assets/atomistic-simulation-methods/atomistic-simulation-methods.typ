@@ -1,37 +1,9 @@
 #import "@preview/cetz:0.5.2": canvas, draw
+#import "../_shared/layout.typ": card, takeaway
 
 #set page(width: 780pt, height: auto, margin: 22pt, fill: none)
 #set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
 #set par(leading: 0.55em)
-
-#let card(title, body, caption) = grid(
-  columns: (100%,),
-  block(
-    width: 100%,
-    inset: 12pt,
-    radius: 8pt,
-    fill: rgb("#cdd3da"),
-    breakable: false,
-  )[
-    #text(size: 13pt, weight: "bold", title)
-    #v(8pt)
-    // Fill the available width; each drawing keeps its own aspect ratio.
-    #layout(size => std.scale(
-      size.width / measure(body).width * 100%,
-      reflow: true,
-      body,
-    ))
-    #v(7pt)
-    #caption
-  ],
-)
-#let takeaway = block.with(
-  width: 100%,
-  inset: 12pt,
-  radius: 6pt,
-  fill: rgb("#c6d8d2"),
-  breakable: false,
-)
 
 // === 1  What is evaluated? ===
 #let figure-0 = canvas({

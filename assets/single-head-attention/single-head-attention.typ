@@ -8,13 +8,7 @@
 #canvas({
   let spacing = (horizontal: 1.2, vertical: 0.8)
 
-  // Helper function for drawing a matrix with colored dimension indicators
-  // (x, y) position of top-left corner
-  // (width, height) of matrix
-  // matrix label (e.g. Q, K, V)
-  // color for top dimension line
-  // color for left dimension line
-  // matrix style
+  // Draw a labeled matrix from its top-left corner with colored dimension indicators.
   let matrix(
     pos,
     size,
@@ -44,8 +38,6 @@
       ))
     }
   }
-
-  let value-style = (stroke: mid-gray, fill: rgb("#cdd3da"), thickness: 1.5pt)
 
   let edge-style = (
     mark: (start: "|", offset: 0.075, scale: 1.3),
@@ -90,7 +82,6 @@
       spec.label,
       top-color: spec.top,
       left-color: spec.left,
-      style: value-style,
     )
   }
 
@@ -103,7 +94,6 @@
     "A",
     top-color: rgb("#FF0000"),
     left-color: rgb("#00FFFF"),
-    style: value-style,
   )
 
   operation((4 * spacing.horizontal + 1, 0), $dot.op$, "prod", (1pt, 4pt, 2pt), stroke: mid-gray)
@@ -114,7 +104,6 @@
     "Y",
     top-color: rgb("#FFA500"),
     left-color: rgb("#00FFFF"),
-    style: value-style,
   )
 
   // Arrows with proper right angles using perpendicular coordinates

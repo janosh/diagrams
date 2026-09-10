@@ -159,6 +159,8 @@ Page backgrounds are transparent. Nested panels, legends, and symbol backgrounds
 
 Compound diagrams fill each card's available width and preserve the drawing's aspect ratio. Each row allocates column widths in proportion to its drawings, with captions wrapping below. Page height follows the content automatically.
 
+Compound diagrams share [`assets/_shared/layout.typ`](assets/_shared/layout.typ). Compile repository sources with `typst compile --root . assets/<slug>/<slug>.typ`. The gallery inlines the shared layout into its source viewer, so copied code still compiles as a single file.
+
 To run the scripts requires the following dependencies:
 
 - [`pdf-compressor`](https://github.com/janosh/pdf-compressor) (`pip install pdf-compressor`)

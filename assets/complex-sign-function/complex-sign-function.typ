@@ -1,52 +1,10 @@
 #import "@preview/cetz:0.5.2": canvas, draw, matrix
 #import draw: content, group, line, rect, scale, set-transform
+#import "../_shared/layout.typ": card-grid, takeaway
 
 #set page(width: 780pt, height: auto, margin: 22pt, fill: none)
 #set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
 #set par(leading: 0.55em)
-
-#let card-grid(columns: 2, ..cards) = layout(size => {
-  let rows = cards
-    .pos()
-    .chunks(columns)
-    .map(row => {
-      let ratios = row.map(card => {
-        let bounds = measure(card.at(1))
-        bounds.width / bounds.height
-      })
-      let available = size.width - 12pt * (row.len() - 1) - 24pt * row.len()
-      grid(
-        columns: ratios.map(ratio => 24pt + available * ratio / ratios.sum()),
-        gutter: 12pt,
-        ..row.map(((title, body, caption)) => block(
-          width: 100%,
-          inset: 12pt,
-          radius: 8pt,
-          fill: rgb("#cdd3da"),
-          breakable: false,
-        )[
-          #text(size: 13pt, weight: "bold", title)
-          #v(8pt)
-          // Fill the available width; each drawing keeps its own aspect ratio.
-          #layout(size => std.scale(
-            size.width / measure(body).width * 100%,
-            reflow: true,
-            body,
-          ))
-          #v(7pt)
-          #caption
-        ]),
-      )
-    })
-  stack(dir: ttb, spacing: 12pt, ..rows)
-})
-#let takeaway = block.with(
-  width: 100%,
-  inset: 12pt,
-  radius: 6pt,
-  fill: rgb("#c6d8d2"),
-  breakable: false,
-)
 
 // === 1  Locate the quadrant ===
 #let figure-0 = [

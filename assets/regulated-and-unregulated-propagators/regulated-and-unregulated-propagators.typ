@@ -1,38 +1,10 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content, line, mark
+#import "../_shared/layout.typ": card, takeaway
 
 #set page(width: 780pt, height: auto, margin: 22pt, fill: none)
 #set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
 #set par(leading: 0.55em)
-
-#let card(title, body, caption) = grid(
-  columns: (100%,),
-  block(
-    width: 100%,
-    inset: 12pt,
-    radius: 8pt,
-    fill: rgb("#cdd3da"),
-    breakable: false,
-  )[
-    #text(size: 13pt, weight: "bold", title)
-    #v(8pt)
-    // Fill the available width; each drawing keeps its own aspect ratio.
-    #layout(size => std.scale(
-      size.width / measure(body).width * 100%,
-      reflow: true,
-      body,
-    ))
-    #v(7pt)
-    #caption
-  ],
-)
-#let takeaway = block.with(
-  width: 100%,
-  inset: 12pt,
-  radius: 6pt,
-  fill: rgb("#c6d8d2"),
-  breakable: false,
-)
 
 // Diagonal hatching marking a vertex as dressed rather than bare.
 #let hatched = tiling(size: (.1cm, .1cm))[
@@ -44,15 +16,17 @@
 // off-diagram vertex captions.
 #let leader = (paint: rgb("#78828C"), thickness: 0.5pt)
 
+// Dressed vertices use hatching; trailing options position their labels.
+#let dressed_vertex(pos, label, offset, radius: 0.25, stroke: 0.5pt, name: none, ..style) = {
+  circle(pos, radius: radius, fill: hatched, name: name, stroke: stroke)
+  content((rel: offset, to: pos), $#label$, ..style)
+}
+
 // === 1  Recognize the two topologies ===
 #let figure-0 = [
 
   #let radius = 1 // \radius in original
-  // Dressed vertices use hatching; trailing options position their labels.
-  #let vertex(pos, label, offset, radius: 0.25 * radius, name: none, ..style) = {
-    circle(pos, radius: radius, fill: hatched, name: name, stroke: auto)
-    content((rel: offset, to: pos), $#label$, anchor: "south", ..style)
-  }
+  #let vertex = dressed_vertex.with(radius: 0.25 * radius, stroke: auto, anchor: "south")
 
   #canvas({
     // Gamma^(3) loop: two dressed three-point vertices on the external legs
@@ -81,11 +55,7 @@
 
   #let radius = 1.25
   #let med-rad = 0.175 * radius
-  // Dressed vertices use hatching; trailing options position their labels.
-  #let vertex(pos, label, offset, radius: 0.15 * radius, name: none, ..style) = {
-    circle(pos, radius: radius, fill: hatched, name: name, stroke: 0.5pt)
-    content((rel: offset, to: pos), $#label$, ..style)
-  }
+  #let vertex = dressed_vertex.with(radius: 0.15 * radius)
   // Momentum labels and arrowheads around the loop; fractions set their positions.
   #let momenta(momenta) = {
     for (idx, fraction) in momenta {
@@ -191,11 +161,7 @@
 
   #let radius = 1.25 // \lrad in original
   #let med-rad = 0.13 * radius
-  // Dressed vertices use hatching; trailing options position their labels.
-  #let vertex(pos, label, offset, radius: 0.1 * radius, name: none, ..style) = {
-    circle(pos, radius: radius, fill: hatched, name: name, stroke: 0.5pt)
-    content((rel: offset, to: pos), $#label$, ..style)
-  }
+  #let vertex = dressed_vertex.with(radius: 0.1 * radius)
   #let q-arrow = (
     mark: (end: "barbed", fill: black, scale: .5, width: .25, length: .2, angle: 60deg),
     stroke: .5pt,

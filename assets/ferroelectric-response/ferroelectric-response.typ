@@ -110,100 +110,58 @@
   ))
 
   let atom = sphere.with(radius: 0.20)
-  let draw-unit-cell(center-x, center-y, ti-y, cell-name) = {
-    let (x, y) = (center-x, center-y)
-    let z-offset = -1.0 // Consistent offset for back face
-    let cube-style = (stroke: 0.7pt)
-
-    rect(
-      (x - 1, y - 1, 0),
-      (x + 1, y + 1, 0),
-      ..cube-style,
-      name: cell-name + "-front",
-    )
-    // Preserve exact coordinates/names (incl. quirky `y - -1` / `x + -1` forms).
-    for (start, end, edge-name) in (
-      ((x - 1, y - 1, 0), (x - 1, y - 1, z-offset), cell-name + "-left"),
-      ((x + 1, y - 1, 0), (x + 1, y - 1, z-offset), cell-name + "-right"),
-      ((x - 1, y - 1, z-offset), (x + 1, y - 1, z-offset), cell-name + "-back"),
-      (
-        (x - 1, y + 1, z-offset),
-        (x + 1, y + 1, z-offset),
-        cell-name + "-top-back",
-      ),
-      (
-        (x - 1, y - 1, z-offset),
-        (x - 1, y + 1, z-offset),
-        cell-name + "-left-back",
-      ),
-      (
-        (x + 1, y - 1, z-offset),
-        (x + 1, y + 1, z-offset),
-        cell-name + "-right-back",
-      ),
-      ((x + 1, y - -1), (x + 1, y - -1, z-offset), cell-name + "top-right"),
-      ((x + -1, y - -1), (x + -1, y - -1, z-offset), cell-name + "top-left"),
-    ) {
-      line(start, end, ..cube-style, name: edge-name)
-    }
-
-    let Ba-atom(pos, name) = atom(
-      pos,
-      fill: rgb("#00ffff"),
-      name: cell-name + "-ba-" + name,
-    )
-    let O-atom(pos, name) = atom(pos, fill: red, name: cell-name + "-o-" + name)
-    let Ti-atom(pos) = atom(pos, fill: gray, name: cell-name + "-ti")
-    let Ti-O-bond(end-pos, name) = line(
-      ((x, y + ti-y, z-offset / 2), 15%, end-pos),
-      ((x, y + ti-y, z-offset / 2), 85%, end-pos),
+  let draw-unit-cell(center_x, center_y, ti_y) = {
+    let back = -1.0
+    let corners = ((-1, -1), (1, -1), (-1, 1), (1, 1))
+    let barium = atom.with(fill: rgb("#00ffff"))
+    let oxygen = atom.with(fill: red)
+    let bond(end) = line(
+      ((center_x, center_y + ti_y, back / 2), 15%, end),
+      ((center_x, center_y + ti_y, back / 2), 85%, end),
       stroke: 1pt,
-      name: cell-name + "-bond-" + name,
     )
 
-    // --- Back Plane (z = z-offset) ---
-    for (dx, dy, name) in (
-      (-1, -1, "back-bl"),
-      (1, -1, "back-br"),
-      (-1, 1, "back-tl"),
-      (1, 1, "back-tr"),
+    rect((center_x - 1, center_y - 1, 0), (center_x + 1, center_y + 1, 0), stroke: 0.7pt)
+    for (start, end) in (
+      ((-1, -1, 0), (-1, -1, back)),
+      ((1, -1, 0), (1, -1, back)),
+      ((-1, -1, back), (1, -1, back)),
+      ((-1, 1, back), (1, 1, back)),
+      ((-1, -1, back), (-1, 1, back)),
+      ((1, -1, back), (1, 1, back)),
+      ((1, 1), (1, 1, back)),
+      ((-1, 1), (-1, 1, back)),
     ) {
-      Ba-atom((x + dx, y + dy, z-offset), name)
+      let shift(pos) = (center_x + pos.at(0), center_y + pos.at(1), ..pos.slice(2))
+      line(shift(start), shift(end), stroke: 0.7pt)
     }
-    O-atom((x, y, z-offset), "back")
-    Ti-O-bond((x, y, z-offset), "back")
 
-    // --- Middle Plane (z = z-offset/2) ---
-    if ti-y >= 0 {
-      Ti-O-bond((x, y + 1, z-offset / 2), "top")
+    // Back plane, then the middle plane, then the front plane: preserve occlusion.
+    for (offset_x, offset_y) in corners {
+      barium((center_x + offset_x, center_y + offset_y, back))
     }
-    if ti-y <= 0 {
-      Ti-O-bond((x, y - 1, z-offset / 2), "bottom")
-    }
-    Ti-O-bond((x - 1, y, z-offset / 2), "left")
-    Ti-O-bond((x + 1, y, z-offset / 2), "right")
-    O-atom((x, y + 1, z-offset / 2), "top")
-    O-atom((x, y - 1, z-offset / 2), "bottom")
-    O-atom((x - 1, y, z-offset / 2), "left")
-    O-atom((x + 1, y, z-offset / 2), "right")
-    Ti-atom((x, y + ti-y, z-offset / 2))
+    oxygen((center_x, center_y, back))
+    bond((center_x, center_y, back))
 
-    // --- Front Plane (z = 0) ---
-    Ti-O-bond((x, y, 0), "front")
-    for (dx, dy, name) in (
-      (-1, -1, "front-bl"),
-      (1, -1, "front-br"),
-      (-1, 1, "front-tl"),
-      (1, 1, "front-tr"),
-    ) {
-      Ba-atom((x + dx, y + dy, 0), name)
+    if ti_y >= 0 { bond((center_x, center_y + 1, back / 2)) }
+    if ti_y <= 0 { bond((center_x, center_y - 1, back / 2)) }
+    bond((center_x - 1, center_y, back / 2))
+    bond((center_x + 1, center_y, back / 2))
+    for (offset_x, offset_y) in ((0, 1), (0, -1), (-1, 0), (1, 0)) {
+      oxygen((center_x + offset_x, center_y + offset_y, back / 2))
     }
-    O-atom((x, y, 0), "front")
+    atom((center_x, center_y + ti_y, back / 2), fill: gray)
+
+    bond((center_x, center_y, 0))
+    for (offset_x, offset_y) in corners {
+      barium((center_x + offset_x, center_y + offset_y, 0))
+    }
+    oxygen((center_x, center_y, 0))
   }
 
   scale(0.64)
   set-origin("potential-curve.mid")
-  draw-unit-cell(-4.5, 2, -0.2, "cell1")
-  draw-unit-cell(-0.5, 2, 0, "cell2")
-  draw-unit-cell(3.5, 2, 0.2, "cell3")
+  draw-unit-cell(-4.5, 2, -0.2)
+  draw-unit-cell(-0.5, 2, 0)
+  draw-unit-cell(3.5, 2, 0.2)
 })

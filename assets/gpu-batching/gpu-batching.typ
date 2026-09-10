@@ -1,44 +1,16 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: bezier, circle, content, line, rect
+#import "../_shared/layout.typ": card, takeaway
 
 #set page(width: 780pt, height: auto, margin: 22pt, fill: none)
 #set text(font: "Avenir Next", size: 10.5pt, fill: rgb("#19324f"))
 #set par(leading: 0.55em)
 
-#let card(title, body, caption) = grid(
-  columns: (100%,),
-  block(
-    width: 100%,
-    inset: 12pt,
-    radius: 8pt,
-    fill: rgb("#cdd3da"),
-    breakable: false,
-  )[
-    #text(size: 13pt, weight: "bold", title)
-    #v(8pt)
-    // Fill the available width; each drawing keeps its own aspect ratio.
-    #layout(size => std.scale(
-      size.width / measure(body).width * 100%,
-      reflow: true,
-      body,
-    ))
-    #v(7pt)
-    #caption
-  ],
-)
-#let takeaway = block.with(
-  width: 100%,
-  inset: 12pt,
-  radius: 6pt,
-  fill: rgb("#c6d8d2"),
-  breakable: false,
-)
+// Size of compact annotations shared by both panels.
+#let annotation-size = 9pt
 
 // === 1  Compare scheduling strategies ===
 #let figure-0 = [
-  // Size of compact annotations.
-  #let annotation-size = 9pt
-
 
   // Ionic steps each structure needs before it converges. Every other number in this
   // figure -- batch spans, idle slots, utilization, total runtime -- is derived from this
@@ -261,9 +233,6 @@
 
 // === 2  Follow a replacement ===
 #let figure-1 = [
-  // Size of compact annotations.
-  #let annotation-size = 9pt
-
 
   #canvas({
     let arrow-style = (mark: (end: "stealth", fill: black, scale: 0.5))

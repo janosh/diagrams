@@ -86,54 +86,32 @@
       rows: 7,
       row-color: striped(target-color, target-color-alt, test-target-color),
     ),
-    (
-      x: train-x,
-      y: vertical-center,
-      width: feature-width,
-      height: train-height,
-      label: [X#sub[train]],
-      headers: feature-headers,
-      fill: data-color,
-      header-fill: data-header,
-      rows: 5,
-      row-color: idx => data-color,
-    ),
-    (
-      x: train-x + feature-width + 0.5,
-      y: vertical-center,
-      width: target-width,
-      height: train-height,
-      label: [y#sub[train]],
-      headers: ("Y",),
-      fill: target-color,
-      header-fill: target-header,
-      rows: 5,
-      row-color: idx => target-color,
-    ),
-    (
-      x: test-x,
-      y: test-y,
-      width: feature-width,
-      height: test-height,
-      label: [X#sub[test]],
-      headers: feature-headers,
-      fill: test-data-color,
-      header-fill: data-header,
-      rows: 3,
-      row-color: idx => test-data-color,
-    ),
-    (
-      x: test-x + feature-width + 0.5,
-      y: test-y,
-      width: target-width,
-      height: test-height,
-      label: [y#sub[test]],
-      headers: ("Y",),
-      fill: test-target-color,
-      header-fill: target-header,
-      rows: 3,
-      row-color: idx => test-target-color,
-    ),
+    ..{
+      for (base_x, center_y, height, split, rows, feature_fill, target_fill) in (
+        (train-x, vertical-center, train-height, [train], 5, data-color, target-color),
+        (test-x, test-y, test-height, [test], 3, test-data-color, test-target-color),
+      ) {
+        for (offset, width, label, headers, fill, header_fill) in (
+          (0, feature-width, [X], feature-headers, feature_fill, data-header),
+          (feature-width + 0.5, target-width, [y], ("Y",), target_fill, target-header),
+        ) {
+          (
+            (
+              x: base_x + offset,
+              y: center_y,
+              width: width,
+              height: height,
+              label: [#label#sub(split)],
+              headers: headers,
+              fill: fill,
+              header-fill: header_fill,
+              rows: rows,
+              row-color: idx => fill,
+            ),
+          )
+        }
+      }
+    },
   )
 
   for (x, y, width, height, label, ..) in tables {
