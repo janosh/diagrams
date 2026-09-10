@@ -53,11 +53,38 @@ test.beforeEach(async ({ page }) => {
   await page.route(`https://plausible.io/**`, (route) => route.abort())
 })
 
-test(`gallery descriptions preserve rich links and open from keyboard focus`, async ({
+test(`gallery info buttons reveal descriptions on hover and keyboard focus`, async ({
   page,
 }) => {
   await page.goto(`/`, { waitUntil: `domcontentloaded` })
-  await page.getByPlaceholder(`Search...`, { exact: true }).fill(`Euler Angles`)
+  const search = page.getByPlaceholder(`Search...`, { exact: true })
+  await search.fill(`Convex Hull of Stability`)
+  await expect(page.locator(`head link[rel="prefetch"][as="image"]`)).toHaveCount(0)
+  const hull_info = page.getByRole(`button`, { name: `About Convex Hull of Stability` })
+  await expect(hull_info).toHaveCSS(`opacity`, `0`)
+  await page.locator(`a[href="convex-hull-of-stability"]`).first().hover()
+  const hull_description = page.getByRole(`dialog`, { name: `Convex Hull of Stability` })
+  await expect(hull_description).toHaveCount(0)
+  await expect(hull_info).toHaveCSS(`opacity`, `1`)
+  await expect(hull_info).toHaveCSS(`padding`, `0px`)
+  await expect(hull_info).toHaveCSS(`border-width`, `0px`)
+  await expect(hull_info.locator(`svg`)).toHaveCSS(`width`, `18px`)
+  await expect(hull_info).toHaveCSS(
+    `color`,
+    await page.locator(`body`).evaluate((body) => getComputedStyle(body).color),
+  )
+  await hull_info.hover()
+  await expect(hull_description).toBeVisible()
+  await expect(page).toHaveURL(/\/$/u)
+  for (const selector of [`p`, `li`]) {
+    await expect(hull_description.locator(selector).first()).toHaveCSS(
+      `text-align`,
+      `left`,
+    )
+  }
+  await search.hover()
+  await expect(hull_description).toBeHidden()
+  await search.fill(`Euler Angles`)
   const card = page.locator(`a[href="euler-angles"]`).first()
   const thumbnail = card.locator(`img`)
   await expect(thumbnail).toHaveAttribute(`loading`, `lazy`)
@@ -67,6 +94,13 @@ test(`gallery descriptions preserve rich links and open from keyboard focus`, as
   await expect(thumbnail).toHaveAttribute(`sizes`, /33vw/u)
   await card.focus()
   const description = page.getByRole(`dialog`, { name: `Euler Angles` })
+  await expect(description).toHaveCount(0)
+  // Tag filters precede the info button in the card's tab order.
+  await card.getByRole(`button`).last().focus()
+  await page.keyboard.press(`Tab`)
+  const info = page.getByRole(`button`, { name: `About Euler Angles` })
+  await expect(info).toBeFocused()
+  await expect(info).toHaveCSS(`opacity`, `1`)
   await expect(description).toBeVisible()
   await expect(
     description.locator(`a[href="../cartesian-vs-polar-coordinates"]`),
@@ -86,6 +120,19 @@ test(`gallery descriptions preserve rich links and open from keyboard focus`, as
       `euler-angles.${extension}`,
     )
   }
+})
+
+test.describe(`touch gallery`, () => {
+  test.use({ hasTouch: true, isMobile: true, viewport: { width: 390, height: 844 } })
+  test(`info buttons open descriptions without hover`, async ({ page }) => {
+    await page.goto(`/`)
+    await page.getByPlaceholder(`Search...`, { exact: true }).fill(`Euler Angles`)
+    const info = page.getByRole(`button`, { name: `About Euler Angles` })
+    await expect(info).toHaveCSS(`opacity`, `1`)
+    await info.tap()
+    await expect(page.getByRole(`dialog`, { name: `Euler Angles` })).toBeVisible()
+    await expect(page).toHaveURL(/\/$/u)
+  })
 })
 
 for (const direction of [`Next`, `Previous`]) {
@@ -112,6 +159,13 @@ for (const direction of [`Next`, `Previous`]) {
       const nav_link = page.getByRole(`link`, { name: new RegExp(direction) })
       const target = await nav_link.getAttribute(`href`)
       if (!target) throw new Error(`Missing ${direction} navigation target`)
+      const nav_card = page.locator(`.prev-next a[href="${target}"]:has(img)`)
+      await expect(page.locator(`.prev-next button[aria-haspopup]`)).toHaveCount(0)
+      await expect(nav_card).not.toHaveAttribute(`aria-haspopup`)
+      await nav_card.hover()
+      await expect(page.getByRole(`dialog`)).toHaveCount(0)
+      await nav_card.focus()
+      await expect(page.getByRole(`dialog`)).toHaveCount(0)
       await expect(page.locator(`head link[rel="preload"][as="image"]`)).toHaveCount(0)
       const prefetched_images = await page
         .locator(`head link[rel="prefetch"][as="image"]`)
@@ -251,6 +305,7 @@ test(`theme overrides apply to cards while atom surface colors stay fixed`, asyn
     .fill(`Feynman Building Blocks`)
   const artwork = page.locator(`a[href='feynman-building-blocks'] img`)
   await artwork.hover()
+  await page.getByRole(`button`, { name: `About Feynman Building Blocks` }).hover()
   const description = page.getByRole(`dialog`, { name: `Feynman Building Blocks` })
   await expect(description.locator(`p`)).toContainText(`Lines connect fields`)
   await page.keyboard.press(`Escape`)
@@ -376,6 +431,10 @@ for (const slug of [
       readFileSync(`${import.meta.dirname}/../../../assets/${slug}/${slug}.avif`),
     )
     await expect(page.locator(`pre`)).toContainText(`@preview/cetz`)
+    await expect(page.locator(`section.description p`).first()).toHaveCSS(
+      `text-align`,
+      `left`,
+    )
     await expect(page.getByRole(`link`, { name: `PDF`, exact: true })).toHaveAttribute(
       `href`,
       new RegExp(`/assets/${slug}/${slug}\\.pdf$`),

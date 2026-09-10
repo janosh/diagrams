@@ -1,59 +1,87 @@
 <script lang="ts">
-  import { Popover } from 'svelte-widgets'
+  import { Icon, Popover } from 'svelte-widgets'
+  import { Info } from 'svelte-widgets/icons'
   import type { HTMLAttributes } from 'svelte/elements'
   import { type Diagram, Tags } from './index'
 
   let {
     item,
-    format = `full`,
-    prefetch = false,
+    navigation = false,
     ...rest
   }: HTMLAttributes<HTMLAnchorElement> & {
     item: Diagram
-    format?: `short` | `full`
-    prefetch?: boolean
+    navigation?: boolean
   } = $props()
   let { slug, title, description, tags } = $derived(item)
 </script>
 
 <svelte:head>
-  {#if prefetch}
+  {#if navigation}
     <link rel="prefetch" as="image" type="image/avif" href={item.image} />
   {/if}
 </svelte:head>
 
-<Popover
-  trigger_mode="hover"
-  trap_focus={false}
-  placement="top"
-  class="diagram-description"
-  aria-label={title}
->
-  {#snippet trigger(trigger_props)}
-    <a href={slug} {...rest} {...description ? trigger_props : {}}>
-      <h2 id={slug}>{title}</h2>
-      {#if format === `full`}
-        <Tags {tags} style="color: var(--text-color); margin-block: 0 1em" />
-      {/if}
-      {#key slug}
-        <img
-          src={item.thumbnail.img.src}
-          srcset={item.thumbnail.sources.avif}
-          width={item.thumbnail.img.w}
-          height={item.thumbnail.img.h}
-          sizes="(max-width: 600px) 100vw, (max-width: 1000px) 50vw, 33vw"
-          loading="lazy"
-          alt={title}
-          class="diagram"
-          data-preserve-colors={item.preserve_colors || undefined}
-        />
-      {/key}
-    </a>
-  {/snippet}
-  {@html description ?? ``}
-</Popover>
+<div class="card">
+  <a href={slug} {...rest}>
+    <h2 id={slug}>{title}</h2>
+    {#if !navigation}
+      <Tags {tags} style="color: var(--text-color); margin-block: 0 1em" />
+    {/if}
+    {#key slug}
+      <img
+        src={item.thumbnail.img.src}
+        srcset={item.thumbnail.sources.avif}
+        width={item.thumbnail.img.w}
+        height={item.thumbnail.img.h}
+        sizes="(max-width: 600px) 100vw, (max-width: 1000px) 50vw, 33vw"
+        loading="lazy"
+        alt={title}
+        class="diagram"
+        data-preserve-colors={item.preserve_colors || undefined}
+      />
+    {/key}
+  </a>
+  {#if description && !navigation}
+    <Popover
+      trigger_mode="hover"
+      trap_focus={false}
+      placement="top"
+      class="diagram-description"
+      style="text-align: left"
+      aria-label={title}
+    >
+      {#snippet trigger(trigger_props)}
+        <button type="button" aria-label="About {title}" {...trigger_props}>
+          <Icon icon={Info} style="--icon-size: 18px" />
+        </button>
+      {/snippet}
+      {@html description}
+    </Popover>
+  {/if}
+</div>
 
 <style>
+  .card {
+    position: relative;
+    button {
+      position: absolute;
+      top: 0.5em;
+      right: 0.5em;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 0;
+      background: none;
+      color: var(--text-color);
+      cursor: pointer;
+    }
+    @media (hover: hover) {
+      &:not(:hover, :focus-within) button:not([aria-expanded='true']) {
+        opacity: 0;
+        pointer-events: none;
+      }
+    }
+  }
   a {
     display: grid;
     place-content: center;

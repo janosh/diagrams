@@ -179,12 +179,7 @@
           {@html kind == `next` ? `Next &rarr;` : `&larr; Previous`}
         </a>
       </h3>
-      <DiagramCard
-        item={diagram}
-        prefetch
-        style="max-width: 280px; font-size: 10pt"
-        format="short"
-      />
+      <DiagramCard item={diagram} navigation style="max-width: 280px; font-size: 10pt" />
     </div>
   {/snippet}
 </PrevNext>
@@ -215,7 +210,7 @@
     line-height: 3ex;
     text-align: center;
   }
-  section.description :global(ul) {
+  section.description {
     text-align: left;
   }
   .diagram-wrapper {
