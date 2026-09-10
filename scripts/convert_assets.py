@@ -20,7 +20,7 @@ AVIF_OPTIONS = [
 
 def finalize_assets(base_path: str) -> None:
     """Keep the lossless PNG download and encode AVIF artwork and themed previews."""
-    png_path = f"{base_path}-hd.png"
+    png_path = f"{base_path}.png"
     if not os.path.isfile(png_path):
         raise FileNotFoundError(png_path)
     if shutil.which("zopflipng"):
@@ -93,7 +93,7 @@ def pdf_to_svg_png_compressed(pdf_path: str) -> str:
             "-background",
             "none",
             f"{base_path}.pdf",
-            f"{base_path}-hd.png",
+            f"{base_path}.png",
         ],
         check=True,
     )

@@ -61,10 +61,10 @@ test(`gallery descriptions preserve rich links and open from keyboard focus`, as
   const card = page.locator(`a[href="euler-angles"]`).first()
   const thumbnail = card.locator(`img`)
   await expect(thumbnail).toHaveAttribute(`loading`, `lazy`)
-  await expect(card.locator(`source`)).toHaveCount(1)
-  await expect(card.locator(`source`)).toHaveAttribute(`type`, `image/avif`)
-  await expect(card.locator(`source`)).toHaveAttribute(`srcset`, /\S+ 480w, \S+ 960w/u)
-  await expect(card.locator(`source`)).toHaveAttribute(`sizes`, /33vw/u)
+  await expect(card.locator(`picture`)).toHaveCount(0)
+  await expect(thumbnail).toHaveAttribute(`src`, /\.avif$/u)
+  await expect(thumbnail).toHaveAttribute(`srcset`, /\S+ 480w, \S+ 960w/u)
+  await expect(thumbnail).toHaveAttribute(`sizes`, /33vw/u)
   await card.focus()
   const description = page.getByRole(`dialog`, { name: `Euler Angles` })
   await expect(description).toBeVisible()
@@ -74,6 +74,18 @@ test(`gallery descriptions preserve rich links and open from keyboard focus`, as
   expect(await description.evaluate((element) => element.closest(`a`))).toBeNull()
   await page.keyboard.press(`Escape`)
   await expect(description).toBeHidden()
+  await card.click()
+  for (const [language, extension] of [
+    [`TikZ`, `tex`],
+    [`Typst`, `typ`],
+  ]) {
+    await page.getByRole(`tab`, { name: language, exact: true }).click()
+    await expect(page.locator(`pre`)).toHaveCount(1)
+    await expect(page.locator(`pre`)).toHaveAttribute(
+      `aria-label`,
+      `euler-angles.${extension}`,
+    )
+  }
 })
 
 for (const direction of [`Next`, `Previous`]) {
@@ -86,8 +98,7 @@ for (const direction of [`Next`, `Previous`]) {
     })
     await page.route(`**/*`, async (route) => {
       const url = route.request().url()
-      if (url.endsWith(`.avif`) && !url.includes(`-hd`) && !url.includes(`euler-angles`))
-        await images_released
+      if (url.endsWith(`.avif`) && !url.includes(`euler-angles`)) await images_released
       await route.fallback()
     })
     try {
@@ -371,7 +382,11 @@ for (const slug of [
     )
     await expect(page.getByRole(`link`, { name: `PNG`, exact: true })).toHaveAttribute(
       `href`,
-      new RegExp(`/assets/${slug}/${slug}-hd\\.png$`),
+      new RegExp(`/assets/${slug}/${slug}\\.png$`),
+    )
+    await expect(page.locator(`meta[property="og:image"]`)).toHaveAttribute(
+      `content`,
+      new RegExp(`/assets/${slug}/${slug}\\.png$`),
     )
     await expect(page.getByRole(`link`, { name: `PNG (HD)`, exact: true })).toHaveCount(0)
   })

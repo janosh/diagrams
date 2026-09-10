@@ -57,7 +57,7 @@ export default {
         // PNG stores intrinsic dimensions in its IHDR header (before pixel data).
         // The AVIF is encoded at exactly the same dimensions as this lossless master.
         if (!metadata.hide) {
-          const png_path = filename.replace(/\.yml$/u, `-hd.png`)
+          const png_path = filename.replace(/\.yml$/u, `.png`)
           const png = readFileSync(png_path)
           if (
             png.toString(`hex`, 0, 8) !== `89504e470d0a1a0a` ||

@@ -8,6 +8,5 @@ export const load: PageServerLoad = ({ params }) => {
   const diagram = sorted_diagrams.find((itm) => itm.slug === slug)
   if (!diagram) error(404, `Page '${slug}' not found`)
 
-  // diagrams passed as well for rendering links to next/previous diagrams
-  return { diagram, diagrams: sorted_diagrams, slug }
+  return { diagram }
 }

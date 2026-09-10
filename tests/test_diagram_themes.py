@@ -39,7 +39,7 @@ def test_failed_compilation_preserves_outputs(
             ".pdf",
             ".svg",
             ".avif",
-            "-hd.png",
+            ".png",
             "-dark.avif",
             ".aux",
             ".log",
@@ -62,9 +62,9 @@ def test_failed_compilation_preserves_outputs(
     )
 
 
-def read_rgba(png_path: str) -> bytes:
+def read_rgba(image_path: str) -> bytes:
     """Decode image pixels independently of format and compression choices."""
-    return subprocess.check_output(["magick", png_path, "-depth", "8", "rgba:-"])
+    return subprocess.check_output(["magick", image_path, "-depth", "8", "rgba:-"])
 
 
 def test_successful_tex_cleanup(
@@ -102,39 +102,32 @@ def test_finalize_assets(
     colors = [(0, 0, 0, 255), (255, 255, 255, 255), (0, 0, 0, 128), (0, 0, 0, 0)]
     colors.extend((shade, shade, shade, 255) for shade in range(256))
     original = bytes(channel for color in colors for channel in color)
-    with pytest.raises(FileNotFoundError, match="diagram-hd.png"):
+    with pytest.raises(FileNotFoundError, match="diagram.png"):
         finalize_assets(base_path)
     subprocess.run(
-        ["magick", "-size", "260x1", "-depth", "8", "rgba:-", f"{base_path}-hd.png"],
+        ["magick", "-size", "260x1", "-depth", "8", "rgba:-", f"{base_path}.png"],
         input=original,
         check=True,
     )
     finalize_assets(base_path)
-    assert read_rgba(f"{base_path}-hd.png") == original
-    pixels = read_rgba(f"{base_path}.avif")
-    assert len(pixels) == len(original)
-    # AVIF is lossy: allow at most 2/255 alpha levels of quantization on this ramp.
-    assert (
-        max(
-            abs(actual - expected)
-            for actual, expected in zip(pixels[3::4], original[3::4], strict=True)
-        )
-        <= 2
-    )
-    assert not os.path.isfile(f"{base_path}.png")
+    assert read_rgba(f"{base_path}.png") == original
+    assert not os.path.isfile(f"{base_path}-hd.png")
     dark_path = f"{base_path}-dark.avif"
     assert os.path.isfile(dark_path) is not bool(metadata_flag)
-    if not metadata_flag:
-        pixels = read_rgba(dark_path)
-        assert (
-            max(
-                abs(actual - expected)
-                for actual, expected in zip(pixels[3::4], original[3::4], strict=True)
-            )
-            <= 2
+    previews = (
+        [f"{base_path}.avif"] if metadata_flag else [f"{base_path}.avif", dark_path]
+    )
+    for preview in previews:
+        pixels = read_rgba(preview)
+        assert len(pixels) == len(original)
+        # AVIF is lossy: allow at most 2/255 alpha levels of quantization on this ramp.
+        assert all(
+            abs(actual - expected) <= 2
+            for actual, expected in zip(pixels[3::4], original[3::4], strict=True)
         )
-        assert min(pixels[:3]) >= 227  # Black ink becomes light.
-        assert max(pixels[4:7]) <= 28  # White fills become dark, remaining opaque.
+        if preview == dark_path:
+            assert min(pixels[:3]) >= 227  # Black ink becomes light.
+            assert max(pixels[4:7]) <= 28  # White fills become dark, remaining opaque.
     # Exercise a real failing subprocess without depending on the installed optimizer.
     (tmp_path / "zopflipng").symlink_to("/usr/bin/false")
     monkeypatch.setenv("PATH", str(tmp_path))

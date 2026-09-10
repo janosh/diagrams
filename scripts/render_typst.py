@@ -24,7 +24,7 @@ def render_typst(input_file: str) -> None:
 
     print(f"Compiling Typst → PNG ({PNG_PPI} ppi)")
     subprocess.run(
-        [*compile_cmd, f"{base_path}-hd.png", "--pages", "1", "--ppi", PNG_PPI],
+        [*compile_cmd, f"{base_path}.png", "--pages", "1", "--ppi", PNG_PPI],
         check=True,
     )
     finalize_assets(base_path)

@@ -7,18 +7,32 @@ import { gallery_count_for } from '../src/lib/gallery'
 import euler_angles from '../../assets/euler-angles/euler-angles.yml'
 import euler_angles_source from '../../assets/euler-angles/euler-angles.typ?raw'
 import Layout from '../src/routes/+layout.svelte'
+import { load } from '../src/routes/[slug]/+page.server'
 import config from '../vite.config'
 
-vi.mock(`$lib`, () => ({
-  diagrams: [
+vi.mock(`$lib`, () => {
+  const diagrams = [
     { slug: `euler-angles`, title: `Euler Angles` },
     { slug: `euler-angles-alternative`, title: `Euler Angles` },
-  ],
-}))
+  ]
+  return { diagrams, sorted_diagrams: diagrams }
+})
 vi.mock(`$app/navigation`, () => ({ goto: vi.fn() }))
 
 it(`renders the gallery command menu with unique IDs even when titles repeat`, () => {
   expect(() => render(Layout)).not.toThrow()
+})
+
+it(`loads only the requested diagram and rejects unknown slugs`, async () => {
+  const event = { params: { slug: `euler-angles` } } as Parameters<typeof load>[0]
+  expect(await load(event)).toEqual({
+    diagram: { slug: `euler-angles`, title: `Euler Angles` },
+  })
+  event.params.slug = `unknown`
+  await expect(Promise.resolve().then(() => load(event))).rejects.toMatchObject({
+    status: 404,
+    body: { message: `Page 'unknown' not found` },
+  })
 })
 
 it(`loads YAML metadata with string dates and rendered descriptions`, () => {
@@ -93,10 +107,10 @@ it(`keeps visible gallery entries complete and internal links resolvable after c
   const visible = new Set(visible_entries.map(([path]) => path.split(`/`).at(-2)))
   for (const [path, data] of visible_entries) {
     const base = path.slice(0, -4)
-    for (const extension of [`.avif`, `-hd.png`, `.pdf`]) {
+    for (const extension of [`.avif`, `.png`, `.pdf`]) {
       expect(files.has(`${base}${extension}`), `${path}: missing ${extension}`).toBe(true)
     }
-    expect(files.has(`${base}.png`), `${path}: obsolete SD PNG`).toBe(false)
+    expect(files.has(`${base}-hd.png`), `${path}: obsolete HD suffix`).toBe(false)
     expect(files.has(`${base}-dark.png`), `${path}: obsolete dark PNG`).toBe(false)
     expect(files.has(`${base}.typ`) || files.has(`${base}.tex`), path).toBe(true)
     for (const match of (data.description ?? ``).matchAll(

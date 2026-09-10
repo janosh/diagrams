@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { CodeBlock, type Diagram, DiagramCard, Tags } from '$lib'
+  import { CodeBlock, type Diagram, DiagramCard, sorted_diagrams, Tags } from '$lib'
   import { filters } from '$lib/state.svelte'
   import { homepage, repository } from '$root/package.json'
   import { FullscreenButton, Icon, PrevNext, Tabs, type IconData } from 'svelte-widgets'
@@ -30,7 +30,7 @@
     downloads,
   } = $derived(data.diagram)
   const download_options: Record<string, { icon: IconData; label: string }> = {
-    [`-hd.png`]: { icon: FilePNG, label: `PNG` },
+    [`.png`]: { icon: FilePNG, label: `PNG` },
     [`.pdf`]: { icon: FilePDF, label: `PDF` },
     [`.svg`]: { icon: FileXML, label: `SVG` },
   }
@@ -49,7 +49,7 @@
   let nav_diagrams = $derived(
     filters.filtered.some((diagram) => diagram.slug === slug)
       ? filters.filtered
-      : data.diagrams,
+      : sorted_diagrams,
   )
 
   // Prefer Typst when both Typst (CeTZ) and TeX (TikZ) sources exist
@@ -70,7 +70,7 @@
     <meta name="description" content={plain_description} />
     <meta property="og:description" content={plain_description} />
   {/if}
-  <meta property="og:image" content="{base_uri}-hd.png" />
+  <meta property="og:image" content="{base_uri}.png" />
   <meta property="og:image:alt" content={title} />
   <meta property="og:url" content="{homepage}/{slug}" />
   <meta name="twitter:card" content="summary" />
@@ -146,34 +146,32 @@
 <h2>
   <Icon icon={Code} /> Code
 </h2>
+{#snippet source_block()}
+  {#if selected_source}
+    <CodeBlock
+      code={selected_source.code}
+      title="{slug}.{selected_source.ext}"
+      repo_link={`${repository}/blob/main/assets/${slug}/${slug}.${selected_source.ext}`}
+      tex_file_uri={selected_source.ext === `tex` ? `${base_uri}.tex` : ``}
+    />
+  {/if}
+{/snippet}
 {#if code.typst && code.tex}
   <Tabs items={code_tabs} bind:value={code_tab} label="Code language" class="code-tabs">
     {#snippet tab({ item })}
       <Icon icon={code_tab_icons[item.value]} />{item.label}
     {/snippet}
     {#snippet panel({ selected })}
-      {#if selected && selected_source}
-        <CodeBlock
-          code={selected_source.code}
-          title="{slug}.{selected_source.ext}"
-          repo_link={`${repository}/blob/main/assets/${slug}/${slug}.${selected_source.ext}`}
-          tex_file_uri={selected_source.ext === `tex` ? `${base_uri}.tex` : ``}
-        />
-      {/if}
+      {#if selected}{@render source_block()}{/if}
     {/snippet}
   </Tabs>
-{:else if selected_source}
-  <CodeBlock
-    code={selected_source.code}
-    title="{slug}.{selected_source.ext}"
-    repo_link={`${repository}/blob/main/assets/${slug}/${slug}.${selected_source.ext}`}
-    tex_file_uri={selected_source.ext === `tex` ? `${base_uri}.tex` : ``}
-  />
+{:else}
+  {@render source_block()}
 {/if}
 
 <PrevNext
   items={nav_diagrams.map((diagram) => [diagram.slug, diagram])}
-  current={data.slug}
+  current={slug}
   style="max-width: var(--content-max-width); margin: auto"
 >
   {#snippet children({ item, kind })}

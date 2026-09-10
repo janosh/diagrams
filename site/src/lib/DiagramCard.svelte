@@ -36,8 +36,11 @@
         <Tags {tags} style="color: var(--text-color); margin-block: 0 1em" />
       {/if}
       {#key slug}
-        <enhanced:img
-          src={item.thumbnail}
+        <img
+          src={item.thumbnail.img.src}
+          srcset={item.thumbnail.sources.avif}
+          width={item.thumbnail.img.w}
+          height={item.thumbnail.img.h}
           sizes="(max-width: 600px) 100vw, (max-width: 1000px) 50vw, 33vw"
           loading="lazy"
           alt={title}

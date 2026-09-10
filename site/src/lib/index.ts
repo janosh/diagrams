@@ -28,34 +28,41 @@ export type YamlMetadata = {
 }
 
 // YAML imports already contain descriptions rendered to HTML by the Vite plugin.
-// Rolldown leaves eager glob imports wrapped as modules; unwrap .default below.
-const yaml_data = import.meta.glob<{ default: YamlMetadata }>(`$assets/**/*.yml`, {
+// Vite's build-time glob parser requires literal strings for import/query options.
+const yaml_data = import.meta.glob<YamlMetadata>(`$assets/**/*.yml`, {
   eager: true,
+  import: 'default',
 })
-const code_files = import.meta.glob<{ default: string }>(
-  [`$assets/**/*.tex`, `$assets/**/*.typ`],
-  { eager: true, query: `?raw` },
+const code_files = import.meta.glob<string>([`$assets/**/*.tex`, `$assets/**/*.typ`], {
+  eager: true,
+  import: 'default',
+  query: '?raw',
+})
+// Downloads are hosted on GitHub; discover filenames without importing their bytes.
+const asset_paths = new Set(
+  Object.keys(
+    import.meta.glob([`$assets/**/*.png`, `$assets/**/*.pdf`, `$assets/**/*.svg`]),
+  ),
 )
-const asset_files = import.meta.glob<{ default: string }>(
-  [`$assets/**/*-hd.png`, `$assets/**/*.pdf`, `$assets/**/*.svg`],
-  { eager: true },
-)
-const image_files = import.meta.glob<{ default: string }>(
+const image_files = import.meta.glob<string>(
   [`$assets/**/*.avif`, `!$assets/**/*-dark.avif`],
   // Plain imports preserve the encoded file; queries activate imagetools transforms.
-  { eager: true },
+  { eager: true, import: 'default' },
 )
-const thumbnails = import.meta.glob<{ default: Picture }>([`$assets/**/*-hd.png`], {
-  eager: true,
-  // Density descriptors are lost by imagetools' cache; use stable width descriptors.
-  // Vite's build-time glob parser drops template-literal query values.
-  query: '?enhanced&format=avif&w=480;960&quality=85&basePixels=0',
-})
+const thumbnails = import.meta.glob<Picture>(
+  [`$assets/*/*.png`, `!$assets/**/*-reference.png`],
+  {
+    eager: true,
+    import: 'default',
+    // Density descriptors are lost by imagetools' cache; use stable width descriptors.
+    query: '?enhanced&format=avif&w=480;960&quality=85&basePixels=0',
+  },
+)
 
 // Process YAML files to create figure data
 export const diagrams: Diagram[] = Object.entries(yaml_data)
-  .filter(([_path, { default: metadata }]) => !metadata.hide)
-  .map(([path, { default: metadata }]): Diagram => {
+  .filter(([_path, metadata]) => !metadata.hide)
+  .map(([path, metadata]): Diagram => {
     const slug = path.split(`/`)[2] ?? ``
     const figure_basename = `../assets/${slug}/${slug}`
 
@@ -63,8 +70,8 @@ export const diagrams: Diagram[] = Object.entries(yaml_data)
     const tex_path = `${figure_basename}.tex`
     const typ_path = `${figure_basename}.typ`
     const code = {
-      tex: code_files[tex_path]?.default,
-      typst: code_files[typ_path]?.default,
+      tex: code_files[tex_path],
+      typst: code_files[typ_path],
     }
 
     const tags = [
@@ -76,16 +83,16 @@ export const diagrams: Diagram[] = Object.entries(yaml_data)
     ]
 
     // Downloads retain their original filenames on GitHub.
-    const downloads = ([`-hd.png`, `.pdf`, `.svg`] as const).filter(
-      (ext) => `${figure_basename}${ext}` in asset_files,
+    const downloads = ([`.png`, `.pdf`, `.svg`] as const).filter((ext) =>
+      asset_paths.has(`${figure_basename}${ext}`),
     )
     // build-time data-quality signal (building guard keeps it out of the client bundle)
     if (building && downloads.length < 2) {
       console.warn(`Diagram '${slug}' has only ${downloads.length} download asset(s)`)
     }
 
-    const image = image_files[`${figure_basename}.avif`]?.default
-    const thumbnail = thumbnails[`${figure_basename}-hd.png`]?.default
+    const image = image_files[`${figure_basename}.avif`]
+    const thumbnail = thumbnails[`${figure_basename}.png`]
     if (!image || !thumbnail)
       throw new Error(`Missing AVIF artwork or thumbnail for '${slug}'`)
     return { ...metadata, slug, code, tags, downloads, image, thumbnail }
