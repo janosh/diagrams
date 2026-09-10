@@ -6,6 +6,7 @@ import { expect, it, vi } from 'vitest'
 import { gallery_count_for } from '../src/lib/gallery'
 import euler_angles from '../../assets/euler-angles/euler-angles.yml'
 import euler_angles_source from '../../assets/euler-angles/euler-angles.typ?raw'
+import euler_angles_tex from '../../assets/euler-angles/euler-angles.tex?raw'
 import Layout from '../src/routes/+layout.svelte'
 import { load } from '../src/routes/[slug]/+page.server'
 import config from '../vite.config'
@@ -14,6 +15,7 @@ vi.mock(`$lib`, () => {
   const diagrams = [
     { slug: `euler-angles`, title: `Euler Angles` },
     { slug: `euler-angles-alternative`, title: `Euler Angles` },
+    { slug: `which-band-gap-do-you-mean`, title: `Which Band Gap Do You Mean?` },
   ]
   return { diagrams, sorted_diagrams: diagrams }
 })
@@ -26,7 +28,22 @@ it(`renders the gallery command menu with unique IDs even when titles repeat`, (
 it(`loads only the requested diagram and rejects unknown slugs`, async () => {
   const event = { params: { slug: `euler-angles` } } as Parameters<typeof load>[0]
   expect(await load(event)).toEqual({
-    diagram: { slug: `euler-angles`, title: `Euler Angles` },
+    diagram: {
+      slug: `euler-angles`,
+      title: `Euler Angles`,
+      code: { typst: euler_angles_source, tex: euler_angles_tex },
+    },
+  })
+  event.params.slug = `which-band-gap-do-you-mean`
+  expect(await load(event)).toMatchObject({
+    diagram: {
+      slug: event.params.slug,
+      code: {
+        typst:
+          typst_sources[`../../assets/${event.params.slug}/${event.params.slug}.typ`],
+        tex: undefined,
+      },
+    },
   })
   event.params.slug = `unknown`
   await expect(Promise.resolve().then(() => load(event))).rejects.toMatchObject({

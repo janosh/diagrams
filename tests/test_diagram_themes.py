@@ -99,17 +99,40 @@ def test_finalize_assets(
     base_path = f"{tmp_path}/diagram"
     metadata = f"{metadata_flag}: true" if metadata_flag else "title: Test"
     (tmp_path / "diagram.yml").write_text(metadata)
-    colors = [(0, 0, 0, 255), (255, 255, 255, 255), (0, 0, 0, 128), (0, 0, 0, 0)]
+    colors = [(0, 0, 0, 255), (255, 255, 255, 255), (0, 0, 0, 128), (137, 21, 83, 0)]
     colors.extend((shade, shade, shade, 255) for shade in range(256))
     original = bytes(channel for color in colors for channel in color)
     with pytest.raises(FileNotFoundError, match="diagram.png"):
         finalize_assets(base_path)
     subprocess.run(
-        ["magick", "-size", "260x1", "-depth", "8", "rgba:-", f"{base_path}.png"],
+        [
+            "magick",
+            "-size",
+            "260x1",
+            "-depth",
+            "8",
+            "rgba:-",
+            "-units",
+            "PixelsPerInch",
+            "-density",
+            "400",
+            f"{base_path}.png",
+        ],
         input=original,
         check=True,
     )
+    png_size = os.path.getsize(f"{base_path}.png")
+    metadata_command = [
+        "magick",
+        "identify",
+        "-format",
+        "%x %y %[gamma]",
+        f"{base_path}.png",
+    ]
+    png_metadata = subprocess.check_output(metadata_command)
     finalize_assets(base_path)
+    assert os.path.getsize(f"{base_path}.png") <= png_size
+    assert subprocess.check_output(metadata_command) == png_metadata
     assert read_rgba(f"{base_path}.png") == original
     assert not os.path.isfile(f"{base_path}-hd.png")
     dark_path = f"{base_path}-dark.avif"
@@ -132,6 +155,9 @@ def test_finalize_assets(
     (tmp_path / "zopflipng").symlink_to("/usr/bin/false")
     monkeypatch.setenv("PATH", str(tmp_path))
     with pytest.raises(subprocess.CalledProcessError):
+        finalize_assets(base_path)
+    (tmp_path / "zopflipng").unlink()
+    with pytest.raises(FileNotFoundError, match="zopflipng"):
         finalize_assets(base_path)
 
 

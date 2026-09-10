@@ -8,7 +8,7 @@ export { default as Tags } from './Tags.svelte'
 export type Diagram = {
   slug: string
   downloads: string[]
-  code: { tex?: string; typst?: string }
+  source_types: (`tex` | `typ`)[]
   image: string
   thumbnail: Picture
 } & YamlMetadata
@@ -33,15 +33,16 @@ const yaml_data = import.meta.glob<YamlMetadata>(`$assets/**/*.yml`, {
   eager: true,
   import: 'default',
 })
-const code_files = import.meta.glob<string>([`$assets/**/*.tex`, `$assets/**/*.typ`], {
-  eager: true,
-  import: 'default',
-  query: '?raw',
-})
-// Downloads are hosted on GitHub; discover filenames without importing their bytes.
+// Discover available downloads and source languages without importing their bytes.
 const asset_paths = new Set(
   Object.keys(
-    import.meta.glob([`$assets/**/*.png`, `$assets/**/*.pdf`, `$assets/**/*.svg`]),
+    import.meta.glob([
+      `$assets/**/*.png`,
+      `$assets/**/*.pdf`,
+      `$assets/**/*.svg`,
+      `$assets/**/*.tex`,
+      `$assets/**/*.typ`,
+    ]),
   ),
 )
 const image_files = import.meta.glob<string>(
@@ -66,19 +67,14 @@ export const diagrams: Diagram[] = Object.entries(yaml_data)
     const slug = path.split(`/`)[2] ?? ``
     const figure_basename = `../assets/${slug}/${slug}`
 
-    // Check if .tex or .typ file exists and get its content
-    const tex_path = `${figure_basename}.tex`
-    const typ_path = `${figure_basename}.typ`
-    const code = {
-      tex: code_files[tex_path],
-      typst: code_files[typ_path],
-    }
-
+    const source_types = ([`tex`, `typ`] as const).filter((ext) =>
+      asset_paths.has(`${figure_basename}.${ext}`),
+    )
     const tags = [
       ...new Set([
         ...(metadata.tags ?? []),
-        ...(typ_path in code_files ? [`cetz`] : []),
-        ...(tex_path in code_files ? [`tikz`] : []),
+        ...(source_types.includes(`typ`) ? [`cetz`] : []),
+        ...(source_types.includes(`tex`) ? [`tikz`] : []),
       ]),
     ]
 
@@ -95,7 +91,7 @@ export const diagrams: Diagram[] = Object.entries(yaml_data)
     const thumbnail = thumbnails[`${figure_basename}.png`]
     if (!image || !thumbnail)
       throw new Error(`Missing AVIF artwork or thumbnail for '${slug}'`)
-    return { ...metadata, slug, code, tags, downloads, image, thumbnail }
+    return { ...metadata, slug, source_types, tags, downloads, image, thumbnail }
   })
 
 // title-sorted view of diagrams; stable order for prev/next nav, the home grid and

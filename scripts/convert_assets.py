@@ -18,13 +18,27 @@ AVIF_OPTIONS = [
 ]
 
 
+def compress_png(png_path: str) -> None:
+    """Losslessly optimize a PNG, retaining color/DPI metadata and only smaller output."""
+    subprocess.run(
+        [
+            "zopflipng",
+            "-y",
+            "-q",
+            "--keepchunks=iCCP,sRGB,gAMA,cHRM,pHYs",
+            png_path,
+            png_path,
+        ],
+        check=True,
+    )
+
+
 def finalize_assets(base_path: str) -> None:
     """Keep the lossless PNG download and encode AVIF artwork and themed previews."""
     png_path = f"{base_path}.png"
     if not os.path.isfile(png_path):
         raise FileNotFoundError(png_path)
-    if shutil.which("zopflipng"):
-        subprocess.run(["zopflipng", "-y", png_path, png_path], check=True)
+    compress_png(png_path)
     subprocess.run(["magick", png_path, *AVIF_OPTIONS, f"{base_path}.avif"], check=True)
 
     with open(f"{base_path}.yml") as file:

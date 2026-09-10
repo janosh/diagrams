@@ -49,8 +49,8 @@ jobs:
         with:
           python-version: '3.14'
       - uses: typst-community/setup-typst@v5
-      - name: Install ImageMagick
-        run: brew install imagemagick
+      - name: Install image tools
+        run: brew install imagemagick zopfli
       - name: Python tests
         run: uv run --no-project --with pytest --with pyyaml pytest -q
 
