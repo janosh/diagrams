@@ -5,7 +5,7 @@ tags:
   - electronic structure
   - solid state physics
 description: |
-  One combined diagram explains phase alignment, Fourier synthesis, localization, and Wannier centers. Seven Bloch states feed one orbital, with phase arrows showing reinforcement and cancellation. A gauge comparison preserves the total occupied density, while a 30/70 Gaussian mixture and balance diagram place the mean at 0.7a. Applications contrast symmetric Si–Si and polar Ga–As bonding, then illustrate an insulator's polarization response to an electric field.
+  One combined diagram explains phase alignment, Fourier synthesis, localization, and [Wannier centers](https://arxiv.org/abs/1112.5411). Seven [Bloch states](../how-atoms-become-energy-bands) feed one orbital, with phase arrows showing reinforcement and cancellation. A gauge comparison preserves the total occupied density, while a 30/70 Gaussian mixture and balance diagram place the mean at 0.7a. Applications contrast symmetric Si–Si and polar Ga–As bonding, then illustrate an insulator's polarization response to an electric field.
 
   The one-band toy model uses seven disjoint normalized cosine orbitals and orthonormal Bloch states in a periodic supercell. Exact single-cell confinement is specific to this model; the brackets show cell ranges, not RMS widths. Gauge probabilities use exp(i 1.5 cos(ka)) and constant phases. Bond clouds are schematic Gaussian mixtures. Individual centers depend on gauge. Polarization changes assume fixed occupations and cell volume along a continuous insulating path; follow centers across cell boundaries and add ionic contributions for total polarization. Entangled bands first require a suitable subspace, and the selected bands must admit localized Wannier functions.
 references:

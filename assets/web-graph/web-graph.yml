@@ -10,4 +10,4 @@ tags:
   - information retrieval
   - pagerank
 description: |
-  A directed web graph whose nodes are documents and edges are hyperlinks, including self-links, the structure underlying the PageRank algorithm.
+  A directed web graph whose nodes are documents and edges are hyperlinks, including self-links, the structure underlying the [PageRank algorithm](https://research.google/pubs/the-anatomy-of-a-large-scale-hypertextual-web-search-engine/).

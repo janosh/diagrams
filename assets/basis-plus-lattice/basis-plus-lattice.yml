@@ -7,4 +7,4 @@ tags:
   - symmetry
   - solid state physics
 description: |
-  Operation illustrating combination of a motif/basis with a point lattice to generate a crystal structure.
+  Operation illustrating combination of a motif/basis with a [point lattice](../sublattice-points) to generate a crystal structure.

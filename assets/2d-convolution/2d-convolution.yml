@@ -8,4 +8,4 @@ tags:
   - neural networks
   - computer vision
 description: |
-  A two-dimensional convolution operator slides the kernel matrix across the target image and records elementwise products. Makes heavy use of the matrix environment in TikZ.
+  A [two-dimensional convolution](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.convolve2d.html) operator slides the kernel matrix across the target image and records elementwise products. Makes heavy use of the matrix environment in TikZ.

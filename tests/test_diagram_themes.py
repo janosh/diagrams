@@ -1,15 +1,16 @@
 """Check transparent exports and theme-aware README previews."""
 
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
 
 import pytest
 import render_tikz
+import yaml
 from convert_assets import finalize_assets
 from update_readme_table import (
-    DiagramInfo,
     collect_diagrams,
     generate_table,
     table_cell,
@@ -161,10 +162,24 @@ def test_finalize_assets(
         finalize_assets(base_path)
 
 
-def test_readme_preview_files_exist() -> None:
+@pytest.mark.parametrize("n_diagrams", [1, 2, 3])
+def test_readme_preview_files_exist(n_diagrams: int) -> None:
     """Keep every generated README theme source backed by an actual preview file."""
     diagrams = collect_diagrams()
-    assert generate_table(diagrams)
+    table = generate_table(diagrams)
+    assert table
+    assert all(diagram.provenance_links.count("](<") <= 2 for diagram in diagrams)
+    assert "high-entropy-alloy-dark.avif" not in table
+    sierpinski = next(item for item in diagrams if item.name == "sierpinski-triangle")
+    title, _image = table_cell(sierpinski)
+    assert title.count("<https://doi.org/10.1021/jacs.7b05720>") == 1
+    assert title.index("sierpinski-triangle.typ") < title.index("reference-icon")
+    for icon in ("reference", "creator", "source"):
+        assert os.path.isfile(f"{ROOT}/assets/icons/{icon}.svg")
+    rows = generate_table(diagrams[:n_diagrams]).splitlines()
+    assert all(row.startswith("| ") and row.endswith(" |") for row in rows)
+    assert len(rows) == 2 + 2 * ((n_diagrams + 1) // 2)
+    assert all(row.endswith("| &nbsp; |") for row in rows[-2:]) == bool(n_diagrams % 2)
     visible = {diagram.name for diagram in diagrams}
     assert {"materials-informatics", "ergodic"} <= visible
     assert visible.isdisjoint(
@@ -178,24 +193,64 @@ def test_readme_preview_files_exist() -> None:
 
 
 @pytest.mark.parametrize("preserve_colors", [False, True])
+@pytest.mark.parametrize("with_provenance", [False, True])
 def test_readme_theme_sources(
-    preserve_colors: bool, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    preserve_colors: bool,
+    with_provenance: bool,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Select dark artwork only for diagrams that permit theme recoloring."""
+    """Limit provenance to two prioritized links and select the correct theme artwork."""
     monkeypatch.setattr("update_readme_table.ROOT", str(tmp_path))
     asset_dir = tmp_path / "assets" / "diagram"
     asset_dir.mkdir(parents=True)
     (asset_dir / "diagram.typ").touch()
-    diagram = DiagramInfo("diagram", 'A "quoted" title', preserve_colors)
+    metadata = {
+        "title": 'A "quoted" title',
+        "description": "An [internal link](../another-diagram).",
+        "preserve_colors": preserve_colors,
+    }
+    if with_provenance:
+        metadata.update(
+            creator="Example Creator",
+            creator_url="https://creator.example/",
+            url="https://original.example/diagram",
+            references=[
+                {
+                    "paper": {
+                        "title": 'A "quoted" [study] | notes',
+                        "doi": "10.1234/Example(2024)",
+                        "url": "https://arxiv.org/abs/1234.5678",
+                    },
+                    "repeated": {"doi": "https://dx.doi.org/10.1234/example(2024)"},
+                    "unlinked": {"title": "A citation without a URL"},
+                }
+            ],
+        )
+    (asset_dir / "diagram.yml").write_text(yaml.safe_dump(metadata))
+    (diagram,) = collect_diagrams()
     suffixes = (".avif",) if preserve_colors else (".avif", "-dark.avif")
     for suffix in suffixes:
         with pytest.raises(FileNotFoundError, match=f"diagram{suffix}"):
             table_cell(diagram)
         (asset_dir / f"diagram{suffix}").touch()
-    _, image = table_cell(diagram)
+    title, image = table_cell(diagram)
+    assert title.index("<sub>") < title.index("[![")
+    assert title.endswith("</sub>")
     assert 'alt="A &quot;quoted&quot; title"' in image
     assert ("prefers-color-scheme: dark" in image) is not preserve_colors
     assert ("-dark.avif" in image) is not preserve_colors
+    if with_provenance:
+        assert re.findall(r"\]\(<([^>]+)>", title) == [
+            "https://doi.org/10.1234/Example(2024)",
+            "https://creator.example/",
+        ]
+        assert "Creator: Example Creator][creator-icon]" in title
+        assert "Reference: A &quot;quoted&quot; &#91;study&#93; &#124; notes" in title
+        assert "another-diagram" not in title
+        assert "|" not in title
+    else:
+        assert "-icon]" not in title
 
 
 @pytest.mark.parametrize(

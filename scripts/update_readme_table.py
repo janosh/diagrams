@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from glob import glob
 from html import escape
 from itertools import zip_longest
+from urllib.parse import quote, urlsplit
 
 import yaml
 
@@ -23,6 +24,7 @@ class DiagramInfo:
     name: str
     title: str
     preserve_colors: bool = False
+    provenance_links: str = ""
 
 
 def get_diagram_sources(ext: str) -> list[str]:
@@ -68,6 +70,7 @@ def collect_diagrams() -> list[DiagramInfo]:
                     name=name,
                     title=metadata["title"],
                     preserve_colors=metadata.get("preserve_colors", False),
+                    provenance_links=get_provenance_links(metadata),
                 )
             )
 
@@ -88,10 +91,65 @@ def get_code_links(figure_name: str) -> str:
     return "&nbsp;" + "&nbsp;".join(links)
 
 
+def get_provenance_links(metadata: dict) -> str:
+    """Show at most two links, prioritizing explicit references and credits."""
+    links: dict[str, str] = {}
+
+    def add_link(url: str, label: str, icon: str = "reference") -> None:
+        """Normalize DOI links and keep the first, most descriptive label."""
+        if url.startswith("10."):
+            url = f"https://doi.org/{url}"
+        parsed = urlsplit(url)
+        if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+            raise ValueError(f"Invalid provenance URL: {url!r}")
+        is_doi = parsed.hostname in {"doi.org", "dx.doi.org"}
+        if is_doi:
+            url = f"https://doi.org{parsed.path}"
+        key = url.lower() if is_doi else url
+        if key in links or len(links) == 2:
+            return
+        label = escape(" ".join(label.split())).translate(
+            str.maketrans({"|": "&#124;", "[": "&#91;", "]": "&#93;"})
+        )
+        target = quote(url, safe=":/?#[]@!$&'()*+,;=%~")
+        links[key] = f'&nbsp;[![{label}][{icon}-icon]](<{target}> "{label}")'
+
+    for entry in metadata.get("references", []):
+        for reference in entry.values():
+            if url := reference.get("doi") or reference.get("url"):
+                add_link(url, f"Reference: {reference.get('title', url)}")
+
+    for credit in (metadata, metadata.get("attribution", {})):
+        if url := credit.get("creator_url"):
+            add_link(url, f"Creator: {credit.get('creator', url)}", "creator")
+        name = ": ".join(
+            credit[field] for field in ("creator", "title") if field in credit
+        )
+        for field, label in (("url", "Original source"), ("repo", "Source repository")):
+            if url := credit.get(field):
+                add_link(url, f"{label}: {name or url}", "source")
+
+    for field in ("source", "citation", "description"):
+        text = metadata.get(field, "")
+        for match in re.finditer(
+            r'https?://[^\s<>"\]]+|\b10\.\d{4,9}/[^\s<>"\]]+', text
+        ):
+            url = match[0].rstrip(".,;:!?")
+            # Keep parentheses inside DOIs while dropping Markdown/prose delimiters.
+            while url.endswith(")") and url.count(")") > url.count("("):
+                url = url[:-1]
+            caption = text if field == "citation" else url
+            if label := re.search(r"\[([^\[\]]+)\]\($", text[: match.start()]):
+                caption = label[1]
+            add_link(url, f"Reference: {caption}")
+
+    return "".join(links.values())
+
+
 def table_cell(diagram: DiagramInfo | None) -> tuple[str, str]:
     """Build the title and image markdown for one diagram table cell."""
     if diagram is None:
-        return "", ""
+        return "&nbsp;", "&nbsp;"
     name, title = diagram.name, diagram.title
     base_path = f"assets/{name}/{name}"
     suffixes = (".avif",) if diagram.preserve_colors else (".avif", "-dark.avif")
@@ -105,7 +163,8 @@ def table_cell(diagram: DiagramInfo | None) -> tuple[str, str]:
             f'srcset="{base_path}-dark.avif">{image}</picture>'
         )
     return (
-        f"[{title}]({SITE_URL}/{name}) {get_code_links(name)}",
+        f"[{title}]({SITE_URL}/{name}) "
+        f"<sub>{get_code_links(name)}{diagram.provenance_links}</sub>",
         image,
     )
 
@@ -118,14 +177,10 @@ def generate_table(diagrams: list[DiagramInfo]) -> str:
         left_title_link, left_image_link = table_cell(left_diagram)
         right_title_link, right_image_link = table_cell(right_diagram)
 
-        if right_diagram is None:
-            table += "<!-- markdownlint-disable MD060 -->\n"
         table += (
             f"| {left_title_link} | {right_title_link} |\n"
             f"| {left_image_link} | {right_image_link} |\n"
         )
-        if right_diagram is None:
-            table += "<!-- markdownlint-enable MD060 -->\n"
 
     return table
 

@@ -4,4 +4,4 @@ tags:
   - quantum field theory
   - Matsubara
 description: |
-  Branch cuts approaching the real $q_0$-axis with decreasing $k$ where they merge at $k = 0$. $k$ denotes the energy cutoff of a scalar field theory.
+  [Branch cuts](../branch-cuts-1) approaching the real $q_0$-axis with decreasing $k$ where they merge at $k = 0$. $k$ denotes the energy cutoff of a scalar field theory.

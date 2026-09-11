@@ -6,13 +6,13 @@
 #let sphere(pos, radius: 0.25, fill: luma(50), ..args) = {
   circle(pos, radius: radius, stroke: none, fill: fill, ..args)
   circle(pos, radius: radius, stroke: none, fill: gradient.radial(
-    fill.lighten(75%),
-    fill,
-    fill.darken(15%),
-    // Offset the highlight to suggest a lit sphere.
+    (fill.lighten(40%), 0%),
+    (fill, 75%),
+    (fill.darken(15%), 100%),
+    // A broad, subdued highlight gives soft lighting without a white hotspot.
     focal-center: (30%, 25%),
-    focal-radius: 5%,
-    center: (35%, 30%),
+    focal-radius: 0%,
+    center: (50%, 50%),
   ))
 }
 

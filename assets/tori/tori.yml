@@ -4,4 +4,4 @@ tags:
   - string theory
   - topology
 description: |
-  A torus is obtained by identifying matching opposite edges of a lattice's fundamental cell. The blue and teal arrows show the two pairs of identified edges. The map $z \mapsto z/u$ rotates and uniformly scales both lattice generators, taking $2\pi u$ to $2\pi$ and $2\pi v$ to $2\pi\tau$, where $\tau = v/u$ and $\operatorname{Im}\tau > 0$. The two panels have the same conformal shape; the normalized lattice makes its complex parameter explicit.
+  A torus is obtained by [identifying matching opposite edges](../plane-to-torus) of a lattice's fundamental cell. The blue and teal arrows show the two pairs of identified edges. The map $z \mapsto z/u$ rotates and uniformly scales both lattice generators, taking $2\pi u$ to $2\pi$ and $2\pi v$ to $2\pi\tau$, where $\tau = v/u$ and $\operatorname{Im}\tau > 0$. The two panels have the same conformal shape; the normalized lattice makes its [complex parameter](../torus-fundamental-domain) explicit.

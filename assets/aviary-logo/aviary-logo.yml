@@ -4,5 +4,5 @@ tags:
   - neural networks
   - materials science
 description: |
-  Aviary logo: a repo of machine learning models for representation learning in materials discovery from stoichiometry and symmetries via graph convolutions. See <https://github.com/CompRhys/aviary>.
+  Aviary logo: a repo of machine learning models for representation learning in materials discovery from stoichiometry and symmetries via [graph convolutions](../graph-neural-networks). See <https://github.com/CompRhys/aviary>.
 hide: true

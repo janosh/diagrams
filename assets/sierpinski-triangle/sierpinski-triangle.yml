@@ -2,7 +2,7 @@ title: Sierpinski Triangle
 # The atom surface and its dark field are part of the illustration in either theme.
 preserve_colors: true
 description: |
-  A Sierpiński triangle is a fractal with the overall shape of an equilateral triangle, subdivided recursively into smaller equilateral triangles. The diagram shows a fifth-order Sierpiński triangle, which was experimentally realized out of Fe/C₃PC molecules on a reconstructed Au(100)-(hex) in [10.1021/jacs.7b05720](https://doi.org/10.1021/jacs.7b05720).
+  A Sierpiński triangle is a [fractal](../fractal-atlas) with the overall shape of an equilateral triangle, subdivided recursively into smaller equilateral triangles. The diagram shows a fifth-order Sierpiński triangle, which was experimentally realized out of Fe/C₃PC molecules on a reconstructed Au(100)-(hex) in [10.1021/jacs.7b05720](https://doi.org/10.1021/jacs.7b05720).
 
   The visualization shows a yellow Sierpiński triangle (representing Fe/C₃PC molecules) with a gold border (representing BPyB molecules) on a background of red dots arranged in a hexagonal close-packed pattern (representing the Au(100) substrate atoms). Previous molecular Sierpiński triangle fractals were limited to fourth-order due to kinetic growth constraints.
 

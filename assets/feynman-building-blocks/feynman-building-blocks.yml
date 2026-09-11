@@ -6,4 +6,4 @@ tags:
 - propagators
 - Green's function
 - effective action
-description: Read a functional renormalization-group diagram one symbol at a time. Lines connect fields; vertices encode their interactions.
+description: Read a [functional renormalization-group](../wetterich-equation) diagram one symbol at a time. Lines connect fields; vertices encode their interactions.

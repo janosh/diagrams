@@ -3,10 +3,12 @@
   import { Info } from 'svelte-widgets/icons'
   import type { HTMLAttributes } from 'svelte/elements'
   import { type Diagram, Tags } from './index'
+  import { filters, preserve_filter_links } from './state.svelte'
 
   let {
     item,
     navigation = false,
+    style,
     ...rest
   }: HTMLAttributes<HTMLAnchorElement> & {
     item: Diagram
@@ -21,12 +23,9 @@
   {/if}
 </svelte:head>
 
-<div class="card">
-  <a href={slug} {...rest}>
+<div class="card" data-slug={slug} {style}>
+  <a href={filters.url_for(slug)} data-diagram-link {...rest}>
     <h2 id={slug}>{title}</h2>
-    {#if !navigation}
-      <Tags {tags} style="color: var(--text-color); margin-block: 0 1em" />
-    {/if}
     {#key slug}
       <img
         src={item.thumbnail.img.src}
@@ -41,13 +40,16 @@
       />
     {/key}
   </a>
+  {#if !navigation}
+    <Tags {tags} style="color: var(--text-color); margin-block: 0 1em" />
+  {/if}
   {#if description && !navigation}
     <Popover
       trigger_mode="hover"
       trap_focus={false}
       placement="top"
       class="diagram-description"
-      style="text-align: left"
+      style="text-align: left; font-size: 0.75em; --popover-padding: 5pt 6pt"
       aria-label={title}
     >
       {#snippet trigger(trigger_props)}
@@ -55,7 +57,9 @@
           <Icon icon={Info} style="--icon-size: 18px" />
         </button>
       {/snippet}
-      {@html description}
+      {#key description}
+        <div {@attach preserve_filter_links}>{@html description}</div>
+      {/key}
     </Popover>
   {/if}
 </div>
@@ -63,6 +67,10 @@
 <style>
   .card {
     position: relative;
+    display: grid;
+    background: var(--card-bg);
+    border-radius: 3pt;
+    box-shadow: 0 2px 8px var(--shadow);
     button {
       position: absolute;
       top: 0.5em;
@@ -87,11 +95,12 @@
     place-content: center;
     cursor: pointer;
     transform-style: preserve-3d;
-    background: var(--card-bg);
     transition: transform 0.5s;
     color: var(--text-color);
     border-radius: 3pt;
-    box-shadow: 0 2px 8px var(--shadow);
+  }
+  a:focus-visible {
+    outline-offset: -3px;
   }
   a:hover {
     transform: scale(1.005);

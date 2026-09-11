@@ -3,4 +3,4 @@ tags:
 - math
 - physics
 - statistical physics
-description: Curvature tells us how a function compares with its tangents, chords, and averages. Convex bends upward; concave bends downward.
+description: Curvature tells us how a function compares with its tangents, chords, and averages. [Convex](https://web.stanford.edu/~boyd/cvxbook/bv_cvxbook.pdf) bends upward; concave bends downward.

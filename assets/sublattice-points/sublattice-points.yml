@@ -1,6 +1,6 @@
 title: Sublattice Points
 description: |
-  Visualization of lattice points with basis vectors showing a fundamental domain.
+  Visualization of [lattice points](../basis-plus-lattice) with basis vectors showing a [fundamental domain](../plane-to-torus).
   The points are colored to show the periodicity of the lattice, with points of the
   same color related by lattice translations. The arrows indicate the basis vectors
   that generate the lattice.

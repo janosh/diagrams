@@ -9,7 +9,7 @@ tags:
   - symmetries
   - compactification
 description: >-
-  Building a torus by declaring the plane periodic. Once translation by $2\pi$ in either
+  Building a [torus](../torus) by declaring the plane periodic. Once translation by $2\pi$ in either
   direction is a symmetry, a single lattice cell already carries every point: it is a
   fundamental domain. Gluing that cell's horizontal edges $b$ rolls it into a cylinder,
   and gluing the two rims $a$ that are left closes the cylinder into a torus. The

@@ -1,10 +1,13 @@
 <script lang="ts">
-  import { goto } from '$app/navigation'
+  import { afterNavigate, goto } from '$app/navigation'
+  import { page } from '$app/state'
   import { diagrams } from '$lib'
+  import { filters, replace_url } from '$lib/state.svelte'
   import { repository } from '$root/package.json'
-  import type { Snippet } from 'svelte'
+  import { untrack, type Snippet } from 'svelte'
   import { CommandMenu, Footer, GitHubCorner, Icon, ThemeToggle } from 'svelte-widgets'
   import { FileCertificate, Quote } from 'svelte-widgets/icons'
+  import { sync_url_params } from 'svelte-widgets/url-params'
   // oxlint-disable-next-line import/no-unassigned-import -- KaTeX styles for description math
   import 'katex/dist/katex.min.css'
   // oxlint-disable-next-line import/no-unassigned-import -- global app styles
@@ -12,10 +15,22 @@
 
   let { children }: { children?: Snippet<[]> } = $props()
 
+  let navigation_ready = $state(false)
+  // Wait for hydration: changing cards earlier leaves SSR image URLs paired with new dimensions.
+  afterNavigate(() => {
+    filters.read_url(page.url.searchParams)
+    navigation_ready = true
+  })
+  $effect(() => {
+    if (!navigation_ready) return
+    const entries = filters.url_entries
+    untrack(() => sync_url_params(entries, page.url, replace_url))
+  })
+
   const actions = diagrams.map(({ title, slug }) => ({
     id: slug,
     label: title,
-    action: () => goto(slug),
+    action: () => goto(filters.url_for(slug)),
   }))
 </script>
 

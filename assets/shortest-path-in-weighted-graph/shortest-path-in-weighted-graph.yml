@@ -10,4 +10,4 @@ tags:
   - optimization
   - algorithms
 description: |
-  A weighted directed graph with the minimum-cost path from source to target highlighted in red.
+  A weighted directed graph with the [minimum-cost path](https://networkx.org/documentation/stable/reference/algorithms/shortest_paths.html) from source to target highlighted in red.

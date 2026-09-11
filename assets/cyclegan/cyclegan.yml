@@ -10,4 +10,4 @@ tags:
   - generative modeling
   - gan
 description: |
-  CycleGAN trains two generators between domains A and B with a discriminator and a cycle-consistency constraint that reconstructs the original input.
+  [CycleGAN](https://junyanz.github.io/CycleGAN/) trains two generators between domains A and B with a [discriminator](../generative-adversarial-network) and a cycle-consistency constraint that reconstructs the original input.

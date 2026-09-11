@@ -8,4 +8,4 @@ tags:
 - physics
 - solid state physics
 - magnetism
-description: Activation functions turn a linear network into a nonlinear model. Compare their outputs, then inspect how tanh trades a linear center for saturation at the edges.
+description: '[Activation functions](https://docs.pytorch.org/docs/stable/nn.html#non-linear-activations-weighted-sum-nonlinearity) turn a linear network into a nonlinear model. Compare their outputs, then inspect how tanh trades a linear center for saturation at the edges.'

@@ -5,4 +5,4 @@ tags:
 - thermodynamics
 - statistical physics
 - entropy
-description: At fixed temperature and pressure, enthalpy and entropy compete to determine the thermodynamic direction of change. Temperature sets the weight of the entropy contribution.
+description: At fixed temperature and pressure, [enthalpy and entropy](../thermodynamic-potentials-venn-diagram) compete to determine the thermodynamic direction of change. Temperature sets the weight of the entropy contribution.

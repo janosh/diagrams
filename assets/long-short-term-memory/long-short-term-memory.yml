@@ -10,4 +10,4 @@ tags:
   - neural networks
   - recurrent networks
 description: |
-  An LSTM block gates new features through input, forget, and output gates that control reads from and writes to the memory cell carrying the cell state between time steps.
+  An [LSTM](https://www.bioinf.jku.at/publications/older/2604.pdf) block gates new features through input, forget, and output gates that control reads from and writes to the memory cell carrying the cell state between time steps.

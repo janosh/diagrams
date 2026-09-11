@@ -8,4 +8,4 @@ tags:
   - causality
   - Matsubara
 description: >-
-  Complex plane visualization of propagator poles and branch cuts in quantum field theory. The diagram shows the analytic structure of Green's functions, including the relationship between retarded/advanced propagators and the placement of poles relative to the real axis. This structure helps understand causality and the connection to Matsubara frequencies.
+  Complex plane visualization of propagator poles and [branch cuts](../branch-cuts-1) in quantum field theory. The diagram shows the analytic structure of Green's functions, including the relationship between retarded/advanced propagators and the placement of poles relative to the real axis. This structure helps understand causality and the connection to [Matsubara frequencies](../matsubara-contours).

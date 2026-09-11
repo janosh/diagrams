@@ -7,7 +7,7 @@ tags:
   - data science
   - model evaluation
 description: >-
-  The Receiver Operating Characteristic curve plots the true positive rate (sensitivity) against
+  The [Receiver Operating Characteristic curve](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_curve.html) plots the true positive rate (sensitivity) against
   the false positive rate (1 − specificity) as the classification threshold is swept. Six
   classifiers are shown, from near-perfect (AUC = 0.99) down to poor (AUC = 0.65), against the
   diagonal a random guess would trace (AUC = 0.5). The area under each curve summarizes

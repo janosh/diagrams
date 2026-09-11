@@ -1,0 +1,31 @@
+title: Einstein Crystal
+tags:
+  - physics
+  - statistical mechanics
+  - solid state physics
+  - thermodynamics
+  - phonons
+  - free energy
+description: |
+  One poster connects the Einstein crystal's fixed-site springs to [quantum harmonic oscillators](../quantum-harmonic-oscillator), heat capacity, Debye phonons, microstate counting, and solid free energies. A lattice sketch distinguishes springs to reference sites from interactions between atoms. Quantized levels and thermal populations explain the Einstein heat-capacity curve, its low-temperature freeze-out, and the classical Dulong–Petit limit. A comparison with the Debye spectrum shows why acoustic modes give a cubic low-temperature heat capacity. Six boxed explanations connect the variables to the physics, including restoring forces, equipartition, Debye's cutoff, and the mixing parameter used in free-energy calculations.
+
+  Six explicit allocations of two energy quanta among three modes illustrate entropy. The final panel introduces the classical [Frenkel–Ladd method](https://arxiv.org/abs/1210.3956): a reversible path connects a solvable Einstein reference to an interacting solid. The thermodynamic-integration identity uses the same positional constraint at both endpoints; releasing that constraint requires the corresponding analytic free-energy correction. Einstein and Debye temperatures are set equal only to compare curve shapes, and the heat-capacity curves describe lattice vibrations rather than electronic or magnetic contributions.
+references:
+  - einstein_model:
+      title: Einstein model of a solid
+      url: https://www.physics.usyd.edu.au/~sflammia/Courses/StatMech2020/normal/3/n3.html
+  - debye_1912:
+      title: Zur Theorie der spezifischen Wärmen
+      authors: Peter Debye
+      year: 1912
+      doi: 10.1002/andp.19123441404
+  - frenkel_ladd_1984:
+      title: New Monte Carlo method to compute the free energy of arbitrary solids
+      authors: Daan Frenkel, Anthony J. C. Ladd
+      year: 1984
+      doi: 10.1063/1.448024
+  - aragones_2012:
+      title: Free energy calculations for atomic solids through the Einstein crystal/molecule methodology using GROMACS and LAMMPS
+      authors: J. L. Aragones, C. Valeriani, C. Vega
+      year: 2012
+      doi: 10.1063/1.4758700

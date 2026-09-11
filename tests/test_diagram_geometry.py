@@ -6,8 +6,8 @@ import re
 import subprocess
 import sys
 import xml.etree.ElementTree as ET
-from itertools import batched, pairwise
-from math import fsum
+from itertools import batched, pairwise, product
+from math import exp, fsum
 from pathlib import Path
 
 import pytest
@@ -264,6 +264,73 @@ def evaluate_diagram(slug: str, expression: str) -> list:
     return evaluate_typst(
         f'{{ import "/assets/{slug}/{slug}.typ" as diagram; {expression} }}'
     )
+
+
+@pytest.mark.parametrize("inverse_temperature", [0.1, 0.5, 1, 4, 10, 100])
+def test_oscillator_thermodynamics_match_boltzmann_sum(
+    inverse_temperature: float,
+) -> None:
+    """Check energies, occupations, heat capacities, and ladder populations independently."""
+    energy, occupation, heat_capacity, probabilities, limits = evaluate_typst(
+        f"""{{
+          import "/assets/quantum-harmonic-oscillator/quantum-harmonic-oscillator.typ": energy-in-quanta, energy-in-thermal-units
+          import "/assets/particle-statistics/particle-statistics.typ": bose-occupation
+          import "/assets/einstein-crystal/einstein-crystal.typ": mode_cv, level_probability
+          let inverse = {inverse_temperature}
+          (
+            energy-in-quanta(inverse), bose-occupation(inverse), mode_cv(inverse),
+            range(5).map(level => level_probability(level, 1 / inverse)),
+            ((0,1e-8).map(energy-in-thermal-units), energy-in-quanta(1000), mode_cv(0)),
+          )
+        }}""",
+    )
+    weights = [exp(-inverse_temperature * level) for level in range(1000)]
+    partition = fsum(weights)
+    mean = fsum(level * weight for level, weight in enumerate(weights)) / partition
+    variance = (
+        fsum(level**2 * weight for level, weight in enumerate(weights)) / partition
+        - mean**2
+    )
+    # The omitted Boltzmann tail is < 4e-42; these tolerances cover f64 accumulation.
+    tolerance = 1e-12 * max(1, mean + 0.5)
+    assert energy == pytest.approx(mean + 0.5, rel=0, abs=tolerance)
+    assert occupation == pytest.approx(mean, rel=0, abs=tolerance)
+    assert heat_capacity == pytest.approx(
+        inverse_temperature**2 * variance, rel=1e-12, abs=0
+    )
+    assert probabilities == pytest.approx(
+        [weight / partition for weight in weights[:5]], rel=1e-14, abs=0
+    )
+    assert limits == [[1, 1], 0.5, 1]
+
+
+def test_debye_heat_capacity_matches_independent_quadrature() -> None:
+    """Validate the plotted Debye integral from freeze-out to the classical limit."""
+    actual = evaluate_diagram(
+        "einstein-crystal",
+        "(0,0.01,0.1,0.2,0.5,1,2,10,100).map(diagram.debye_cv)",
+    )
+    # 60-digit adaptive quadrature of 3*y²*c_mode(y/T) on y in [0,1].
+    # The diagram's 400-step Simpson rule has measured relative error < 6e-12.
+    expected = [
+        0,
+        0.0000779272728272019498,
+        0.0758210030310913252,
+        0.368634823605172392,
+        0.825408038412502814,
+        0.951732135703279447,
+        0.987610752099737466,
+        0.999500178516329711,
+        0.999995000017857088,
+    ]
+    assert actual == pytest.approx(expected, rel=1e-11, abs=0)
+
+
+def test_einstein_microstates_exhaust_fixed_energy_allocations() -> None:
+    """Show each allocation of two quanta across three modes exactly once."""
+    allocations = evaluate_diagram("einstein-crystal", "diagram.allocations")
+    expected = [list(state) for state in product(range(3), repeat=3) if sum(state) == 2]
+    assert sorted(allocations) == expected
 
 
 def test_wannier_equation_keeps_position_outside_subscripts() -> None:

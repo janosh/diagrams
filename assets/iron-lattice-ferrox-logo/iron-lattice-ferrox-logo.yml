@@ -5,5 +5,5 @@ tags:
   - solid state physics
   - lattice
 description: |
-  The letters "Fx" rendered as 2D crystal lattice wireframes. The F is built from square BCC-like unit cells and the x from rotated diamond cells with truncated tips for flat top/bottom edges. Includes 6 color gradient variants from brown-orange to indigo-cyan.
+  The letters "Fx" rendered as 2D [crystal lattice](../basis-plus-lattice) wireframes. The F is built from square BCC-like unit cells and the x from rotated diamond cells with truncated tips for flat top/bottom edges. Includes 6 color gradient variants from brown-orange to indigo-cyan.
 hide: true
