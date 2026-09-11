@@ -48,10 +48,403 @@ const enter_fullscreen = async (wrapper: Locator) => {
     .toBe(true)
 }
 
-test.beforeEach(async ({ page }) => {
+const gallery_card = (page: Page, slug: string) =>
+  page.locator(`.gallery .card[data-slug="${slug}"]`)
+
+test.beforeEach(async ({ context }) => {
   // Analytics is irrelevant to screenshots and must not depend on external availability.
-  await page.route(`https://plausible.io/**`, (route) => route.abort())
+  await context.route(`https://plausible.io/**`, (route) => route.abort())
 })
+
+test(`gallery restores URL filters through reloads and detail navigation`, async ({
+  page,
+  context,
+}) => {
+  const filter_query = `?search=angle&tag=physics,geometry&tag_mode=any`
+  const home_url = `.${filter_query}`
+  const page_errors: string[] = []
+  page.on(`pageerror`, (error) => page_errors.push(error.message))
+  await page.goto(`/?search=angle&tag=physics,geometry,physics&tag_mode=any`)
+  const search = page.getByPlaceholder(`Search...`, { exact: true })
+  const selected_tags = page.locator(`.filters ul.selected > li`)
+  await expect(search).toHaveValue(`angle`)
+  await expect(selected_tags).toHaveCount(2)
+  await expect(page.locator(`input[type=radio][value=any]`)).toBeChecked()
+  await expect(page).toHaveURL(
+    (url) => url.searchParams.get(`tag`) === `physics,geometry`,
+  )
+  await expect(gallery_card(page, `euler-angles`).locator(`img`)).toHaveAttribute(
+    `src`,
+    /\/euler-angles\.[^/]+\.avif$/u,
+  )
+  await search.fill(``)
+  await expect(page).toHaveURL((url) => !url.searchParams.has(`search`))
+  await search.pressSequentially(`angle`)
+  await expect(page).toHaveURL((url) => url.searchParams.get(`search`) === `angle`)
+  await page.reload()
+  await expect(search).toHaveValue(`angle`)
+  await expect(selected_tags).toHaveCount(2)
+  await expect(page.locator(`input[type=radio][value=any]`)).toBeChecked()
+
+  await gallery_card(page, `euler-angles`).locator(`a[data-diagram-link]`).click()
+  const home = page.getByRole(`link`, { name: `home`, exact: true })
+  await expect(home).toHaveAttribute(`href`, home_url)
+  await expect(home).toHaveCSS(`position`, `absolute`)
+  const detail_url = page.url()
+  expect(new URL(detail_url).search).toBe(filter_query)
+  const nav_links = page.locator(`.prev-next h3 a`)
+  const nav_urls = await nav_links.evaluateAll((links) =>
+    links.map((link) => link.getAttribute(`href`)),
+  )
+  expect(nav_urls).toHaveLength(2)
+  await page.reload()
+  await expect(home).toHaveAttribute(`href`, home_url)
+  await expect
+    .poll(() =>
+      nav_links.evaluateAll((links) => links.map((link) => link.getAttribute(`href`))),
+    )
+    .toEqual(nav_urls)
+
+  // A new tab has no in-memory filter store from the gallery.
+  const fresh_page = await context.newPage()
+  await fresh_page.goto(detail_url)
+  for (const direction of [`Next`, `Previous`]) {
+    const link = fresh_page.getByRole(`link`, {
+      name: new RegExp(`^${direction}|${direction}$`, `u`),
+    })
+    await expect(link).toHaveAttribute(
+      `href`,
+      /\?search=angle&tag=physics,geometry&tag_mode=any$/u,
+    )
+    await link.click()
+    await expect(
+      fresh_page.getByRole(`link`, { name: `home`, exact: true }),
+    ).toHaveAttribute(`href`, home_url)
+  }
+  await fresh_page.close()
+  await page.goBack()
+  await expect(search).toHaveValue(`angle`)
+  await expect(selected_tags).toHaveCount(2)
+  await page.goForward()
+  await home.click()
+  await expect(search).toHaveValue(`angle`)
+  await expect(page.locator(`input[type=radio][value=any]`)).toBeChecked()
+  expect(page_errors).toEqual([])
+})
+
+test(`gallery restores deep browsing position and focus after Back and reload`, async ({
+  page,
+}) => {
+  test.setTimeout(30_000)
+  await page.goto(`/?search=Euler&tag_mode=any`)
+  const search = page.getByRole(`textbox`, { name: `Search diagrams` })
+  await expect(search).toHaveValue(`Euler`)
+  await search.fill(``)
+  await expect(page).toHaveURL(`/?tag_mode=any`)
+  await page.locator(`body`).click({ position: { x: 2, y: 2 } })
+  await page.keyboard.press(`ArrowLeft`)
+  const active_link = page.locator(`.diagram-item.active a[data-diagram-link]`)
+  await expect(active_link).toBeFocused()
+  await active_link.scrollIntoViewIfNeeded()
+  const slug = await active_link.locator(`h2`).getAttribute(`id`)
+  if (!slug) throw new Error(`Missing active diagram slug`)
+  const card_count = await page.locator(`.diagram-item`).count()
+  expect(card_count).toBeGreaterThan(24)
+  const scroll_y = await page.evaluate(() => scrollY)
+  expect(scroll_y).toBeGreaterThan(720)
+  await active_link.click()
+  await expect(page.getByRole(`link`, { name: `home`, exact: true })).toBeVisible()
+
+  for (const reload_detail of [false, true]) {
+    if (reload_detail) {
+      await page.goForward()
+      await page.reload()
+      // The query-bearing Home link confirms hydration before sending Back to the router.
+      await expect(page.getByRole(`link`, { name: `home`, exact: true })).toHaveAttribute(
+        `href`,
+        `.?tag_mode=any`,
+      )
+    }
+    await page.goBack()
+    await expect(page.locator(`.diagram-item`)).toHaveCount(card_count)
+    await expect(gallery_card(page, slug).locator(`a[data-diagram-link]`)).toBeFocused()
+    // Allow two CSS pixels for layout rounding, not a jump to a different row.
+    await expect
+      .poll(async () => Math.abs((await page.evaluate(() => scrollY)) - scroll_y))
+      .toBeLessThanOrEqual(2)
+    // Late card measurements must preserve scroll without stealing focus again.
+    const gallery = page.locator(`.gallery`)
+    const old_height = await gallery.evaluate((element) => element.clientHeight)
+    await search.evaluate((input) => input.focus({ preventScroll: true }))
+    await page.locator(`.diagram-item`).evaluateAll((elements) => {
+      for (const element of elements) element.style.paddingBottom = `100px`
+    })
+    await expect
+      .poll(() => gallery.evaluate((element) => element.clientHeight))
+      .toBeGreaterThan(old_height)
+    await expect
+      .poll(async () => Math.abs((await page.evaluate(() => scrollY)) - scroll_y))
+      .toBeLessThanOrEqual(2)
+    await expect(search).toBeFocused()
+  }
+  await search.click()
+  await search.fill(`Euler Angles`)
+  await expect(page.locator(`.diagram-item`)).toHaveCount(2)
+  await expect(page.locator(`.diagram-item.active`)).toHaveCount(0)
+  await expect(search).toBeInViewport()
+})
+
+test(`gallery keyboard navigation respects controls and focuses card links`, async ({
+  page,
+}) => {
+  await page.goto(`/?search=Euler`)
+  const search = page.getByRole(`textbox`, { name: `Search diagrams` })
+  await expect(search).toHaveValue(`Euler`)
+  await search.focus()
+  await expect(search).toHaveCSS(`outline-style`, `solid`)
+  await search.press(`ArrowLeft`)
+  await expect(page.locator(`.diagram-item.active`)).toHaveCount(0)
+  await expect(page.locator(`.gallery a :is(button, input, a)`)).toHaveCount(0)
+  await page.locator(`body`).click({ position: { x: 2, y: 2 } })
+  await page.keyboard.press(`ArrowRight`)
+  await expect(page.locator(`.gallery a[data-diagram-link]`).first()).toBeFocused()
+  await page.keyboard.press(`Escape`)
+  await expect(page.locator(`.diagram-item.active`)).toHaveCount(0)
+
+  const card = gallery_card(page, `euler-angles`)
+  const physics = card.getByRole(`button`, { name: `physics`, exact: true })
+  const geometry = card.getByRole(`button`, { name: `geometry`, exact: true })
+  await physics.focus()
+  await physics.press(`ArrowRight`)
+  await expect(geometry).toBeFocused()
+  await expect(page.locator(`.diagram-item.active`)).toHaveCount(0)
+  await geometry.press(`Enter`)
+  await expect(page).toHaveURL(
+    (url) => url.pathname === `/` && url.searchParams.get(`tag`) === `geometry`,
+  )
+  await geometry.press(`Space`)
+  await expect(page).toHaveURL(
+    (url) => url.pathname === `/` && !url.searchParams.has(`tag`),
+  )
+
+  const link = card.locator(`a[data-diagram-link]`)
+  await link.focus()
+  await link.press(`Control+ArrowRight`)
+  await expect(link).toBeFocused()
+  await link.press(`ArrowRight`)
+  await expect(link).not.toBeFocused()
+  const active_link = page.locator(`.diagram-item.active a[data-diagram-link]`)
+  await expect(active_link).toBeFocused()
+  await expect(active_link).toHaveCSS(`outline-style`, `solid`)
+  await active_link.press(`ArrowLeft`)
+  await expect(link).toBeFocused()
+  await link.press(`Enter`)
+  await expect(page).toHaveURL(`/euler-angles?search=Euler`)
+})
+
+test(`gallery writes every filter and preserves unrelated URL state`, async ({
+  page,
+}) => {
+  await page.goto(`/?keep=1#results`)
+  const search = page.getByPlaceholder(`Search...`, { exact: true })
+  await search.fill(`Euler`)
+  await expect(page).toHaveURL((url) => url.searchParams.get(`search`) === `Euler`)
+  const tag_input = page.locator(`.filters`).getByRole(`combobox`)
+  for (const tag of [`physics`, `geometry`]) {
+    await tag_input.fill(tag)
+    await expect(tag_input).toHaveAttribute(`aria-expanded`, `true`)
+    await page.getByRole(`option`, { name: new RegExp(`^${tag} `, `u`) }).click()
+  }
+  await page.locator(`input[type=radio][value=any]`).check()
+  await expect(page).toHaveURL(
+    (url) =>
+      url.searchParams.get(`search`) === `Euler` &&
+      url.searchParams.get(`tag`) === `physics,geometry` &&
+      url.searchParams.get(`tag_mode`) === `any` &&
+      url.searchParams.get(`keep`) === `1` &&
+      url.hash === `#results`,
+  )
+
+  // Card tags and the introductory shortcuts update the same shared filter state.
+  await tag_input.press(`Escape`)
+  await expect(tag_input).toHaveAttribute(`aria-expanded`, `false`)
+  await gallery_card(page, `euler-angles`)
+    .getByRole(`button`, { name: `geometry`, exact: true })
+    .click()
+  await expect(page).toHaveURL((url) => url.searchParams.get(`tag`) === `physics`)
+  await page.getByRole(`button`, { name: `chemistry`, exact: true }).click()
+  await expect(page).toHaveURL((url) => url.searchParams.get(`tag`) === `chemistry`)
+  await page.getByRole(`button`, { name: /^\d+ total$/u }).click()
+  await expect(search).toHaveValue(``)
+  await expect(page.locator(`.filters ul.selected > li`)).toHaveCount(0)
+  await expect(page).toHaveURL(`/?keep=1#results`)
+
+  const result_count = page.locator(`.filters [role=status]`)
+  await expect(result_count).toHaveAttribute(`aria-live`, `polite`)
+  for (const [action, expected_url, tag_count] of [
+    [`Clear search`, `/?keep=1&tag=chemistry#results`, 1],
+    [`Reset filters`, `/?keep=1#results`, 0],
+  ] as const) {
+    await test.step(action, async () => {
+      await search.fill(`no-diagram-has-this-name`)
+      await page.getByRole(`button`, { name: `chemistry`, exact: true }).click()
+      await expect(result_count).toHaveText(`0 matches`)
+      await expect(
+        page.getByRole(`heading`, { name: `No matching diagrams` }),
+      ).toBeVisible()
+      await page.getByRole(`button`, { name: action, exact: true }).click()
+      await expect(search).toBeFocused()
+      await expect(search).toHaveValue(``)
+      await expect(page).toHaveURL(expected_url)
+      await expect(page.locator(`.filters ul.selected > li`)).toHaveCount(tag_count)
+      await expect(result_count).not.toHaveText(`0 matches`)
+      await expect(page.locator(`.diagram-item`).first()).toBeVisible()
+    })
+  }
+})
+
+for (const [tag_mode, predicted_count] of [
+  [`all`, 0],
+  [`any`, 2],
+] as const) {
+  test(`gallery tag counts predict results with ${tag_mode} matching`, async ({
+    page,
+  }) => {
+    await page.goto(`/?search=Euler+Angles&tag_mode=${tag_mode}`)
+    const search = page.getByRole(`textbox`, { name: `Search diagrams` })
+    await expect(search).toHaveValue(`Euler Angles`)
+    const tag_input = page.locator(`.filters`).getByRole(`combobox`)
+    await tag_input.fill(`coordinate systems`)
+    // A tag used by only one diagram remains discoverable.
+    await expect(
+      page.getByRole(`option`, { name: `coordinate systems 1`, exact: true }),
+    ).toBeVisible()
+    await tag_input.fill(`physics`)
+    await page.getByRole(`option`, { name: `physics 1`, exact: true }).click()
+    await expect(page.locator(`.diagram-item`)).toHaveCount(1)
+    await tag_input.fill(`coordinate systems`)
+    await page
+      .getByRole(`option`, {
+        name: `coordinate systems ${predicted_count}`,
+        exact: true,
+      })
+      .click()
+    await expect(page.locator(`.diagram-item`)).toHaveCount(predicted_count)
+    await expect(page.locator(`.filters [role=status]`)).toHaveText(
+      `${predicted_count} matches`,
+    )
+    await tag_input.press(`Escape`)
+    await search.fill(`no-diagram-has-this-name`)
+    await tag_input.fill(`geometry`)
+    await expect(
+      page.getByRole(`option`, { name: `geometry 0`, exact: true }),
+    ).toBeEnabled()
+  })
+}
+
+test(`source deep links survive reloads, fresh tabs, and filter updates`, async ({
+  page,
+  context,
+}) => {
+  const page_errors: string[] = []
+  page.on(`pageerror`, (error) => page_errors.push(error.message))
+  await page.goto(
+    `/euler-angles?source=tex&search=angle&tag=physics,physics&tag_mode=invalid&keep=1`,
+  )
+  const source = page.locator(`pre`)
+  const description = page.locator(`.description`)
+  const tikz = page.getByRole(`tab`, { name: `TikZ`, exact: true })
+  await expect(tikz).toHaveAttribute(`aria-selected`, `true`)
+  await expect(source).toHaveAttribute(`aria-label`, `euler-angles.tex`)
+  await expect(page).toHaveURL(
+    (url) =>
+      url.searchParams.get(`source`) === `tex` &&
+      url.searchParams.get(`tag`) === `physics` &&
+      !url.searchParams.has(`tag_mode`) &&
+      url.searchParams.get(`keep`) === `1` &&
+      url.hash === ``,
+  )
+  for (const [language, extension] of [
+    [`Typst`, `typ`],
+    [`TikZ`, `tex`],
+  ]) {
+    await test.step(`switch to ${language} and reload`, async () => {
+      const tab = page.getByRole(`tab`, { name: language, exact: true })
+      await tab.click()
+      await expect(source).toHaveCount(1)
+      await expect(source).toHaveAttribute(`aria-label`, `euler-angles.${extension}`)
+      await expect(page).toHaveURL(
+        (url) =>
+          url.searchParams.get(`source`) === (extension === `typ` ? null : extension) &&
+          url.searchParams.get(`search`) === `angle` &&
+          url.searchParams.get(`tag`) === `physics` &&
+          url.searchParams.get(`keep`) === `1` &&
+          url.hash === `#code`,
+      )
+      await page.reload()
+      await expect(tab).toHaveAttribute(`aria-selected`, `true`)
+      await expect(source).toHaveAttribute(`aria-label`, `euler-angles.${extension}`)
+      await expect(page.locator(`#code`)).toBeInViewport()
+    })
+  }
+
+  const fresh_page = await context.newPage()
+  await fresh_page.goto(page.url())
+  await expect(fresh_page.locator(`pre`)).toHaveAttribute(
+    `aria-label`,
+    `euler-angles.tex`,
+  )
+  await fresh_page.close()
+
+  // Updating another URL-backed control keeps the selected source.
+  await description.getByRole(`button`, { name: `geometry`, exact: true }).click()
+  await expect(page).toHaveURL(
+    (url) => url.searchParams.get(`tag`) === `physics,geometry`,
+  )
+  await expect(source).toHaveAttribute(`aria-label`, `euler-angles.tex`)
+  await expect(tikz).toHaveAttribute(`aria-selected`, `true`)
+  const related_link = description.getByRole(`link`, {
+    name: `Cartesian vs Polar Coordinates`,
+  })
+  const related_url = `/cartesian-vs-polar-coordinates?search=angle&tag=physics,geometry`
+  await expect(related_link).toHaveAttribute(`href`, related_url)
+  const related_page = await context.newPage()
+  await related_page.goto(
+    await related_link.evaluate((link: HTMLAnchorElement) => link.href),
+  )
+  await expect(
+    related_page.getByRole(`link`, { name: `home`, exact: true }),
+  ).toHaveAttribute(`href`, `.?search=angle&tag=physics,geometry`)
+  await related_page.close()
+  await related_link.click()
+  await expect(page).toHaveURL(related_url)
+  await expect(page.getByRole(`link`, { name: `home`, exact: true })).toHaveAttribute(
+    `href`,
+    `.?search=angle&tag=physics,geometry`,
+  )
+  await expect(source).toHaveAttribute(`aria-label`, `cartesian-vs-polar-coordinates.typ`)
+  await expect(description.getByRole(`link`, { name: `Euler Angles` })).toHaveAttribute(
+    `href`,
+    `/euler-angles?search=angle&tag=physics,geometry`,
+  )
+  await page.goBack()
+  await expect(source).toHaveAttribute(`aria-label`, `euler-angles.tex`)
+  await expect(tikz).toHaveAttribute(`aria-selected`, `true`)
+  expect(page_errors).toEqual([])
+})
+
+for (const [slug, source] of [
+  [`euler-angles`, `invalid`],
+  [`wannierization-and-wannier-centers`, `tex`],
+  [`wannierization-and-wannier-centers`, `typ`],
+]) {
+  test(`source links validate ${source} for ${slug}`, async ({ page }) => {
+    await page.goto(`/${slug}?source=${source}#code`)
+    await expect(page.locator(`pre`)).toHaveCount(1)
+    await expect(page.locator(`pre`)).toHaveAttribute(`aria-label`, `${slug}.typ`)
+    await expect(page.locator(`#code`)).toBeInViewport()
+  })
+}
 
 test(`gallery info buttons reveal descriptions on hover and keyboard focus`, async ({
   page,
@@ -62,7 +455,7 @@ test(`gallery info buttons reveal descriptions on hover and keyboard focus`, asy
   await expect(page.locator(`head link[rel="prefetch"][as="image"]`)).toHaveCount(0)
   const hull_info = page.getByRole(`button`, { name: `About Convex Hull of Stability` })
   await expect(hull_info).toHaveCSS(`opacity`, `0`)
-  await page.locator(`a[href="convex-hull-of-stability"]`).first().hover()
+  await gallery_card(page, `convex-hull-of-stability`).hover()
   const hull_description = page.getByRole(`dialog`, { name: `Convex Hull of Stability` })
   await expect(hull_description).toHaveCount(0)
   await expect(hull_info).toHaveCSS(`opacity`, `1`)
@@ -75,8 +468,17 @@ test(`gallery info buttons reveal descriptions on hover and keyboard focus`, asy
   )
   await hull_info.hover()
   await expect(hull_description).toBeVisible()
-  await expect(page).toHaveURL(/\/$/u)
+  await expect(hull_description).toHaveCSS(`padding`, `6.66667px 8px`)
+  await expect(page).toHaveURL(
+    (url) =>
+      url.pathname === `/` &&
+      url.searchParams.get(`search`) === `Convex Hull of Stability`,
+  )
   for (const selector of [`p`, `li`]) {
+    await expect(hull_description.locator(selector).first()).toHaveCSS(
+      `font-size`,
+      `14px`,
+    )
     await expect(hull_description.locator(selector).first()).toHaveCSS(
       `text-align`,
       `left`,
@@ -85,41 +487,35 @@ test(`gallery info buttons reveal descriptions on hover and keyboard focus`, asy
   await search.hover()
   await expect(hull_description).toBeHidden()
   await search.fill(`Euler Angles`)
-  const card = page.locator(`a[href="euler-angles"]`).first()
+  const card = gallery_card(page, `euler-angles`)
+  const card_link = card.locator(`a[data-diagram-link]`)
   const thumbnail = card.locator(`img`)
   await expect(thumbnail).toHaveAttribute(`loading`, `lazy`)
   await expect(card.locator(`picture`)).toHaveCount(0)
   await expect(thumbnail).toHaveAttribute(`src`, /\.avif$/u)
   await expect(thumbnail).toHaveAttribute(`srcset`, /\S+ 480w, \S+ 960w/u)
   await expect(thumbnail).toHaveAttribute(`sizes`, /33vw/u)
-  await card.focus()
+  await card_link.focus()
   const description = page.getByRole(`dialog`, { name: `Euler Angles` })
   await expect(description).toHaveCount(0)
   // Tag filters precede the info button in the card's tab order.
-  await card.getByRole(`button`).last().focus()
+  await card.locator(`.tags`).getByRole(`button`).last().focus()
   await page.keyboard.press(`Tab`)
   const info = page.getByRole(`button`, { name: `About Euler Angles` })
   await expect(info).toBeFocused()
   await expect(info).toHaveCSS(`opacity`, `1`)
   await expect(description).toBeVisible()
   await expect(
-    description.locator(`a[href="../cartesian-vs-polar-coordinates"]`),
+    description.getByRole(`link`, { name: `Cartesian vs Polar Coordinates` }),
   ).toBeVisible()
+  await expect(
+    description.getByRole(`link`, { name: `Cartesian vs Polar Coordinates` }),
+  ).toHaveAttribute(`href`, `/cartesian-vs-polar-coordinates?search=Euler+Angles`)
   expect(await description.evaluate((element) => element.closest(`a`))).toBeNull()
   await page.keyboard.press(`Escape`)
   await expect(description).toBeHidden()
-  await card.click()
-  for (const [language, extension] of [
-    [`TikZ`, `tex`],
-    [`Typst`, `typ`],
-  ]) {
-    await page.getByRole(`tab`, { name: language, exact: true }).click()
-    await expect(page.locator(`pre`)).toHaveCount(1)
-    await expect(page.locator(`pre`)).toHaveAttribute(
-      `aria-label`,
-      `euler-angles.${extension}`,
-    )
-  }
+  await card_link.click()
+  await expect(page).toHaveURL(`/euler-angles?search=Euler+Angles`)
 })
 
 test.describe(`touch gallery`, () => {
@@ -131,7 +527,9 @@ test.describe(`touch gallery`, () => {
     await expect(info).toHaveCSS(`opacity`, `1`)
     await info.tap()
     await expect(page.getByRole(`dialog`, { name: `Euler Angles` })).toBeVisible()
-    await expect(page).toHaveURL(/\/$/u)
+    await expect(page).toHaveURL(
+      (url) => url.pathname === `/` && url.searchParams.get(`search`) === `Euler Angles`,
+    )
   })
 })
 
@@ -303,7 +701,7 @@ test(`theme overrides apply to cards while atom surface colors stay fixed`, asyn
   await page
     .getByPlaceholder(`Search...`, { exact: true })
     .fill(`Feynman Building Blocks`)
-  const artwork = page.locator(`a[href='feynman-building-blocks'] img`)
+  const artwork = gallery_card(page, `feynman-building-blocks`).locator(`img`)
   await artwork.hover()
   await page.getByRole(`button`, { name: `About Feynman Building Blocks` }).hover()
   const description = page.getByRole(`dialog`, { name: `Feynman Building Blocks` })
@@ -320,7 +718,7 @@ test(`theme overrides apply to cards while atom surface colors stay fixed`, asyn
   for (const theme of [`light`, `dark`] as const) {
     await set_theme(page, theme)
     await artwork.hover()
-    await expect(page.locator(`a[href='feynman-building-blocks'] h2`)).toHaveCSS(
+    await expect(gallery_card(page, `feynman-building-blocks`).locator(`h2`)).toHaveCSS(
       `color`,
       await page.locator(`body`).evaluate((body) => getComputedStyle(body).color),
     )

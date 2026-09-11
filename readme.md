@@ -147,45 +147,25 @@ Have a TikZ/CeTZ diagram you'd like to share? [Submit a PR](https://github.com/j
 
 ## Scripts
 
-Files in [`/scripts`](scripts) render and convert the `.typ` and `.tex` files in [`/assets`](assets) to various formats:
-
-- high-resolution PNG downloads and AVIF web images
-- PDF
-- SVG
-
-Page backgrounds are transparent. Nested panels, legends, and symbol backgrounds use muted gray or tinted fills; masking fills stay opaque so underlying lines do not show through. White foreground text and marks remain intact. The site adjusts diagram colors in dark mode, and the README selects generated `-dark.avif` previews using [`<picture>` theme sources](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/quickstart-for-writing-on-github). These previews adjust brightness as well as color; the PNG, SVG, and PDF downloads use the shaded light palette. Set `preserve_colors: true` in a diagram's metadata when its background or exact colors are part of the illustration, as for the Sierpiński atom surface. Both render scripts generate a 400 ppi PNG download, run fast lossless ZopfliPNG compression while preserving color and DPI metadata and keeping only smaller output, and encode the web artwork as AVIF at the same resolution (quality 85, 4:4:4 chroma), alongside the dark README preview. Detail pages serve that AVIF directly; the site build derives 480/960 px AVIF gallery thumbnails from the lossless PNG master. There is no SD/HD display switch.
-
-Compound diagrams fill each card's available width and preserve the drawing's aspect ratio. Each row allocates column widths in proportion to its drawings, with captions wrapping below. Page height follows the content automatically.
-
-Typst diagrams use a minimum 12pt base label size, with 14pt paragraphs and captions and 16pt compound-panel headings. Wider posters use proportionally larger text to preserve readability at gallery width. Mathematical subscripts and superscripts retain their natural smaller size. Compound artwork is sized to keep neighboring labels consistent after fitting; gallery detail pages let tall diagrams extend vertically instead of shrinking their text to fit one viewport.
-
-Every diagram source is standalone and self-contained, including its layout helpers. Copy a `.typ` file anywhere and compile it with `typst compile <slug>.typ`; no other repository files or `--root` option are required. The gallery displays the source file verbatim.
-
-To run the scripts requires the following dependencies:
-
-- [`pdf-compressor`](https://github.com/janosh/pdf-compressor) (`pip install pdf-compressor`)
-- [`gs` (GhostScript)](https://ghostscript.com) (optional, worse compression but needs no API key so less setup than `pdf-compressor`)
-- [`pdf2svg`](https://github.com/dawbarton/pdf2svg) (`brew install pdf2svg`)
-- `magick` (part of [ImageMagick](https://imagemagick.org/script))
-- [`zopflipng`](https://github.com/google/zopfli) (`brew install zopfli`)
-
-To run `pdf-compressor` directly or to use it as part of the [`render-(typst|tikz).py`](scripts/render_typst.py) pipeline, you need a free public API key from <https://developer.ilovepdf.com>. Pass it to `pdf-compressor` with:
+Export diagrams as PDF, SVG, PNG, and AVIF:
 
 ```sh
-pdf-compressor --set-api-key project_public_7c854a9db0...
+uv run --no-project --with pyyaml scripts/render_typst.py assets/bloch-sphere/bloch-sphere.typ
+uv run --no-project --with pyyaml scripts/render_tikz.py assets/bloch-sphere/bloch-sphere.tex
 ```
+
+Requires Typst or LaTeX (`latexmk`), ImageMagick, and ZopfliPNG. TikZ also needs Ghostscript; `pdf2svg` enables SVG export. Set `preserve_colors: true` in metadata to disable dark-mode recoloring.
 
 ## Python and metadata checks
 
-Run `uv run --no-project --python 3.14 --with pytest --with pyyaml pytest -q` for geometry, theme, renderer failure, and metadata tests. Rendering tests require Typst, ImageMagick 7 (`magick`), ZopfliPNG (`zopflipng`), and the artwork's fonts. CI runs these tests on macOS to provide fonts such as Avenir Next, and deployment requires the Python tests, site checks, and build to pass.
+```sh
+uv run --no-project --python 3.14 --with pytest --with pyyaml pytest -q
+prek run --all-files
+```
 
-Run `uvx ruff check scripts tests` and `uv run --no-project --python 3.14 --with ty --with pytest --with pyyaml ty check` for Python linting and typing. Both also run through prek. Tool configuration lives in `pyproject.toml`.
-
-Diagram metadata requires a nonempty title, description, and list of unique, nonempty tags. The validator rejects unknown fields and incorrect field types; optional dates accept `YYYY-MM` or `YYYY-MM-DD`. Attribution and reference records remain supported. Validation reports errors without rewriting YAML.
+Rendering tests need the tools above and the artwork's fonts. Metadata requires `title`, `description`, and unique `tags`.
 
 ## Site visual checks
-
-The browser suite checks transparent and tall diagrams in light and dark themes, native fullscreen scrolling and exit controls, mobile source headers, and the new band diagrams. Screenshots cover diagram artwork and SVG controls; text layout is checked geometrically to avoid platform font differences.
 
 ```sh
 cd site
@@ -194,7 +174,7 @@ pnpm exec vite build
 pnpm test:visual
 ```
 
-After an intentional appearance change, run `pnpm test:visual:update` and review the changed PNGs in `site/tests/visual/screenshots` before accepting them. Missing baselines fail normal runs. CI runs visual checks on the production build before deployment and uploads screenshots and traces on failure. Use the pinned Playwright version when generating baselines.
+For intentional visual changes, run `pnpm test:visual:update` and review the PNG diffs.
 
 ## 📖 &thinsp; How to cite
 

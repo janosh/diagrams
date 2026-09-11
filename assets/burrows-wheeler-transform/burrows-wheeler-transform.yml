@@ -10,4 +10,4 @@ tags:
   - bioinformatics
   - string algorithms
 description: |
-  The Burrows-Wheeler transform lists all cyclic rotations of a string, sorts them lexicographically, and reads off the last column together with the row index of the original string.
+  The [Burrows-Wheeler transform](https://www.cs.jhu.edu/~langmea/resources/burrows_wheeler.pdf) lists all cyclic rotations of a string, sorts them lexicographically, and reads off the last column together with the row index of the original string.

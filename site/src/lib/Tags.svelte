@@ -12,20 +12,7 @@
     options={tags}
     multiple
     label="Filter by tag"
-    bind:selected={
-      () => filters.tags.map((tag) => tag.label),
-      // reuse existing entries so counts picked up from the tag MultiSelect survive a toggle
-      (labels) =>
-        (filters.tags = labels.map(
-          (label) =>
-            filters.tags.find((tag) => tag.label === label) ?? { label, count: 0 },
-        ))
-    }
-    onclick={(event) => {
-      // tag rows sit inside clickable diagram cards, keep clicks off the enclosing link
-      event.preventDefault()
-      event.stopPropagation()
-    }}
+    bind:selected={filters.tags}
   />
 </div>
 

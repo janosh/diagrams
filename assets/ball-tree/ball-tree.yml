@@ -6,7 +6,7 @@ tags:
   - nearest neighbors
   - space partitioning
 description: |
-  Visualization of the Ball Tree algorithm, a space-partitioning data structure used for efficient nearest neighbor searches, particularly in high-dimensional spaces.
+  Visualization of the [Ball Tree](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.BallTree.html) algorithm, a space-partitioning data structure used for efficient [nearest neighbor searches](../k-nearest-neighbors), particularly in high-dimensional spaces.
 
   The left side illustrates the hierarchical partitioning of a dataset into nested hyperspheres (balls). Each ball represents a region of the space containing a subset of data points.
 

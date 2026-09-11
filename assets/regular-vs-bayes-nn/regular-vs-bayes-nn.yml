@@ -7,4 +7,4 @@ tags:
   - deep learning
   - probability
 description: >-
-  Comparison between regular neural networks and Bayesian neural networks. The diagram illustrates how Bayesian networks incorporate uncertainty in their predictions by treating weights as probability distributions rather than point values, leading to more robust predictions with uncertainty estimates.
+  Comparison between [regular neural networks](../multilayer-perceptron) and [Bayesian neural networks](https://arxiv.org/abs/1505.05424). The diagram illustrates how Bayesian networks incorporate uncertainty in their predictions by treating weights as probability distributions rather than point values, leading to more robust predictions with uncertainty estimates.

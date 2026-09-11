@@ -14,4 +14,4 @@ description: |
   = \frac{\pi k^2}{2 \pi^2/A}
   = \frac{A k^2}{2 \pi}.
   $$
-  $k$-space is used extensively in solid state physics e.g. to visualize the energy bands of a material as a function of electron momentum. In position space, the position-energy dispersion would just be a probability blur.
+  $k$-space is used extensively in solid state physics e.g. to visualize the [energy bands](../how-atoms-become-energy-bands) of a material as a function of electron momentum. In position space, the position-energy dispersion would just be a probability blur.

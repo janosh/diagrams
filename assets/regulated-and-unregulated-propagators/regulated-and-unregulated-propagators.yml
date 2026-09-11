@@ -6,4 +6,4 @@ tags:
 - propagators
 - flow equation
 - quantum fluctuations
-description: Compare the loop structures before and after inserting a scale-dependent regulator. The compact view introduces the topology; the detailed views show momentum and field indices.
+description: Compare the loop structures before and after inserting a [scale-dependent regulator](../wetterich-equation). The compact view introduces the topology; the detailed views show momentum and field indices.

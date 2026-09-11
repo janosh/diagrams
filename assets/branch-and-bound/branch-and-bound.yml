@@ -3,7 +3,7 @@ tags:
   - optimization
   - algorithms
 description: |
-  A worked integer-programming search tree: maximize 3x + 2y subject to 2x + y ≤ 4, x + 2y ≤ 4, and nonnegative integer x,y. The LP relaxation at P₀ gives (4/3,4/3) and upper bound 20/3. Branch on x: x ≤ 1 leads to P₁ with LP solution (1,3/2) and bound 6; x ≥ 2 leads to P₂.
+  A worked integer-programming search tree: maximize 3x + 2y subject to 2x + y ≤ 4, x + 2y ≤ 4, and nonnegative integer x,y. The [LP relaxation](https://stanford.edu/class/ee364b/lectures/bb_notes.pdf) at P₀ gives (4/3,4/3) and upper bound 20/3. Branch on x: x ≤ 1 leads to P₁ with LP solution (1,3/2) and bound 6; x ≥ 2 leads to P₂.
 
   Explore the left subtree first. Splitting P₁ on y produces P₃ with y ≤ 1 and P₄ with y ≥ 2. Step 1: P₃ gives the integer solution (1,1), setting the incumbent to L = 5. Step 2: P₄ has LP solution (0,2) and upper bound U = 4, so it cannot improve the incumbent and is pruned. Step 3: P₂ gives the integer solution (2,0), improving L to 6. Every leaf is resolved, proving optimality. The numbered annotations show this visitation order; P labels identify subproblems.
 

@@ -5,6 +5,6 @@ tags:
   - renormalization
 description: >-
   One-loop flow equation for the first field derivative of the effective potential. A single
-  external leg meets a vertex from which a propagator loop carrying momentum $q$ closes back on
+  external leg meets a vertex from which a [propagator](../qft-propagators) loop carrying momentum $q$ closes back on
   itself, cut open by the regulator insertion (circled cross). This tadpole is the simplest
-  non-trivial diagram in the functional renormalization group hierarchy.
+  non-trivial diagram in the [functional renormalization group](../rg-flow-in-theory-space) hierarchy.

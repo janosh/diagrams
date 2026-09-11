@@ -10,4 +10,4 @@ tags:
   - reinforcement learning
   - decision making
 description: |
-  A grid-world policy that greedily selects the locally best action under estimated state values, steering toward the goal while avoiding a penalty state.
+  A grid-world policy that [greedily selects](https://mitpress.mit.edu/9780262039246/reinforcement-learning/) the locally best action under estimated state values, steering toward the goal while avoiding a penalty state.

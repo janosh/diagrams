@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from '$app/state'
-  import { homepage, name } from '$root/package.json'
+  import { name, repository } from '$root/package.json'
 
   let online: boolean = $state(true)
 </script>
@@ -16,7 +16,8 @@
   {#if page.status >= 500}
     <p>
       If page reloading doesn't help, please raise an issue on
-      <a href="{homepage}/issues" target="_blank" rel="noreferrer">GitHub</a>. Thanks! 🙏
+      <a href="{repository}/issues" target="_blank" rel="noreferrer">GitHub</a>. Thanks!
+      🙏
     </p>
   {/if}
   {#if online === false}

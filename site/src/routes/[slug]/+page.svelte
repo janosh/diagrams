@@ -1,6 +1,8 @@
 <script lang="ts">
+  import { afterNavigate } from '$app/navigation'
+  import { page } from '$app/state'
   import { CodeBlock, type Diagram, DiagramCard, sorted_diagrams, Tags } from '$lib'
-  import { filters } from '$lib/state.svelte'
+  import { filters, preserve_filter_links, replace_url } from '$lib/state.svelte'
   import { homepage, repository } from '$root/package.json'
   import { FullscreenButton, Icon, PrevNext, Tabs, type IconData } from 'svelte-widgets'
   import {
@@ -13,6 +15,7 @@
     LaTeX,
     Typst,
   } from 'svelte-widgets/icons'
+  import { sync_url_params } from 'svelte-widgets/url-params'
 
   let { data } = $props()
   let {
@@ -34,13 +37,6 @@
     [`.pdf`]: { icon: FilePDF, label: `PDF` },
     [`.svg`]: { icon: FileXML, label: `SVG` },
   }
-  let code_tabs = $derived(
-    sources.map(({ ext }) => ({
-      label: ext === `typ` ? `Typst` : `TikZ`,
-      value: ext,
-    })),
-  )
-
   // production serves downloads from GitHub so we don't re-upload assets with every build
   let base_uri = $derived(`${repository}/raw/refs/heads/main/assets/${slug}/${slug}`)
   let plain_description = $derived(description?.replaceAll(/<[^>]*>/g, ``))
@@ -53,7 +49,19 @@
       : sorted_diagrams,
   )
 
-  let code_tab = $state<`typ` | `tex`>(`typ`)
+  const default_source = $derived(sources[0]?.ext)
+  let code_tab = $derived<`typ` | `tex` | undefined>(default_source)
+  // Restore only after hydration, then follow query changes and reused detail routes.
+  afterNavigate(() => {
+    const source = page.url.searchParams.get(`source`)
+    code_tab = sources.find(({ ext }) => ext === source)?.ext ?? default_source
+  })
+  const change_source = (source: `typ` | `tex`) =>
+    sync_url_params(
+      [...filters.url_entries, [`source`, source, default_source]],
+      page.url,
+      (next_url) => replace_url(page.url.hash ? next_url : `${next_url}#code`),
+    )
   let diagram_wrapper = $state<HTMLDivElement>()
   let selected_source = $derived(
     sources.find(({ ext }) => ext === code_tab) ?? sources[0],
@@ -73,7 +81,11 @@
   <meta name="twitter:card" content="summary" />
 </svelte:head>
 
-<a href="." class="large-link" data-sveltekit-preload-code="eager">
+<a
+  href={filters.url_for(`.`)}
+  class="large-link home-link"
+  data-sveltekit-preload-code="eager"
+>
   <Icon icon={HomeOutline} /> home
 </a>
 <h1>{title}</h1>
@@ -97,7 +109,9 @@
   <Tags {tags} style="--tags-cursor: default" />
 
   {#if description}
-    {@html description}
+    {#key description}
+      <div {@attach preserve_filter_links}>{@html description}</div>
+    {/key}
     <br />
   {/if}
 </section>
@@ -140,7 +154,7 @@
   {/each}
 </section>
 
-<h2>
+<h2 id="code">
   <Icon icon={Code} /> Code
 </h2>
 {#snippet source_block()}
@@ -154,9 +168,16 @@
   {/if}
 {/snippet}
 {#if sources.length > 1}
-  <Tabs items={code_tabs} bind:value={code_tab} label="Code language" class="code-tabs">
+  <Tabs
+    items={sources.map(({ ext }) => ({ value: ext }))}
+    bind:value={code_tab}
+    on_change={change_source}
+    label="Code language"
+    class="code-tabs"
+  >
     {#snippet tab({ item })}
-      <Icon icon={item.value === `typ` ? Typst : LaTeX} />{item.label}
+      {@const is_typst = item.value === `typ`}
+      <Icon icon={is_typst ? Typst : LaTeX} />{is_typst ? `Typst` : `TikZ`}
     {/snippet}
     {#snippet panel({ selected })}
       {#if selected}{@render source_block()}{/if}
@@ -175,7 +196,7 @@
     {@const [slug, diagram] = item as [string, Diagram]}
     <div style="text-align: center">
       <h3>
-        <a href={slug}>
+        <a href={filters.url_for(slug)}>
           {@html kind == `next` ? `Next &rarr;` : `&larr; Previous`}
         </a>
       </h3>
@@ -269,7 +290,7 @@
   a.large-link:hover {
     background: var(--card-bg);
   }
-  a.large-link[href='.'] {
+  .home-link {
     position: absolute;
     top: 2em;
     left: 2em;

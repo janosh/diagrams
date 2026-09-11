@@ -84,6 +84,10 @@ a {
 a:hover {
   color: var(--link-hover);
 }
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--link-color);
+  outline-offset: 2px;
+}
 ::highlight(highlight-match) {
   color: var(--highlight);
   text-decoration: underline;

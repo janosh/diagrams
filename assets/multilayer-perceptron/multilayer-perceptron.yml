@@ -10,4 +10,4 @@ tags:
   - neural networks
   - deep learning
 description: |
-  A feedforward multilayer perceptron with one hidden neuron expanded into its affine transform and nonlinear activation.
+  A feedforward multilayer perceptron with one hidden neuron expanded into its affine transform and [nonlinear activation](../ml-activations).

@@ -10,4 +10,4 @@ tags:
   - sampling
   - digital signal processing
 description: |
-  Sampling discretizes a continuous-time signal by recording its amplitude at regular intervals spaced by the inverse sampling frequency.
+  [Sampling](https://ocw.mit.edu/courses/res-6-007-signals-and-systems-spring-2011/resources/lecture-16-sampling/) discretizes a continuous-time signal by recording its amplitude at regular intervals spaced by the inverse sampling frequency.

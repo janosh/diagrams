@@ -96,10 +96,6 @@ export const sorted_diagrams = diagrams.toSorted(
     diagram_collator.compare(d1.slug, d2.slug),
 )
 
-const tag_counts = new Map<string, number>()
-for (const tag of diagrams.flatMap((diagram) => diagram.tags)) {
-  tag_counts.set(tag, (tag_counts.get(tag) ?? 0) + 1)
-}
-export const tags = [...tag_counts]
-  .filter(([, count]) => count > 2)
-  .toSorted(([t1], [t2]) => t1.localeCompare(t2))
+export const tags = [...new Set(diagrams.flatMap((diagram) => diagram.tags))].toSorted(
+  (tag_a, tag_b) => tag_a.localeCompare(tag_b),
+)

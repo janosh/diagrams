@@ -14,5 +14,5 @@ tags:
 - optimization
 - auto-batching
 - torch-sim
-description: Small atomistic jobs can leave a GPU underused. Batching runs several together; replacing completed jobs keeps useful work in the batch.
+description: Small [atomistic jobs](../atomistic-simulation-methods) can leave a GPU underused. Batching runs several together; replacing completed jobs keeps useful work in the batch.
 creator: Janosh Riebesell

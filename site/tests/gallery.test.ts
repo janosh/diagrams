@@ -3,30 +3,56 @@ import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { expect, it, vi } from 'vitest'
+import { url_with_params } from 'svelte-widgets/url-params'
 import { gallery_count_for } from '../src/lib/gallery'
+import { filters } from '../src/lib/state.svelte'
 import euler_angles from '../../assets/euler-angles/euler-angles.yml'
 import euler_angles_source from '../../assets/euler-angles/euler-angles.typ?raw'
 import euler_angles_tex from '../../assets/euler-angles/euler-angles.tex?raw'
 import Layout from '../src/routes/+layout.svelte'
+import ErrorPage from '../src/routes/+error.svelte'
 import { load } from '../src/routes/[slug]/+page.server'
 import config from '../vite.config'
 
 vi.mock(`$lib`, () => {
   const diagrams = [
-    { slug: `euler-angles`, title: `Euler Angles`, source_types: [`typ`, `tex`] },
-    { slug: `euler-angles-alternative`, title: `Euler Angles` },
+    {
+      slug: `euler-angles`,
+      title: `Euler Angles`,
+      source_types: [`typ`, `tex`],
+      tags: [`physics`, `geometry`],
+    },
+    {
+      slug: `euler-angles-alternative`,
+      title: `Euler Angles`,
+      tags: [`geometry`],
+    },
     {
       slug: `which-band-gap-do-you-mean`,
       title: `Which Band Gap Do You Mean?`,
       source_types: [`typ`],
+      tags: [`physics`, `electronics`],
     },
   ]
-  return { diagrams, sorted_diagrams: diagrams }
+  return {
+    diagrams,
+    sorted_diagrams: diagrams,
+    tags: [`electronics`, `geometry`, `physics`],
+  }
 })
-vi.mock(`$app/navigation`, () => ({ goto: vi.fn() }))
+vi.mock(`$app/navigation`, () => ({ goto: vi.fn(), afterNavigate: vi.fn() }))
+vi.mock(`$app/state`, () => ({
+  page: { status: 500, error: { message: `Unable to load diagram` } },
+}))
 
 it(`renders the gallery command menu with unique IDs even when titles repeat`, () => {
   expect(() => render(Layout)).not.toThrow()
+})
+
+it(`links server errors to the GitHub issue tracker`, () => {
+  expect(render(ErrorPage).body).toContain(
+    `href="https://github.com/janosh/diagrams/issues"`,
+  )
 })
 
 it(`loads only the requested diagram and rejects unknown slugs`, async () => {
@@ -36,6 +62,7 @@ it(`loads only the requested diagram and rejects unknown slugs`, async () => {
       slug: `euler-angles`,
       title: `Euler Angles`,
       source_types: [`typ`, `tex`],
+      tags: [`physics`, `geometry`],
       sources: [
         { ext: `typ`, code: euler_angles_source },
         { ext: `tex`, code: euler_angles_tex },
@@ -81,6 +108,103 @@ const typst_sources = import.meta.glob<string>(`../../assets/**/*.typ`, {
 const compound_sources = Object.entries(typst_sources).filter(([, source]) =>
   source.includes(`#let card_body(`),
 )
+
+it.each([
+  [``, ``, `all`, [], ``],
+  [`search=&tag=&tag_mode=all`, ``, `all`, [], ``],
+  [
+    `search=Euler+%26+%CE%B1%2B&tag=physics,geometry&tag_mode=any`,
+    `Euler & α+`,
+    `any`,
+    [`physics`, `geometry`],
+    `&search=Euler+%26+%CE%B1%2B&tag=physics,geometry&tag_mode=any`,
+  ],
+  [
+    `tag=physics,,physics,unknown&tag_mode=invalid`,
+    ``,
+    `all`,
+    [`physics`, `unknown`],
+    `&tag=physics,unknown`,
+  ],
+  [`tag_mode=any`, ``, `any`, [], `&tag_mode=any`],
+] as const)(
+  `restores and serializes gallery filters from %s`,
+  (query, search, tag_mode, tags, encoded) => {
+    filters.search = `stale search`
+    filters.tag_mode = `any`
+    filters.tags = [`stale tag`]
+    filters.read_url(new URLSearchParams(query))
+    expect({
+      search: filters.search,
+      tag_mode: filters.tag_mode,
+      tags: filters.tags,
+    }).toEqual({ search, tag_mode, tags })
+    expect(
+      url_with_params(
+        filters.url_entries,
+        new URL(`https://example.com/?keep=1#results`),
+      ),
+    ).toBe(`/?keep=1${encoded}#results`)
+    for (const pathname of [`.`, `euler-angles`]) {
+      expect(filters.url_for(pathname)).toBe(
+        `${pathname}${encoded ? `?${encoded.slice(1)}` : ``}`,
+      )
+    }
+  },
+)
+
+it.each([
+  [`../euler-angles`, `/euler-angles?search=Euler&tag=physics,geometry&tag_mode=any`],
+  [
+    `/euler-angles?source=tex#code`,
+    `/euler-angles?source=tex&search=Euler&tag=physics,geometry&tag_mode=any#code`,
+  ],
+  [
+    `https://example.com/euler-angles?keep=1#code`,
+    `/euler-angles?keep=1&search=Euler&tag=physics,geometry&tag_mode=any#code`,
+  ],
+  [`https://external.example/euler-angles`, `https://external.example/euler-angles`],
+  [`mailto:author@example.com`, `mailto:author@example.com`],
+  [`/license`, `/license`],
+  [`#code`, `#code`],
+] as const)(
+  `preserves gallery context only on related diagram links: %s`,
+  (href, expected) => {
+    const current_url = new URL(
+      `https://example.com/which-band-gap-do-you-mean?source=typ`,
+    )
+    filters.read_url(
+      new URLSearchParams(`search=Euler&tag=physics,geometry&tag_mode=any`),
+    )
+    expect(filters.related_url(href, current_url)).toBe(expected)
+    filters.read_url(new URLSearchParams())
+    expect(filters.related_url(expected, current_url)).toBe(
+      expected.replace(/[?&]search=Euler&tag=physics,geometry&tag_mode=any/u, ``),
+    )
+  },
+)
+
+it.each([
+  [``, [1, 2, 2], 3],
+  [`search=ＥＵＬＥＲ+angles`, [0, 2, 1], 2],
+  [`tag=physics`, [1, 1, 2], 2],
+  [`tag=physics,geometry`, [0, 1, 1], 1],
+  [`tag=electronics`, [1, 0, 1], 1],
+  [`tag=physics&tag_mode=any`, [2, 3, 2], 2],
+  [`tag=physics,geometry&tag_mode=any`, [3, 2, 2], 3],
+  [`search=Euler&tag=physics&tag_mode=any`, [1, 2, 1], 1],
+  [`search=Euler&tag=electronics`, [0, 0, 0], 0],
+  [`search=absent&tag=physics&tag_mode=any`, [0, 0, 0], 0],
+  [`tag=unknown&tag_mode=any`, [1, 2, 2], 0],
+] as const)(`previews contextual tag counts for %s`, (query, counts, result_count) => {
+  filters.read_url(new URLSearchParams(query))
+  expect(filters.filtered).toHaveLength(result_count)
+  expect(filters.tag_counts).toEqual(
+    new Map(
+      [`electronics`, `geometry`, `physics`].map((label, idx) => [label, counts[idx]]),
+    ),
+  )
+})
 
 it(`keeps gallery sources standalone with only package imports`, () => {
   expect(compound_sources.length).toBeGreaterThan(0)
