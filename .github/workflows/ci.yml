@@ -33,7 +33,10 @@ jobs:
         with:
           persist-credentials: false
       - uses: typst-community/setup-typst@v5
+      # Only prek needs uv: in the unit job, setup-uv's post step fails on a cache miss
+      # because nothing ever creates its cache directory.
       - uses: astral-sh/setup-uv@v10.0.1
+        if: matrix.task == 'lint'
         with:
           python-version: '3.14'
       - uses: actions/setup-node@v7
