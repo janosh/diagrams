@@ -1,7 +1,7 @@
 import { goto } from '$app/navigation'
 import { resolve } from '$app/paths'
 import { type Diagram, sorted_diagrams, tags as available_tags } from '#lib'
-import type { UrlParamEntry } from 'svelte-widgets/url-params'
+import type { QueryParams, UrlParamEntry } from 'svelte-widgets/url-params'
 import { url_with_params, valid_query_param } from 'svelte-widgets/url-params'
 
 // searchable text from human-readable fields only, not JSON.stringify(file) which also
@@ -25,7 +25,7 @@ class DiagramFilters {
   tag_mode = $state<`all` | `any`>(`all`)
   tags = $state<string[]>([])
 
-  read_url(params: URLSearchParams) {
+  read_url(params: QueryParams) {
     this.search = params.get(`search`) ?? ``
     this.tag_mode = valid_query_param(params, `tag_mode`, `all`, { all: true, any: true })
     const labels = (params.get(`tag`) ?? ``).split(`,`).filter(Boolean)

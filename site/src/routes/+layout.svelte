@@ -18,7 +18,7 @@
   let navigation_ready = $state(false)
   // Wait for hydration: changing cards earlier leaves SSR image URLs paired with new dimensions.
   afterNavigate(() => {
-    filters.read_url(new URLSearchParams(page.url.search))
+    filters.read_url(page.url.searchParams)
     navigation_ready = true
   })
   $effect(() => {
