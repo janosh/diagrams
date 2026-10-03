@@ -1,9 +1,9 @@
 <script lang="ts">
   import { afterNavigate, goto } from '$app/navigation'
   import { page } from '$app/state'
-  import { diagrams } from '$lib'
-  import { filters, replace_url } from '$lib/state.svelte'
-  import { repository } from '$root/package.json'
+  import { diagrams } from '#lib'
+  import { filters, replace_url } from '#lib/state.svelte.js'
+  import { repository } from '#package.json'
   import { untrack, type Snippet } from 'svelte'
   import { CommandMenu, Footer, GitHubCorner, Icon, ThemeToggle } from 'svelte-widgets'
   import { FileCertificate, Quote } from 'svelte-widgets/icons'
@@ -18,7 +18,7 @@
   let navigation_ready = $state(false)
   // Wait for hydration: changing cards earlier leaves SSR image URLs paired with new dimensions.
   afterNavigate(() => {
-    filters.read_url(page.url.searchParams)
+    filters.read_url(new URLSearchParams(page.url.search))
     navigation_ready = true
   })
   $effect(() => {

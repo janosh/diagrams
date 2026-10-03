@@ -121,7 +121,7 @@ jobs:
           # npm prepares Git dependencies; avoid its conflicting optional Vitest peers.
           NPM_CONFIG_LEGACY_PEER_DEPS=true pnpm install --no-lockfile --store-dir ~/.cache/pnpm
         working-directory: site
-      - run: pnpm exec vite build
+      - run: pnpm exec vp build
         working-directory: site
       - uses: actions/cache/save@v6
         if: steps.images.outputs.cache-hit != 'true'

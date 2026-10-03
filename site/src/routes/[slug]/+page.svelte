@@ -1,9 +1,9 @@
 <script lang="ts">
   import { afterNavigate } from '$app/navigation'
   import { page } from '$app/state'
-  import { CodeBlock, type Diagram, DiagramCard, sorted_diagrams, Tags } from '$lib'
-  import { filters, preserve_filter_links, replace_url } from '$lib/state.svelte'
-  import { homepage, repository } from '$root/package.json'
+  import { CodeBlock, type Diagram, DiagramCard, sorted_diagrams, Tags } from '#lib'
+  import { filters, preserve_filter_links, replace_url } from '#lib/state.svelte.js'
+  import { homepage, repository } from '#package.json'
   import { FullscreenButton, Icon, PrevNext, Tabs, type IconData } from 'svelte-widgets'
   import {
     Code,

@@ -1,9 +1,9 @@
-import { sorted_diagrams } from '$lib'
+import { sorted_diagrams } from '#lib'
 import { error } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 
 // Source text belongs only in the requested detail page, never the shared catalog.
-const code_files = import.meta.glob<string>(`$assets/**/*.{tex,typ}`, {
+const code_files = import.meta.glob<string>(`#assets/**/*.{tex,typ}`, {
   eager: true,
   import: 'default',
   query: '?raw',

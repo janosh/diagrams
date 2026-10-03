@@ -1,10 +1,9 @@
 <script lang="ts">
-  import { goto } from '$app/navigation'
-  import type { Snapshot } from '@sveltejs/kit'
-  import { DiagramCard, diagrams, tags } from '$lib'
-  import { gallery_batch_size, gallery_count_for } from '$lib/gallery'
-  import { filters } from '$lib/state.svelte'
-  import { homepage, repository } from '$root/package.json'
+  import { goto, snapshot } from '$app/navigation'
+  import { DiagramCard, diagrams, tags } from '#lib'
+  import { gallery_batch_size, gallery_count_for } from '#lib/gallery.js'
+  import { filters } from '#lib/state.svelte.js'
+  import { homepage, repository } from '#package.json'
   import { tick } from 'svelte'
   import { Icon, Masonry, MultiSelect } from 'svelte-widgets'
   import { highlight_matches } from 'svelte-widgets/attachments'
@@ -39,14 +38,14 @@
   const cancel_restoration = () => {
     restoring = undefined
   }
-  export const snapshot: Snapshot<GallerySnapshot> = {
+  snapshot<GallerySnapshot>({
     capture: () => ({ visible_count, active_slug, scroll_x: scrollX, scroll_y: scrollY }),
     restore: (saved) => {
       visible_count = saved.visible_count
       active_slug = saved.active_slug
       restoring = saved
     },
-  }
+  })
 
   // Kit restores snapshots after scrolling. Keep the saved position through late image
   // measurements, until the user resumes interacting with the gallery.

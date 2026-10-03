@@ -1,7 +1,7 @@
 <script lang="ts">
   import { ButtonGroup } from 'svelte-widgets'
   import type { HTMLAttributes } from 'svelte/elements'
-  import { filters } from './state.svelte'
+  import { filters } from './state.svelte.js'
 
   let { tags = [], ...rest }: HTMLAttributes<HTMLDivElement> & { tags: string[] } =
     $props()
