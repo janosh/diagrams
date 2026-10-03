@@ -1,20 +1,11 @@
 import adapter from '@sveltejs/adapter-static'
 import { enhancedImages } from '@sveltejs/enhanced-img'
 import { sveltekit } from '@sveltejs/kit/vite'
-import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
 import { assert_ok, create_markdown } from 'svelte-widgets/markdown'
 import { readFileSync } from 'node:fs'
 import { make_config } from 'svelte-widgets/vite-config'
 import { yaml_plugin } from 'svelte-widgets/yaml'
-import type { YamlMetadata } from './src/lib/index.ts'
-
-// passed inline to sveltekit() (Kit >= 2.62) so no separate svelte.config.ts is needed;
-// kit options (adapter, alias) sit at the top level rather than under `kit`
-const svelte_config = {
-  preprocess: vitePreprocess(),
-  adapter: adapter(),
-  alias: { $root: `.`, $assets: `../assets` },
-}
+import type { YamlMetadata } from './src/lib/index.js'
 
 const engine = create_markdown({ math: { throwOnError: false }, frontmatter: false })
 
@@ -23,7 +14,7 @@ export default {
   ...make_config(), // shared lint/fmt/build/staged
   plugins: [
     enhancedImages(),
-    sveltekit(svelte_config),
+    sveltekit({ adapter: adapter() }),
     yaml_plugin({
       // Render within the YAML import so source Markdown and its parser stay out of
       // the client bundle. Vite watches the imported file for metadata and prose edits.
@@ -53,7 +44,7 @@ export default {
   ],
   server: {
     fs: {
-      allow: [`..`], // needed to import package.json
+      allow: [`..`], // needed to import ../assets
     },
     port: 3000,
   },

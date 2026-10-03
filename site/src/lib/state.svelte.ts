@@ -1,11 +1,8 @@
 import { goto } from '$app/navigation'
 import { resolve } from '$app/paths'
-import { type Diagram, sorted_diagrams, tags as available_tags } from '$lib'
-import {
-  type UrlParamEntry,
-  url_with_params,
-  valid_query_param,
-} from 'svelte-widgets/url-params'
+import { type Diagram, sorted_diagrams, tags as available_tags } from '#lib'
+import type { QueryParams, UrlParamEntry } from 'svelte-widgets/url-params'
+import { url_with_params, valid_query_param } from 'svelte-widgets/url-params'
 
 // searchable text from human-readable fields only, not JSON.stringify(file) which also
 // matched image paths/source code and re-serialized the whole object on every keystroke
@@ -28,7 +25,7 @@ class DiagramFilters {
   tag_mode = $state<`all` | `any`>(`all`)
   tags = $state<string[]>([])
 
-  read_url(params: URLSearchParams) {
+  read_url(params: QueryParams) {
     this.search = params.get(`search`) ?? ``
     this.tag_mode = valid_query_param(params, `tag_mode`, `all`, { all: true, any: true })
     const labels = (params.get(`tag`) ?? ``).split(`,`).filter(Boolean)
@@ -111,5 +108,4 @@ export function preserve_filter_links(element: HTMLElement): void {
 }
 
 // Query controls replace the current entry without moving keyboard focus or the viewport.
-export const replace_url = (url: string) =>
-  goto(url, { keepFocus: true, noScroll: true, replaceState: true })
+export const replace_url = (url: string) => goto(url, { replace: true, reset: false })

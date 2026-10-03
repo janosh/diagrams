@@ -1,4 +1,4 @@
-import { building } from '$app/environment'
+import { building } from '$app/env'
 import type { Picture } from '@sveltejs/enhanced-img'
 
 export { default as CodeBlock } from './CodeBlock.svelte'
@@ -29,21 +29,21 @@ export type YamlMetadata = {
 
 // YAML imports already contain descriptions rendered to HTML by the Vite plugin.
 // Vite's build-time glob parser requires literal strings for import/query options.
-const yaml_data = import.meta.glob<YamlMetadata>(`$assets/**/*.yml`, {
+const yaml_data = import.meta.glob<YamlMetadata>(`#assets/**/*.yml`, {
   eager: true,
   import: 'default',
 })
 // Discover available downloads and source languages without importing their bytes.
 const asset_paths = new Set(
-  Object.keys(import.meta.glob(`$assets/**/*.{png,pdf,svg,tex,typ}`)),
+  Object.keys(import.meta.glob(`#assets/**/*.{png,pdf,svg,tex,typ}`)),
 )
 const image_files = import.meta.glob<string>(
-  [`$assets/**/*.avif`, `!$assets/**/*-dark.avif`],
+  [`#assets/**/*.avif`, `!#assets/**/*-dark.avif`],
   // Plain imports preserve the encoded file; queries activate imagetools transforms.
   { eager: true, import: 'default' },
 )
 const thumbnails = import.meta.glob<Picture>(
-  [`$assets/*/*.png`, `!$assets/**/*-reference.png`],
+  [`#assets/*/*.png`, `!#assets/**/*-reference.png`],
   {
     eager: true,
     import: 'default',

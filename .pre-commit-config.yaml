@@ -30,7 +30,7 @@ repos:
         pass_filenames: false
       - id: vp-check
         name: Format + lint (oxfmt + oxlint)
-        # sync first so type-aware lint has .svelte-kit/tsconfig.json (provides
+        # sync first so type-aware lint has the generated $app/tsconfig (provides
         # moduleResolution: bundler needed to resolve exports-only deps like
         # @sveltejs/enhanced-img imported in vite.config.ts)
         entry: bash -c 'cd site && node_modules/.bin/svelte-kit sync && node_modules/.bin/vp check --fix'

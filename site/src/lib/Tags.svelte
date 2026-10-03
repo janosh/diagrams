@@ -1,7 +1,7 @@
 <script lang="ts">
   import { ButtonGroup } from 'svelte-widgets'
   import type { HTMLAttributes } from 'svelte/elements'
-  import { filters } from './state.svelte'
+  import { filters } from './state.svelte.js'
 
   let { tags = [], ...rest }: HTMLAttributes<HTMLDivElement> & { tags: string[] } =
     $props()
@@ -10,9 +10,9 @@
 <div class="tags" {...rest}>
   <ButtonGroup
     options={tags}
-    multiple
+    mode="multiple"
     label="Filter by tag"
-    bind:selected={filters.tags}
+    bind:value={filters.tags}
   />
 </div>
 
@@ -27,12 +27,7 @@
     --btn-group-btn-color: var(--text-secondary);
     --btn-group-btn-padding: 2pt 4pt;
     --btn-group-btn-radius: 3pt;
-  }
-  /* ButtonGroup exposes no hook for its inner row's alignment or the button cursor */
-  div.tags :global(.options) {
-    justify-content: center;
-  }
-  div.tags :global(button) {
-    cursor: var(--tags-cursor, pointer);
+    --btn-group-btn-cursor: var(--tags-cursor, pointer);
+    --btn-group-justify-content: center;
   }
 </style>

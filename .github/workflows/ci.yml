@@ -33,7 +33,10 @@ jobs:
         with:
           persist-credentials: false
       - uses: typst-community/setup-typst@v5
+      # Only prek needs uv: in the unit job, setup-uv's post step fails on a cache miss
+      # because nothing ever creates its cache directory.
       - uses: astral-sh/setup-uv@v10.0.1
+        if: matrix.task == 'lint'
         with:
           python-version: '3.14'
       - uses: actions/setup-node@v7
@@ -90,7 +93,8 @@ jobs:
         with:
           # increase max-redirects needed for some journal links
           # ${...} becomes $%7B...%7D once lychee percent-encodes the extracted URL
-          args: --accept 100..=103,200..=299,403,429,500,503 --max-redirects 10 --timeout 30 --exclude-all-private --exclude '\$(\{.*\}|%7B.*%7D)' --exclude 'chemicalaid\.com' --exclude 'janosh\.github\.io/diagrams' --exclude 'diagrams\.janosh\.dev' --exclude 'arxiv\.org' --exclude 'sciencedirect\.com' --exclude 'rolandwanner\.com' --exclude 'tikz\.dev' -- ./**/*.{typ,tex,md,svelte,ts,yml}
+          # dft.uci.edu intermittently serves an expired TLS certificate to CI runners
+          args: --accept 100..=103,200..=299,403,429,500,503 --max-redirects 10 --timeout 30 --exclude-all-private --exclude '\$(\{.*\}|%7B.*%7D)' --exclude 'chemicalaid\.com' --exclude 'janosh\.github\.io/diagrams' --exclude 'diagrams\.janosh\.dev' --exclude 'arxiv\.org' --exclude 'sciencedirect\.com' --exclude 'rolandwanner\.com' --exclude 'tikz\.dev' --exclude 'dft\.uci\.edu' -- ./**/*.{typ,tex,md,svelte,ts,yml}
 
   build:
     runs-on: ubuntu-latest
@@ -121,7 +125,7 @@ jobs:
           # npm prepares Git dependencies; avoid its conflicting optional Vitest peers.
           NPM_CONFIG_LEGACY_PEER_DEPS=true pnpm install --no-lockfile --store-dir ~/.cache/pnpm
         working-directory: site
-      - run: pnpm exec vite build
+      - run: pnpm exec vp build
         working-directory: site
       - uses: actions/cache/save@v6
         if: steps.images.outputs.cache-hit != 'true'

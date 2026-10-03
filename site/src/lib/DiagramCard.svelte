@@ -2,8 +2,8 @@
   import { Icon, Popover } from 'svelte-widgets'
   import { Info } from 'svelte-widgets/icons'
   import type { HTMLAttributes } from 'svelte/elements'
-  import { type Diagram, Tags } from './index'
-  import { filters, preserve_filter_links } from './state.svelte'
+  import { type Diagram, Tags } from './index.js'
+  import { filters, preserve_filter_links } from './state.svelte.js'
 
   let {
     item,

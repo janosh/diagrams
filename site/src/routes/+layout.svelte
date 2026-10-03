@@ -1,9 +1,9 @@
 <script lang="ts">
   import { afterNavigate, goto } from '$app/navigation'
   import { page } from '$app/state'
-  import { diagrams } from '$lib'
-  import { filters, replace_url } from '$lib/state.svelte'
-  import { repository } from '$root/package.json'
+  import { diagrams } from '#lib'
+  import { filters, replace_url } from '#lib/state.svelte.js'
+  import { repository } from '#package.json'
   import { untrack, type Snippet } from 'svelte'
   import { CommandMenu, Footer, GitHubCorner, Icon, ThemeToggle } from 'svelte-widgets'
   import { FileCertificate, Quote } from 'svelte-widgets/icons'

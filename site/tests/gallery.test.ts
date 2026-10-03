@@ -4,17 +4,17 @@ import { readFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { expect, it, vi } from 'vitest'
 import { url_with_params } from 'svelte-widgets/url-params'
-import { gallery_count_for } from '../src/lib/gallery'
-import { filters } from '../src/lib/state.svelte'
+import { gallery_count_for } from '../src/lib/gallery.js'
+import { filters } from '../src/lib/state.svelte.js'
 import euler_angles from '../../assets/euler-angles/euler-angles.yml'
 import euler_angles_source from '../../assets/euler-angles/euler-angles.typ?raw'
 import euler_angles_tex from '../../assets/euler-angles/euler-angles.tex?raw'
 import Layout from '../src/routes/+layout.svelte'
 import ErrorPage from '../src/routes/+error.svelte'
-import { load } from '../src/routes/[slug]/+page.server'
-import config from '../vite.config'
+import { load } from '../src/routes/[slug]/+page.server.js'
+import config from '../vite.config.js'
 
-vi.mock(`$lib`, () => {
+vi.mock(`#lib`, () => {
   const diagrams = [
     {
       slug: `euler-angles`,

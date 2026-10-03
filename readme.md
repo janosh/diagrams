@@ -174,7 +174,7 @@ Rendering tests need the tools above and the artwork's fonts. Metadata requires 
 ```sh
 cd site
 pnpm exec playwright install --only-shell chromium
-pnpm exec vite build
+pnpm build
 pnpm test:visual
 ```
 

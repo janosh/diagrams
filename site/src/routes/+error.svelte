@@ -1,8 +1,8 @@
 <script lang="ts">
   import { page } from '$app/state'
-  import { name, repository } from '$root/package.json'
+  import { name, repository } from '#package.json'
 
-  let online: boolean = $state(true)
+  let online = $state(true)
 </script>
 
 <svelte:head>
@@ -20,7 +20,7 @@
       🙏
     </p>
   {/if}
-  {#if online === false}
+  {#if !online}
     Looks like you're offline. If you think your connection is fine, check the
     <a href="https://githubstatus.com">GitHub status page</a>
     as this site is hosted by GitHub Pages.
