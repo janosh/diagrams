@@ -1,0 +1,3 @@
+# add under `authors:` in citation.cff (match the format of the existing entries)
+  - family-names: Falgueras-Cano
+    given-names: Juan
