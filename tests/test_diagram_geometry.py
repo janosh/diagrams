@@ -7,7 +7,7 @@ import subprocess
 import sys
 import xml.etree.ElementTree as ET
 from itertools import batched, pairwise, product
-from math import exp, fsum
+from math import cos, exp, fsum, hypot, radians, sin
 from pathlib import Path
 
 import pytest
@@ -20,6 +20,8 @@ ROOT = os.path.dirname(os.path.dirname(__file__))
     [
         ("convex-hull-of-stability", 4),
         ("seebeck-effect", 5),
+        # The formula's .3cm padding adds 8.5pt beyond the 8pt page margin.
+        ("spherical-volume-element", 18),
         # The projected 3D axes reserve additional space beyond the 8pt page margin.
         ("saddle-point", 31),
     ],
@@ -266,6 +268,192 @@ def evaluate_diagram(slug: str, expression: str) -> list:
     )
 
 
+def test_spherical_coordinates_guides_share_origin(tmp_path: Path) -> None:
+    """Make all four radial guides meet at the marked sphere center in the combined panel."""
+    output_path = tmp_path / "change-of-variables.svg"
+    subprocess.run(
+        [
+            "typst",
+            "compile",
+            "--root",
+            ROOT,
+            f"{ROOT}/assets/change-of-variables/change-of-variables.typ",
+            str(output_path),
+        ],
+        check=True,
+    )
+    paths = list(ET.parse(output_path).iter("{http://www.w3.org/2000/svg}path"))
+    guides = [
+        path
+        for path in paths
+        if path.get("stroke") == "#cbd5e1" and path.get("stroke-width") == "0.7"
+    ]
+    assert len(guides) == 4
+    markers = [
+        path
+        for path in paths
+        if path.get("fill") == "#64748b" and path.get("d", "").count("c") == 4
+    ]
+    assert len(markers) == 1
+    number_pattern = r"[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?"
+    marker_x, marker_y = map(
+        float, re.findall(number_pattern, markers[0].attrib["transform"])
+    )
+    marker_radius = 0.035 * 72 / 2.54
+    center = (marker_x + marker_radius, marker_y + marker_radius)
+    for path in guides:
+        assert "stroke-dasharray" in path.attrib
+        offset_x, offset_y = map(
+            float, re.findall(number_pattern, path.attrib["transform"])
+        )
+        coords = list(map(float, re.findall(number_pattern, path.attrib["d"])))
+        assert len(coords) == 6 and path.attrib["d"].count("l") == 1
+        # One translation and move, serialized to 9 decimals: allow 1e-8pt.
+        assert (offset_x + coords[2], offset_y + coords[3]) == pytest.approx(
+            center, rel=0, abs=1e-8
+        )
+
+
+def test_spherical_volume_rendering(tmp_path: Path) -> None:
+    """Check physical edge endpoints, occlusion, continuous guides, labels and transparency."""
+    source = """
+#show math.equation: item => [#metadata(repr(item.body)) <formula>#item]
+#include "/assets/spherical-volume-element/spherical-volume-element.typ"
+"""
+    formulas = "$arrow(r)$, $r sin theta$, $d r$, $r d theta$, $r sin theta d phi$, $d V = r^2 sin theta d r d theta d phi$"
+    assert (
+        evaluate_typst(
+            f"{{ let bodies = query(<formula>).map(item => item.value); ({formulas}).map(item => bodies.contains(repr(item.body))) }}",
+            source=source,
+        )
+        == [True] * 6
+    )
+    output_path = tmp_path / "spherical-volume.svg"
+    subprocess.run(
+        [
+            "typst",
+            "compile",
+            "--root",
+            ROOT,
+            f"{ROOT}/assets/spherical-volume-element/spherical-volume-element.typ",
+            str(output_path),
+        ],
+        check=True,
+    )
+    paths = list(
+        ET.parse(output_path).getroot().iter("{http://www.w3.org/2000/svg}path")
+    )
+    number_pattern = r"[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?"
+
+    def path_points(path: ET.Element) -> list[tuple[float, float]]:
+        """Decode endpoints of CeTZ's relative moves, lines and cubic Bezier segments."""
+        x_coord, y_coord = map(
+            float, re.findall(number_pattern, path.attrib["transform"])
+        )
+        points = []
+        for command, values in re.findall(r"([mlc])([^mlc]*)", path.attrib["d"]):
+            coords = list(map(float, re.findall(number_pattern, values)))
+            assert len(coords) == {"m": 2, "l": 2, "c": 6}[command]
+            x_coord += coords[-2]
+            y_coord += coords[-1]
+            points.append((x_coord, y_coord))
+        return points
+
+    guides = [
+        path
+        for path in paths
+        if path.get("stroke") in {"#aaaaaa", "#bfbfbf"}
+        and path.get("stroke-width") == "0.5"
+    ]
+    radius = 4 * 72 / 2.54
+    offset_x, offset_y = map(
+        float, re.findall(number_pattern, guides[0].attrib["transform"])
+    )
+    center_x, center_y = offset_x + radius, offset_y + radius
+    guide_paths = [path for path in guides if path.attrib["d"].count("c") == 2]
+    assert len(guide_paths) == 6
+    assert sum("stroke-dasharray" in path.attrib for path in guide_paths) == 3
+    for path_idx, path in enumerate(guide_paths):
+        points = path_points(path)
+        for x_coord, y_coord in (points[0], points[-1]):
+            # CeTZ rounds matrices to 10 decimals and SVG coordinates to 9; allow 1e-7pt.
+            assert hypot(x_coord - center_x, y_coord - center_y) == pytest.approx(
+                radius, rel=0, abs=1e-7
+            )
+        if path_idx < 2:
+            assert (points[1][1] > center_y) == ("stroke-dasharray" not in path.attrib)
+
+    # Independently project all eight physical corners to validate the drawn edges.
+    azimuth, elevation = radians(30), radians(10)
+    corners = {}
+    for corner_idx in product((0, 1), repeat=3):
+        radius_idx, theta_idx, phi_idx = corner_idx
+        radius = 3 + 0.5 * radius_idx
+        theta, phi = radians(55 + 12 * theta_idx), radians(50 + 14 * phi_idx)
+        cart_x = radius * sin(theta) * cos(phi)
+        cart_y = radius * sin(theta) * sin(phi)
+        cart_z = radius * cos(theta)
+        screen_x = -cart_x * sin(azimuth) + cart_y * cos(azimuth)
+        screen_y = (
+            -cart_x * sin(elevation) * cos(azimuth)
+            - cart_y * sin(elevation) * sin(azimuth)
+            + cart_z * cos(elevation)
+        )
+        corners[corner_idx] = (
+            center_x + screen_x * 72 / 2.54,
+            center_y - screen_y * 72 / 2.54,
+        )
+    edge_paths = [
+        path
+        for path in paths
+        if (path.get("stroke"), path.get("stroke-width"))
+        in {("#0074d9", "1"), ("#99c7f0", "0.6")}
+    ]
+    assert len(edge_paths) == 12
+    origin_extensions = [
+        path
+        for path in paths
+        if path.get("stroke") == "#dddddd" and path.get("stroke-width") == "0.6"
+    ]
+    assert len(origin_extensions) == 3
+    assert max(paths.index(path) for path in edge_paths[:3]) < min(
+        paths.index(path) for path in origin_extensions
+    )
+    assert max(paths.index(path) for path in origin_extensions) < min(
+        paths.index(path) for path in edge_paths[3:]
+    )
+    actual_edges = set()
+    for path_idx, path in enumerate(edge_paths):
+        points = path_points(path)
+        endpoints = []
+        for point in (points[0], points[-1]):
+            distances = {
+                idx: hypot(point[0] - vertex[0], point[1] - vertex[1])
+                for idx, vertex in corners.items()
+            }
+            closest = min(distances, key=distances.__getitem__)
+            assert distances[closest] == pytest.approx(0, rel=0, abs=1e-7)
+            endpoints.append(closest)
+        actual_edges.add(frozenset(endpoints))
+        assert ((0, 0, 1) in endpoints) == (path_idx < 3)
+    assert actual_edges == {
+        frozenset((start, end))
+        for start in corners
+        for end in corners
+        if sum(lower != upper for lower, upper in zip(start, end, strict=True)) == 1
+    }
+    for suffix in (".png", ".avif", "-dark.avif"):
+        artwork = (
+            f"{ROOT}/assets/spherical-volume-element/spherical-volume-element{suffix}"
+        )
+        assert (
+            subprocess.check_output(
+                ["magick", "identify", "-format", "%[opaque]", artwork], text=True
+            )
+            == "False"
+        ), artwork
+
+
 @pytest.mark.parametrize("inverse_temperature", [0.1, 0.5, 1, 4, 10, 100])
 def test_oscillator_thermodynamics_match_boltzmann_sum(
     inverse_temperature: float,
@@ -438,23 +626,45 @@ def test_wannier_center_matches_drawn_density_and_balance(
 
 
 @pytest.mark.parametrize("caller_font_size", [8, 20])
-def test_compound_typography_uses_consistent_readable_sizes(caller_font_size: int) -> None:
+@pytest.mark.parametrize("slug", ["atomistic-simulation-methods", "change-of-variables"])
+def test_compound_typography_uses_consistent_readable_sizes(
+    caller_font_size: int, slug: str
+) -> None:
     """Keep labels, headings, captions, and takeaways independent of caller text size."""
-    source = f"""
-#import "/assets/atomistic-simulation-methods/atomistic-simulation-methods.typ": card, takeaway
-#set page(width: 300pt, height: auto, margin: 0pt)
-#set text(size: {caller_font_size}pt)
-#show text: item => context [#metadata((item.text, text.size / 1pt)) <typography>#item]
+    if slug == "change-of-variables":
+        imports = "card"
+        panels = """
+#card([Panel heading], [Coordinate formula], box(width: 200pt, height: 80pt)[Diagram label], [Jacobian factors], [Measure formula], [Panel caption])
+"""
+        expected = {
+            "Panel heading": 21,
+            "Coordinate formula": 18,
+            "Diagram label": 14,
+            "Jacobian factors": 18,
+            "Measure formula": 24,
+            "Panel caption": 17,
+        }
+    else:
+        imports = "card, takeaway"
+        panels = """
 #card([Panel heading], box(width: 200pt, height: 80pt)[Diagram label], [Panel caption])
 #takeaway[Takeaway paragraph]
 """
+        expected = {
+            "Panel heading": 16,
+            "Diagram label": 12,
+            "Panel caption": 14,
+            "Takeaway paragraph": 14,
+        }
+    source = f"""
+#import "/assets/{slug}/{slug}.typ": {imports}
+#set page(width: 300pt, height: auto, margin: 0pt)
+#set text(size: {caller_font_size}pt)
+#show text: item => context [#metadata((item.text, text.size / 1pt)) <typography>#item]
+{panels}
+"""
     sizes = dict(evaluate_typst("query(<typography>).map(item => item.value)", source=source))
-    assert sizes == {
-        "Panel heading": 16,
-        "Diagram label": 12,
-        "Panel caption": 14,
-        "Takeaway paragraph": 14,
-    }
+    assert sizes == expected
 
 
 def test_sabatier_binding_regimes(tmp_path: Path) -> None:

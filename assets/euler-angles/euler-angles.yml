@@ -12,4 +12,4 @@ tags:
 description: |
   Three ordered rotations describe the orientation of a frame in 3D. This diagram uses the intrinsic Z–Y–Z convention: precession $\psi$ about the original $z$ axis, nutation $\theta$ about the intermediate $v$ axis, and spin $\varphi$ about the tilted $z_1$ axis. Blue, orange, and teal distinguish the three stages; the final basis is $(x_1,y_1,z_1)$. Reordering the rotations generally changes the final orientation.
 
-  See also [Cartesian vs Polar Coordinates](../cartesian-vs-polar-coordinates).
+  See also [Change of Variables](../change-of-variables).

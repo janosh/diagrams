@@ -7,4 +7,4 @@ tags:
   - spherical coordinates
   - volume element
   - physics
-description: Volume element dV = r² sin θ dr dθ dφ in spherical coordinates, shown as a small curved box on a sphere with the polar angle θ, azimuth φ, position vector r and the edge lengths dr, r dθ and r sin θ dφ. Drawn with a hand-made orthographic camera, hidden-line handling and a faint fill of dV.
+description: Spherical volume element dV = r² sin θ dr dθ dφ, with polar angle θ, azimuth φ, position vector r, and edge lengths dr, r dθ, and r sin θ dφ.

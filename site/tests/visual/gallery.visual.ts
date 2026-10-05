@@ -404,9 +404,9 @@ test(`source deep links survive reloads, fresh tabs, and filter updates`, async 
   await expect(source).toHaveAttribute(`aria-label`, `euler-angles.tex`)
   await expect(tikz).toHaveAttribute(`aria-selected`, `true`)
   const related_link = description.getByRole(`link`, {
-    name: `Cartesian vs Polar Coordinates`,
+    name: `Change of Variables`,
   })
-  const related_url = `/cartesian-vs-polar-coordinates?search=angle&tag=physics,geometry`
+  const related_url = `/change-of-variables?search=angle&tag=physics,geometry`
   await expect(related_link).toHaveAttribute(`href`, related_url)
   const related_page = await context.newPage()
   await related_page.goto(
@@ -422,7 +422,7 @@ test(`source deep links survive reloads, fresh tabs, and filter updates`, async 
     `href`,
     `.?search=angle&tag=physics,geometry`,
   )
-  await expect(source).toHaveAttribute(`aria-label`, `cartesian-vs-polar-coordinates.typ`)
+  await expect(source).toHaveAttribute(`aria-label`, `change-of-variables.typ`)
   await expect(description.getByRole(`link`, { name: `Euler Angles` })).toHaveAttribute(
     `href`,
     `/euler-angles?search=angle&tag=physics,geometry`,
@@ -506,11 +506,11 @@ test(`gallery info buttons reveal descriptions on hover and keyboard focus`, asy
   await expect(info).toHaveCSS(`opacity`, `1`)
   await expect(description).toBeVisible()
   await expect(
-    description.getByRole(`link`, { name: `Cartesian vs Polar Coordinates` }),
+    description.getByRole(`link`, { name: `Change of Variables` }),
   ).toBeVisible()
   await expect(
-    description.getByRole(`link`, { name: `Cartesian vs Polar Coordinates` }),
-  ).toHaveAttribute(`href`, `/cartesian-vs-polar-coordinates?search=Euler+Angles`)
+    description.getByRole(`link`, { name: `Change of Variables` }),
+  ).toHaveAttribute(`href`, `/change-of-variables?search=Euler+Angles`)
   expect(await description.evaluate((element) => element.closest(`a`))).toBeNull()
   await page.keyboard.press(`Escape`)
   await expect(description).toBeHidden()

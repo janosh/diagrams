@@ -3,5 +3,13 @@ tags:
   - math
   - probability
   - statistics
+  - calculus
+  - coordinate systems
 description: |
-  Simple 2d example illustrating the role of the Jacobian determinant in the change of variables formula. Inspired by Ari Seff in <https://youtu.be/i7LjDvsLWCg?t=250>.
+  The Jacobian determinant as local area and volume scaling, comparing linear scaling, Cartesian-to-polar projections and polar area dA = r dr dφ, and spherical volume dV = r² sin θ dr dθ dφ. The linear example is inspired by Ari Seff in <https://youtu.be/i7LjDvsLWCg?t=250>; the spherical volume element is based on Juan Falgueras-Cano's diagram.
+
+  See also [Euler Angles](../euler-angles) and [Spherical Volume Element](../spherical-volume-element).
+attribution:
+  creator: Juan Falgueras-Cano
+  creator_url: https://github.com/juanfal
+  source: Spherical Volume Element

@@ -181,13 +181,19 @@ def test_readme_preview_files_exist(n_diagrams: int) -> None:
     assert len(rows) == 2 + 2 * ((n_diagrams + 1) // 2)
     assert all(row.endswith("| &nbsp; |") for row in rows[-2:]) == bool(n_diagrams % 2)
     visible = {diagram.name for diagram in diagrams}
-    assert {"materials-informatics", "ergodic"} <= visible
+    assert {
+        "materials-informatics",
+        "ergodic",
+        "change-of-variables",
+        "spherical-volume-element",
+    } <= visible
     assert visible.isdisjoint(
         {
             "materials-informatics-challenges",
             "momentum-shell",
             "dna-double-helix",
             "risk-opportunity-matrix",
+            "cartesian-vs-polar-coordinates",
         }
     )
 
