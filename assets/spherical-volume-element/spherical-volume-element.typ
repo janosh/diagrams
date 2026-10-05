@@ -1,6 +1,9 @@
 // Spherical differential volume by Juan Falgueras-Cano, 2026-10-04.
 #import "@preview/cetz:0.5.2": canvas, draw
-#import draw: arc, circle, content, get-ctx, hide, line, merge-path, on-xy, on-xz, rect, rotate, scope
+#import draw: (
+  arc, circle, content, floating, get-ctx, hide, line, merge-path, on-xy, on-xz, rect, rotate,
+  scope,
+)
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 #set text(size: 12pt)
@@ -50,15 +53,7 @@
   }
 }
 
-// === Crop window ===
-// (x-min, y-min, x-max, y-max) in cm from the origin of the axes; `none` shows everything.
-// CeTZ cannot clip, so the canvas is padded to a known extent (larger than the whole
-// figure) and then cut with a clipping box at these limits.
-#let crop = (-2.75, -1.45, 5.4, 5.2)
-#let extent = 7
-
-#let drawing = canvas(length: 1cm, {
-  if crop != none { hide(rect((-extent, -extent), (extent, extent)), bounds: true) }
+#let geometry = {
   let sphere_radius = 4
   let axis_mark = (end: "stealth", fill: black, scale: .6)
   let length_arrow = (end: "stealth", start: "stealth", fill: blue, scale: .4)
@@ -80,6 +75,7 @@
       }
     })
     // Use the drawing transform itself to split the guides into front/back halves.
+    // Meridian centers use colatitude atan2(view.z, view.x/y); edge converts to 90deg - theta.
     get-ctx(ctx => {
       let view = ctx.transform.at(2)
       for (base, axis, center) in (
@@ -176,15 +172,19 @@
       content(spherical(..position), text(paint, label), anchor: anchor, padding: padding)
     }
   })
-})
-
-#if crop == none { drawing } else {
-  let (x-min, y-min, x-max, y-max) = crop
-  // The canvas top-left corner is the point (-extent, +extent).
-  box(
-    clip: true,
-    width: (x-max - x-min) * 1cm,
-    height: (y-max - y-min) * 1cm,
-    place(top + left, dx: -(x-min + extent) * 1cm, dy: -(extent - y-max) * 1cm, drawing),
-  )
 }
+
+// Crop limits are (x_min, y_min, x_max, y_max) in cm from the axes' origin.
+// Pass crop: none to show the full sphere.
+#let volume_element(crop: (-2.75, -1.45, 5.4, 5.2)) = {
+  set text(size: 12pt)
+  if crop == none { canvas(length: 1cm, geometry) } else {
+    let (x_min, y_min, x_max, y_max) = crop
+    box(clip: true, canvas(length: 1cm, {
+      hide(rect((x_min, y_min), (x_max, y_max)), bounds: true)
+      floating(geometry)
+    }))
+  }
+}
+
+#volume_element()

@@ -13,7 +13,7 @@
 
 #let axis(endpoint, label, anchor, color) = {
   draw.line((0, 0, 0), endpoint, stroke: color + 1pt, mark: arrow(color))
-  draw.content(endpoint, text(fill: color, label), anchor: anchor, padding: 3pt)
+  draw.content(endpoint, text(size: 16pt, fill: color, label), anchor: anchor, padding: 3pt)
 }
 
 #let rotation_angles(angle, label, color, anchors) = {
@@ -29,7 +29,7 @@
     let middle = (start + stop) / 2
     draw.content(
       (0.7 * calc.cos(middle), 0.7 * calc.sin(middle)),
-      text(fill: color, label),
+      text(size: 16pt, fill: color, label),
       anchor: anchor,
       padding: 3pt,
     )
@@ -46,15 +46,15 @@
 }
 
 #canvas({
-  draw.content((0, 5.0), text(size: 16pt, weight: "bold")[Euler angles: three ordered rotations])
-  draw.content((0, 4.35), text(
+  draw.content((0, 7.0), text(size: 18pt, weight: "bold")[Euler angles: three ordered rotations])
+  draw.content((0, 6.35), text(
     size: 14pt,
   )[Intrinsic $Z$–$Y$–$Z$ convention · axes move with the frame])
   draw.scope({
     // Orthographic viewing transform; subsequent rotations act in the moving frame.
     draw.rotate(x: -70deg)
     draw.rotate(z: -130deg)
-    draw.scale(3.8)
+    draw.scale(5.6)
     axis((1, 0, 0), $x$, "north-east", rgb("697586"))
     axis((0, 1, 0), $y$, "north-west", rgb("697586"))
     axis((0, 0, 1), $z$, "south", rgb("697586"))
@@ -80,16 +80,19 @@
   })
 
   for (position, color, heading, detail) in (
-    (-5.2, precession_color, [1. Precession $psi$], [Rotate about $z$]),
+    (-4.6, precession_color, [1. Precession $psi$], [Rotate about $z$]),
     (0, nutation_color, [2. Nutation $theta$], [Tilt about $v$]),
-    (5.2, rotation_color, [3. Spin $phi$], [Rotate about $z_1$]),
+    (4.6, rotation_color, [3. Spin $phi$], [Rotate about $z_1$]),
   ) {
-    draw.content((position, -4.35), text(size: 16pt, fill: color, weight: "bold", heading))
-    draw.content((position, -4.95), text(size: 14pt, detail))
+    draw.content((position, -6.2), text(size: 16pt, fill: color, weight: "bold", heading))
+    draw.content((position, -6.8), text(size: 14pt, detail))
   }
-  draw.content((0, -5.65), $R = R_z (psi) R_y (theta) R_z (phi)$)
-  draw.content((0, -6.2), text(
+  draw.content((0, -7.6), text(size: 18pt)[$R = R_z (psi) R_y (theta) R_z (phi)$])
+  draw.content((0, -8.45), text(
     size: 14pt,
     fill: rgb("697586"),
-  )[The final basis is $(x_1, y_1, z_1)$. Changing the rotation order changes the orientation.])
+  )[#align(center)[
+    The final basis is $(x_1, y_1, z_1)$. #linebreak()
+    Changing the rotation order changes the orientation.
+  ]])
 })
