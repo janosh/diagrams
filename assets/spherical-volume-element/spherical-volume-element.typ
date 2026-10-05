@@ -6,7 +6,6 @@
 )
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
-#set text(size: 12pt)
 
 // theta is colatitude from +z; phi is azimuth in the xy plane.
 #let spherical(radius, theta, phi) = (
@@ -178,13 +177,13 @@
 // Pass crop: none to show the full sphere.
 #let volume_element(crop: (-2.75, -1.45, 5.4, 5.2)) = {
   set text(size: 12pt)
-  if crop == none { canvas(length: 1cm, geometry) } else {
-    let (x_min, y_min, x_max, y_max) = crop
-    box(clip: true, canvas(length: 1cm, {
+  box(clip: crop != none, canvas({
+    if crop == none { geometry } else {
+      let (x_min, y_min, x_max, y_max) = crop
       hide(rect((x_min, y_min), (x_max, y_max)), bounds: true)
       floating(geometry)
-    }))
-  }
+    }
+  }))
 }
 
 #volume_element()
