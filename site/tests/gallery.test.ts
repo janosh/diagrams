@@ -94,9 +94,7 @@ it(`loads YAML metadata with string dates and rendered descriptions`, () => {
   expect(euler_angles.date).toBe(`2020-10-08`)
   expect(euler_angles.title).toBe(`Euler Angles`)
   expect(euler_angles.description).toMatch(/^<p>/u)
-  expect(euler_angles.description).toContain(
-    `<a href="../cartesian-vs-polar-coordinates">`,
-  )
+  expect(euler_angles.description).toContain(`<a href="../change-of-variables">`)
 })
 
 const typst_sources = import.meta.glob<string>(`../../assets/**/*.typ`, {
@@ -105,8 +103,8 @@ const typst_sources = import.meta.glob<string>(`../../assets/**/*.typ`, {
   import: `default`,
 })
 
-const compound_sources = Object.entries(typst_sources).filter(([, source]) =>
-  source.includes(`#let card_body(`),
+const compound_sources = Object.entries(typst_sources).filter(
+  ([, source]) => source.includes(`#let card_body(`) || source.includes(`#let card(`),
 )
 
 it.each([

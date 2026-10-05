@@ -1,0 +1,10 @@
+title: Spherical Volume Element
+creator: Juan Falgueras-Cano
+date: 2026-10-04
+tags:
+  - mathematics
+  - calculus
+  - spherical coordinates
+  - volume element
+  - physics
+description: Spherical volume element dV = r² sin θ dr dθ dφ, with polar angle θ, azimuth φ, position vector r, and edge lengths dr, r dθ, and r sin θ dφ.
