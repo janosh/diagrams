@@ -275,14 +275,23 @@
   content(project(0,sphere-radius + axis-label-offset,0), $y$)
 
   // --- 6.7 Edges of dV (12) ------------------------------------------------------
-  // The drawing order matters: faint/hidden edges go first so they never end
-  // up painted over the front ones. Three families of 4, by the coordinate that varies.
+  // Each edge is (end corner a, end corner b, samples). Straight radial edges
+  // need a single segment (n: 1); curved θ and φ edges use edge-samples.
+  // Three families of 4, by the coordinate that varies:
+  //   radial (dr), θ (r dθ), φ (r sin θ dφ)
+  let edges = (
+    (c-000, c-100, 1), (c-010, c-110, 1), (c-001, c-101, 1), (c-011, c-111, 1),   // radial: dr
+    (c-000, c-010, edge-samples), (c-100, c-110, edge-samples),                   // θ: r dθ
+    (c-001, c-011, edge-samples), (c-101, c-111, edge-samples),
+    (c-000, c-001, edge-samples), (c-100, c-101, edge-samples),                   // φ: r sin θ dφ
+    (c-010, c-011, edge-samples), (c-110, c-111, edge-samples),
+  )
+  let touches-hidden-corner(e) = e.at(0) == farthest-corner or e.at(1) == farthest-corner
 
-  // (a) RADIAL edges (4): θ and φ fixed, r goes from r-min to r-max. Length: dr.
-  draw-edge(c-000, c-100, n: 1)
-  draw-edge(c-010, c-110, n: 1)
-  draw-edge(c-001, c-101, n: 1)
-  draw-edge(c-011, c-111, n: 1)
+  // The drawing order is computed, not fixed by hand, so it stays correct when
+  // cam-azimuth or cam-elevation change: hidden edges first, then the origin
+  // extensions, then the visible edges on top of everything.
+  for (a, b, n) in edges.filter(touches-hidden-corner) { draw-edge(a, b, n: n) }
 
   // Extension of the inner radial edges back to the origin O
   // (c-010 is skipped: vector r is drawn there later)
@@ -290,23 +299,7 @@
     line((0, 0), sph-to-screen(..corner), stroke: style-origin-extension)
   }
 
-  // (c) one φ edge drawn early so it goes under the θ edges:
-  //     r-min, θ-min, φ from min to max  (it touches the hidden corner)
-  draw-edge(c-000, c-001)
-
-  // (b) θ edges (4): r and φ fixed, θ goes from theta-min to theta-max.
-  //     Arcs of a great circle, length r·dθ.
-  draw-edge(c-000, c-010)   // r-min, φ-min
-  draw-edge(c-100, c-110)   // r-max, φ-min
-  draw-edge(c-001, c-011)   // r-min, φ-max
-  draw-edge(c-101, c-111)   // r-max, φ-max
-
-  // (c) φ edges (the other 3): r and θ fixed, φ goes from phi-min to phi-max.
-  //     Arcs of a parallel, length r·sin θ·dφ.
-  //     (The 4th one, c-000 -> c-001, was drawn before the θ edges.)
-  draw-edge(c-100, c-101)   // r-max, θ-min
-  draw-edge(c-010, c-011)   // r-min, θ-max
-  draw-edge(c-110, c-111)   // r-max, θ-max
+  for (a, b, n) in edges.filter(e => not touches-hidden-corner(e)) { draw-edge(a, b, n: n) }
 
   // --- 6.8 Length arrows -------------------------------------------------------------
   // r sin θ dφ: double arrow along φ, at r-min, slightly beyond theta-max
