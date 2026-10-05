@@ -1,9 +1,11 @@
 // Spherical differential volume by Juan Falgueras-Cano, 2026-10-04.
 #import "@preview/cetz:0.5.2": canvas, draw
-#import draw: arc, circle, content, get-ctx, line, merge-path, on-xy, on-xz, rotate, scope
+#import draw: (
+  arc, circle, content, floating, get-ctx, hide, line, merge-path, on-xy, on-xz, rect, rotate,
+  scope,
+)
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
-#set text(size: 12pt)
 
 // theta is colatitude from +z; phi is azimuth in the xy plane.
 #let spherical(radius, theta, phi) = (
@@ -50,7 +52,7 @@
   }
 }
 
-#canvas(length: 1cm, {
+#let geometry = {
   let sphere_radius = 4
   let axis_mark = (end: "stealth", fill: black, scale: .6)
   let length_arrow = (end: "stealth", start: "stealth", fill: blue, scale: .4)
@@ -72,6 +74,7 @@
       }
     })
     // Use the drawing transform itself to split the guides into front/back halves.
+    // Meridian centers use colatitude atan2(view.z, view.x/y); edge converts to 90deg - theta.
     get-ctx(ctx => {
       let view = ctx.transform.at(2)
       for (base, axis, center) in (
@@ -168,4 +171,19 @@
       content(spherical(..position), text(paint, label), anchor: anchor, padding: padding)
     }
   })
-})
+}
+
+// Crop limits are (x_min, y_min, x_max, y_max) in cm from the axes' origin.
+// Pass crop: none to show the full sphere.
+#let volume_element(crop: (-2.75, -1.45, 5.4, 5.2)) = {
+  set text(size: 12pt)
+  box(clip: crop != none, canvas({
+    if crop == none { geometry } else {
+      let (x_min, y_min, x_max, y_max) = crop
+      hide(rect((x_min, y_min), (x_max, y_max)), bounds: true)
+      floating(geometry)
+    }
+  }))
+}
+
+#volume_element()

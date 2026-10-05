@@ -11,6 +11,7 @@ from math import cos, exp, fsum, hypot, radians, sin
 from pathlib import Path
 
 import pytest
+from convert_assets import PNG_PPI
 
 ROOT = os.path.dirname(os.path.dirname(__file__))
 
@@ -268,21 +269,43 @@ def evaluate_diagram(slug: str, expression: str) -> list:
     )
 
 
-def test_spherical_coordinates_guides_share_origin(tmp_path: Path) -> None:
-    """Make all four radial guides meet at the marked sphere center in the combined panel."""
-    output_path = tmp_path / "change-of-variables.svg"
-    subprocess.run(
-        [
-            "typst",
-            "compile",
-            "--root",
-            ROOT,
-            f"{ROOT}/assets/change-of-variables/change-of-variables.typ",
-            str(output_path),
-        ],
-        check=True,
+def compile_svg(slug: str, *, source: str | None = None) -> ET.Element:
+    """Compile a standalone diagram or an explicit render of its exported helpers."""
+    input_path = f"{ROOT}/assets/{slug}/{slug}.typ" if source is None else "-"
+    svg = subprocess.check_output(
+        ["typst", "compile", "--format", "svg", "--root", ROOT, input_path, "-"],
+        input=source,
+        text=True,
     )
-    paths = list(ET.parse(output_path).iter("{http://www.w3.org/2000/svg}path"))
+    return ET.fromstring(svg)
+
+
+def svg_size(root: ET.Element) -> list[float]:
+    """Read a Typst SVG's canvas dimensions in points."""
+    return [float(root.attrib[dimension][:-2]) for dimension in ("width", "height")]
+
+
+def svg_path_points(path: ET.Element) -> list[tuple[float, float]]:
+    """Decode endpoints of CeTZ's relative moves, lines and cubic Bezier segments."""
+    number_pattern = r"[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?"
+    x_coord, y_coord = map(
+        float, re.findall(number_pattern, path.attrib["transform"])
+    )
+    points = []
+    for command, values in re.findall(r"([mlc])([^mlc]*)", path.attrib["d"]):
+        coords = list(map(float, re.findall(number_pattern, values)))
+        assert len(coords) == {"m": 2, "l": 2, "c": 6}[command]
+        x_coord += coords[-2]
+        y_coord += coords[-1]
+        points.append((x_coord, y_coord))
+    return points
+
+
+def test_spherical_coordinates_guides_share_origin() -> None:
+    """Make all four radial guides meet at the marked sphere center in the combined panel."""
+    paths = list(
+        compile_svg("change-of-variables").iter("{http://www.w3.org/2000/svg}path")
+    )
     guides = [
         path
         for path in paths
@@ -295,27 +318,82 @@ def test_spherical_coordinates_guides_share_origin(tmp_path: Path) -> None:
         if path.get("fill") == "#64748b" and path.get("d", "").count("c") == 4
     ]
     assert len(markers) == 1
-    number_pattern = r"[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?"
-    marker_x, marker_y = map(
-        float, re.findall(number_pattern, markers[0].attrib["transform"])
-    )
+    marker_x, marker_y = svg_path_points(markers[0])[0]
     marker_radius = 0.035 * 72 / 2.54
-    center = (marker_x + marker_radius, marker_y + marker_radius)
+    center = (marker_x, marker_y + marker_radius)
     for path in guides:
         assert "stroke-dasharray" in path.attrib
-        offset_x, offset_y = map(
-            float, re.findall(number_pattern, path.attrib["transform"])
-        )
-        coords = list(map(float, re.findall(number_pattern, path.attrib["d"])))
-        assert len(coords) == 6 and path.attrib["d"].count("l") == 1
+        points = svg_path_points(path)
+        assert len(points) == 2 and path.attrib["d"].count("l") == 1
         # One translation and move, serialized to 9 decimals: allow 1e-8pt.
-        assert (offset_x + coords[2], offset_y + coords[3]) == pytest.approx(
-            center, rel=0, abs=1e-8
-        )
+        assert points[0] == pytest.approx(center, rel=0, abs=1e-8)
 
 
-def test_spherical_volume_rendering(tmp_path: Path) -> None:
-    """Check physical edge endpoints, occlusion, continuous guides, labels and transparency."""
+@pytest.mark.parametrize(
+    "crop",
+    [(-2.75, -1.45, 5.4, 5.2), (0, 0, 4, 3), (-1, -1, 3, 2), (-8, -8, 8, 8)],
+)
+def test_spherical_volume_crop_bounds(crop: tuple[float, float, float, float]) -> None:
+    """Honor crop size and position, including equal-size windows at different origins."""
+    source = f"""
+#import "/assets/spherical-volume-element/spherical-volume-element.typ": volume_element
+#set page(width: auto, height: auto, margin: 0pt, fill: none)
+#volume_element(crop: {crop})
+"""
+    root = compile_svg("spherical-volume-element", source=source)
+    x_min, y_min, x_max, y_max = crop
+    # Centimeters to points, with 9-decimal SVG serialization: allow 1e-8pt.
+    assert svg_size(root) == pytest.approx(
+        [(x_max - x_min) * 72 / 2.54, (y_max - y_min) * 72 / 2.54], rel=0, abs=1e-8
+    )
+    assert len(list(root.iter("{http://www.w3.org/2000/svg}clipPath"))) == 1
+    position_vectors = [
+        path
+        for path in root.iter("{http://www.w3.org/2000/svg}path")
+        if path.get("stroke") == "#000000"
+        and path.get("stroke-width") == "1.2"
+        and path.get("fill") == "none"
+    ]
+    assert len(position_vectors) == 1
+    # The position vector starts at the axes' origin, offset by the crop's top-left corner.
+    assert svg_path_points(position_vectors[0])[0] == pytest.approx(
+        [-x_min * 72 / 2.54, y_max * 72 / 2.54], rel=0, abs=1e-8
+    )
+
+
+def test_euler_angles_geometry_fills_frame() -> None:
+    """Keep projected rotation guides large enough for readable axes and angles."""
+    root = compile_svg("euler-angles")
+    guide_x = [
+        x_coord
+        for path in root.iter("{http://www.w3.org/2000/svg}path")
+        if "stroke-dasharray" in path.attrib and path.get("d", "").count("c") == 4
+        for x_coord, _y_coord in svg_path_points(path)
+    ]
+    assert len(guide_x) == 15  # Three circles, each with four cubic segments.
+    assert (max(guide_x) - min(guide_x)) / svg_size(root)[0] >= 0.7
+
+
+@pytest.mark.parametrize("slug", ["spherical-volume-element", "euler-angles"])
+def test_standalone_exports_match_canvas(slug: str) -> None:
+    """Keep downloadable PNGs and both AVIF themes at the authored size and resolution."""
+    canvas_size = svg_size(compile_svg(slug))
+    exported_svg = ET.parse(f"{ROOT}/assets/{slug}/{slug}.svg").getroot()
+    # Both SVGs serialize to 9 decimals; allow 1e-8pt.
+    assert svg_size(exported_svg) == pytest.approx(canvas_size, rel=0, abs=1e-8)
+    # Typst rounds the 400ppi raster dimensions to the nearest whole pixel.
+    pixel_size = [round(length * int(PNG_PPI) / 72) for length in canvas_size]
+    for suffix in (".png", ".avif", "-dark.avif"):
+        artwork = f"{ROOT}/assets/{slug}/{slug}{suffix}"
+        width, height, opaque = subprocess.check_output(
+            ["magick", "identify", "-format", "%w %h %[opaque]", artwork], text=True
+        ).split()
+        assert [int(width), int(height)] == pixel_size, artwork
+        assert opaque == "False", artwork
+
+
+def test_spherical_volume_rendering() -> None:
+    """Check physical edge endpoints, occlusion, continuous guides and labels."""
     source = """
 #show math.equation: item => [#metadata(repr(item.body)) <formula>#item]
 #include "/assets/spherical-volume-element/spherical-volume-element.typ"
@@ -328,37 +406,14 @@ def test_spherical_volume_rendering(tmp_path: Path) -> None:
         )
         == [True] * 6
     )
-    output_path = tmp_path / "spherical-volume.svg"
-    subprocess.run(
-        [
-            "typst",
-            "compile",
-            "--root",
-            ROOT,
-            f"{ROOT}/assets/spherical-volume-element/spherical-volume-element.typ",
-            str(output_path),
-        ],
-        check=True,
-    )
-    paths = list(
-        ET.parse(output_path).getroot().iter("{http://www.w3.org/2000/svg}path")
-    )
-    number_pattern = r"[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?"
-
-    def path_points(path: ET.Element) -> list[tuple[float, float]]:
-        """Decode endpoints of CeTZ's relative moves, lines and cubic Bezier segments."""
-        x_coord, y_coord = map(
-            float, re.findall(number_pattern, path.attrib["transform"])
-        )
-        points = []
-        for command, values in re.findall(r"([mlc])([^mlc]*)", path.attrib["d"]):
-            coords = list(map(float, re.findall(number_pattern, values)))
-            assert len(coords) == {"m": 2, "l": 2, "c": 6}[command]
-            x_coord += coords[-2]
-            y_coord += coords[-1]
-            points.append((x_coord, y_coord))
-        return points
-
+    full_source = """
+#import "/assets/spherical-volume-element/spherical-volume-element.typ": volume_element
+#set page(width: auto, height: auto, margin: 8pt, fill: none)
+#volume_element(crop: none)
+"""
+    root = compile_svg("spherical-volume-element", source=full_source)
+    assert not list(root.iter("{http://www.w3.org/2000/svg}clipPath"))
+    paths = list(root.iter("{http://www.w3.org/2000/svg}path"))
     guides = [
         path
         for path in paths
@@ -366,25 +421,53 @@ def test_spherical_volume_rendering(tmp_path: Path) -> None:
         and path.get("stroke-width") == "0.5"
     ]
     radius = 4 * 72 / 2.54
-    offset_x, offset_y = map(
-        float, re.findall(number_pattern, guides[0].attrib["transform"])
-    )
-    center_x, center_y = offset_x + radius, offset_y + radius
+    center_x, circle_y = svg_path_points(guides[0])[0]
+    center_y = circle_y + radius
     guide_paths = [path for path in guides if path.attrib["d"].count("c") == 2]
     assert len(guide_paths) == 6
     assert sum("stroke-dasharray" in path.attrib for path in guide_paths) == 3
+    azimuth, elevation = radians(30), radians(10)
+    view = (
+        cos(elevation) * cos(azimuth),
+        cos(elevation) * sin(azimuth),
+        sin(elevation),
+    )
+
+    def project_point(
+        cart_x: float, cart_y: float, cart_z: float
+    ) -> tuple[float, float]:
+        """Independently project Cartesian coordinates from the authored camera view."""
+        screen_x = -cart_x * sin(azimuth) + cart_y * cos(azimuth)
+        screen_y = (
+            -cart_x * sin(elevation) * cos(azimuth)
+            - cart_y * sin(elevation) * sin(azimuth)
+            + cart_z * cos(elevation)
+        )
+        return (
+            center_x + screen_x * 72 / 2.54,
+            center_y - screen_y * 72 / 2.54,
+        )
+
     for path_idx, path in enumerate(guide_paths):
-        points = path_points(path)
+        points = svg_path_points(path)
         for x_coord, y_coord in (points[0], points[-1]):
             # CeTZ rounds matrices to 10 decimals and SVG coordinates to 9; allow 1e-7pt.
             assert hypot(x_coord - center_x, y_coord - center_y) == pytest.approx(
                 radius, rel=0, abs=1e-7
             )
-        if path_idx < 2:
-            assert (points[1][1] > center_y) == ("stroke-dasharray" not in path.attrib)
+        # The front/back centers maximize/minimize depth in each guide's plane.
+        active_axes = ((0, 1), (0, 2), (1, 2))[path_idx // 2]
+        depth_norm = hypot(*(view[axis] for axis in active_axes))
+        depth_sign = -1 if "stroke-dasharray" in path.attrib else 1
+        midpoint = project_point(
+            *(
+                4 * depth_sign * component / depth_norm if axis in active_axes else 0
+                for axis, component in enumerate(view)
+            )
+        )
+        assert points[1] == pytest.approx(midpoint, rel=0, abs=1e-7)
 
     # Independently project all eight physical corners to validate the drawn edges.
-    azimuth, elevation = radians(30), radians(10)
     corners = {}
     for corner_idx in product((0, 1), repeat=3):
         radius_idx, theta_idx, phi_idx = corner_idx
@@ -393,16 +476,7 @@ def test_spherical_volume_rendering(tmp_path: Path) -> None:
         cart_x = radius * sin(theta) * cos(phi)
         cart_y = radius * sin(theta) * sin(phi)
         cart_z = radius * cos(theta)
-        screen_x = -cart_x * sin(azimuth) + cart_y * cos(azimuth)
-        screen_y = (
-            -cart_x * sin(elevation) * cos(azimuth)
-            - cart_y * sin(elevation) * sin(azimuth)
-            + cart_z * cos(elevation)
-        )
-        corners[corner_idx] = (
-            center_x + screen_x * 72 / 2.54,
-            center_y - screen_y * 72 / 2.54,
-        )
+        corners[corner_idx] = project_point(cart_x, cart_y, cart_z)
     edge_paths = [
         path
         for path in paths
@@ -424,7 +498,7 @@ def test_spherical_volume_rendering(tmp_path: Path) -> None:
     )
     actual_edges = set()
     for path_idx, path in enumerate(edge_paths):
-        points = path_points(path)
+        points = svg_path_points(path)
         endpoints = []
         for point in (points[0], points[-1]):
             distances = {
@@ -442,16 +516,6 @@ def test_spherical_volume_rendering(tmp_path: Path) -> None:
         for end in corners
         if sum(lower != upper for lower, upper in zip(start, end, strict=True)) == 1
     }
-    for suffix in (".png", ".avif", "-dark.avif"):
-        artwork = (
-            f"{ROOT}/assets/spherical-volume-element/spherical-volume-element{suffix}"
-        )
-        assert (
-            subprocess.check_output(
-                ["magick", "identify", "-format", "%[opaque]", artwork], text=True
-            )
-            == "False"
-        ), artwork
 
 
 @pytest.mark.parametrize("inverse_temperature", [0.1, 0.5, 1, 4, 10, 100])
