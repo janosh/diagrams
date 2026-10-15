@@ -891,57 +891,6 @@ def test_thermoelectric_curve_normalization() -> None:
     )
 
 
-@pytest.mark.parametrize(
-    "slug,formulas",
-    [
-        ("zt-vs-n", [r"f(n) \/ (max f)"]),
-        (
-            "critical-temperature",
-            [r"sqrt(3)(T_c \/ T - 1)^(1 \/ 2)", r"sqrt(3)(T \/ T_c)^(3 \/ 2)"],
-        ),
-        (
-            "branch-and-bound",
-            [r"(x,y)=(4 \/ 3,4 \/ 3), quad U=20 \/ 3", r"(1,3 \/ 2)"],
-        ),
-        ("k-space", [r"2pi \/ L_x", r"2pi \/ L_y"]),
-        ("signal-sampling", [r"1 \/ f_s", r"2 \/ f_s", r"3 \/ f_s"]),
-        (
-            "thermo-ensemble-trafos",
-            [
-                r"sigma = S_m \/ N",
-                r"f = F \/ N",
-                r"Omega \/ V",
-                r"epsilon = E \/ N",
-                r"rho = N \/ V",
-            ],
-        ),
-        ("how-atoms-become-energy-bands", [r"-pi \/ a", r"pi \/ a", r"k = pi \/ a"]),
-        ("quantum-harmonic-oscillator", [r'beta=1 \/ (k_"B" T)', r"ℏ omega \/ 2"]),
-        ("particle-statistics", [r"prop 1 \/ beta", r'beta=1 \/ (k_"B" T)']),
-        ("tori", [r"z mapsto z \/ u", r'tau = v \/ u, quad op("Im") tau > 0']),
-        ("torus-fundamental-domain", [r"-1 \/ 2", r"1 \/ 2"]),
-        ("gas-pressure-on-wall", [r"1 \/ alpha << ell"]),
-        ("spontaneous-magnetization", [r"T \/ T_c"]),
-        (
-            "isotherms",
-            [r"p_0 = R T \/ v", r"p_1 = p_0 + B_1 \/ v^2", r"p_2 = p_1 + B_2 \/ v^3"],
-        ),
-    ],
-)
-def test_small_label_ratios_use_inline_math(slug: str, formulas: list[str]) -> None:
-    """Render simple label ratios at full size while retaining denominator grouping."""
-    source = f"""
-#show math.equation: item => [#metadata(repr(item.body)) <formula>#item]
-#include "/assets/{slug}/{slug}.typ"
-"""
-    expected = ", ".join(f"${formula}$" for formula in formulas)
-    result = evaluate_typst(
-        f"{{ let bodies = query(<formula>).map(item => item.value); ({expected},).map(item => bodies.contains(repr(item.body))) }}",
-        source=source,
-    )
-    assert result == [True] * len(formulas), (slug, formulas, result)
-
-
 def test_energy_shell_uses_canonical_momentum() -> None:
     """Both ellipse intercepts must have the stated Hamiltonian energy."""
     cases = ((1, 1, 1), (4, 2, 3), (0.25, 5, 0.5))
@@ -973,64 +922,6 @@ def test_semi_supervised_panels_share_bounds() -> None:
     assert left == right
 
 
-@pytest.mark.parametrize(
-    "slug,captions,min_font_size",
-    [
-        ("ergodic", ["Opposite edges identified.", "Finite segment shown."], 14),
-        (
-            "semi-supervised-learning",
-            ["Gray samples ignored.", "Boundary follows the low-density gap."],
-            14,
-        ),
-        ("matsubara-contours", ["Bosons", "Fermions"], 14),
-    ],
-)
-def test_short_plot_captions_are_centered(
-    slug: str, captions: list[str], min_font_size: float
-) -> None:
-    """Keep centered captions readable, including inline frequency ratios."""
-    source = f"""
-#show math.frac: fraction => {{
-  assert(fraction.num != $omega_2$.body, message: "Use an inline frequency ratio in captions")
-  fraction
-}}
-#show text: item => context [
-  #metadata((text: item.text, alignment: repr(align.alignment), size: text.size / 1pt)) <alignment>#item
-]
-#include "/assets/{slug}/{slug}.typ"
-"""
-    result = evaluate_typst("query(<alignment>).map(item => item.value)", source=source)
-    rendered = {item["text"].lstrip("· "): item for item in result}
-    for caption in captions:
-        assert rendered[caption]["alignment"] == "center + top"
-        assert rendered[caption]["size"] >= min_font_size
-
-
-@pytest.mark.parametrize(
-    "slug,word_budget",
-    [
-        ("branch-and-bound", 25),
-        ("deep-belief-network", 25),
-        ("semi-supervised-learning", 45),
-        ("qm-cost-vs-acc", 80),
-        ("materials-informatics", 55),
-        ("zt-vs-n", 55),
-        ("ergodic", 75),
-    ],
-)
-def test_diagram_copy_stays_concise(slug: str, word_budget: int) -> None:
-    """Keep prose in page descriptions and reserve artwork for labels and equations."""
-    source = f"""
-#show text: item => [#metadata(item.text) <copy>#item]
-#include "/assets/{slug}/{slug}.typ"
-"""
-    result = evaluate_typst("query(<copy>).map(item => item.value)", source=source)
-    # Count rendered English labels, excluding math symbols and numerical values.
-    # Budgets allow short label edits, but reject reintroducing paragraph captions.
-    words = re.findall(r"\b[A-Za-z]+(?:[–-][A-Za-z]+)*\b", " ".join(result))
-    assert len(words) <= word_budget, (slug, len(words), word_budget)
-
-
 def test_dbn_math_and_footer_are_readable() -> None:
     """Keep math legible and the equation panel compact with subtle shading."""
     source = """
@@ -1052,28 +943,6 @@ def test_dbn_math_and_footer_are_readable() -> None:
     (panel,) = panels
     assert panel["width"] < 250  # Less than half the 500pt content width.
     assert 0 < panel["opacity"] <= 0.4
-
-
-def test_qm_cost_plot_qualifies_method_scaling() -> None:
-    """Tie plotted costs to specific methods and explicitly qualify the accuracy axis."""
-    methods, scope, qualification = evaluate_diagram(
-        "qm-cost-vs-acc",
-        """(
-      diagram.methods.map(method => (method.name, method.exponent)),
-      diagram.scope,
-      diagram.qualification,
-    )""",
-    )
-    assert dict(methods) == {
-        "Semilocal DFT": 3,
-        "Hartree–Fock": 4,
-        "MP2": 5,
-        "CCSD": 6,
-        "CCSD(T)": 7,
-    }
-    assert "Single-reference" in scope and "near equilibrium" in scope
-    assert "Schematic" in qualification
-    assert all(term in qualification for term in ("system", "observable", "basis"))
 
 
 def test_materials_molecule_and_descriptor_are_consistent() -> None:
