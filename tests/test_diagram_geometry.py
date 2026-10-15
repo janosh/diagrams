@@ -516,42 +516,41 @@ def test_spherical_volume_rendering() -> None:
     }
 
 
-@pytest.mark.parametrize("inverse_temperature", [0.1, 0.5, 1, 4, 10, 100])
-def test_oscillator_thermodynamics_match_boltzmann_sum(
-    inverse_temperature: float,
-) -> None:
+def test_oscillator_thermodynamics_match_boltzmann_sum() -> None:
     """Check energies, occupations, heat capacities, and ladder populations independently."""
-    energy, occupation, heat_capacity, probabilities, limits = evaluate_typst(
+    betas = (0.1, 0.5, 1, 4, 10, 100)
+    *per_beta, limits = evaluate_typst(
         f"""{{
           import "/assets/quantum-harmonic-oscillator/quantum-harmonic-oscillator.typ": energy-in-quanta, energy-in-thermal-units
           import "/assets/particle-statistics/particle-statistics.typ": bose-occupation
           import "/assets/einstein-crystal/einstein-crystal.typ": mode_cv, level_probability
-          let inverse = {inverse_temperature}
-          (
+          {betas}.map(inverse => (
             energy-in-quanta(inverse), bose-occupation(inverse), mode_cv(inverse),
             range(5).map(level => level_probability(level, 1 / inverse)),
-            ((0,1e-8).map(energy-in-thermal-units), energy-in-quanta(1000), mode_cv(0)),
-          )
+          )) + (((0,1e-8).map(energy-in-thermal-units), energy-in-quanta(1000), mode_cv(0)),)
         }}""",
     )
-    weights = [exp(-inverse_temperature * level) for level in range(1000)]
-    partition = fsum(weights)
-    mean = fsum(level * weight for level, weight in enumerate(weights)) / partition
-    variance = (
-        fsum(level**2 * weight for level, weight in enumerate(weights)) / partition
-        - mean**2
-    )
-    # The omitted Boltzmann tail is < 4e-42; these tolerances cover f64 accumulation.
-    tolerance = 1e-12 * max(1, mean + 0.5)
-    assert energy == pytest.approx(mean + 0.5, rel=0, abs=tolerance)
-    assert occupation == pytest.approx(mean, rel=0, abs=tolerance)
-    assert heat_capacity == pytest.approx(
-        inverse_temperature**2 * variance, rel=1e-12, abs=0
-    )
-    assert probabilities == pytest.approx(
-        [weight / partition for weight in weights[:5]], rel=1e-14, abs=0
-    )
     assert limits == [[1, 1], 0.5, 1]
+    for beta, (energy, occupation, heat_capacity, probabilities) in zip(
+        betas, per_beta, strict=True
+    ):
+        weights = [exp(-beta * level) for level in range(1000)]
+        partition = fsum(weights)
+        mean = fsum(level * weight for level, weight in enumerate(weights)) / partition
+        variance = (
+            fsum(level**2 * weight for level, weight in enumerate(weights)) / partition
+            - mean**2
+        )
+        # The omitted Boltzmann tail is < 4e-42; these tolerances cover f64 accumulation.
+        tolerance = 1e-12 * max(1, mean + 0.5)
+        assert energy == pytest.approx(mean + 0.5, rel=0, abs=tolerance), beta
+        assert occupation == pytest.approx(mean, rel=0, abs=tolerance), beta
+        assert heat_capacity == pytest.approx(beta**2 * variance, rel=1e-12, abs=0), (
+            beta
+        )
+        assert probabilities == pytest.approx(
+            [weight / partition for weight in weights[:5]], rel=1e-14, abs=0
+        ), beta
 
 
 def test_debye_heat_capacity_matches_independent_quadrature() -> None:
@@ -596,25 +595,25 @@ def test_wannier_equation_keeps_position_outside_subscripts() -> None:
     ) == [True]
 
 
-@pytest.mark.parametrize("cell_idx", [-14, -7, *range(-3, 4), 7, 14])
-def test_wannier_phase_arrows_reinforce_or_close(cell_idx: int) -> None:
+def test_wannier_phase_arrows_reinforce_or_close() -> None:
     """Add seven unit phases at each periodic target and cancel in other cells."""
-    vertices = evaluate_diagram(
-        "wannierization-and-wannier-centers",
-        f"diagram.phase_vertices({cell_idx})",
+    cells = (-14, -7, *range(-3, 4), 7, 14)
+    all_vertices = evaluate_diagram(
+        "wannierization-and-wannier-centers", f"{cells}.map(diagram.phase_vertices)"
     )
-    assert len(vertices) == 8
     # Seven unit vectors evaluated with f64 trig; allow 64 eps for accumulated error.
     tolerance = 64 * sys.float_info.epsilon
-    for start, end in pairwise(vertices):
-        length_squared = fsum(
-            (end_coord - start_coord) ** 2
-            for start_coord, end_coord in zip(start, end, strict=True)
-        )
-        assert length_squared == pytest.approx(1, rel=0, abs=tolerance)
-    assert vertices[-1] == pytest.approx(
-        [7 if cell_idx % 7 == 0 else 0, 0], rel=0, abs=tolerance
-    )
+    for cell_idx, vertices in zip(cells, all_vertices, strict=True):
+        assert len(vertices) == 8
+        for start, end in pairwise(vertices):
+            length_squared = fsum(
+                (end_coord - start_coord) ** 2
+                for start_coord, end_coord in zip(start, end, strict=True)
+            )
+            assert length_squared == pytest.approx(1, rel=0, abs=tolerance)
+        assert vertices[-1] == pytest.approx(
+            [7 if cell_idx % 7 == 0 else 0, 0], rel=0, abs=tolerance
+        ), cell_idx
 
 
 def test_wannier_gauge_preserves_total_occupied_density() -> None:
@@ -943,21 +942,23 @@ def test_small_label_ratios_use_inline_math(slug: str, formulas: list[str]) -> N
     assert result == [True] * len(formulas), (slug, formulas, result)
 
 
-@pytest.mark.parametrize(
-    "energy,mass,stiffness", [(1, 1, 1), (4, 2, 3), (0.25, 5, 0.5)]
-)
-def test_energy_shell_uses_canonical_momentum(
-    energy: float, mass: float, stiffness: float
-) -> None:
+def test_energy_shell_uses_canonical_momentum() -> None:
     """Both ellipse intercepts must have the stated Hamiltonian energy."""
-    axes = evaluate_diagram(
-        "ergodic", f"diagram.shell_axes({energy}, mass: {mass}, stiffness: {stiffness})"
+    cases = ((1, 1, 1), (4, 2, 3), (0.25, 5, 0.5))
+    *axes, origin = evaluate_diagram(
+        "ergodic",
+        f"{cases}.map(((energy, mass, stiffness)) => diagram.shell_axes("
+        "energy, mass: mass, stiffness: stiffness)) + (diagram.angle_point(1, 2),)",
     )
-    position, momentum = axes
     tolerance = 16 * sys.float_info.epsilon  # sqrt, multiplication, and division.
-    assert stiffness * position**2 / 2 == pytest.approx(energy, rel=tolerance, abs=0)
-    assert momentum**2 / (2 * mass) == pytest.approx(energy, rel=tolerance, abs=0)
-    assert evaluate_diagram("ergodic", "diagram.angle_point(1, 2)") == [0, 0]
+    for (energy, mass, stiffness), (position, momentum) in zip(
+        cases, axes, strict=True
+    ):
+        assert stiffness * position**2 / 2 == pytest.approx(
+            energy, rel=tolerance, abs=0
+        )
+        assert momentum**2 / (2 * mass) == pytest.approx(energy, rel=tolerance, abs=0)
+    assert origin == [0, 0]
 
 
 def test_semi_supervised_panels_share_bounds() -> None:
@@ -1152,13 +1153,9 @@ def test_materials_molecule_and_descriptor_are_consistent() -> None:
     ],
 )
 def test_diagrams_omit_redundant_page_titles(slug: str, redundant_title: str) -> None:
-    """Keep duplicate page headings out of the rendered artwork."""
-    source = f"""
-#show text: item => [#metadata(item.text) <copy>#item]
-#include "/assets/{slug}/{slug}.typ"
-"""
-    rendered = evaluate_typst("query(<copy>).map(item => item.value)", source=source)
-    assert redundant_title.casefold() not in " ".join(rendered).casefold()
+    """Keep duplicate page headings out of the artwork source."""
+    with open(f"{ROOT}/assets/{slug}/{slug}.typ") as source:
+        assert redundant_title.casefold() not in source.read().casefold()
 
 
 def test_knn_circles_enclose_k_points_and_flip_the_vote() -> None:
