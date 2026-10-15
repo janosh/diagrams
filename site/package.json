@@ -23,22 +23,22 @@
     "test:visual:update": "playwright test --update-snapshots"
   },
   "devDependencies": {
-    "@playwright/test": "1.63.0",
+    "@playwright/test": "1.64.1",
     "@sveltejs/adapter-static": "^4.0.0",
     "@sveltejs/enhanced-img": "^1.0.0",
-    "@sveltejs/kit": "^3.0.0",
+    "@sveltejs/kit": "^3.1.0",
     "@sveltejs/vite-plugin-svelte": "^7.3.1",
-    "@types/node": "^26.4.1",
+    "@types/node": "^26.6.5",
     "@wooorm/starry-night": "^3.11.0",
-    "katex": "^0.18.7",
-    "svelte": "^5.57.1",
+    "katex": "^0.19.0",
+    "svelte": "^5.57.2",
     "svelte-check": "^4.7.6",
     "svelte-widgets": "github:janosh/svelte-widgets#main",
     "svelte2tsx": "^0.7.61",
     "typescript": "^6.0.3",
-    "vite": "npm:@voidzero-dev/vite-plus-core@1.0.0",
-    "vite-plus": "1.0.0",
-    "vitest": "5.0.1"
+    "vite": "npm:@voidzero-dev/vite-plus-core@1.2.0",
+    "vite-plus": "1.2.0",
+    "vitest": "5.0.4"
   },
   "packageManager": "pnpm@11.5.0"
 }
