@@ -1,16 +1,17 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: content, rect
 
+// Prior columns p(H) | p(not H) span [0, prior-end]; the posterior bar sits after a gap.
+#let (mid-x, prior-end, right-x) = (2, 5, 6)
+#let (likelihood-h, likelihood-not-h) = (1 / 2, 1 / 4) // p(E|H), p(E|not H)
+#let prior = mid-x / prior-end
+#let posterior = prior * likelihood-h / (prior * likelihood-h + (1 - prior) * likelihood-not-h)
+
 #set page(width: auto, height: auto, margin: 3pt, fill: none)
 #set text(size: 12pt, fill: white)
 
 #canvas({
   let (width, height) = (8, 5)
-  // Prior columns p(H) | p(not H) span [0, prior-end]; the posterior bar sits after a gap.
-  let (mid-x, prior-end, right-x) = (2, 5, 6)
-  let (likelihood-h, likelihood-not-h) = (1 / 2, 1 / 4) // p(E|H), p(E|not H)
-  let prior = mid-x / prior-end
-  let posterior = prior * likelihood-h / (prior * likelihood-h + (1 - prior) * likelihood-not-h)
 
   for (start, end, fill, label) in (
     ((0, 0), (mid-x, likelihood-h * height), rgb("#FFA500"), $p(E|H)$),

@@ -7,7 +7,7 @@ import subprocess
 import sys
 import xml.etree.ElementTree as ET
 from itertools import batched, pairwise, product
-from math import cos, exp, fsum, hypot, radians, sin
+from math import cos, dist, exp, fsum, hypot, radians, sin
 from pathlib import Path
 
 import pytest
@@ -288,9 +288,7 @@ def svg_size(root: ET.Element) -> list[float]:
 def svg_path_points(path: ET.Element) -> list[tuple[float, float]]:
     """Decode endpoints of CeTZ's relative moves, lines and cubic Bezier segments."""
     number_pattern = r"[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?"
-    x_coord, y_coord = map(
-        float, re.findall(number_pattern, path.attrib["transform"])
-    )
+    x_coord, y_coord = map(float, re.findall(number_pattern, path.attrib["transform"]))
     points = []
     for command, values in re.findall(r"([mlc])([^mlc]*)", path.attrib["d"]):
         coords = list(map(float, re.findall(number_pattern, values)))
@@ -690,7 +688,9 @@ def test_wannier_center_matches_drawn_density_and_balance(
 
 
 @pytest.mark.parametrize("caller_font_size", [8, 20])
-@pytest.mark.parametrize("slug", ["atomistic-simulation-methods", "change-of-variables"])
+@pytest.mark.parametrize(
+    "slug", ["atomistic-simulation-methods", "change-of-variables"]
+)
 def test_compound_typography_uses_consistent_readable_sizes(
     caller_font_size: int, slug: str
 ) -> None:
@@ -727,7 +727,9 @@ def test_compound_typography_uses_consistent_readable_sizes(
 #show text: item => context [#metadata((item.text, text.size / 1pt)) <typography>#item]
 {panels}
 """
-    sizes = dict(evaluate_typst("query(<typography>).map(item => item.value)", source=source))
+    sizes = dict(
+        evaluate_typst("query(<typography>).map(item => item.value)", source=source)
+    )
     assert sizes == expected
 
 
@@ -1157,3 +1159,75 @@ def test_diagrams_omit_redundant_page_titles(slug: str, redundant_title: str) ->
 """
     rendered = evaluate_typst("query(<copy>).map(item => item.value)", source=source)
     assert redundant_title.casefold() not in " ".join(rendered).casefold()
+
+
+def test_knn_circles_enclose_k_points_and_flip_the_vote() -> None:
+    """Enclose exactly k points per dashed circle, voting B for k=3 and A for k=7."""
+    stars, triangles, center, neighborhoods = evaluate_diagram(
+        "k-nearest-neighbors",
+        "(diagram.stars, diagram.triangles, diagram.new-example, diagram.neighborhoods)",
+    )
+    labeled = [(pos, "A") for pos in stars] + [(pos, "B") for pos in triangles]
+    for (k_neighbors, radius), winner in zip(neighborhoods, "BA", strict=True):
+        votes = [label for pos, label in labeled if dist(pos, center) < radius]
+        assert len(votes) == k_neighbors
+        assert max("AB", key=votes.count) == winner
+
+
+def test_roc_auc_labels_match_curve_areas() -> None:
+    """Label each power-law ROC curve with its midpoint-rule area, all above chance."""
+    n_samples = 100_000
+    for exponent, label in evaluate_diagram(
+        "roc-curve",
+        "diagram.classifiers.map(((_, exponent)) => (exponent, diagram.auc(exponent)))",
+    ):
+        area = fsum(((idx + 0.5) / n_samples) ** exponent for idx in range(n_samples))
+        assert label == round(area / n_samples, 2) > 0.5
+
+
+def test_geometric_bayes_posterior_matches_drawn_areas() -> None:
+    """Size the p(H|E) bar by the H share of the evidence area, 4/7 here."""
+    mid_x, prior_end, likelihood_h, likelihood_not_h, posterior = evaluate_diagram(
+        "geometric-bayes",
+        "(diagram.mid-x, diagram.prior-end, diagram.likelihood-h, "
+        "diagram.likelihood-not-h, diagram.posterior)",
+    )
+    evidence_h, evidence_not_h = (
+        mid_x * likelihood_h,
+        (prior_end - mid_x) * likelihood_not_h,
+    )
+    expected = evidence_h / (evidence_h + evidence_not_h)
+    assert posterior == pytest.approx(expected, rel=1e-12)
+    assert expected == pytest.approx(4 / 7, rel=1e-12)
+
+
+def test_made_masks_are_autoregressive() -> None:
+    """Let output d see input i through all three masks iff m(i) < m(d)."""
+    degrees, masks = evaluate_diagram(
+        "made",
+        "(diagram.degrees, range(3).map(layer => diagram.degrees.at(layer + 1).map("
+        "to => diagram.degrees.at(layer).map(from => diagram.connected(layer, from, to)))))",
+    )
+    reach = [{idx} for idx in range(len(degrees[0]))]
+    for mask in masks:
+        reach = [
+            set().union(*(reach[col] for col, on in enumerate(row) if on))
+            for row in mask
+        ]
+    assert degrees[-1] == degrees[0]
+    assert reach == [
+        {idx for idx, degree in enumerate(degrees[0]) if degree < output}
+        for output in degrees[-1]
+    ]
+
+
+def test_gpu_batch_carries_only_unconverged_structures() -> None:
+    """Keep unconverged structures for the next step and drop converged ones for good."""
+    slots = evaluate_diagram("gpu-batching", "diagram.batch-slots")
+    last_step = max(step for step, *_ in slots)
+    for step, _row, label, converged in slots:
+        later = sorted(
+            other[0] for other in slots if other[2] == label and other[0] > step
+        )
+        assert later[:1] == ([] if converged or step == last_step else [step + 1])
+        assert not (converged and later)

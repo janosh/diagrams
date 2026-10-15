@@ -242,6 +242,35 @@
 ]
 
 // === 2  Follow a replacement ===
+// Atoms per structure, fixed while it stays in the batch
+#let structure-atoms = (
+  "1": 50,
+  "2": 45,
+  "3": 55,
+  "4": 40,
+  "5": 20,
+  "6": 60,
+  "7": 35,
+  "8": 45,
+  "9": 30,
+)
+// (step, row, structure, converged) of each occupied batch slot
+#let batch-slots = (
+  (0, 0, "1", true),
+  (0, 1, "2", false),
+  (0, 2, "3", false),
+  (1, 0, "4", true),
+  (1, 1, "2", true),
+  (1, 2, "3", false),
+  (1, 3, "5", true),
+  (2, 0, "3", true),
+  (2, 1, "6", false),
+  (2, 2, "7", false),
+  (3, 0, "6", false),
+  (3, 1, "7", true),
+  (3, 2, "8", false),
+  (3, 3, "9", false),
+)
 #let figure-1 = [
 
   #canvas(length: 1.12cm, {
@@ -325,28 +354,21 @@
       anchor: "north-west",
     )
 
-    // (step, row, color, label, atoms, name suffix, converged); the suffix distinguishes
-    // repeat appearances of a structure that has not relaxed yet
-    let structures = (
-      (0, 0, blue, "1", 50, "", true),
-      (0, 1, green, "2", 45, "", false),
-      (0, 2, orange, "3", 55, "", false),
-      (1, 0, purple-1, "4", 40, "", true),
-      (1, 1, green, "2", 45, "-2", true),
-      (1, 2, orange, "3", 55, "-2", false),
-      (1, 3, red, "5", 20, "", true),
-      (2, 0, orange, "3", 55, "-3", true),
-      (2, 1, pink, "6", 60, "", false),
-      (2, 2, yellow, "7", 35, "", false),
-      (3, 0, pink, "6", 60, "-2", false),
-      (3, 1, yellow, "7", 35, "-2", true),
-      (3, 2, teal, "8", 45, "", false),
-      (3, 3, purple-2, "9", 30, "", false),
+    let colors = (
+      "1": blue,
+      "2": green,
+      "3": orange,
+      "4": purple-1,
+      "5": red,
+      "6": pink,
+      "7": yellow,
+      "8": teal,
+      "9": purple-2,
     )
 
     // memory-usage region, atom total and step label per batch
     for idx in range(4) {
-      let batch = structures.filter(entry => entry.first() == idx)
+      let batch = batch-slots.filter(entry => entry.first() == idx)
       let name = "batch" + str(idx + 1)
       rect(
         (step-x(idx) - step.width / 2, step.y-offset),
@@ -361,26 +383,30 @@
       )
       content(
         (rel: (0, 0.1), to: name + ".north"),
-        [#batch.map(entry => entry.at(4)).sum() atoms total],
+        [#batch.map(entry => structure-atoms.at(entry.at(2))).sum() atoms total],
         anchor: "south",
       )
       content((rel: (0, -0.7), to: name + ".south"), [*Step #(idx + 1)*])
     }
 
     let base-y = step.y-offset + 0.8
-    for (step-idx, row, color, label, atoms, suffix, converged) in structures {
+    for (step-idx, row, label, converged) in batch-slots {
       let (x, y) = (step-x(step-idx), base-y + row * structure.row-height)
-      let name = "struct-" + label + suffix
+      // repeat appearances of a structure that has not relaxed yet get a -2, -3, ... suffix
+      let repeats = batch-slots.filter(entry => entry.at(2) == label and entry.first() < step-idx)
+      let name = (
+        "struct-" + label + if repeats.len() > 0 { "-" + str(repeats.len() + 1) } else { "" }
+      )
       rect(
         (x - structure.width / 2, y - 0.4),
         (x + structure.width / 2, y + 0.4),
-        fill: color,
+        fill: colors.at(label),
         stroke: 0.5pt,
         radius: 0.2, // max 0.2 due to CeTZ 0.5.0 border anchor bug with rounded rects
         name: name,
       )
       content(name, [Structure #label])
-      content((rel: (0, -0.5), to: name), [#atoms atoms], anchor: "north")
+      content((rel: (0, -0.5), to: name), [#structure-atoms.at(label) atoms], anchor: "north")
       if converged {
         content((rel: (0.1, 0), to: name + ".east"), text(fill: rgb("#38A169"))[✓], anchor: "west")
       }
