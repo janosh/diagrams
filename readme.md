@@ -167,7 +167,7 @@ uv run --no-project --python 3.14 --with pytest --with pyyaml pytest -q
 prek run --all-files
 ```
 
-Rendering tests need the tools above and the artwork's fonts. Metadata requires `title`, `description`, and unique `tags`.
+Rendering tests need the tools above. Metadata requires `title`, `description`, and unique `tags`.
 
 ## Site visual checks
 

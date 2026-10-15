@@ -67,8 +67,7 @@ jobs:
         uses: j178/prek-action@v3.0.0
 
   python-tests:
-    # Artwork uses macOS fonts, including Avenir Next; match the authoring environment.
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
         with:
@@ -77,8 +76,12 @@ jobs:
         with:
           python-version: '3.14'
       - uses: typst-community/setup-typst@v5
+      # apt only ships ImageMagick 6 (no `magick` CLI); the runner's Homebrew has 7 with AVIF.
       - name: Install image tools
-        run: brew install imagemagick zopfli
+        run: |
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          brew install imagemagick zopfli
+          echo "$(brew --prefix)/bin" >> "$GITHUB_PATH"
       - name: Python tests
         run: uv run --no-project --with pytest --with pyyaml pytest -q
 
