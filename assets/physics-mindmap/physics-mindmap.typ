@@ -28,11 +28,7 @@
 
 #let node(pos, txt, style, color: orange) = {
   circle(pos, radius: style.radius, fill: color, stroke: none)
-  content(pos, text(
-    fill: label-color(color),
-    size: style.font-size,
-    align(center, txt),
-  ))
+  content(pos, text(fill: label-color(color), size: style.font-size, align(center, txt)))
 }
 
 // Link drawn as a trapezoid that narrows from parent to child and whose ends scale
@@ -43,10 +39,8 @@
   let length = calc.sqrt(delta-x * delta-x + delta-y * delta-y)
   // unit normal to the link direction, offsets the trapezoid corners sideways
   let (normal-x, normal-y) = (-delta-y / length, delta-x / length)
-  let (half-from, half-to) = (
-    taper-wide * from-style.radius,
-    taper-narrow * to-style.radius,
-  )
+  let half-from = taper-wide * from-style.radius
+  let half-to = taper-narrow * to-style.radius
   on-layer(-1, line(
     (from-x + normal-x * half-from, from-y + normal-y * half-from),
     (to-x + normal-x * half-to, to-y + normal-y * half-to),
@@ -61,9 +55,8 @@
 // Branches are placed every 60deg around the hub, leaf angles are absolute.
 // The page is transparent, so fills have to stay legible on both the site's light
 // (#F8F9FA) and dark (#534C5E) diagram backdrops. Those straddle mid grey, so no
-// opaque fill clears 3:1 on both; the best any color can do is 2.79:1 either way.
-// Cosmology and Quantum Mechanics were near-invisible in dark mode as #006400
-// (1.10:1) and #00008B (1.87:1), and now sit at 2.63:1 and 2.62:1.
+// opaque fill clears 3:1 on both (the best possible is 2.79:1 either way); the
+// Cosmology and Quantum Mechanics greens/blues reach about 2.6:1.
 #let branches = (
   (
     title: [Classical\ Mechanics],
@@ -114,22 +107,20 @@
   ),
 )
 
+#let polar(center, angle, dist) = (
+  center.at(0) + calc.cos(angle) * dist,
+  center.at(1) + calc.sin(angle) * dist,
+)
+
 #canvas({
   let hub-pos = (0, 0)
 
   for (idx, branch) in branches.enumerate() {
-    let branch-angle = idx * 60deg
-    let branch-pos = (
-      calc.cos(branch-angle) * branch-dist,
-      calc.sin(branch-angle) * branch-dist,
-    )
+    let branch-pos = polar(hub-pos, idx * 60deg, branch-dist)
     connect(hub-pos, hub-style, branch-pos, branch-style, branch.color)
 
     for (leaf-title, leaf-angle) in branch.leaves {
-      let leaf-pos = (
-        branch-pos.at(0) + calc.cos(leaf-angle) * leaf-dist,
-        branch-pos.at(1) + calc.sin(leaf-angle) * leaf-dist,
-      )
+      let leaf-pos = polar(branch-pos, leaf-angle, leaf-dist)
       connect(branch-pos, branch-style, leaf-pos, leaf-style, branch.color)
       node(leaf-pos, leaf-title, leaf-style, color: branch.color)
     }

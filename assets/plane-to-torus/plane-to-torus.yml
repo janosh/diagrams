@@ -9,11 +9,4 @@ tags:
   - symmetries
   - compactification
 description: >-
-  Building a [torus](../torus) by declaring the plane periodic. Once translation by $2\pi$ in either
-  direction is a symmetry, a single lattice cell already carries every point: it is a
-  fundamental domain. Gluing that cell's horizontal edges $b$ rolls it into a cylinder,
-  and gluing the two rims $a$ that are left closes the cylinder into a torus. The
-  chevrons track the orientation each edge is glued with, since reversing one instead
-  yields a Klein bottle. The two edge pairs survive the construction as the torus's two
-  independent loops, the generators of $\pi_1(T^2) = \mathbb{Z} \times \mathbb{Z}$, which
-  are what a closed string winds around in a compactified dimension.
+  Building a [torus](../torus) by declaring the plane periodic. Once translation by $2\pi$ in either direction is a symmetry, a single lattice cell already carries every point: it is a fundamental domain. Gluing that cell's horizontal edges $b$ rolls it into a cylinder, and gluing the two rims $a$ that are left closes the cylinder into a torus. The chevrons track the orientation each edge is glued with, since reversing one instead yields a Klein bottle. The two edge pairs survive the construction as the torus's two independent loops, the generators of $\pi_1(T^2) = \mathbb{Z} \times \mathbb{Z}$, which are what a closed string winds around in a compactified dimension.

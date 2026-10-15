@@ -10,60 +10,42 @@
   let height = 8
   let point-radius = 0.15
   let line-thickness = 1.5pt
-  let arrow-style = (
-    mark: (end: "stealth"),
-    stroke: line-thickness,
-    fill: black,
-  )
-  let hull-style = (stroke: blue.darken(20%) + 2.5pt)
-  let hyp-hull-style = (
-    stroke: (paint: gray, thickness: line-thickness, dash: "dashed"),
-  )
+  let arrow-style = (mark: (end: "stealth"), stroke: line-thickness, fill: black)
+  let hull-color = blue.darken(20%)
+  let green = rgb("#4d8000")
 
   // Draw axes first to establish named positions
   line((0, 0), (0, height), ..arrow-style, name: "y-axis-left")
   line((0, 0), (width, 0), stroke: line-thickness, name: "x-axis")
   line((width, 0), (width, height), ..arrow-style, name: "y-axis-right")
 
-  let stable-point(pos, label, anchor: "north", padding: none, ..rest) = {
-    circle(pos, radius: point-radius, fill: blue.darken(20%), ..rest)
+  // Stable phases at x = 0, 1/2, 5/7, 1. Both elemental references sit at Delta E_f = 0.
+  for (pos, label, anchor, padding, name) in (
+    ((0, height - 1), "A", "west", (left: 10pt), "a"),
+    ((width / 2, 2), "AX", "north", (top: 10pt), "ax"),
+    ((width * 5 / 7, 1.5), $A_2X_5$, "north", (top: 10pt), "a2x5"),
+    ((width, height - 1), "X", "east", (right: 10pt), "x"),
+  ) {
+    circle(pos, radius: point-radius, fill: hull-color, name: name)
     content(pos, label, anchor: anchor, padding: padding)
   }
 
-  for spec in (
-    (pos: (0, height - 1), label: "A", args: (anchor: "west", padding: (left: 10pt), name: "a")),
-    (pos: (width / 2, 2), label: "AX", args: (anchor: "north", padding: (top: 10pt), name: "ax")),
-    (
-      pos: (width * 5 / 7, 1.5),
-      label: $A_2X_5$,
-      args: (anchor: "north", padding: (top: 10pt), name: "a2x5"),
-    ),
-    (
-      pos: (width, height - 1.5),
-      label: "X",
-      args: (anchor: "east", padding: (right: 10pt), name: "x"),
-    ),
-  ) { stable-point(spec.pos, spec.label, ..spec.args) }
-
-  let unstable-point(pos, label, ..rest) = {
-    let (x, y) = pos
-    rect((x, y - 0.15), (x + 0.3, y + 0.15), fill: red, stroke: .5pt, ..rest)
-    content(pos, label, anchor: "south", padding: (bottom: 8pt))
+  // Unstable phases at x = 1/3, 7/9
+  for (pos, label, name, anchor) in (
+    ((width / 3, height - 1.5), $A_2X$, "a2x", "south"),
+    // Upper-left label keeps clear of the hypothetical hull leaving A₂X₇ to the upper right
+    ((width * 7 / 9, 3.7), $A_2X_7$, "a2x7", "south-east"),
+  ) {
+    rect((rel: (-0.15, -0.15), to: pos), (rel: (0.3, 0.3)), fill: red, stroke: .5pt, name: name)
+    content(pos, label, anchor: anchor, padding: (bottom: 8pt))
   }
 
-  for (pos, label, name) in (
-    ((width / 3, height - 1.5), $A_2X$, "a2x"),
-    ((width * 7 / 9, 3.7), $A_2X_7$, "a2x7"),
-  ) { unstable-point(pos, label, name: name) }
-
-  for (start, end, name) in (
-    ("a", "ax", "hull-a-ax"),
-    ("ax", "a2x5", "hull-ax-a2x5"),
-    ("a2x5", "x", "hull-a2x5-x"),
-  ) { line(start, end, ..hull-style, name: name) }
+  for (start, end) in (("a", "ax"), ("ax", "a2x5"), ("a2x5", "x")) {
+    line(start, end, stroke: hull-color + 2.5pt, name: "hull-" + start + "-" + end)
+  }
   content(
     (rel: (-1.8, -.8), to: "ax"),
-    text(fill: blue.darken(20%), size: 12pt)[convex hull\ of stability],
+    text(fill: hull-color)[convex hull\ of stability],
     frame: "rect",
     stroke: none,
     padding: (left: 5pt),
@@ -73,122 +55,86 @@
   line(
     "hull-label.north",
     "hull-a-ax.90%",
-    stroke: (paint: blue.darken(20%), thickness: .5pt),
+    stroke: (paint: hull-color, thickness: .5pt),
     padding: 1pt,
-    name: "hull-label-line",
   )
 
-  for (start, end, name) in (
-    ("ax", "a2x7", "hyp-hull-ax-a2x7"),
-    ("a2x7", "x", "hyp-hull-a2x7-x"),
-  ) { line(start, end, ..hyp-hull-style, name: name) }
+  for (start, end) in (("ax", "a2x7"), ("a2x7", "x")) {
+    line(
+      start,
+      end,
+      stroke: (paint: gray, thickness: line-thickness, dash: "dashed"),
+      name: "hyp-hull-" + start + "-" + end,
+    )
+  }
   content(
     (rel: (0, 0.3), to: "hyp-hull-a2x7-x.mid"),
     text(fill: gray, size: 13pt)[hypothetical hull for\ evaluating $A_2X_5$],
     anchor: "east",
   )
 
-  // Intersection helpers must not expand the visible diagram's bounds.
-  draw.hide(line(
-    (rel: (0, 3), to: "a2x"),
-    (rel: (0, -3), to: "a2x"),
-    stroke: none,
-    name: "a2x-vertical",
-  ))
-  intersections("a2x-isect", "a2x-vertical", "hull-a-ax", "hull-ax-a2x5")
+  // Vertical arrow from the (hypothetical) hull down or up to a phase: its decomposition energy
+  let decomposition-arrow(phase, hull-segments, color) = {
+    // Intersection helpers must not expand the visible diagram's bounds.
+    draw.hide(line((rel: (0, 3), to: phase), (rel: (0, -3), to: phase), name: phase + "-vertical"))
+    intersections(phase + "-isect", phase + "-vertical", ..hull-segments)
+    line(
+      phase + "-isect.0",
+      phase,
+      mark: (end: "stealth", fill: color),
+      stroke: color + line-thickness,
+      name: "arrow-" + phase,
+    )
+  }
+  let reaction-box = (frame: "rect", padding: (1pt, 3pt), anchor: "west")
 
-  line(
-    "a2x-isect.0",
-    "a2x",
-    mark: (end: "stealth", fill: red),
-    stroke: red + line-thickness,
-    name: "arrow-a2x",
-  )
+  decomposition-arrow("a2x", ("hull-a-ax", "hull-ax-a2x5"), red)
   content((rel: (-0.5, 0), to: "arrow-a2x.60%"), text(fill: red)[$Delta E_d$])
   content(
     (rel: (.2, 0), to: "arrow-a2x.30%"),
-    text(fill: red, size: 12pt)[A + AX → A₂X],
-    frame: "rect",
-    padding: (1pt, 3pt),
+    text(fill: red)[A + AX → A₂X],
     stroke: red + .3pt,
-    name: "box1",
-    anchor: "west",
     fill: red.lighten(90%),
+    ..reaction-box,
   )
 
-  // Second arrow - find intersections first
-  draw.hide(line(
-    (rel: (0, 3), to: "a2x5"),
-    (rel: (0, -3), to: "a2x5"),
-    stroke: none,
-    name: "a2x5-vertical",
-  ))
-  intersections("a2x5-isect", "a2x5-vertical", "hyp-hull-ax-a2x7", "hyp-hull-a2x7-x")
-
-  line(
-    "a2x5-isect.0",
-    "a2x5",
-    mark: (end: "stealth", fill: rgb("#4d8000")),
-    stroke: rgb("#4d8000") + line-thickness,
-    name: "arrow-a2x5",
-  )
-  content(
-    "arrow-a2x5.mid",
-    text(fill: rgb("#4d8000"))[$Delta E_d$],
-    anchor: "east",
-    padding: (right: 3pt),
-  )
+  decomposition-arrow("a2x5", ("hyp-hull-ax-a2x7", "hyp-hull-a2x7-x"), green)
+  content("arrow-a2x5.mid", text(fill: green)[$Delta E_d$], anchor: "east", padding: (right: 3pt))
   content(
     (rel: (0.1, 0), to: "arrow-a2x5.mid"),
-    text(fill: rgb("#4d8000"), size: 12pt)[4/5 AX + 3/5 A₂X₇ → A₂X₅],
-    frame: "rect",
-    padding: (1pt, 3pt),
-    stroke: rgb("#4d8000") + .3pt,
-    name: "box2-label",
-    anchor: "west",
-    fill: rgb("#4d8000").lighten(90%),
+    text(fill: green)[4/5 AX + 3/5 A₂X₇ → A₂X₅],
+    stroke: green + .3pt,
+    fill: green.lighten(90%),
+    ..reaction-box,
   )
 
+  // The AX–A₂X₅ hull facet extended to x = 0 bounds μ_A from below; the A–AX facet from above.
   line(
-    (0, height - 4.5),
+    ("a2x5", 1000% / 3, "ax"),
     "ax",
     stroke: (paint: orange, thickness: line-thickness, dash: "dashed"),
     name: "mu-line",
   )
-  content((rel: (2.4, 0), to: "mu-line.start"), rotate(14deg)[#text(
+  content((rel: (2.5, 0.15), to: "mu-line.start"), rotate(11deg, text(
     fill: orange,
     size: 13pt,
-  )[$μ_A$ range\ where AX is stable]])
-
+  )[$μ_A$ range\ where AX is stable]))
   line(
     "hull-a-ax.2%",
     "mu-line.4%",
     mark: (symbol: "stealth", fill: orange, offset: 0.1, scale: 0.6),
     stroke: orange + line-thickness,
-    name: "mu-arrow",
   )
 
-  circle(
-    (0.5, 1),
-    radius: point-radius,
-    fill: blue.darken(20%),
-    name: "legend-stable",
-  )
+  // Legend
+  circle((0.5, 1), radius: point-radius, fill: hull-color, name: "legend-stable")
   content("legend-stable.east", "stable", anchor: "west", padding: (left: 5pt))
-  rect(
-    (0.5 - 0.15, 1 - 0.6),
-    (0.5 + 0.15, 1 - 0.3),
-    fill: red,
-    stroke: red,
-    name: "legend-unstable",
-  )
-  content((0.5 + 0.15, 1 - 0.45), "unstable", anchor: "west", padding: (
-    left: 5pt,
-  ))
+  rect((0.5 - 0.15, 1 - 0.6), (0.5 + 0.15, 1 - 0.3), fill: red, stroke: .5pt)
+  content((0.5 + 0.15, 1 - 0.45), "unstable", anchor: "west", padding: (left: 5pt))
 
-  content((rel: (-0.5, 0), to: "y-axis-left.mid"), [#rotate(
+  content((rel: (-0.5, 0), to: "y-axis-left.mid"), rotate(
     -90deg,
     reflow: true,
-  )[$Delta E_f$ (energy/atom)]])
+  )[$Delta E_f$ (energy/atom)])
   content((width / 2, -0.5), $x "in" A_(1-x)X_x$)
 })

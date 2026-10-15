@@ -32,25 +32,16 @@
   )
 
   let ext-len = 2.2 * radius
-  let external-lines = (
-    (side: "left", vertex: "loop.25%", ends: ((-ext-len, 0), "left-vertex")),
-    (side: "right", vertex: "loop.75%", ends: ("right-vertex", (ext-len, 0))),
-  )
-  for spec in external-lines {
-    circle(spec.vertex, radius: 2pt, fill: black, name: spec.side + "-vertex")
-  }
-  for spec in external-lines {
-    line(..spec.ends, stroke: 1pt, name: spec.side + "-line")
-  }
-  for spec in external-lines {
-    let line-name = spec.side + "-line"
-    let momentum-name = spec.side + "-momentum"
+  circle("loop.25%", radius: 2pt, fill: black, name: "left-vertex")
+  circle("loop.75%", radius: 2pt, fill: black, name: "right-vertex")
+  for (start, end) in (((-ext-len, 0), "left-vertex"), ("right-vertex", (ext-len, 0))) {
+    line(start, end, stroke: 1pt, name: "external")
     line(
-      (rel: (0.15, 0.15), to: line-name + ".start"),
-      (rel: (-0.15, 0.15), to: line-name + ".end"),
+      (rel: (0.15, 0.15), to: "external.start"),
+      (rel: (-0.15, 0.15), to: "external.end"),
       ..arrow-style,
-      name: momentum-name,
+      name: "momentum",
     )
-    content(momentum-name, text(fill: dark-blue)[$q_0$], anchor: "south", padding: 3pt)
+    content("momentum", text(fill: dark-blue)[$q_0$], anchor: "south", padding: 3pt)
   }
 })

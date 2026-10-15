@@ -101,11 +101,7 @@
     content(spherical(1, 90deg, phi_min / 2), text(red)[$phi$], anchor: "north", padding: 0)
     for (direction, label) in (((1, 0, 0), $x$), ((0, 1, 0), $y$), ((0, 0, 1), $z$)) {
       if direction != (0, 0, 1) {
-        line(
-          (0, 0),
-          direction.map(value => -1.1 * sphere_radius * value),
-          stroke: hidden_guide,
-        )
+        line((0, 0), direction.map(value => -1.1 * sphere_radius * value), stroke: hidden_guide)
       }
       line((0, 0), direction.map(value => (sphere_radius + .8) * value), mark: axis_mark)
       content(direction.map(value => (sphere_radius + 1.1) * value), label)
@@ -130,18 +126,12 @@
     }
 
     // === Edge lengths and position vector ===
-    edge(
-      (radius_min, theta_max * 1.03, phi_min),
-      (radius_min, theta_max * 1.03, phi_max),
-      stroke: length_stroke,
-      mark: length_arrow,
-    )
-    edge(
-      (radius_max, theta_min, phi_max * 1.03),
-      (radius_max, theta_max, phi_max * 1.03),
-      stroke: length_stroke,
-      mark: length_arrow,
-    )
+    for (start, end) in (
+      ((radius_min, theta_max * 1.03, phi_min), (radius_min, theta_max * 1.03, phi_max)),
+      ((radius_max, theta_min, phi_max * 1.03), (radius_max, theta_max, phi_max * 1.03)),
+    ) {
+      edge(start, end, stroke: length_stroke, mark: length_arrow)
+    }
     let vector_tip = spherical(radius_min, theta_max, phi_min)
     let foot = spherical(radius_min * calc.sin(theta_max), 90deg, phi_min)
     let projection_stroke = (dash: "dashed", paint: gray, thickness: .3pt)

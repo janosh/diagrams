@@ -88,13 +88,10 @@
 #let gaas_bond = make_bond(1 - 0.617, 0.3)
 
 #let label(left, top, width, body, size: 17pt, color: muted, weight: "regular", centered: false) = {
+  let aligned = if centered { align(center, body) } else { body }
   content(
     (left, -top),
-    block(width: width * 1pt)[
-      #text(size: size, fill: color, weight: weight, if centered { align(center, body) } else {
-        body
-      })
-    ],
+    block(width: width * 1pt, text(size: size, fill: color, weight: weight, aligned)),
     anchor: "north-west",
     padding: 0pt,
   )
@@ -116,12 +113,8 @@
   line(start, end, stroke: (paint: color, thickness: thickness, dash: "dashed"))
 }
 #let arrow(start_x, start_y, end_x, end_y, color: ink) = {
-  line((start_x, -start_y), (end_x, -end_y), stroke: 1.5pt + color, mark: (
-    start: none,
-    end: "stealth",
-    scale: 0.7,
-    fill: color,
-  ))
+  let head = (end: "stealth", scale: 0.7, fill: color)
+  line((start_x, -start_y), (end_x, -end_y), stroke: 1.5pt + color, mark: head)
 }
 #let center_mark(center_x, center_y, radius: 6) = {
   line(
@@ -173,10 +166,7 @@
 #let density_cloud(left, baseline, width, amplitude, density) = {
   let samples = range(121).map(sample_idx => {
     let position = -0.65 + 2.3 * sample_idx / 120
-    (
-      left + (position + 0.65) * width / 2.3,
-      amplitude * density(position),
-    )
+    (left + (position + 0.65) * width / 2.3, amplitude * density(position))
   })
   let upper = samples.map(((center_x, height)) => (center_x, -baseline + height))
   let lower = samples.rev().map(((center_x, height)) => (center_x, -baseline - height))
@@ -280,11 +270,7 @@
     line((plot_left - 8, -860), (plot_left + 152, -860), stroke: 1pt + grid_color)
     for (cell_idx, probability) in cell_indices.zip(gauge.probabilities) {
       let center_x = plot_left + (cell_idx + 3) * 24
-      line(
-        (center_x, -860),
-        (center_x, -860 + 60 * probability),
-        stroke: 7pt + accent,
-      )
+      line((center_x, -860), (center_x, -860 + 60 * probability), stroke: 7pt + accent)
     }
     for (offset, tick) in ((0, $-3a$), (72, $0$), (144, $3a$)) {
       symbol(plot_left + offset, 880, tick, size: 15pt, color: muted)
@@ -333,9 +319,7 @@
   // === 3. A center balances the whole probability density ===
   heading(527, 696, 429, color: orange)[3  MEASURE THE CENTER]
   label(528, 735, 427)[Probability density → mean position]
-  let density_left = 548
-  let density_width = 390
-  let density_baseline = 904
+  let (density_left, density_width, density_baseline) = (548, 390, 904)
   let density_x(position) = density_left + (position + 0.65) * density_width / 2.3
   let density_points = range(301).map(sample_idx => {
     let position = -0.65 + 2.3 * sample_idx / 300
@@ -358,13 +342,9 @@
     color: muted,
   )
   symbol(958, density_baseline, $x$, size: 16pt)
-  guide_line(
-    (density_x(center_example.center), -792),
-    (density_x(center_example.center), -904),
-    color: orange,
-    thickness: 1.4pt,
-  )
-  center_mark(density_x(center_example.center), density_baseline, radius: 7)
+  let center_x = density_x(center_example.center)
+  guide_line((center_x, -792), (center_x, -904), color: orange, thickness: 1.4pt)
+  center_mark(center_x, density_baseline, radius: 7)
   for (position, tick) in ((0, $0$), (1, $a$)) {
     circle((density_x(position), -density_baseline), radius: 4.5, fill: ink, stroke: none)
     symbol(density_x(position), 925, tick, size: 17pt)
@@ -378,9 +358,9 @@
   // A fulcrum at the first moment: 0.3 × 0.7a = 0.7 × 0.3a.
   line((density_x(0), -944), (density_x(1), -944), stroke: 1.2pt + muted)
   line(
-    (density_x(center_example.center), -944),
-    (density_x(center_example.center) - 7, -954),
-    (density_x(center_example.center) + 7, -954),
+    (center_x, -944),
+    (center_x - 7, -954),
+    (center_x + 7, -954),
     close: true,
     fill: orange,
     stroke: none,
@@ -420,16 +400,9 @@
       circle((center_x, -baseline), radius: 16, fill: rgb("#CCD8E5"), stroke: 1pt + blue)
       symbol(center_x, baseline, species, size: 17pt, color: blue)
     }
-    center_mark(atom_start + bond.center * bond_length, baseline, radius: 7)
-    if bond.center != 0.5 {
-      arrow(
-        midpoint,
-        baseline + 35,
-        atom_start + bond.center * bond_length,
-        baseline + 35,
-        color: orange,
-      )
-    }
+    let center_x = atom_start + bond.center * bond_length
+    center_mark(center_x, baseline, radius: 7)
+    if bond.center != 0.5 { arrow(midpoint, baseline + 35, center_x, baseline + 35, color: orange) }
     label(326, baseline - 22, 149, explanation, color: teal)
   }
   label(
@@ -449,13 +422,7 @@
     for boundary_x in (619, 944) {
       guide_line((boundary_x, -baseline + 19), (boundary_x, -baseline - 19))
     }
-    density_cloud(
-      center_x - 54,
-      baseline,
-      108,
-      9,
-      position => gaussian(position, 0.5, 0.23),
-    )
+    density_cloud(center_x - 54, baseline, 108, 9, position => gaussian(position, 0.5, 0.23))
     for ion_x in (655, 914) { circle((ion_x, -baseline), radius: 5, fill: ink, stroke: none) }
     center_mark(center_x, baseline, radius: 7)
   }

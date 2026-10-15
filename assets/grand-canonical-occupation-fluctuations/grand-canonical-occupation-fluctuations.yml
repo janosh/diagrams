@@ -3,4 +3,4 @@ tags:
   - physics
   - statistical mechanics
 description: |
-  Number fluctuations of the occupation probability〈nk〉of a single mode k in an ideal [Bose and Fermi](../particle-statistics) gas in the [grand canonical ensemble](../thermo-ensemble-trafos). Used in Exercise Sheet 11 of Statistical Physics by Manfred Salmhofer (2016), available at <https://janosh.dev/physics/statistical-physics>.
+  Variance $\Delta n_k^\pm = \langle n_k^2 \rangle - \langle n_k \rangle^2 = \langle n_k \rangle (1 \pm \langle n_k \rangle)$ of the occupation number of a single mode $k$ with $\varepsilon_k - \mu = 1$ in an ideal [Bose (+) and Fermi (−)](../particle-statistics) gas in the [grand canonical ensemble](../thermo-ensemble-trafos), plotted against temperature $T$ (with $k_B = 1$). Bosonic fluctuations $1 / (4 \sinh^2(\beta/2))$ grow as $T^2$ at high temperature, while fermionic ones $1 / (2 + 2 \cosh \beta)$ saturate at $1/4$ as $\langle n_k \rangle \to 1/2$. Used in Exercise Sheet 11 of Statistical Physics by Manfred Salmhofer (2016), available at <https://janosh.dev/physics/statistical-physics>.

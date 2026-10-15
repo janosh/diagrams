@@ -16,6 +16,7 @@
   (element: "H", charge: 1, pos: (-2, 0.75)),
   (element: "H", charge: 1, pos: (1, 2)),
 )
+// (left atom index, right atom index, bond order)
 #let bonds = (
   (0, 1, 1),
   (0, 2, 1),
@@ -60,24 +61,17 @@
   for atom in atoms {
     let color = palette.at(atom.element)
     let pos = molecule_pos(atom.pos)
-    circle(
-      pos,
-      radius: if atom.element == "H" { 0.3 } else { 0.44 },
-      stroke: none,
-      fill: gradient.radial(
-        color.lighten(75%),
-        color,
-        color.darken(15%),
-        focal-center: (30%, 25%),
-        focal-radius: 5%,
-        center: (35%, 30%),
-      ),
+    let shading = gradient.radial(
+      color.lighten(75%),
+      color,
+      color.darken(15%),
+      focal-center: (30%, 25%),
+      focal-radius: 5%,
+      center: (35%, 30%),
     )
-    content(pos, text(
-      fill: if atom.element == "C" { white } else { black },
-      weight: "bold",
-      atom.element,
-    ))
+    circle(pos, radius: if atom.element == "H" { 0.3 } else { 0.44 }, stroke: none, fill: shading)
+    let label_color = if atom.element == "C" { white } else { black }
+    content(pos, text(fill: label_color, weight: "bold", atom.element))
   }
   caption(0, [Molecular structure])
 
@@ -98,12 +92,10 @@
         stroke: none,
         fill: color.mix((rgb("#f6d9b8"), 1 - intensity), (rgb("#ba432d"), intensity)),
       )
-      content(
-        (cell_left + cell_size / 2, cell_top - cell_size / 2),
-        text(size: 12pt, fill: if intensity > 0.65 { white } else { black })[
-          #calc.round(value, digits: if value < 1 { 1 } else { 0 })
-        ],
-      )
+      let rounded = calc.round(value, digits: if value < 1 { 1 } else { 0 })
+      let text_color = if intensity > 0.65 { white } else { black }
+      let cell_center = (cell_left + cell_size / 2, cell_top - cell_size / 2)
+      content(cell_center, text(size: 12pt, fill: text_color)[#rounded])
     }
   }
   let grid_stroke = rgb("#888").transparentize(60%) + 0.2pt
@@ -131,8 +123,9 @@
   }
   for layer in layers {
     for node_idx in range(layer.count) {
-      circle(node_pos(layer, node_idx), radius: 0.4, fill: layer.color, stroke: none)
-      content(node_pos(layer, node_idx), text(size: 12pt)[#layer.prefix#(node_idx + 1)])
+      let pos = node_pos(layer, node_idx)
+      circle(pos, radius: 0.4, fill: layer.color, stroke: none)
+      content(pos, text(size: 12pt)[#layer.prefix#(node_idx + 1)])
     }
   }
   caption(16.4, [Trained model])

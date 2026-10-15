@@ -20,13 +20,10 @@
 #let orange = rgb("#BC502D")
 #let purple = rgb("#7948AD")
 #let label(left, top, width, body, size: 18pt, color: ink, weight: "regular", centered: false) = {
+  let aligned = if centered { align(center, body) } else { body }
   content(
     (left, -top),
-    block(width: width * 1pt)[
-      #text(size: size, fill: color, weight: weight, if centered { align(center, body) } else {
-        body
-      })
-    ],
+    block(width: width * 1pt, text(size: size, fill: color, weight: weight, aligned)),
     anchor: "north-west",
     padding: 0pt,
   )
@@ -76,7 +73,6 @@
     105,
     940,
     [Comparing the right gaps is essential when predicting conductivity, solar absorption, or a material’s color.],
-    size: 18pt,
   )
 
   for (left, tint, heading, subtitle, accent) in (
@@ -98,24 +94,22 @@
   ) {
     panel(left, 150, 308, 300, tint)
     label(left + 16, 166, 276, heading, size: 21pt, color: accent, weight: "bold")
-    label(left + 16, 194, 276, subtitle, size: 18pt, color: muted)
+    label(left + 16, 194, 276, subtitle, color: muted)
   }
 
   // Kohn-Sham orbital energies: the gap is a spacing, not a total-energy change.
-  line((65, -247), (186, -247), stroke: 2.8pt + blue)
-  line((65, -306), (186, -306), stroke: 2.8pt + blue)
+  for level_y in (247, 306) { line((65, -level_y), (186, -level_y), stroke: 2.8pt + blue) }
   electron(105, 306)
   electron(139, 306)
   arrow(210, 306, 210, 247, color: blue, both: true)
   label(229, 239, 80, [empty], size: 16pt, color: blue)
   label(229, 296, 80, [filled], size: 16pt, color: blue)
-  symbol(177, 345, $E_"KS" = epsilon_"L" - epsilon_"H"$, size: 22pt, color: blue)
+  symbol(177, 345, $E_"KS" = epsilon_"L" - epsilon_"H"$, color: blue)
   label(
     42,
     375,
     272,
     [H: highest occupied; L: lowest unoccupied.],
-    size: 18pt,
     color: muted,
     centered: true,
   )
@@ -137,7 +131,6 @@
     369,
     276,
     [I: removal cost. A: energy gained on addition.\ N: number of electrons.],
-    size: 18pt,
     color: muted,
     centered: true,
   )
@@ -163,7 +156,6 @@
     373,
     276,
     [$h nu$: photon energy; $nu$: frequency.\ A hole is a missing electron in a filled state.],
-    size: 18pt,
     color: muted,
     centered: true,
   )
@@ -181,7 +173,6 @@
     509,
     940,
     [Charging changes the electron count, so $Delta_"xc"$ converts the KS orbital gap into the fundamental gap.\ Light keeps the count fixed: electron–hole attraction lowers the excitation energy by $E_"bind"$.\ Shown: a direct gap (no momentum from lattice vibrations needed) and a bright exciton (a bound pair that light can create). Not to scale: the two corrections compete, so the optical gap can lie above or below the KS gap.],
-    size: 18pt,
     color: muted,
   )
 
@@ -200,9 +191,9 @@
   symbol(335, 535, $+ Delta_"xc"$, size: 24pt, color: purple)
   arrow(590, 530, 715, 564, color: orange)
   symbol(656, 505, $- E_"bind"$, size: 24pt, color: orange)
-  label(104, 710, 180, [orbital spacing], size: 18pt, color: blue, centered: true)
-  label(405, 710, 190, [separated charges], size: 18pt, color: teal, centered: true)
-  label(710, 710, 190, [bound electron–hole pair], size: 18pt, color: orange, centered: true)
+  label(104, 710, 180, [orbital spacing], color: blue, centered: true)
+  label(405, 710, 190, [separated charges], color: teal, centered: true)
+  label(710, 710, 190, [bound electron–hole pair], color: orange, centered: true)
 
   panel(24, 751, 468, 155, rgb("#d2cbdc"))
   label(42, 767, 432, [$E_"g" = E_"KS" + Delta_"xc"$], size: 23pt, color: purple, centered: true)
@@ -211,7 +202,6 @@
     806,
     432,
     [*Derivative discontinuity:* the exact exchange–correlation (XC) potential jumps at an integer electron count. Even exact KS orbital energies need this correction.],
-    size: 18pt,
   )
   panel(508, 751, 468, 155, rgb("#e1d2c7"))
   label(526, 767, 432, [$E_"opt" = E_"g" - E_"bind"$], size: 23pt, color: orange, centered: true)
@@ -220,7 +210,6 @@
     806,
     432,
     [*Exciton binding:* electron–hole attraction lowers the neutral excitation below the matching free-pair threshold. An exciton is this bound pair.],
-    size: 18pt,
   )
 
   label(
@@ -228,14 +217,12 @@
     928,
     940,
     [$E_"g" = E(N+1) + E(N-1) - 2E(N)$, where $E(N)$ is the ground-state total energy at fixed nuclei.],
-    size: 18pt,
   )
   label(
     30,
     970,
     940,
     [*Read the conditions:* indirect optical transitions can need phonons for momentum; selection rules can make low excitations dark. The relation above uses a matching direct threshold.],
-    size: 18pt,
     color: muted,
   )
   label(
@@ -243,7 +230,6 @@
     1030,
     940,
     [*DFT takeaway:* identify the observable before comparing gaps. The KS relation assumes a local multiplicative potential; hybrid generalized-KS gaps require their own interpretation.],
-    size: 18pt,
     color: muted,
   )
 })

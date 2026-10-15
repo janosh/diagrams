@@ -3,7 +3,7 @@ tags:
   - physics
   - solid state physics
 description: |
-  The $k$-space region of wave vectors up to a given magnitude is a disk of area $\pi k^2$. The $k$-space area occupied by a single particle state is
+  In two dimensions with periodic boundary conditions on an $L_x \times L_y$ box of area $A = L_x L_y$, the allowed wave vectors form the rectangular grid shown. The region of wave vectors up to a given magnitude $k$ is a disk of area $\pi k^2$. The $k$-space area occupied by a single particle state is
   $$
   \frac{1}{2} \frac{2 \pi}{L_x} \frac{2 \pi}{L_y}
   = \frac{2 \pi^2}{A},
@@ -14,4 +14,4 @@ description: |
   = \frac{\pi k^2}{2 \pi^2/A}
   = \frac{A k^2}{2 \pi}.
   $$
-  $k$-space is used extensively in solid state physics e.g. to visualize the [energy bands](../how-atoms-become-energy-bands) of a material as a function of electron momentum. In position space, the position-energy dispersion would just be a probability blur.
+  $k$-space is used extensively in solid state physics e.g. to visualize the [energy bands](../how-atoms-become-energy-bands) of a material as a function of electron momentum. Bloch states are delocalized in position space, so their energies are naturally labeled by crystal momentum $\vec k$ instead of position.

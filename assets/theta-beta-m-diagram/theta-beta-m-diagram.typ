@@ -47,13 +47,9 @@
   )
 
   /// Shock angle that maximizes deflection for Mach $M$.
-  let max-shock-angle(M) = golden-section-search(
-    b => shock-polar(M, b),
-    0,
-    rad(90),
-  )
+  let max-shock-angle(M) = golden-section-search(b => shock-polar(M, b), 0, rad(90))
 
-  /// Densify samples near $theta = 0$ (same pattern as the original double loops).
+  /// Densify samples near $theta = 0$ by subdividing the first interval 10-fold.
   let densify-near-zero(max-angle) = (
     lq
       .linspace(0, max-angle, num: 128)
@@ -83,43 +79,29 @@
   // float.inf doesn't produce the correct result.
   let infinity = 1e100
   let mach-numbers = (
-    1.05,
-    1.1,
-    1.15,
-    1.2,
-    1.25,
-    1.3,
-    1.35,
-    1.4,
-    1.45,
-    1.5,
-    1.6,
-    1.7,
-    1.8,
-    1.9,
-    2,
-    2.1,
-    2.2,
-    2.3,
-    2.4,
-    2.5,
-    2.6,
-    2.8,
-    3,
-    3.2,
-    3.4,
-    3.5,
-    3.6,
-    3.8,
-    4,
-    4.5,
-    5,
-    6,
-    8,
-    10,
-    15,
-    20,
-    infinity,
+    (
+      1.05,
+      1.1,
+      1.15,
+      1.2,
+      1.25,
+      1.3,
+      1.35,
+      1.4,
+      1.45,
+      1.5,
+      1.6,
+      1.7,
+      1.8,
+      1.9,
+      2,
+      2.1,
+      2.2,
+      2.3,
+      2.4,
+      2.5,
+    )
+      + (2.6, 2.8, 3, 3.2, 3.4, 3.5, 3.6, 3.8, 4, 4.5, 5, 6, 8, 10, 15, 20, infinity)
   )
   let highlighted-mach-numbers = (1.5, 2, 2.5, 3, 3.5, 4, 5, 10)
 
@@ -127,31 +109,24 @@
   let shock-angle-plots = (
     mach-numbers
       .map(M => {
-        let deflection-angles = shock-angles.map(b => shock-polar(
-          M,
-          rad(b),
-        ).deg())
-        let max-deflection-angle = calc.max(..deflection-angles)
-        let weak-solution-index = deflection-angles.position(t => (
-          t == max-deflection-angle
-        ))
-        let thickness = if M in highlighted-mach-numbers { 1.2pt } else {
-          0.5pt
-        }
+        let deflection-angles = shock-angles.map(b => shock-polar(M, rad(b)).deg())
+        // the weak branch runs up to the maximum deflection, the strong branch beyond it
+        let max-deflection-idx = deflection-angles.position(t => t == calc.max(..deflection-angles))
+        let thickness = if M in highlighted-mach-numbers { 1.2pt } else { 0.5pt }
 
         (
           // weak solution
           lq.plot(
-            deflection-angles.slice(0, weak-solution-index + 1),
-            shock-angles.slice(0, weak-solution-index + 1),
+            deflection-angles.slice(0, max-deflection-idx + 1),
+            shock-angles.slice(0, max-deflection-idx + 1),
             color: black,
             stroke: (thickness: thickness),
             mark: none,
           ),
           // strong solution
           lq.plot(
-            deflection-angles.slice(weak-solution-index),
-            shock-angles.slice(weak-solution-index),
+            deflection-angles.slice(max-deflection-idx),
+            shock-angles.slice(max-deflection-idx),
             color: black,
             stroke: (thickness: thickness, dash: "dashed"),
             mark: none,
@@ -162,10 +137,7 @@
   )
 
   // Calculate maximum deflection angle for M = infinity
-  let max-deflection-angle = shock-polar(
-    infinity,
-    max-shock-angle(infinity),
-  ).rad()
+  let max-deflection-angle = shock-polar(infinity, max-shock-angle(infinity)).rad()
 
   // Helper function to find Mach number for given deflection angle
   let find-mach-for-deflection(deflection-angle) = {
@@ -179,31 +151,16 @@
   }
 
   // Reuse the expensive Mach roots for both boundary curves.
-  let deflection-mach-pairs = densify-near-zero(max-deflection-angle).map(
-    deflection-angle => (
-      deflection-angle,
-      find-mach-for-deflection(deflection-angle),
-    ),
-  )
+  let boundary-machs = densify-near-zero(max-deflection-angle).map(find-mach-for-deflection)
 
-  // Generate solution border data
-  let solution-border-data = deflection-mach-pairs.map(((_, M)) => (
-    M,
-    max-shock-angle(M),
-  ))
-  let solution-border-plot = polar-curve-plot(solution-border-data)
+  // Maximum-deflection line separating weak and strong solutions
+  let solution-border-plot = polar-curve-plot(boundary-machs.map(M => (M, max-shock-angle(M))))
 
   // Generate Mach 1 line data
-  let mach-1-data = deflection-mach-pairs.map(((_, M)) => {
-    let shock-angle = secant(
-      shock-angle => mach-1-residual(M, shock-angle),
-      rad(60),
-      rad(70),
-      tolerance: 1e-6,
-    )
-    (M, shock-angle)
-  })
-
+  let mach-1-data = boundary-machs.map(M => (
+    M,
+    secant(shock-angle => mach-1-residual(M, shock-angle), rad(60), rad(70), tolerance: 1e-6),
+  ))
   let mach-1-plot = polar-curve-plot(mach-1-data, stroke: (dash: "dash-dotted"))
 
   let label-text-size = 12pt
@@ -297,13 +254,7 @@
 
       let strong-stroke = (thickness: 1.2pt)
 
-      line(
-        (-M-length, 0),
-        (0, 0),
-        mark: (end: "stealth"),
-        stroke: strong-stroke,
-        name: "mach",
-      )
+      line((-M-length, 0), (0, 0), mark: (end: "stealth"), stroke: strong-stroke, name: "mach")
       content("mach.mid", $M$, anchor: "south")
       line(
         (0, 0),
@@ -327,11 +278,7 @@
       line((x1, x1 * slope), (x2, x2 * slope))
 
       let shift = 0.01
-      line(
-        (x1 - shift, x1 * slope + shift),
-        (x2 - shift, x2 * slope + shift),
-        name: "shock-line",
-      )
+      line((x1 - shift, x1 * slope + shift), (x2 - shift, x2 * slope + shift), name: "shock-line")
 
       content(
         ("shock-line.start", 65%, "shock-line.end"),
@@ -346,15 +293,8 @@
 
   // Legend
   let legend-plots = (
-    lq.plot((), (), color: black, mark: none, label: "strong solution"),
-    lq.plot(
-      (),
-      (),
-      color: black,
-      stroke: (dash: "dashed"),
-      mark: none,
-      label: "weak solution",
-    ),
+    lq.plot((), (), color: black, mark: none, label: "weak solution"),
+    lq.plot((), (), color: black, stroke: (dash: "dashed"), mark: none, label: "strong solution"),
   )
 
   let plots = (

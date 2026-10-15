@@ -9,37 +9,24 @@
   rect((0, 0), (11, -0.25), fill: rgb("#008080"), name: "board")
   content("board.south", [circuit board], anchor: "north", padding: (top: 3pt))
 
-  // Dielectric layer with brick pattern
-  let brick-width = 0.4
-  let brick-height = 0.2
-  let start-x = 3.8
-  let end-x = 7.2
-  let start-y = 2
-  let end-y = 3
-
+  // Dielectric layer with brick pattern (5 rows of 0.4 x 0.2 bricks, odd rows offset by half a brick)
+  let (start-x, end-x, start-y) = (3.8, 7.2, 2)
+  let (brick-width, brick-height) = (0.4, 0.2)
+  let brick-red = rgb("#f00")
   rect(
     (start-x, start-y),
-    (end-x, end-y),
+    (end-x, start-y + 1),
     fill: rgb("#cdd3da"),
-    stroke: rgb("#f00"),
+    stroke: brick-red,
     name: "dielectric-box",
   )
-
-  for y in range(int((end-y - start-y) / brick-height + 1)) {
-    let y-pos = start-y + y * brick-height
-    if y-pos < end-y {
-      line((start-x, y-pos), (end-x, y-pos), stroke: rgb("#f00"))
-    }
-  }
-
-  for x in range(int((end-x - start-x) / brick-width + 1)) {
-    for y in range(int((end-y - start-y) / brick-height)) {
-      let x-offset = if calc.rem(y, 2) == 0 { 0 } else { brick-width / 2 }
-      let x-pos = start-x + x * brick-width + x-offset
+  for row in range(5) {
+    let y-start = start-y + row * brick-height
+    line((start-x, y-start), (end-x, y-start), stroke: brick-red)
+    for col in range(9) {
+      let x-pos = start-x + col * brick-width + calc.rem(row, 2) * brick-width / 2
       if x-pos < end-x {
-        let y-start = start-y + y * brick-height
-        let y-end = calc.min(y-start + brick-height, end-y)
-        line((x-pos, y-start), (x-pos, y-end), stroke: rgb("#f00"))
+        line((x-pos, y-start), (x-pos, y-start + brick-height), stroke: brick-red)
       }
     }
   }
@@ -48,10 +35,7 @@
   rect((0, 0), (11, 2), fill: rgb("#ffa500").lighten(50%), name: "substrate")
   content("substrate", align(center)[$p$-type\ semiconductor])
 
-  for (start, end, name) in (
-    ((1, 1), (4, 2), "source-n"),
-    ((7, 1), (10, 2), "drain-n"),
-  ) {
+  for (start, end, name) in (((1, 1), (4, 2), "source-n"), ((7, 1), (10, 2), "drain-n")) {
     rect(start, end, fill: rgb("#90ee90"), name: name)
     content(name, align(center)[$n$-type\ semiconductor])
   }
@@ -62,7 +46,7 @@
     frame: "rect",
     padding: 2pt,
     fill: rgb("#cdd3da"),
-    stroke: (thickness: .5pt),
+    stroke: .5pt,
   )
 
   for (start, end, name, label) in (
@@ -75,7 +59,5 @@
   }
 
   // Title
-  content("gate-metal.north", [$n$-type channel], anchor: "south", padding: (
-    bottom: 2mm,
-  ))
+  content("gate-metal.north", [$n$-type channel], anchor: "south", padding: (bottom: 2mm))
 })

@@ -232,6 +232,7 @@
   dense.push(points.last())
   dense
 }
+// zT keeps its actual values; every transport curve is scaled to its own maximum.
 #let plot_points = (
   curves
     .enumerate()
@@ -263,12 +264,10 @@
     legend: none,
     {
       for (idx, curve) in curves.enumerate() {
+        let thickness = if idx == 0 { 2.3pt } else { 1.3pt }
+        let dash = if curve.label == $S^2 sigma$ { "dashed" } else { "solid" }
         plot.add(plot_points.at(idx), style: (
-          stroke: (
-            paint: curve.color,
-            thickness: if idx == 0 { 2.3pt } else { 1.3pt },
-            dash: if curve.label == $S^2 sigma$ { "dashed" } else { "solid" },
-          ),
+          stroke: (paint: curve.color, thickness: thickness, dash: dash),
         ))
       }
       plot.add-anchor("peak", zt_peak)
@@ -278,7 +277,7 @@
   draw.line("plot.peak", (rel: (0, .6)), stroke: curves.first().color + .6pt, name: "peak-leader")
   draw.content(
     "peak-leader.end",
-    text(size: 12pt)[sampled peak: #calc.round(zt_peak.at(1), digits: 3)],
+    [sampled peak: #calc.round(zt_peak.at(1), digits: 3)],
     anchor: "south",
   )
   draw.content((rel: (0, -.4), to: "plot.south"), [$n$ ($"cm"^(-3)$)], anchor: "north")

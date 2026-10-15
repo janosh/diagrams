@@ -5,104 +5,54 @@
 #set text(size: 15pt)
 
 #canvas({
-  let node-sep = 1.7 // Reduced horizontal separation
-  let arrow-style = (
-    mark: (end: "stealth", fill: black, offset: 4pt),
-    stroke: 0.8pt,
-  )
-  let node-height = 1.6 // Shorter boxes
-  let node-width = 1.2 // Increased for larger text
+  let node-sep = 1.7
+  let arrow-style = (mark: (end: "stealth", fill: black, offset: 4pt), stroke: 0.8pt)
+  let node-height = 1.6
+  let node-width = 1.2
+  let (potential, orbital) = (rgb("#ffb3b3"), rgb("#cdd3da"))
 
-  let node(pos, body, fill: none, name: none, width: node-width, height: node-height) = {
-    rect(
-      (rel: (-width, -height / 2), to: pos),
-      (rel: (2 * width, height)),
-      fill: fill,
-      stroke: 0.4pt,
-      radius: 0.2,
-      name: name,
-    )
-    content(name, scale(140%, body))
-  }
-
-  node(
-    (0, 0),
-    $-frac(planck^2, 2m) arrow(nabla)_(arrow(r))^(2)$,
-    fill: rgb("#ffd699"),
-    name: "kinetic",
-    width: 1.3 * node-width,
-  ) // Kinetic term
-
-  content(
-    (rel: (-1.6 * node-width, 0.1), to: "kinetic"),
-    scale(350%, $($),
-    name: "lparen",
-  ) // Opening parenthesis
-
-  content((rel: (1.6 * node-width, 0), to: "kinetic"), $+$, name: "plus-1")
-
-  let plus-name = "plus-1"
-  for (idx, name, label, offset, width) in (
-    (0, "ext", $v_"ext" (arrow(r))$, 1.4, node-width),
-    (1, "hartree", $v_H (arrow(r))$, 1.4, node-width),
-    (2, "xc", $v_"xc"$, 1, .6 * node-width),
+  // Kohn-Sham equation laid out left to right. Each item sits `offset` node widths right of
+  // the previous one. Items with a fill are boxed terms of relative width `width`.
+  let prev-name = none
+  for (name, offset, body, fill, width) in (
+    ("kinetic", 0, $-frac(planck^2, 2m) arrow(nabla)_(arrow(r))^(2)$, rgb("#ffd699"), 1.3),
+    ("plus-1", 1.6, $+$, none, none),
+    ("ext", 1.4, $v_"ext" (arrow(r))$, potential, 1),
+    ("plus-2", 1.4, $+$, none, none),
+    ("hartree", 1.4, $v_H (arrow(r))$, potential, 1),
+    ("plus-3", 1.4, $+$, none, none),
+    ("xc", 1, $v_"xc"$, potential, .6),
+    ("phi1", 2.4, $phi_i (arrow(r))$, orbital, 1),
+    ("eq-1", 1.4, $=$, none, none),
+    ("energy", 1, $E_i$, rgb("#b3d9ff"), .6),
+    ("phi2", 1.9, $phi_i (arrow(r))$, orbital, 1),
   ) {
-    node(
-      (rel: (offset * node-width, 0), to: plus-name),
-      label,
-      fill: rgb("#ffb3b3"),
-      name: name,
-      width: width,
-    )
-    if idx < 2 {
-      plus-name = "plus-" + str(idx + 2)
-      content((rel: (1.4 * node-width, 0), to: name), $+$, name: plus-name)
+    let pos = if prev-name == none { (0, 0) } else {
+      (rel: (offset * node-width, 0), to: prev-name)
     }
+    if fill == none {
+      content(pos, body, name: name)
+    } else {
+      let half-width = width * node-width
+      rect(
+        (rel: (-half-width, -node-height / 2), to: pos),
+        (rel: (2 * half-width, node-height)),
+        fill: fill,
+        stroke: 0.4pt,
+        radius: 0.2,
+        name: name,
+      )
+      content(name, scale(140%, body))
+    }
+    prev-name = name
   }
 
-  content(
-    (rel: (1 * node-width, 0.1), to: "xc"),
-    scale(350%, $)$),
-    name: "rparen",
-    padding: 5pt,
-  ) // Large closing parenthesis
+  // Large parentheses around the Hamiltonian
+  content((rel: (-1.6 * node-width, 0.1), to: "kinetic"), scale(350%, $($))
+  content((rel: (1 * node-width, 0.1), to: "xc"), scale(350%, $)$), padding: 5pt)
 
-  node(
-    (rel: (2.4 * node-width, 0), to: "xc"),
-    $phi_i (arrow(r))$,
-    fill: rgb("#cdd3da"),
-    name: "phi1",
-  ) // Wavefunction 1
-
-  content((rel: (1.4 * node-width, 0), to: "phi1"), $=$, name: "eq-1")
-
-  node(
-    (rel: (1 * node-width, 0), to: "eq-1"),
-    $E_i$,
-    fill: rgb("#b3d9ff"),
-    name: "energy",
-    width: 0.6 * node-width,
-  ) // Energy
-
-  node(
-    (rel: (1.9 * node-width, 0), to: "energy"),
-    $phi_i (arrow(r))$,
-    fill: rgb("#cdd3da"),
-    name: "phi2",
-  ) // Wavefunction 2
-
-  let comment(pos, body, target) = {
-    let name = target + "-comment"
-    content(pos, align(center, body), name: name)
-    line(name, target, ..arrow-style)
-  }
-
-  for spec in (
-    (
-      (node-sep, 3),
-      [non-rel. Schrödinger equation\ or relativistic Dirac equation],
-      "kinetic",
-    ),
+  for (pos, body, target) in (
+    ((node-sep, 3), [non-rel. Schrödinger equation\ or relativistic Dirac equation], "kinetic"),
     (
       (rel: (-2, -3), to: "ext"),
       [pseudopotential\ (ultrasoft/PAW/norm-conserving)\ or all-electron],
@@ -114,17 +64,15 @@
       "hartree",
     ),
     ((5 * node-sep, 3), [LDA or GGA\ or hybrids], "xc"),
+    ((rel: (2, 3), to: "phi1"), [physical orbitals or not\ mesh density and basis set], "phi1"),
     (
-      (rel: (2, 3), to: "phi1"),
-      [physical orbitals or not\ mesh density and basis set],
-      "phi1",
+      (rel: (0, -3), to: "energy"),
+      [view EVs as mere Lagrange\ multipliers or band structure approx],
+      "energy",
     ),
-  ) { comment(..spec) }
+  ) {
+    content(pos, align(center, body), name: target + "-comment")
+    line(target + "-comment", target, ..arrow-style)
+  }
   line("phi1-comment", "phi2", ..arrow-style)
-
-  comment(
-    (rel: (0, -3), to: "energy"),
-    [view EVs as mere Lagrange\ multipliers or band structure approx],
-    "energy",
-  )
 })

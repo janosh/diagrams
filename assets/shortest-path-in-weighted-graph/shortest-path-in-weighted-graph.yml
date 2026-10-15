@@ -10,4 +10,4 @@ tags:
   - optimization
   - algorithms
 description: |
-  A weighted directed graph with the [minimum-cost path](https://networkx.org/documentation/stable/reference/algorithms/shortest_paths.html) from source to target highlighted in red.
+  A weighted directed graph with a [minimum-cost path](https://networkx.org/documentation/stable/reference/algorithms/shortest_paths.html) from source $s$ to target $t$ highlighted in red: $s \to c \to f \to e \to t$ with total weight 8 ($s \to c \to f \to t$ ties at 8). The negative weight on $e \to b$ rules out Dijkstra's algorithm, but since the cycle $b \to e \to b$ has positive total weight 2, shortest paths remain well defined (e.g. via Bellman-Ford or a linear program).

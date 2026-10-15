@@ -4,6 +4,6 @@ tags:
   - solid state physics
   - thermodynamics
 description: |
-  The supplied digitized Bi₂Te₃ curves share one plot. The thicker zT curve retains its actual dimensionless values; each transport curve is normalized by its own maximum among the supplied samples. Equal plotted heights therefore do not imply equal physical magnitudes. The reported zT maximum is the largest supplied sample, not a fitted optimum. Thermal conductivity includes both electronic and lattice contributions. Adapted from [α–ln σ plot as a thermoelectric material performance indicator](https://link.springer.com/content/pdf/10.1007/BF00586157.pdf).
+  Digitized carrier-concentration dependence of the thermoelectric figure of merit $zT$, electrical conductivity $\sigma$, thermal conductivity $\kappa$, Seebeck coefficient $S$ and power factor $S^2 \sigma$ of Bi₂Te₃. The thicker $zT$ curve retains its actual dimensionless values; each transport curve is normalized by its own maximum among the digitized samples. Equal plotted heights therefore do not imply equal physical magnitudes. The labeled $zT$ maximum is the largest digitized sample, not a fitted optimum. Thermal conductivity includes both electronic and lattice contributions. Adapted from [α–ln σ plot as a thermoelectric material performance indicator](https://link.springer.com/content/pdf/10.1007/BF00586157.pdf).
 
   Shape-preserving cubic interpolation in log carrier concentration smooths each curve to 100 rendering points. These are not additional measurements; the original points and sampled extrema are retained.

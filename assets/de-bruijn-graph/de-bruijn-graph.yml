@@ -10,4 +10,4 @@ tags:
   - bioinformatics
   - graph theory
 description: |
-  A [de Bruijn graph](https://pmc.ncbi.nlm.nih.gov/articles/PMC55524/) for genome assembly links k-mer prefixes and suffixes as nodes with reads as edges; the dashed red Eulerian tour visits every edge once to reconstruct the sequence.
+  A [de Bruijn graph](https://pmc.ncbi.nlm.nih.gov/articles/PMC55524/) for genome assembly has the $(k-1)$-mers as nodes and draws each $k$-mer as a directed edge from its prefix to its suffix (here $k = 3$). The dashed red Eulerian cycle traverses every edge exactly once, spelling out the circular sequence `ATGGCGTGCA` from which the 3-mers were taken.

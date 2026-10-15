@@ -38,17 +38,16 @@
     ("5", "4", "6/6", pure-blue),
     ("5", "t", "9/10", pure-blue.lighten(10%)),
   ) {
-    let name = from + "-" + to
     line(
       from,
       to,
       mark: (end: "stealth", fill: color, scale: .6),
       stroke: color + 1.1pt,
-      name: name,
+      name: "edge",
     )
     content(
-      name + ".mid",
-      text(fill: color, size: 12pt, raw(label)),
+      "edge.mid",
+      text(fill: color, raw(label)),
       fill: rgb("#cdd3da"),
       frame: "rect",
       stroke: none,

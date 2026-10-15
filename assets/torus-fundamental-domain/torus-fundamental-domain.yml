@@ -8,4 +8,4 @@ tags:
   - fundamental domain
   - symmetries
 description: >-
-  The light gray-shaded areas show a fundamental domain of a torus under modular transformations. The diagram shows the region in the complex plane that uniquely parametrizes [inequivalent tori](../tori), bounded by the modular projective special linear group PSL(2,Z) transformations that identify physically equivalent fundamental domains for the action of $\Gamma$ on the upper half-plane.
+  The light gray strip $F_0$ ($|\mathrm{Re}\,\tau| \le 1/2$, $|\tau| \ge 1$) is the standard fundamental domain of the modular group $\mathrm{PSL}(2,\mathbb{Z})$ acting on the upper half-plane, so each point in it parametrizes exactly one of the [inequivalent tori](../tori). Its vertical edges $A$ and $A'$ are identified by $T: \tau \to \tau + 1$ and the two halves $B$ and $B'$ of the unit arc by $S: \tau \to -1/\tau$. The dark region $F'_0 = S(F_0)$ inside the unit circle is bounded by the arcs $C = S(A')$ and $C' = S(A)$ on the circles $|\tau \pm 1| = 1$.

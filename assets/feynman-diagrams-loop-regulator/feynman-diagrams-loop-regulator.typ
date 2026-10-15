@@ -12,81 +12,51 @@
     stroke: (paint: dark-blue, thickness: 0.75pt),
   )
 
-  let vertex(pos, label: none, rel-label: (-0.2, -0.2)) = {
-    circle(pos, radius: 2pt, fill: black)
-    if label != none {
-      content((rel: rel-label, to: pos), $#label$)
+  // One-loop diagram with the regulator on the lower (or upper) propagator and the loop
+  // momentum arrow along the opposite propagator.
+  let draw-diagram(offset: 0, regulator-top: false) = group({
+    translate((offset, 0))
+    circle((0, 0), radius: radius, stroke: 1pt, name: "loop")
+    content((0, radius), $m_1^2, gamma_1^2$, anchor: "south", padding: (bottom: 7pt))
+
+    arc(
+      (rel: (.23, 0), to: if regulator-top { "loop.35%" } else { "loop.15%" }),
+      radius: 0.85 * radius,
+      start: if regulator-top { 220deg } else { 140deg },
+      stop: if regulator-top { 320deg } else { 40deg },
+      ..arrow-style,
+      name: "momentum-arrow",
+    )
+    content(
+      "momentum-arrow.mid",
+      text(fill: dark-blue)[$q_0$],
+      anchor: if regulator-top { "south" } else { "north" },
+      padding: if regulator-top { (bottom: 3pt) } else { none },
+    )
+
+    // Regulator insertion: a circled cross on an opaque gray disc.
+    content(
+      "loop." + if regulator-top { "0%" } else { "50%" },
+      text(size: 16pt, baseline: -0.5pt)[$times.o$],
+      stroke: none,
+      fill: rgb("#cdd3da"),
+      frame: "circle",
+      padding: -2.5pt,
+    )
+    content("loop.50%", $m_2^2, gamma_2^2$, anchor: "north", padding: (top: 7pt))
+
+    // External legs with coupling vertices and incoming/outgoing momentum arrows.
+    for side in (-1, 1) {
+      circle((side * radius, 0), radius: 2pt, fill: black)
+      content((rel: (side * 0.2, -0.2), to: (side * radius, 0)), $g$)
+      line((side * radius, 0), (side * 2 * radius, 0), stroke: 1pt)
+      let mid-x = side * 1.5 * radius
+      line((mid-x - 0.55, 0.15), (mid-x + 0.55, 0.15), ..arrow-style)
+      content((mid-x, 0.3), text(fill: dark-blue)[$q_0$], anchor: "south")
     }
-  }
-
-  let momentum-arrow(start, end, label-pos, anchor: "south") = {
-    line(start, end, ..arrow-style)
-    content(label-pos, text(fill: dark-blue)[$q_0$], anchor: anchor)
-  }
-
-  let draw-diagram(offset: 0, cross-pos: "50%", arc-start: 140deg, arc-stop: 40deg) = {
-    group({
-      if offset != 0 { translate((offset, 0)) }
-
-      // Main circle and labels
-      circle((0, 0), radius: radius, stroke: 1pt, name: "loop")
-      content((0, radius), $m_1^2, gamma_1^2$, anchor: "south", padding: (
-        bottom: 7pt,
-      ))
-
-      // Momentum arrow on loop
-      arc(
-        (
-          rel: (.23, 0),
-          to: if arc-start > 180deg { "loop.35%" } else { "loop.15%" },
-        ),
-        radius: 0.85 * radius,
-        start: arc-start,
-        stop: arc-stop,
-        ..arrow-style,
-        name: "momentum-arrow",
-      )
-      content(
-        "momentum-arrow.mid",
-        text(fill: dark-blue)[$q_0$],
-        anchor: if arc-start > 180deg { "south" } else { "north" },
-        padding: if arc-start > 180deg { (bottom: 3pt) } else { none },
-      )
-
-      // Cross marker
-      // Regulator insertion: a circled cross on an opaque gray disc.
-      content(
-        "loop." + cross-pos,
-        text(size: 16pt, baseline: -0.5pt)[$times.o$],
-        stroke: none,
-        fill: rgb("#cdd3da"),
-        frame: "circle",
-        padding: -2.5pt,
-        name: "cross",
-      )
-      content("loop.50%", $m_2^2, gamma_2^2$, anchor: "north", padding: (
-        top: 7pt,
-      ))
-
-      // External lines and vertices
-      let ext-len = 2 * radius
-      for (x, rel-label) in ((-radius, (-0.2, -0.2)), (radius, (0.2, -0.2))) {
-        vertex((x, 0), label: "g", rel-label: rel-label)
-      }
-      for (start, end) in (
-        ((-ext-len, 0), (-radius, 0)),
-        ((radius, 0), (ext-len, 0)),
-      ) { line(start, end, stroke: 1pt) }
-      for (start, end, label-pos) in (
-        ((-ext-len + 0.2, 0.15), (-radius - 0.2, 0.15), (-1.5 * radius, 0.3)),
-        ((radius + 0.2, 0.15), (ext-len - 0.2, 0.15), (1.5 * radius, 0.3)),
-      ) {
-        momentum-arrow(start, end, label-pos)
-      }
-    })
-  }
+  })
 
   draw-diagram()
   content((4, 0), text(size: 18pt)[$+$])
-  draw-diagram(offset: 8, cross-pos: "0%", arc-start: 220deg, arc-stop: 320deg)
+  draw-diagram(offset: 8, regulator-top: true)
 })

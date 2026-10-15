@@ -3,4 +3,5 @@ tags:
 - physics
 - quantum field theory
 - Matsubara
-description: One quadrant-wise sign rule, viewed from above and as a lifted surface. This is the function used here in contour bookkeeping, not the complex phase z/|z|.
+description: |
+  The quadrant-wise complex sign function $s(p_0) = \operatorname{sign}(\operatorname{Re} p_0 \operatorname{Im} p_0)$, viewed from above and as a lifted surface: $+1$ where the real and imaginary parts share a sign, $-1$ where they differ, discontinuous across both axes. It serves as contour bookkeeping and is not the complex phase $p_0 / |p_0|$.

@@ -10,4 +10,4 @@ tags:
   - bioinformatics
   - genome assembly
 description: |
-  The red cycle is a Hamiltonian path visiting every k-mer node exactly once, used to reconstruct a genome from overlapping reads.
+  Overlap graph of 3-mers, with an edge wherever the last two letters of one 3-mer match the first two of another. The red Hamiltonian cycle visits every 3-mer node exactly once and spells out the circular genome the reads came from.

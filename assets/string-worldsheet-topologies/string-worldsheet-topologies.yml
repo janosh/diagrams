@@ -3,7 +3,7 @@ tags:
 - physics
 - string theory
 - topology
-description: 'A moving string sweeps out a two-dimensional worldsheet. Perturbation theory sums over surface topologies; adding a handle or a boundary changes the contribution.
+description: |
+  A moving string sweeps out a two-dimensional worldsheet. String perturbation theory sums over worldsheet topologies, classified for connected orientable surfaces by genus $g$ and number of boundaries $b$ through the Euler characteristic $\chi = 2 - 2g - b$: the sphere and torus are closed-string worldsheets, the disk and annulus open-string ones. Each surface is weighted by $g_s^{-\chi}$ in the string coupling $g_s$, so every added handle costs a factor $g_s^2$ and every added boundary a factor $g_s$.
 
-
-  Topology expansion: [David Tong, String Theory, section 6](https://davidtong.org/pdfs/teaching/string-theory/string6.pdf).'
+  Topology expansion: [David Tong, String Theory, section 6](https://davidtong.org/pdfs/teaching/string-theory/string6.pdf).

@@ -58,7 +58,7 @@
 
 // `y` is the height of the panel's t-axis; the curve is shifted so that the zero of
 // `y-range` lands on it, which is what lets panels with different scales line up.
-#let signal-row(name, y, title, func, color, y-range, samples: 1600) = {
+#let signal-row(name, y, title, func, color, y-range) = {
   let (y-min, y-max) = y-range
   let arrow = (mark: (end: "stealth", fill: black, scale: .55), stroke: .8pt)
   let (x-axis, y-axis) = (name + "-x-axis", name + "-y-axis")
@@ -79,60 +79,36 @@
       axis-style: none,
       y-min: y-min,
       y-max: y-max,
-      plot.add(style: (stroke: color + 1.3pt), domain: (0, 1), samples: samples, func),
+      plot.add(style: (stroke: color + 1.3pt), domain: (0, 1), samples: 1600, func),
     )
   })
 }
 
+// Both columns share the message and carrier; only the bottom (modulated) row differs.
+#let message(x) = 2 * calc.sin(5.5 * calc.pi * x)
+#let carrier(x) = 2 * calc.sin(66 * calc.pi * x)
+// AM: scale the carrier by an offset copy of the message.
+#let am(x) = (2.5 + message(x)) * carrier(x)
+// FM: integrate the message into the carrier phase.
+#let fm(x) = 2 * calc.sin(66 * calc.pi * x - 8 * calc.cos(5.5 * calc.pi * x))
 
-// === AM: change the envelope ===
-#let figure-0 = [
-  #let domain-x(x) = 11 * calc.pi * x
-  #let msg(x) = 2 * calc.sin(.5 * domain-x(x))
-  #let carrier(x) = 2 * calc.sin(6 * domain-x(x))
-  #let am(x) = (2.5 + msg(x)) * carrier(x)
-
-  #canvas(length: 1.05cm, {
-    draw.set-style(legend: (fill: rgb("#cdd3da")))
-    signal-row("msg", 4.6, $x(t)$, msg, black, (-2.4, 2.4))
-    signal-row("carrier", 2.05, [carrier wave], carrier, blue, (-2.4, 2.4))
-    signal-row("am", -.6, [AM wave], am, red, (-9.5, 9.5))
-  })
-]
-
-// === FM: change the spacing ===
-#let figure-1 = [
-  #let domain-x(x) = 11 * x
-  #let msg(x) = 2 * calc.sin(2 * calc.pi * .25 * domain-x(x))
-  #let carrier(x) = 2 * calc.sin(6 * calc.pi * domain-x(x))
-  // Frequency modulation: integrate the message into the carrier phase.
-  #let fm(x) = (
-    2
-      * calc.sin(
-        2 * calc.pi * 3 * domain-x(x) - 8 * calc.cos(2 * calc.pi * .25 * domain-x(x)),
-      )
-  )
-
-  #canvas(length: 1.05cm, {
-    draw.set-style(legend: (fill: rgb("#cdd3da")))
-    let green = green.darken(15%)
-    signal-row("msg", 4.6, $x(t)$, msg, black, (-2.4, 2.4))
-    signal-row("carrier", 2.05, [carrier wave], carrier, blue, (-2.4, 2.4))
-    signal-row("fm", -.6, [FM wave], fm, green, (-2.4, 2.4))
-  })
-]
+#let modulation-figure(name, title, func, color, y-max) = canvas(length: 1.05cm, {
+  signal-row("msg", 4.6, $x(t)$, message, black, (-2.4, 2.4))
+  signal-row("carrier", 2.05, [carrier wave], carrier, blue, (-2.4, 2.4))
+  signal-row(name, -.6, title, func, color, (-y-max, y-max))
+})
 
 Transmit the same message by changing one property of a fast carrier. Read each column from the message at the top to the transmitted signal at the bottom.
 #v(14pt)
 #card-grid(
   (
     [AM: change the envelope],
-    figure-0,
+    modulation-figure("am", [AM wave], am, red, 9.5),
     [The carrier’s amplitude follows the message; its rapid oscillation rate stays fixed. The envelope is easiest to see in the peaks.],
   ),
   (
     [FM: change the spacing],
-    figure-1,
+    modulation-figure("fm", [FM wave], fm, green.darken(15%), 2.4),
     [The instantaneous frequency follows the message; the amplitude stays fixed. Closely spaced peaks mean a higher frequency.],
   ),
 )

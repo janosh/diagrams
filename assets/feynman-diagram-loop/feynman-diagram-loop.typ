@@ -13,40 +13,29 @@
     amplitude: .1,
     segments: 16,
     close: true,
-    name: "loop",
     mark: (end: "stealth"),
     ..arrow-style,
   )
 
-  // Left and right points on the loop (circle centered at origin with given radius)
-  let loop-left = (-rad, 0)
-  let loop-right = (rad, 0)
-
-  circle(loop-left, radius: 0.075, fill: black, name: "dot")
-  content(
-    loop-right,
-    text(size: 12pt)[$times.o$],
-    name: "regulator",
-    fill: rgb("#cdd3da"),
-    frame: "circle",
-    stroke: none,
-    padding: -1.7pt,
-  )
+  // Vertex on the left of the loop, regulator insertion on the right
+  circle((-rad, 0), radius: 0.075, fill: black, name: "dot")
+  content((rad, 0), $times.o$, fill: rgb("#cdd3da"), frame: "circle", stroke: none, padding: -1.7pt)
 
   line((rel: (-1, 0), to: "dot"), "dot", name: "input", ..arrow-style)
+  content("input.start", $ partial_t (partial V) / (partial chi) = $, anchor: "east", padding: (
+    0,
+    5pt,
+    0,
+  ))
 
-  content(
-    "input.start",
-    $ partial_t (partial V) / (partial chi) = $,
-    anchor: "east",
-    padding: (0, 5pt, 0),
-  )
-
-  let top-mark = (0, rad - 0.05)
-  let bottom-mark = (0, -rad + 0.05)
+  // Momentum arrows circulating clockwise along the loop
   let mark-style = (length: .15, stroke: .7pt, angle: 60deg, scale: .7, fill: black)
-  mark(symbol: "stealth", top-mark, (0.1, rad - 0.05), ..mark-style)
-  mark(symbol: "stealth", bottom-mark, (-0.1, -rad + 0.05), ..mark-style)
-  content(top-mark, $q$, anchor: "south-east", padding: (0, 0, 5pt))
-  content(bottom-mark, $q$, anchor: "north", padding: (2pt, 0, 0))
+  for (sign, label-style) in (
+    (1, (anchor: "south-east", padding: (0, 0, 5pt))),
+    (-1, (anchor: "north", padding: (2pt, 0, 0))),
+  ) {
+    let mark-pos = (0, sign * (rad - 0.05))
+    mark(symbol: "stealth", mark-pos, (sign * 0.1, sign * (rad - 0.05)), ..mark-style)
+    content(mark-pos, $q$, ..label-style)
+  }
 })

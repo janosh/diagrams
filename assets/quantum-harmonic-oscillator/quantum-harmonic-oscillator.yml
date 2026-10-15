@@ -2,7 +2,7 @@ title: Quantum Harmonic Oscillator
 tags:
 - physics
 - thermodynamics
-description: 'One energy formula connects thermal motion with zero-point motion. Compare the level spacing ℏω with the thermal energy kBT.
+description: 'One energy formula connects thermal motion with zero-point motion. Compare the level spacing $\hbar\omega$ with the thermal energy $k_B T$. Measured in units of $k_B T$, the mean energy approaches classical equipartition at small spacing, while in units of $\hbar\omega$ it saturates at the zero-point energy $\hbar\omega/2$ as the oscillator is cooled.
 
 
   Energy formula and limiting regimes: [MIT harmonic oscillator in thermal equilibrium](https://web.mit.edu/physics/refs/generals/P1Fall12Sol.pdf).'

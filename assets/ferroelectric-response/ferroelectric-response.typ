@@ -25,102 +25,45 @@
   let plot-width = 10
   let y-offset = 4.5
 
-  let draw-axes(origin, width, height) = {
-    line(
-      (origin.at(0) - 0.3, origin.at(1)),
-      (origin.at(0) + width, origin.at(1)),
-      ..arrow-style,
-      name: "x-axis",
-    )
-    line(
-      (origin.at(0), origin.at(1) - 0.3),
-      (origin.at(0), origin.at(1) + height),
-      ..arrow-style,
-      name: "y-axis",
-    )
+  let draw-axes((x0, y0)) = {
+    line((x0 - 0.3, y0), (x0 + plot-width, y0), ..arrow-style, name: "x-axis")
+    line((x0, y0 - 0.3), (x0, y0 + plot-height), ..arrow-style, name: "y-axis")
   }
 
-  // Top plot: Double-well potential
-  let top-origin = (-5, y-offset)
-  draw-axes(top-origin, plot-width, plot-height)
-
-  // Draw double-well potential curve using hobby spline
+  // Top plot: double-well free energy as a hobby spline through both minima and the central barrier
+  let (top-x, top-y) = (-5, y-offset)
+  draw-axes((top-x, top-y))
+  let well-points = ((.5, 4), (1.7, 0.4), (1.8, 0.3), (5, 1.5), (8.2, 0.3), (8.3, 0.4), (9.5, 4))
   hobby(
-    (top-origin.at(0) + .5, top-origin.at(1) + 4), // start high
-    (top-origin.at(0) + 1.7, top-origin.at(1) + 0.4), // left minimum
-    (top-origin.at(0) + 1.8, top-origin.at(1) + 0.3), // left minimum
-    (top-origin.at(0) + 5, top-origin.at(1) + 1.5), // up to middle peak
-    (top-origin.at(0) + 8.2, top-origin.at(1) + 0.3), // right minimum
-    (top-origin.at(0) + 8.3, top-origin.at(1) + 0.4), // right minimum
-    (top-origin.at(0) + 9.5, top-origin.at(1) + 4), // up high again
+    ..well-points.map(((dx, dy)) => (top-x + dx, top-y + dy)),
     omega: 0,
     name: "potential-curve",
     stroke: 1.5pt,
   )
+  content("y-axis.mid", [Free Energy], angle: 90deg, anchor: "south", padding: (0, 0, 2pt))
 
-  content("y-axis.mid", [Free Energy], angle: 90deg, anchor: "south", padding: (
-    0,
-    0,
-    2pt,
-  ))
-
-  // Bottom plot: Polarization vs. displacement
-  let bottom-origin = (-5, 0)
-  draw-axes(bottom-origin, plot-width, plot-height)
-
+  // Bottom plot: polarization grows linearly with Ti displacement through the origin
+  let (x0, y0) = (-5, 0)
+  draw-axes((x0, y0))
   // zero lines
-  line(
-    (bottom-origin.at(0), bottom-origin.at(1) + plot-height / 2),
-    (bottom-origin.at(0) + plot-width, bottom-origin.at(1) + plot-height / 2),
-    stroke: gray + 0.5pt,
-  )
-  line(
-    (bottom-origin.at(0) + plot-width / 2, bottom-origin.at(1)),
-    (bottom-origin.at(0) + plot-width / 2, bottom-origin.at(1) + plot-height),
-    stroke: gray + 0.5pt,
-  )
-
-  // Add x-axis labels
-  content(
-    (bottom-origin.at(0), bottom-origin.at(1)),
-    [negative],
-    anchor: "north-west",
-    padding: (4pt, 2pt, 0),
-    name: "neg-label",
-  )
-  content(
-    (bottom-origin.at(0) + 8.5, bottom-origin.at(1)),
-    [positive],
-    anchor: "north-west",
-    padding: (4pt, 2pt, 0),
-    name: "pos-label",
-  )
-
-  line(
-    (bottom-origin.at(0), bottom-origin.at(1)),
-    (bottom-origin.at(0) + plot-width, bottom-origin.at(1) + plot-height),
-    stroke: blue + 1.5pt,
-    name: "polarization-line",
-  )
-
+  line((x0, y0 + plot-height / 2), (x0 + plot-width, y0 + plot-height / 2), stroke: gray + 0.5pt)
+  line((x0 + plot-width / 2, y0), (x0 + plot-width / 2, y0 + plot-height), stroke: gray + 0.5pt)
+  for (dx, label) in ((0, [negative]), (8.5, [positive])) {
+    content((x0 + dx, y0), label, anchor: "north-west", padding: (4pt, 2pt, 0))
+  }
+  line((x0, y0), (x0 + plot-width, y0 + plot-height), stroke: blue + 1.5pt)
   content("y-axis.mid", [Polarization], angle: 90deg, anchor: "south", padding: 4pt)
-  content("x-axis.mid", [Ti Displacement], anchor: "north", padding: (
-    10pt,
-    0,
-    0,
-  ))
+  content("x-axis.mid", [Ti Displacement], anchor: "north", padding: (10pt, 0, 0))
 
   let atom = sphere.with(radius: 0.20)
+  // BaTiO3 perovskite cell: Ba on the corners, O on the face centers, Ti displaced by ti_y.
   let draw-unit-cell(center_x, center_y, ti_y) = {
     let back = -1.0
     let corners = ((-1, -1), (1, -1), (-1, 1), (1, 1))
     let barium = atom.with(fill: rgb("#00ffff"))
     let oxygen = atom.with(fill: red)
-    let bond(end) = line(
-      ((center_x, center_y + ti_y, back / 2), 15%, end),
-      ((center_x, center_y + ti_y, back / 2), 85%, end),
-      stroke: 1pt,
-    )
+    let ti-pos = (center_x, center_y + ti_y, back / 2)
+    let bond(end) = line((ti-pos, 15%, end), (ti-pos, 85%, end), stroke: 1pt)
 
     rect((center_x - 1, center_y - 1, 0), (center_x + 1, center_y + 1, 0), stroke: 0.7pt)
     for (start, end) in (
@@ -144,6 +87,7 @@
     oxygen((center_x, center_y, back))
     bond((center_x, center_y, back))
 
+    // Ti bonds only to the apical O it moves toward (both when centered).
     if ti_y >= 0 { bond((center_x, center_y + 1, back / 2)) }
     if ti_y <= 0 { bond((center_x, center_y - 1, back / 2)) }
     bond((center_x - 1, center_y, back / 2))
@@ -151,7 +95,7 @@
     for (offset_x, offset_y) in ((0, 1), (0, -1), (-1, 0), (1, 0)) {
       oxygen((center_x + offset_x, center_y + offset_y, back / 2))
     }
-    atom((center_x, center_y + ti_y, back / 2), fill: gray)
+    atom(ti-pos, fill: gray)
 
     bond((center_x, center_y, 0))
     for (offset_x, offset_y) in corners {
@@ -162,7 +106,7 @@
 
   scale(0.64)
   set-origin("potential-curve.mid")
-  draw-unit-cell(-4.5, 2, -0.2)
-  draw-unit-cell(-0.5, 2, 0)
-  draw-unit-cell(3.5, 2, 0.2)
+  for (center_x, ti_y) in ((-4.5, -0.2), (-0.5, 0), (3.5, 0.2)) {
+    draw-unit-cell(center_x, 2, ti_y)
+  }
 })

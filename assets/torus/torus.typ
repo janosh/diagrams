@@ -10,7 +10,7 @@
 #let axis-len = 20
 #let outer-rim = major-r + minor-r
 #let arrow = (end: "stealth", fill: black, scale: 0.5)
-#let ax-stroke = (paint: black, thickness: 0.8pt)
+#let ax-stroke = black + 0.8pt
 #let rad-stroke = 1.6pt
 
 #let torus-pt(u-deg, v-deg) = {
@@ -74,12 +74,7 @@
   // R (blue): origin to tube center at far open slice.
   let v-end = v-max * 1deg
   let (rx, ry) = (major-r * calc.cos(v-end), major-r * calc.sin(v-end))
-  line(
-    (0, 0, 0),
-    (rx, ry, 0),
-    stroke: (paint: blue, thickness: rad-stroke),
-    name: "R",
-  )
+  line((0, 0, 0), (rx, ry, 0), stroke: blue + rad-stroke, name: "R")
   content("R.mid", text(fill: blue)[$R$], anchor: "south", padding: 2pt)
 
   // r (red): minor radius pointing diagonally upward.
@@ -87,7 +82,7 @@
   line(
     (rx, ry, 0),
     (rx * stretch, ry * stretch, minor-r * 0.87),
-    stroke: (paint: red, thickness: rad-stroke),
+    stroke: red + rad-stroke,
     name: "r",
   )
   content("r.mid", text(fill: red)[$r$], anchor: "south-east", padding: 2pt)

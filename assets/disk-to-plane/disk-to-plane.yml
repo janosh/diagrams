@@ -9,4 +9,4 @@ tags:
   - fundamental domain
   - symmetries
 description: >-
-  Visualization of the Cayley transform S(w) = (w+i)/(iw+1) mapping the unit disk (D²) to the upper half-plane (H). The diagram shows how points and paths are mapped between these domains, with special points labeled. This conformal transformation is useful in string theory and [conformal field theory](https://davidtong.org/pdfs/teaching/string-theory/string4.pdf), where calculations are often simpler in one domain than the other.
+  Visualization of the Cayley transform S(w) = (w+i)/(iw+1) mapping the unit disk (D²) to the upper half-plane (H). The diagram shows how labeled points and boundary paths map between these domains: the center w₀ = 0 goes to z₀ = i, while the blue and red boundary semicircles through w₃ = −1 and w₁ = 1 unroll onto the negative and positive real axes, with w₄ = i sent to infinity and w₂ = −i to the origin. This conformal transformation is useful in string theory and [conformal field theory](https://davidtong.org/pdfs/teaching/string-theory/string4.pdf), where calculations are often simpler in one domain than the other.

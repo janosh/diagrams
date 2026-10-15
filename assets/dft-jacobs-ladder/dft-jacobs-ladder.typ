@@ -10,80 +10,31 @@
   let height = 1.5 // Height of each rung
   let circle-r = 0.8 // Radius of symbol circles
   let circle-offset = -width / 2 + 1.15 // Keep the symbols near the left edge
+  let rung-stroke = rgb("888") + 0.4pt
 
-  let draw-rung(y, color, text-content, symbol) = {
-    rect(
-      (-width / 2, y),
-      (width / 2, y + height),
-      fill: color,
-      stroke: rgb("888") + 0.4pt,
-    )
-
-    // Add text content, left-aligned relative to circle and vertically centered
-    content(
-      (circle-offset + circle-r + 0.2, y + height / 2),
-      text(size: 14pt)[#align(horizon)[#text-content]],
-      anchor: "west", // Left align text
-    )
-
+  for (idx, (color, label, symbol)) in (
+    (rgb("b4a7d6"), [0: *Hartree World*], none),
+    (rgb("a4c2f4"), [1: *Local Density Approx. (LDA)*\ VWN, PW92], $rho(bold(r))$),
+    (rgb("f9cb9c"), [2: *Generalized Gradient Approx. (GGA)*\ PBE, BLYP], $nabla rho(bold(r))$),
+    (
+      rgb("ffe599"),
+      [3: *Meta-GGA*\ (r/r$""^2$)SCAN],
+      [$\ nabla^(2) rho(bold(r))$ \ $tau(bold(r))$],
+    ),
+    (rgb("b6d7a8"), [4: *Occupied Hybrid Methods* \ B3LYP, CAM-B3LYP, M06-2X], ${phi_i^"occ"}$),
+    (rgb("ea9999"), [5: *Virtual Double-Hybrids* \ B2PLYP], ${phi_i^"virt"}$),
+    (rgb("ffb7c5"), [*Chemical accuracy*], none),
+  ).enumerate() {
+    let y = idx * rung-sep
+    rect((-width / 2, y), (width / 2, y + height), fill: color, stroke: rung-stroke)
+    // Left-align text next to the symbol circle
+    content((circle-offset + circle-r + 0.2, y + height / 2), align(horizon, label), anchor: "west")
     if symbol != none {
-      circle(
-        (circle-offset, y + height / 2),
-        radius: circle-r,
-        fill: color,
-        stroke: rgb("888") + 0.4pt,
-      )
+      circle((circle-offset, y + height / 2), radius: circle-r, fill: color, stroke: rung-stroke)
       content((circle-offset, y + height / 2), align(center, symbol))
     }
   }
 
-  draw-rung(0, rgb("b4a7d6"), [0: *Hartree World*], none)
-
-  draw-rung(
-    rung-sep,
-    rgb("a4c2f4"),
-    [1: *Local Density Approx. (LDA)*\ VWN, GPW92],
-    $rho(bold(r))$,
-  )
-
-  draw-rung(
-    2 * rung-sep,
-    rgb("f9cb9c"),
-    [2: *Generalized Gradient Approx. (GGA)*\ PBE, BLYP],
-    $nabla rho(bold(r))$,
-  )
-
-  draw-rung(
-    3 * rung-sep,
-    rgb("ffe599"),
-    [3: *Meta-GGA*\ (r/r$""^2$)SCAN],
-    [$\ nabla^(2) rho(bold(r))$ \ $tau(bold(r))$],
-  )
-
-  draw-rung(
-    4 * rung-sep,
-    rgb("b6d7a8"),
-    [4: *Occupied Hybrid Methods* \ B3LYP, CAM-B3LYP, M06-2X],
-    ${phi_i^"occ"}$,
-  )
-
-  draw-rung(
-    5 * rung-sep,
-    rgb("ea9999"),
-    [5: *Virtual Double-Hybrids* \ B2PLYP],
-    ${phi_i^"virt"}$,
-  )
-
-  draw-rung(6 * rung-sep, rgb("ffb7c5"), [*Chemical accuracy*], none)
-
-  line(
-    (-width / 2, 0),
-    (-width / 2, 6 * rung-sep + height),
-    stroke: 0.7pt,
-  )
-  line(
-    (width / 2, 0),
-    (width / 2, 6 * rung-sep + height),
-    stroke: 0.7pt,
-  )
+  // Ladder rails
+  for x in (-width / 2, width / 2) { line((x, 0), (x, 6 * rung-sep + height), stroke: 0.7pt) }
 })

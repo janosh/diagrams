@@ -5,4 +5,4 @@ tags:
   - probability
   - statistics
 description: |
-  TikZ-reproduction of fig. 1 from the paper MADE: Masked Autoencoder for Distribution Estimation ([arxiv:1502.03509](https://arxiv.org/abs/1502.03509)).
+  Reproduction of fig. 1 from the paper MADE: Masked Autoencoder for Distribution Estimation ([arxiv:1502.03509](https://arxiv.org/abs/1502.03509)). Multiplying the weight matrices of an ordinary autoencoder (left) by binary masks (middle, black = 0) derived from the degrees $m(k)$ written in each MADE unit (right) cuts every path from an input to outputs of equal or lower degree. The outputs then form the autoregressive factorization $p(\mathbf x) = p(x_2)\,p(x_3|x_2)\,p(x_1|x_2,x_3)$.

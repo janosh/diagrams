@@ -4,16 +4,11 @@
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 #set text(size: 12pt)
 
-#let arcsinh(x) = calc.ln(x + calc.sqrt(calc.pow(x, 2) + 1))
-
-// Magnetization function
-#let magnetization(x) = {
-  if x >= 0 and x < 1 {
-    calc.pow(1 - calc.pow(calc.sinh(arcsinh(1) / x), -4), 1 / 8)
-  } else {
-    0
-  }
-}
+// Onsager's 2D Ising magnetization m = (1 - sinh(2J / k_B T)^-4)^(1/8) with x = T / T_c,
+// using sinh(2J / k_B T_c) = 1, i.e. 2J / k_B T_c = arcsinh(1) = ln(1 + sqrt(2))
+#let magnetization(x) = if x < 1 {
+  calc.pow(1 - calc.pow(calc.sinh(calc.ln(1 + calc.sqrt(2)) / x), -4), 1 / 8)
+} else { 0 }
 
 #canvas({
   let axis-mark = (end: "stealth", fill: black)
@@ -33,20 +28,8 @@
     x-grid: true,
     y-grid: true,
     {
-      // Main magnetization curve
-      plot.add(
-        style: (stroke: blue + 1.5pt),
-        domain: (0.01, 2), // Avoid x=0 due to division
-        samples: 300,
-        magnetization,
-      )
-
-      // Dashed line y=x from 0 to 1
-      plot.add(
-        style: (stroke: (dash: "dashed", thickness: 1pt)),
-        domain: (0, 1),
-        x => x,
-      )
+      plot.add(style: (stroke: blue + 1.5pt), domain: (0.01, 2), samples: 300, magnetization)
+      plot.add(style: (stroke: (dash: "dashed", thickness: 1pt)), domain: (0, 1), x => x)
     },
   )
 })

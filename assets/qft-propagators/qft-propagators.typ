@@ -20,58 +20,43 @@
   line((re-range - tip, 0), (re-range, 0), mark: arrow-style, name: "x-axis")
   content("x-axis.end", $"Re"(omega)$, anchor: "north-east", padding: (top: 5pt))
 
-  // Imaginary axis
-  line(
-    (0, -im-range + 1),
-    (0, im-range - 1),
-    mark: arrow-style,
-    name: "y-axis",
-  )
-  content("y-axis.end", $"Im"(omega)$, anchor: "north-west", padding: (
-    left: 5pt,
-  ))
+  line((0, -im-range + 1), (0, im-range - 1), mark: arrow-style, name: "y-axis")
+  content("y-axis.end", $"Im"(omega)$, anchor: "north-west", padding: (left: 5pt))
 
   // Matsubara frequencies
   for n in range(-im-range, im-range + 1) {
-    circle(
-      (0, 2 / 3 * n),
-      radius: 0.05,
-      fill: black,
-      name: "omega" + str(n),
-    )
+    circle((0, 2 / 3 * n), radius: 0.05, fill: black)
   }
   content((-1.1, 2), align(right)[Matsubara\ frequencies])
 
-  for spec in (
+  // Integration contours, each labeled at one end
+  for (label, start, end, paint, label-pos, label-args) in (
     (
-      name: "advanced",
-      start: (-re-range, -1),
-      end: (re-range, -1),
-      paint: red,
-      label: [advanced],
-      label-pos: (rel: (0, -0.4), to: "advanced.start"),
-      label-args: (anchor: "south-west", padding: (left: 5pt)),
+      "advanced",
+      (-re-range, -1),
+      (re-range, -1),
+      red,
+      (rel: (0, -0.4), to: "advanced.start"),
+      (anchor: "south-west", padding: (left: 5pt)),
     ),
     (
-      name: "retarded",
-      start: (-re-range, 1),
-      end: (re-range, 1),
-      paint: blue,
-      label: [retarded],
-      label-pos: "retarded.start",
-      label-args: (anchor: "south-west", padding: 2pt),
+      "retarded",
+      (-re-range, 1),
+      (re-range, 1),
+      blue,
+      "retarded.start",
+      (anchor: "south-west", padding: 2pt),
     ),
     (
-      name: "feynman",
-      start: (-re-range, -1),
-      end: (re-range, 1),
-      paint: orange,
-      label: [Feynman],
-      label-pos: (rel: (-0.7, -0.55), to: "feynman.end"),
-      label-args: (padding: 2pt),
+      "Feynman",
+      (-re-range, -1),
+      (re-range, 1),
+      orange,
+      (rel: (-0.7, -0.55), to: "Feynman.end"),
+      (padding: 2pt),
     ),
   ) {
-    line(spec.start, spec.end, stroke: (paint: spec.paint, dash: "dashed"), name: spec.name)
-    content(spec.label-pos, text(spec.paint, spec.label), ..spec.label-args)
+    line(start, end, stroke: (paint: paint, dash: "dashed"), name: label)
+    content(label-pos, text(paint, label), ..label-args)
   }
 })

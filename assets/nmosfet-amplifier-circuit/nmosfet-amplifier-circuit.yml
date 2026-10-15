@@ -10,4 +10,4 @@ tags:
   - nmos
   - circuit diagram
 description: |
-  Diagram illustrating a basic amplifier circuit topology using an [N-channel MOSFET (NMOS)](../mosfet), concepts or circuits related to the course "Advanced Analog Integrated Circuits and Systems (AAIC)" (#41178, TU Berlin).
+  Source follower (common-drain amplifier) built from an [N-channel MOSFET (NMOS)](../mosfet) $M_1$. The input $V_\text{in}$ drives the gate through $R_1$, the drain is tied to the supply $V_\text{DD}$, and the output $V_\text{out}$ is taken at the source, which is loaded by the resistor $R_2$ and the capacitance $C_L$ to ground. The bulk is grounded, so the body effect lowers the voltage gain below one. Related to the course "Advanced Analog Integrated Circuits and Systems (AAIC)" (#41178, TU Berlin).

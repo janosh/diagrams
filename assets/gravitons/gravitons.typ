@@ -5,6 +5,7 @@
 #set text(size: 12pt)
 
 #let wavy = (amplitude: .1, segment-length: .18, stroke: .9pt)
+#let arrowhead = (symbol: "stealth", width: .22, length: .16, scale: .8, fill: black, stroke: .7pt)
 #let radius = 1.15
 
 #let graviton(from, to) = decorations.wave(line(from, to), ..wavy)
@@ -35,16 +36,7 @@
   decorations.wave(arc(center, radius: radius, start: from, stop: to, anchor: "origin"), ..wavy)
   if not labeled { return }
   let mid = (from + to) / 2
-  mark(
-    (name: loop, anchor: mid + 2deg),
-    (name: loop, anchor: mid),
-    symbol: "stealth",
-    width: .22,
-    length: .16,
-    scale: .8,
-    fill: black,
-    stroke: .7pt,
-  )
+  mark((name: loop, anchor: mid + 2deg), (name: loop, anchor: mid), ..arrowhead)
   content(on-loop(center, mid, out: 0.33), $p$)
 }
 
@@ -64,10 +56,10 @@
   ) {
     propagator(hub, "loop", from, to, labeled: labeled)
   }
-  graviton(on-loop(hub, 180deg), (-radius - 1.25, 0))
-  graviton(on-loop(hub, 0deg), (radius + 1.25, 0))
-  vertex(on-loop(hub, 180deg))
-  vertex(on-loop(hub, 0deg))
+  for (turn, side) in ((180deg, -1), (0deg, 1)) {
+    graviton(on-loop(hub, turn), (side * (radius + 1.25), 0))
+    vertex(on-loop(hub, turn))
+  }
   regulator(on-loop(hub, -90deg))
 
   content((radius + 1.8, 0), $+$)

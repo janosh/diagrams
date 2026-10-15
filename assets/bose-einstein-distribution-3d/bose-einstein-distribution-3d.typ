@@ -4,56 +4,40 @@
 #set page(width: auto, height: auto, margin: 18pt, fill: none)
 #set text(size: 12pt, fill: black)
 
-#let x-domain = (-10.0, 10.0)
-#let y-domain = (-10.0, 10.0)
-#let z-domain = (0.0, 3.0)
 #let surface-subdivisions = 96
 #let axis-tick-values = (-10, -5, 0, 5, 10)
 #let z-tick-values = (1, 2, 3) // omit 0: it coincides with the Im=10 tick at the shared corner
 #let tick-font-size = 26pt
 #let axis-label-font-size = 36pt
 
+// |n_B(p_0)| = |1 / (e^(p_0) - 1)| at T = 1 for p_0 = x + i y
 #let n-b-surface(x-val, y-val) = {
-  let denominator = (
-    calc.exp(2 * x-val) - 2 * calc.exp(x-val) * calc.cos(y-val * 1rad) + 1
-  )
+  let denominator = calc.exp(2 * x-val) - 2 * calc.exp(x-val) * calc.cos(y-val * 1rad) + 1
   // Clip the divergent peak at height 2 before taking the inverse square root.
   calc.pow(calc.max(denominator, 0.25), -0.5)
 }
 
+// Diverging colormap over heights 0 to 2
 #let surface-color(z-val) = {
-  let (min-z, max-z) = (0.0, 2.0)
-  let z-ratio = calc.max(0.0, calc.min(1.0, (z-val - min-z) / (max-z - min-z)))
-  let low-color = rgb("#3b4cc0")
-  let mid-color = rgb("#f9d057")
-  let high-color = rgb("#b40426")
+  let z-ratio = calc.max(0.0, calc.min(1.0, z-val / 2.0))
+  let (low-color, mid-color, high-color) = (rgb("#3b4cc0"), rgb("#f9d057"), rgb("#b40426"))
   if z-ratio < 0.5 {
     color.mix((low-color, 1.0 - z-ratio * 2), (mid-color, z-ratio * 2))
   } else {
-    color.mix(
-      (mid-color, 1.0 - (z-ratio - 0.5) * 2),
-      (high-color, (z-ratio - 0.5) * 2),
-    )
+    color.mix((mid-color, 1.0 - (z-ratio - 0.5) * 2), (high-color, (z-ratio - 0.5) * 2))
   }
 }
 
 #canvas({
   let view-transform = matrix.transform-rotate-dir((2.25, 1.75, -4), (0, 1, 0))
-  let base-transform = matrix.mul-mat(view-transform, matrix.transform-scale((
-    0.95,
-    0.95,
-    6.0,
-  )))
+  let base-transform = matrix.mul-mat(view-transform, matrix.transform-scale((0.95, 0.95, 6.0)))
 
-  let (x-min, x-max) = x-domain
-  let (y-min, y-max) = y-domain
-  let (z-min, z-max) = z-domain
+  let (x-min, x-max) = (-10.0, 10.0)
+  let (y-min, y-max) = (-10.0, 10.0)
+  let (z-min, z-max) = (0.0, 3.0)
 
-  let axis-stroke = black + 0.4pt
-  let grid-stroke = rgb("#9a9a9a").transparentize(35%) + 0.08pt
-
-  // Builtin CeTZ grid on three planes of the axis-aligned box.
-  set-style(stroke: grid-stroke)
+  // Builtin CeTZ grid on the floor of the axis-aligned box.
+  set-style(stroke: rgb("#9a9a9a").transparentize(35%) + 0.08pt)
   set-transform(base-transform)
   grid(
     (x-min, y-min, z-min),
@@ -74,34 +58,25 @@
     for x-idx in range(surface-subdivisions) {
       let x-left = x-min + x-idx * x-step
       let x-right = x-left + x-step
-
-      let z-lb = n-b-surface(x-left, y-bottom)
-      let z-lt = n-b-surface(x-left, y-top)
-      let z-rt = n-b-surface(x-right, y-top)
-      let z-rb = n-b-surface(x-right, y-bottom)
-      let z-avg = (z-lb + z-lt + z-rt + z-rb) / 4
-
+      let corners = (
+        (x-left, y-bottom, n-b-surface(x-left, y-bottom)),
+        (x-left, y-top, n-b-surface(x-left, y-top)),
+        (x-right, y-top, n-b-surface(x-right, y-top)),
+        (x-right, y-bottom, n-b-surface(x-right, y-bottom)),
+      )
+      let z-avg = corners.map(corner => corner.at(2)).sum() / 4
       let depth = (
         depth-x * (x-left + x-right) / 2 + depth-y * (y-bottom + y-top) / 2 + depth-z * z-avg
       )
-      quads.push((
-        depth,
-        (
-          (x-left, y-bottom, z-lb),
-          (x-left, y-top, z-lt),
-          (x-right, y-top, z-rt),
-          (x-right, y-bottom, z-rb),
-        ),
-        surface-color(z-avg),
-      ))
+      quads.push((depth, corners, surface-color(z-avg)))
     }
   }
   for (_, corners, fill) in quads.sorted(key: quad => quad.first()) {
     line(..corners, fill: fill, stroke: fill + 0.02pt)
   }
 
-  // Box axes and front edges.
-  set-style(stroke: axis-stroke)
+  // Box edges.
+  set-style(stroke: black + 0.4pt)
   line((x-min, y-min, z-min), (x-max, y-min, z-min))
   line((x-min, y-max, z-min), (x-max, y-max, z-min))
   line((x-min, y-min, z-min), (x-min, y-max, z-min))
@@ -117,44 +92,30 @@
 
   // Ticks and labels.
   let tick-length = 0.35
+  let tick-label(pos, value, anchor) = content(
+    pos,
+    text(size: tick-font-size)[#value],
+    anchor: anchor,
+  )
+  // Re ticks sit on the front edge so they don't line up with the poles behind them.
   for tick-x in axis-tick-values {
-    line((tick-x, y-max, z-min), (tick-x, y-max + tick-length, z-min))
-    content(
-      (tick-x, y-max + 2.5, z-min),
-      text(size: tick-font-size)[#tick-x],
-      anchor: "south",
-    )
+    line((tick-x, y-min, z-min), (tick-x, y-min - tick-length, z-min))
+    tick-label((tick-x, y-min - 1.2, z-min), tick-x, "north")
   }
   for tick-y in axis-tick-values {
     line((x-max, tick-y, z-min), (x-max + tick-length, tick-y, z-min))
-    content(
-      (x-max + 1.2, tick-y, z-min),
-      text(size: tick-font-size)[#tick-y],
-      anchor: "west",
-    )
+    tick-label((x-max + 1.2, tick-y, z-min), tick-y, "west")
   }
   for tick-z in z-tick-values {
     line((x-max, y-max, tick-z), (x-max + tick-length, y-max, tick-z))
-    content(
-      (x-max + 1.2, y-max, tick-z),
-      text(size: tick-font-size)[#tick-z],
-      anchor: "west",
-    )
+    tick-label((x-max + 1.2, y-max, tick-z), tick-z, "west")
   }
 
-  content(
-    (2.0, y-max + 6.8, z-min),
-    text(size: axis-label-font-size)[$"Re"(p_0)$],
-    anchor: "south",
-  )
-  content(
-    (x-max + 3, (y-min + y-max) / 2 + 2.4, z-min),
-    text(size: axis-label-font-size)[$"Im"(p_0)$],
-    anchor: "west",
-  )
-  content(
-    (x-max + 2.6, y-max, (z-min + z-max) / 2),
-    text(size: axis-label-font-size)[$n_(upright(B))(p_0)$],
-    anchor: "west",
-  )
+  for (pos, label, anchor) in (
+    ((0, y-min - 5, z-min), $"Re"(p_0)$, "north"),
+    ((x-max + 4, 2.5, z-min), $"Im"(p_0)$, "west"),
+    ((x-max + 2.6, y-max, (z-min + z-max) / 2), $abs(n_(upright(B))(p_0))$, "west"),
+  ) {
+    content(pos, text(size: axis-label-font-size, label), anchor: anchor)
+  }
 })

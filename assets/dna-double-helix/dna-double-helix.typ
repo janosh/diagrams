@@ -4,8 +4,7 @@
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 #set text(size: 12pt)
 
-#let pure-red = rgb(255, 0, 0)
-#let pure-blue = rgb(0, 0, 255)
+#let strand-colors = (rgb(0, 0, 255), rgb(255, 0, 0)) // indexed by parity
 #let strand-w = 3.2pt
 #let helix-h = .84
 #let total-w = 7.53
@@ -26,9 +25,8 @@
 #canvas(length: 2.2cm, {
   // === bonds: colored tips with dotted black middles, spanning strand to strand ===
   for grp in range(n-groups) {
-    let (top-col, bot-col, top-par) = if calc.rem-euclid(grp, 2) == 0 {
-      (pure-blue, pure-red, 0)
-    } else { (pure-red, pure-blue, 1) }
+    let top-par = calc.rem(grp, 2)
+    let (top-col, bot-col) = (strand-colors.at(top-par), strand-colors.at(1 - top-par))
     for off in (.1, .25, .4) {
       let bx = grp + off
       let y-top = strand-state(bx, top-par).y
@@ -50,7 +48,6 @@
   // === strands: sampled polylines, descending strand gets a gap at each crossing ===
   let n-samples = 200
   for parity in (0, 1) {
-    let color = if parity == 0 { pure-blue } else { pure-red }
     let segments = ()
     let current = ()
     for idx in range(n-samples + 1) {
@@ -64,6 +61,6 @@
       }
     }
     if current.len() > 1 { segments.push(current) }
-    for seg in segments { line(..seg, stroke: color + strand-w) }
+    for seg in segments { line(..seg, stroke: strand-colors.at(parity) + strand-w) }
   }
 })

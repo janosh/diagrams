@@ -7,4 +7,4 @@ tags:
   - Green's function
   - Feynman
 description: >-
-  Complex plane visualization of different propagator types in quantum field theory: retarded, advanced, and Feynman propagators. The diagram shows their [analytic structure](../qft-propagator-poles) in relation to [Matsubara frequencies](../matsubara-contours) (dots on imaginary axis). This representation helps understanding causality in quantum field theory and the connection between real-time and imaginary-time (thermal) formalisms.
+  Complex frequency plane showing where the real-frequency integration contour runs for the retarded (just above the real axis), advanced (just below), and Feynman (below for negative, above for positive real frequencies) propagators. The zigzag marks the propagator's [branch cut](../branch-cuts-1) along the real axis, part of its [analytic structure](../qft-propagator-poles), while the dots on the imaginary axis are the [Matsubara frequencies](../matsubara-contours). This representation helps understanding causality in quantum field theory and the connection between real-time and imaginary-time (thermal) formalisms.

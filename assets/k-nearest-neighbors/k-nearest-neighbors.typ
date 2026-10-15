@@ -4,23 +4,7 @@
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 #set text(size: 12pt, weight: "bold")
 
-#let draw-star(pos, size: 0.3, fill: red) = {
-  n-star(pos, 5, radius: size, inner-radius: .4 * size, fill: fill, stroke: .5pt, show-inner: false)
-}
-
-#let triangle(pos, fill: green) = {
-  polygon(
-    pos,
-    3,
-    radius: 0.25,
-    angle: 90deg, // Point up
-    fill: fill,
-    stroke: .5pt,
-  )
-}
-
 #canvas({
-  // Set up coordinate system
   let arrow-style = (mark: (end: "stealth", fill: black, scale: 0.7))
   let axis-length = 6
 
@@ -32,20 +16,22 @@
     content((rel: rel, to: name + ".end"), label, anchor: anchor)
   }
 
-  for pos in ((1.6, 4.0), (1.3, 3.5), (2.3, 3.8), (1.8, 3.0), (1.6, 2.7), (2.5, 2.5), (2, 2.2)) {
-    draw-star(pos)
+  // Class A stars and class B triangles. Around the new example at (3.2, 2.7), the 3 nearest
+  // points hold 2 triangles (class B) while the 7 nearest hold 4 stars (class A).
+  for pos in ((1.6, 4.0), (1.3, 3.5), (2.3, 3.8), (1.9, 3.0), (1.4, 2.5), (2.5, 2.5), (2, 2.2)) {
+    n-star(pos, 5, radius: 0.3, inner-radius: 0.12, fill: red, stroke: .5pt, show-inner: false)
   }
   for pos in (
-    (4.2, 3.5),
+    (4.5, 4.0),
     (3.6, 2.8),
     (3.4, 2.2),
     (4.0, 2.2),
     (5.2, 2.5),
-    (4.7, 3.5),
-    (4, 1.5),
+    (4.8, 3.4),
+    (4.4, 1.3),
     (4.7, 1.8),
   ) {
-    triangle(pos)
+    polygon(pos, 3, radius: 0.25, angle: 90deg, fill: green, stroke: .5pt)
   }
 
   // Draw the new example to classify (yellow square with question mark)
@@ -60,21 +46,14 @@
     name: "new-example",
   )
 
-  for (neighbors, radius) in ((3, 0.8), (7, 2.0)) {
+  for (neighbors, radius) in ((3, 0.8), (7, 1.56)) {
     let name = "k" + str(neighbors) + "-circle"
     circle("new-example.center", radius: radius, stroke: (dash: "dashed"), name: name)
     content((rel: (0, -0.3), to: name + ".south"), $k = #neighbors$, anchor: "north")
   }
 
-  content(
-    (rel: (-.6, 4.8), to: "x-axis.end"),
-    text(fill: red, size: 12pt)[Class A],
-    name: "class-a-label",
-  )
-  content((rel: (0, -.5), to: "class-a-label"), text(
-    fill: green,
-    size: 12pt,
-  )[Class B])
+  content((rel: (-.6, 4.8), to: "x-axis.end"), text(fill: red)[Class A], name: "class-a-label")
+  content((rel: (0, -.5), to: "class-a-label"), text(fill: green)[Class B])
 
   content(
     (rel: (1, 3), to: "new-example"),

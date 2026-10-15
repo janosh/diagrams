@@ -54,91 +54,62 @@
 #set text(font: "Avenir Next", size: paragraph-size, fill: rgb("#19324f"))
 #set par(leading: 0.55em)
 
+// Shared frame for the tangent comparisons in panels 1 and 2.
+#let comparison-plot(tick-step, legend, curves, ..args) = canvas(length: 1.2cm, {
+  let axis-mark = (end: "stealth", fill: black)
+  draw.set-style(
+    legend: (fill: rgb("#cdd3da")),
+    axes: (
+      x: (mark: axis-mark, label: (anchor: "north", offset: 0.1)),
+      y: (mark: axis-mark, label: (anchor: "north-west", offset: -0.2)),
+    ),
+  )
+  plot.plot(
+    size: (8, 5),
+    x-label: $x$,
+    y-tick-step: tick-step,
+    x-tick-step: tick-step,
+    x-grid: true,
+    y-grid: true,
+    legend: legend,
+    // Compact legend with a thin border.
+    legend-style: (item: (spacing: 0.15), padding: 0.15, stroke: 0.5pt),
+    axis-style: "left",
+    ..args,
+    {
+      // Domains start at 0.01 where needed since ln(0) is undefined.
+      for (color, domain, samples, label, func) in curves {
+        plot.add(
+          style: (stroke: color + 1.5pt),
+          domain: domain,
+          samples: samples,
+          label: label,
+          func,
+        )
+      }
+    },
+  )
+})
+
 // === 1  Convex: above a tangent ===
-#let figure-0 = canvas(length: 1.2cm, {
-  draw.set-style(legend: (fill: rgb("#cdd3da")))
-  let axis-mark = (end: "stealth", fill: black)
-  draw.set-style(axes: (
-    x: (mark: axis-mark, label: (anchor: "north", offset: 0.1)),
-    y: (mark: axis-mark, label: (anchor: "north-west", offset: -0.2)),
-  ))
-  plot.plot(
-    size: (8, 5),
-    x-label: $x$,
-    y-tick-step: 1,
-    x-tick-step: 1,
-    x-grid: true,
-    y-grid: true,
-    legend: "inner-north-west",
-    // Compact legend with a thin border.
-    legend-style: (item: (spacing: 0.15), padding: 0.15, stroke: 0.5pt),
-    axis-style: "left",
-    {
-      // x ln(x) function
-      plot.add(
-        style: (stroke: blue + 1.5pt),
-        domain: (0.01, 2.7), // avoid x=0 since ln(0) is undefined
-        samples: 100,
-        label: $x ln(x)$,
-        x => x * calc.ln(x),
-      )
+#let figure-0 = comparison-plot(1, "inner-north-west", (
+  (blue, (0.01, 2.7), 100, $x ln(x)$, x => x * calc.ln(x)),
+  (red, (0, 2.7), 50, $x-1$, x => x - 1),
+))
 
-      // x-1 function
-      plot.add(
-        style: (stroke: red + 1.5pt),
-        domain: (0, 2.7),
-        label: $x-1$,
-        x => x - 1,
-      )
-    },
-  )
-})
+// === 2  Concave: below a tangent ===
+#let figure-1 = comparison-plot(0.2, "inner-north-east", x-min: 0, x-max: 1, (
+  (blue, (0.01, 1), 100, $-x ln(x)$, x => -x * calc.ln(x)),
+  (red, (0, 1), 50, $1-x$, x => 1 - x),
+))
 
-// === 2  Concave: reverse the inequality ===
-#let figure-1 = canvas(length: 1.2cm, {
-  draw.set-style(legend: (fill: rgb("#cdd3da")))
-  let axis-mark = (end: "stealth", fill: black)
-  draw.set-style(axes: (
-    x: (mark: axis-mark),
-    y: (mark: axis-mark, label: (anchor: "north-west", offset: -0.2)),
-  ))
-  plot.plot(
-    size: (8, 5),
-    x-min: 0,
-    x-max: 1,
-    x-label: $x$,
-    y-tick-step: 0.2,
-    x-tick-step: 0.2,
-    x-grid: true,
-    y-grid: true,
-    legend: "inner-north-west",
-    // Compact legend with a thin border.
-    legend-style: (item: (spacing: 0.15), padding: 0.15, stroke: 0.5pt),
-    axis-style: "left",
-    {
-      // x function
-      plot.add(style: (stroke: blue + 1.5pt), domain: (0, 1), label: $x$, x => { x })
-      // -x ln(x) function
-      plot.add(
-        style: (stroke: red + 1.5pt),
-        domain: (0.01, 1), // avoid x=0 since ln(0) is undefined
-        samples: 100,
-        label: $-x ln(x)$,
-        x => -x * calc.ln(x),
-      )
-    },
-  )
-})
-
-// === 3  The local picture for log ===
+// === 3  Concave: above a chord ===
 #let figure-2 = canvas(length: 1.6cm, {
-  draw.set-style(legend: (fill: rgb("#cdd3da")))
   let axis-mark = (end: "stealth", fill: black, scale: 0.7)
   draw.set-style(axes: (
     x: (mark: axis-mark, label: (anchor: "south-east", offset: -0.25)),
     y: (mark: axis-mark, label: (anchor: "north-west", offset: -0.2)),
   ))
-
   plot.plot(
     size: (8, 6),
     x-label: $x$,
@@ -148,19 +119,15 @@
     y-tick-step: none,
     axis-style: "school-book",
     {
-      // Main logarithmic curve
       plot.add(
         style: (stroke: rgb(0%, 0%, 80%) + 1.5pt),
         domain: (11, 150),
         samples: 150,
         x => calc.ln(x - 10) - 2,
       )
-
-      // Dashed line
+      // Chord extended past the two points where it meets the curve
       plot.add(
-        style: (
-          stroke: (paint: orange, thickness: 1.5pt, dash: "dashed"),
-        ),
+        style: (stroke: (paint: orange, thickness: 1.5pt, dash: "dashed")),
         domain: (8, 120),
         x => 0.2 + (3 - 0.2) * (x - 8) / (120 - 8),
       )
@@ -170,24 +137,18 @@
 
 // === 4  Average first, or apply f first? ===
 #let figure-3 = canvas(length: 1.85cm, {
-  draw.set-style(legend: (fill: rgb("#cdd3da")))
   let curve(x) = 0.3 * x * x
-  draw.line((0, 0), (4.5, 0), mark: (end: "stealth"))
-  draw.line((0, 0), (0, 5.3), mark: (end: "stealth"))
-  draw.line(
-    ..range(0, 81).map(idx => {
-      let x = idx / 20
-      (x, curve(x))
-    }),
-    stroke: blue + 1.5pt,
-  )
-  draw.line((1, curve(1)), (4, curve(4)), stroke: rgb("#c45a31") + 1.3pt)
-  draw.line((2.5, 0), (2.5, 2.55), stroke: (dash: "dashed", paint: gray))
+  let chord-color = rgb("#c45a31")
+  let mean-f = (curve(1) + curve(4)) / 2
+  for end in ((4.5, 0), (0, 5.3)) { draw.line((0, 0), end, mark: (end: "stealth")) }
+  draw.line(..range(81).map(idx => (idx / 20, curve(idx / 20))), stroke: blue + 1.5pt)
+  draw.line((1, curve(1)), (4, curve(4)), stroke: chord-color + 1.3pt)
+  draw.line((2.5, 0), (2.5, mean-f), stroke: (dash: "dashed", paint: gray))
   draw.circle((2.5, curve(2.5)), radius: 0.07, fill: blue)
-  draw.circle((2.5, 2.55), radius: 0.07, fill: rgb("#c45a31"))
-  draw.content((2.5, -0.25), $bar(x)$, anchor: "north")
-  draw.content((2.35, curve(2.5)), $f(bar(x))$, anchor: "east", padding: 4pt)
-  draw.content((1.6, 3.15), [average of $f$], anchor: "south")
+  draw.circle((2.5, mean-f), radius: 0.07, fill: chord-color)
+  draw.content((2.5, -0.25), $macron(x)$, anchor: "north")
+  draw.content((2.5, curve(2.5)), $f(macron(x))$, anchor: "north-west", padding: 4pt)
+  draw.content((2.5, mean-f), [average of $f$], anchor: "south-east", padding: 4pt)
 })
 
 Curvature tells us how a function compares with its tangents, chords, and averages. Convex bends upward; concave bends downward.
@@ -199,15 +160,14 @@ Curvature tells us how a function compares with its tangents, chords, and averag
     [For $f(x)=x ln x$ ($x>0$), the tangent at $x=1$ is $x-1$. Thus $x ln x >= x-1$, with equality at the contact point.],
   ),
   (
-    [2  Concave: reverse the inequality],
+    [2  Concave: below a tangent],
     figure-1,
-    [Negating $x ln x$ reverses its curvature. A straight line is both convex and concave. Curvature statements apply on the specified domain.],
+    [Negating $x ln x$ flips its curvature: the concave $-x ln x$ lies below its tangent $1-x$ at $x=1$. A straight line is both convex and concave.],
   ),
-
   (
-    [3  The local picture for log],
+    [3  Concave: above a chord],
     figure-2,
-    [The concave logarithm lies below its tangent. To understand Jensen’s inequality, compare a point on the curve with the chord between two sampled values.],
+    [Between the two points where the dashed chord meets it, the concave logarithm lies above the chord. Jensen’s inequality extends this from two points to any weighted average.],
   ),
   (
     [4  Average first, or apply f first?],

@@ -7,12 +7,13 @@
 
 #let dr = 0.1
 
-#let stack(x, Cr, Zr, Br) = {
+// Nested chain, cycle and boundary groups of one degree, sitting on the zero element.
+#let stack(x, degree) = {
   let padding = 0.2
   for (name, radius, fill, label) in (
-    ("C", 1.5, luma(192), Cr),
-    ("Z", 1, luma(160), Zr),
-    ("B", 0.5, luma(128), Br),
+    ("C", 1.5, luma(192), $C_degree$),
+    ("Z", 1, luma(160), $Z_degree$),
+    ("B", 0.5, luma(128), $B_degree$),
   ) {
     circle((x, 0), anchor: "south", radius: (radius, radius), fill: fill, name: name)
     content(name + ".north", label, anchor: "north", padding: padding)
@@ -25,29 +26,23 @@
 #canvas({
   let x = 4
 
-  stack(0, $C_(r+1)$, $Z_(r+1)$, $B_(r+1)$)
-  stack(x, $C_(r)$, $Z_(r)$, $B_(r)$)
-  stack(2 * x, $C_(r-1)$, $Z_(r-1)$, $B_(r-1)$)
+  for (idx, degree) in ($r+1$, $r$, $r-1$).enumerate() { stack(idx * x, degree.body) }
 
   let boundary-labels = ($partial_(r+1)$, $partial_(r)$)
   for span in range(2) {
     let offset = span * x
     let midpoint = offset + 0.5 * x
     line((offset + dr, 0), (offset + x - dr, 0), stroke: (dash: "dashed"))
-    bezier(
-      (offset, 2),
-      (offset + x - dr, 0),
-      (midpoint, 2),
-      (midpoint, 0),
-      stroke: (dash: "dashed"),
-    )
-    bezier(
-      (offset, 3),
-      (offset + x, 1),
-      (midpoint, 3),
-      (midpoint, 1),
-      stroke: (dash: "dashed"),
-    )
+    // Z_(r+1) maps to 0 and C_(r+1) onto B_r.
+    for (start-y, end, end-y) in ((2, x - dr, 0), (3, x, 1)) {
+      bezier(
+        (offset, start-y),
+        (offset + end, end-y),
+        (midpoint, start-y),
+        (midpoint, end-y),
+        stroke: (dash: "dashed"),
+      )
+    }
     let name = "arrow" + str(1 - span)
     line(
       (offset + 1, -0.5),

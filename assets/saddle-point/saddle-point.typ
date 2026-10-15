@@ -6,8 +6,7 @@
 #let domain-size = 2
 
 // F(T, V) = V^2 - T^2: convex along V, concave along T, so the origin is a saddle.
-// Without an explicit `scale-dim` the package default of (1, 1, 0.5) renders a page
-// roughly 12x too large, which is what left the committed asset out of date.
+// An explicit `scale-dim` is needed since the package default (1, 1, 0.5) renders ~12x too large.
 #plot-3d-surface(
   (v, t) => v * v - t * t,
   color-func: (..) => rgb("#00008B").transparentize(50%),

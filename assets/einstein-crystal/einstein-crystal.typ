@@ -64,30 +64,36 @@
   }
   states
 }
-#let label(left, top, width, body, size: 18pt, color: muted, weight: "regular", centered: false) = {
-  content(
-    (left, top),
-    block(width: width * 1pt)[
-      #text(size: size, fill: color, weight: weight, if centered { align(center, body) } else {
-        body
-      })
-    ],
-    anchor: "north-west",
-    padding: 0pt,
-  )
-}
+#let label(
+  left,
+  top,
+  width,
+  body,
+  size: 18pt,
+  color: muted,
+  weight: "regular",
+  centered: false,
+) = content(
+  (left, top),
+  block(width: width * 1pt)[
+    #text(size: size, fill: color, weight: weight, if centered { align(center, body) } else {
+      body
+    })
+  ],
+  anchor: "north-west",
+  padding: 0pt,
+)
 #let symbol(center_x, center_y, body, size: 18pt, color: ink) = content(
   (center_x, center_y),
   text(size: size, fill: color, body),
-  anchor: "center",
   padding: 0pt,
 )
 #let equation = label.with(size: 24pt, color: ink, centered: true)
-#let segment(start, end, color: guide, thickness: 1pt, dash: "solid") = line(start, end, stroke: (
-  paint: color,
-  thickness: thickness,
-  dash: dash,
-))
+#let segment(start, end, color: guide, thickness: 1pt, dash: "solid") = line(
+  start,
+  end,
+  stroke: (paint: color, thickness: thickness, dash: dash),
+)
 #let arrow(start, end, color: ink, both: false) = line(start, end, stroke: 1.5pt + color, mark: (
   start: if both { "stealth" } else { none },
   end: "stealth",
@@ -98,17 +104,21 @@
   segment((center_x - size, center_y), (center_x + size, center_y), thickness: 1.3pt)
   segment((center_x, center_y - size), (center_x, center_y + size), thickness: 1.3pt)
 }
-#let atom(center_x, center_y, radius: 8, color: blue) = {
-  circle((center_x, center_y), radius: radius, fill: color, stroke: none)
-}
+#let atom(center_x, center_y, radius: 8, color: blue) = circle(
+  (center_x, center_y),
+  radius: radius,
+  fill: color,
+  stroke: none,
+)
+// Zigzag with 5 full oscillations between straight end points.
 #let spring(start, end, color: blue, amplitude: 2.4, thickness: 1.3pt) = {
   let (delta_x, delta_y) = (end.at(0) - start.at(0), end.at(1) - start.at(1))
   let distance = calc.sqrt(delta_x * delta_x + delta_y * delta_y)
   assert(distance > 0)
   let points = range(13).map(sample_idx => {
-    let wave = if sample_idx == 0 or sample_idx == 12 { 0 } else if calc.odd(sample_idx) {
-      amplitude
-    } else { -amplitude }
+    let wave = if sample_idx in (0, 12) { 0 } else if calc.odd(sample_idx) { amplitude } else {
+      -amplitude
+    }
     (
       start.at(0) + delta_x * sample_idx / 12 - delta_y * wave / distance,
       start.at(1) + delta_y * sample_idx / 12 + delta_x * wave / distance,
@@ -117,18 +127,12 @@
   line(..points, stroke: thickness + color)
 }
 #let panel(left, top, width, height, number, title, accent, fill) = {
-  rect(
-    (left, top),
-    (left + width, top + height),
-    radius: 12,
-    fill: fill,
-    stroke: none,
-  )
+  rect((left, top), (left + width, top + height), radius: 12, fill: fill, stroke: none)
   circle((left + 30, top + 32), radius: 15, fill: accent, stroke: none)
   symbol(left + 30, top + 32, text(weight: "bold", fill: white, str(number)))
   content(
     (left + 56, top + 34), // Optical centering against the badge.
-    block(width: (width - 78) * 1pt)[#text(size: 23pt, fill: ink, weight: "bold", title)],
+    block(width: (width - 78) * 1pt, text(size: 23pt, fill: ink, weight: "bold", title)),
     anchor: "west",
     padding: 0pt,
   )
@@ -139,24 +143,23 @@
     left: 3pt + accent,
   ))[
     #set par(leading: 0.35em)
-    #stack(dir: ttb, spacing: 7pt, text(size: 18pt, fill: accent, weight: "bold", title), text(
-      size: 17pt,
-      fill: muted,
-      body,
-    ))
+    #stack(
+      dir: ttb,
+      spacing: 7pt,
+      text(size: 18pt, fill: accent, weight: "bold", title),
+      text(size: 17pt, fill: muted, body),
+    )
   ],
   anchor: "north-west",
   padding: 0pt,
 )
+// Four fixed sites and their (displaced) atoms; coupling = λ blends springs into interactions.
 #let reference_cell(center_x, center_y, coupling) = {
   let positions = ((-24, -21), (24, -21), (-24, 21), (24, 21))
   let offsets = ((10, -7), (-8, 8), (9, 6), (-9, -7))
   let atoms = positions
     .zip(offsets)
-    .map(((position, offset)) => (
-      center_x + position.at(0) + offset.at(0),
-      center_y + position.at(1) + offset.at(1),
-    ))
+    .map((((pos_x, pos_y), (off_x, off_y))) => (center_x + pos_x + off_x, center_y + pos_y + off_y))
   if coupling > 0 {
     for (first, second) in ((0, 1), (0, 2), (1, 3), (2, 3)) {
       segment(
@@ -167,8 +170,8 @@
       )
     }
   }
-  for (idx, position) in positions.enumerate() {
-    let fixed = (center_x + position.at(0), center_y + position.at(1))
+  for (idx, (pos_x, pos_y)) in positions.enumerate() {
+    let fixed = (center_x + pos_x, center_y + pos_y)
     if coupling < 1 {
       spring(fixed, atoms.at(idx), color: purple, thickness: (1.6 - coupling) * 1pt, amplitude: 2)
       site(..fixed, size: 3.5)
@@ -197,6 +200,7 @@
     color: blue,
     weight: "bold",
   )[N atoms × 3 directions = M = 3N independent modes]
+  // displacement of each atom from its site on a 3×3 grid
   let offsets = (
     (20, -9),
     (-17, -10),
@@ -208,12 +212,12 @@
     (-16, 10),
     (16, -13),
   )
-  for (idx, offset) in offsets.enumerate() {
+  for (idx, (offset_x, offset_y)) in offsets.enumerate() {
     let site_x = 87 + calc.rem(idx, 3) * 77
     let site_y = 240 + calc.floor(idx / 3) * 56
-    spring((site_x, site_y), (site_x + offset.at(0), site_y + offset.at(1)))
+    spring((site_x, site_y), (site_x + offset_x, site_y + offset_y))
     site(site_x, site_y)
-    atom(site_x + offset.at(0), site_y + offset.at(1))
+    atom(site_x + offset_x, site_y + offset_y)
   }
   label(47, 374, 276, size: 16pt)[Cross: fixed site $bold(R)_i$\ Dot: atom at $bold(r)_i$]
   label(363, 223, 240, centered: true, size: 17pt)[One displacement coordinate]
@@ -231,11 +235,7 @@
   symbol(604, 372, $u$)
   symbol(457, 264, $V$)
   label(364, 379, 244, size: 17pt, centered: true)[$bold(u)_i = bold(r)_i - bold(R)_i$]
-  equation(
-    43,
-    414,
-    571,
-  )[$V_"E" = kappa/2 sum_(i=1)^N |bold(u)_i|^2 quad omega_"E" = sqrt(kappa/m)$]
+  equation(43, 414, 571)[$V_"E" = kappa/2 sum_(i=1)^N |bold(u)_i|^2 quad omega_"E" = sqrt(kappa/m)$]
   label(
     43,
     455,
@@ -261,15 +261,10 @@
       color: if level == 0 { orange } else { ink },
       thickness: 1.7pt,
     )
+    // bar length = probability of the level at the cold and warm temperatures
     for (left, temperature, color) in ((844, 0.25, blue), (1006, 2, orange)) {
-      let probability = level_probability(level, temperature)
-      rect(
-        (left, level_y - 7),
-        (left + 103 * probability, level_y + 7),
-        radius: 1.5,
-        fill: color,
-        stroke: none,
-      )
+      let bar_right = left + 103 * level_probability(level, temperature)
+      rect((left, level_y - 7), (bar_right, level_y + 7), radius: 1.5, fill: color, stroke: none)
     }
   }
   arrow((821, 397), (821, 368), color: orange, both: true)
@@ -304,10 +299,8 @@
     648,
     color: blue,
   )[$C_V/(3 N k_"B") = (x^2 e^x)/(e^x - 1)^2 quad x = Theta_"E"/T quad Theta_"E" = (ℏ omega_"E")/k_"B"$]
-  let plot_left = 94
-  let plot_bottom = 1011
-  let plot_width = 576
-  let plot_height = 170
+  let (plot_left, plot_bottom, plot_width, plot_height) = (94, 1011, 576, 170)
+  let plot_top = plot_bottom - plot_height
   label(44, 807, 210, size: 16pt)[Heat capacity / $3 N k_"B"$]
   for tick in (0, 0.5, 1) {
     let tick_y = plot_bottom - plot_height * tick
@@ -320,7 +313,7 @@
     symbol(tick_x, plot_bottom + 19, str(tick), size: 16pt)
   }
   segment((plot_left, plot_bottom), (plot_left + plot_width, plot_bottom))
-  segment((plot_left, plot_bottom), (plot_left, plot_bottom - plot_height))
+  segment((plot_left, plot_bottom), (plot_left, plot_top))
   for (heat_capacity, color) in ((debye_cv, teal), (einstein_cv, blue)) {
     let points = range(201).map(sample_idx => {
       let temperature = sample_idx / 100
@@ -332,17 +325,20 @@
     line(..points, stroke: 2.8pt + color)
   }
   segment(
-    (plot_left, plot_bottom - plot_height),
-    (plot_left + plot_width, plot_bottom - plot_height),
+    (plot_left, plot_top),
+    (plot_left + plot_width, plot_top),
     color: muted,
     thickness: 1.5pt,
     dash: "dashed",
   )
   label(260, 807, 284, size: 16pt)[Classical Dulong–Petit limit: 1]
-  segment((430, 916), (466, 916), color: blue, thickness: 3pt)
-  label(477, 902, 170, size: 17pt, color: blue)[Einstein: one frequency]
-  segment((430, 959), (466, 959), color: teal, thickness: 3pt)
-  label(477, 945, 180, size: 17pt, color: teal)[Debye: acoustic spectrum]
+  for (legend_y, color, name) in (
+    (916, blue, [Einstein: one frequency]),
+    (959, teal, [Debye: acoustic spectrum]),
+  ) {
+    segment((430, legend_y), (466, legend_y), color: color, thickness: 3pt)
+    label(477, legend_y - 14, 230, size: 17pt, color: color, name)
+  }
   symbol(379, 1051, $T slash Theta$, size: 17pt)
   label(
     43,
@@ -396,11 +392,7 @@
 
   // === Exact, enumerable microstates ===
   panel(24, 1292, 430, 555, 5, [Count states to get entropy], orange, orange_fill)
-  label(
-    44,
-    1354,
-    389,
-  )[One atom: M = 3 modes, q = 2 quanta.\ Six allocations have the same energy.]
+  label(44, 1354, 389)[One atom: M = 3 modes, q = 2 quanta.\ Six allocations have the same energy.]
   for (state_idx, state) in allocations.enumerate() {
     let center_x = 104 + 126 * calc.rem(state_idx, 3)
     let baseline = 1464 + 84 * calc.floor(state_idx / 3)
@@ -427,11 +419,7 @@
 
   // === Classical free-energy application ===
   panel(472, 1292, 684, 555, 6, [A reference for solid free energies], purple, purple_fill)
-  label(
-    493,
-    1354,
-    641,
-  )[Classical Frenkel–Ladd integration · Helmholtz free energy $F = U - T S$]
+  label(493, 1354, 641)[Classical Frenkel–Ladd integration · Helmholtz free energy $F = U - T S$]
   for (center_x, coupling, name) in (
     (568, 0, [Springs only]),
     (807, 0.5, [Blend]),
@@ -441,8 +429,9 @@
     reference_cell(center_x, 1462, coupling)
     label(center_x - 84, 1501, 168, name, size: 17pt, centered: true)
   }
-  arrow((632, 1460), (738, 1460), color: purple)
-  arrow((872, 1460), (983, 1460), color: purple)
+  for (start_x, end_x) in ((632, 738), (872, 983)) {
+    arrow((start_x, 1460), (end_x, 1460), color: purple)
+  }
   equation(492, 1531, 643)[$V_lambda = (1-lambda) V_"E" + lambda V_"real"$]
   equation(
     491,

@@ -1,4 +1,4 @@
-title: 2d Convolution
+title: 2D Convolution
 creator: Petar Veličković
 creator_url: http://petar-v.com
 url: https://github.com/PetarV-/TikZ/tree/86aee049f5355d77c598b936399e42caf8941e60/2D%20Convolution
@@ -8,4 +8,4 @@ tags:
   - neural networks
   - computer vision
 description: |
-  A [two-dimensional convolution](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.convolve2d.html) operator slides the kernel matrix across the target image and records elementwise products. Makes heavy use of the matrix environment in TikZ.
+  A [two-dimensional convolution](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.convolve2d.html) slides the kernel $K$ across the input image $I$ and writes the sum of elementwise products at each position into the output. The highlighted $3 \times 3$ patch, weighted by the kernel entries shown in its cell corners, sums to the highlighted output entry 4.

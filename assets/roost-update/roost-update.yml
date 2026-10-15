@@ -5,4 +5,4 @@ tags:
   - neural networks
   - solid state physics
 description: |
-  Representation Learning from Stoichiometry (Roost). Graph representation and update mechanism for the composition La₂CuO₄. Essentially depicting a [graph convolution](../graph-neural-networks). [arxiv:1910.00617](https://arxiv.org/abs/1910.00617)
+  Representation Learning from Stoichiometry ([Roost](https://arxiv.org/abs/1910.00617)) treats a composition such as La₂CuO₄ as a dense graph with one node per element and updates each node's embedding with an attention-weighted [graph convolution](../graph-neural-networks). Shown is the update of the La node: the messages $g(h_\text{La}^t \| h_j^t)$ from its O and Cu neighbors are weighted by attention coefficients $\alpha_{\text{La}j}$, summed and added to $h_\text{La}^t$ to give $h_\text{La}^{t+1}$.

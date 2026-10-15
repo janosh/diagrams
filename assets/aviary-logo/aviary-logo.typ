@@ -3,7 +3,6 @@
 
 // Transparent background so only the black circle is visible
 #set page(width: auto, height: auto, margin: 5pt, fill: none)
-#set text(size: 12pt)
 
 #canvas(length: 1cm, {
   scale(2.5)

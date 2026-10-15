@@ -8,7 +8,7 @@
 // Each symbol is a named cetz group carrying its own terminal anchors, so the schematic
 // below can be wired up purely by anchor name (e.g. "M1.G" to "R1.R").
 
-// Wire two anchors with a single right-angle bend, running horizontally first.
+// Wire two anchors with a single right-angle bend, running vertically first.
 #let wire(from, to, ..styling) = line(from, (from, "|-", to), to, ..styling)
 
 // Draw `body` at `position` inside a named group, register `anchors`, then place `label`.
@@ -21,7 +21,6 @@
   label-pos: "center",
   label-anchor: "center",
   label-offset: (0, 0),
-  label-size: 12pt,
   rotate-by: 0deg,
   ..styling,
 ) = {
@@ -31,28 +30,21 @@
     body(..styling)
     for (anchor-name, pos) in anchors { anchor(anchor-name, pos) }
     if label != none {
-      content(
-        (rel: label-offset, to: label-pos),
-        text(size: label-size, label),
-        anchor: label-anchor,
-      )
+      content((rel: label-offset, to: label-pos), label, anchor: label-anchor)
     }
   })
 }
 
-// Terminals of a horizontal two-terminal part, under both circuit (L/R/T/B) and
-// compass names so labels can be positioned either way.
-#let lr-anchors(left, right, half-height) = (
-  L: (left, 0),
-  west: (left, 0),
-  R: (right, 0),
-  east: (right, 0),
-  T: (0, half-height),
-  north: (0, half-height),
-  B: (0, -half-height),
-  south: (0, -half-height),
-  center: (0, 0),
-  default: (left, 0),
+// Horizontal two-terminal part with terminals L/R and label positions T/B, labeled below by default
+#let two-terminal(position, name, body, left, right, half-height, ..opts) = symbol(
+  position,
+  name,
+  body,
+  (L: (left, 0), R: (right, 0), T: (0, half-height), B: (0, -half-height)),
+  label-pos: "B",
+  label-anchor: "north",
+  label-offset: (0, -0.1),
+  ..opts,
 )
 
 #let resistor(position, name, width: 0.8, height: 0.3, zigs: 3, lead: 0.3, ..opts) = {
@@ -76,16 +68,7 @@
       ..styling,
     )
   }
-  symbol(
-    position,
-    name,
-    body,
-    lr-anchors(left, right, half-h),
-    label-pos: "south",
-    label-anchor: "north",
-    label-offset: (0, -0.1),
-    ..opts,
-  )
+  two-terminal(position, name, body, left, right, half-h, ..opts)
 }
 
 #let capacitor(position, name, plate-height: 0.6, gap: 0.2, lead: 0.5, ..opts) = {
@@ -97,16 +80,7 @@
     line((half-gap, half-h), (half-gap, -half-h), ..styling)
     line((half-gap, 0), (right, 0), ..styling)
   }
-  symbol(
-    position,
-    name,
-    body,
-    lr-anchors(left, right, half-h),
-    label-pos: "south",
-    label-anchor: "north",
-    label-offset: (0, -0.1),
-    ..opts,
-  )
+  two-terminal(position, name, body, left, right, half-h, ..opts)
 }
 
 #let nmos-transistor(position, name, width: 0.9, height: 1.2, arrow-scale: 0.8, ..opts) = {
@@ -135,18 +109,7 @@
     position,
     name,
     body,
-    (
-      G: gate,
-      D: drain,
-      S: source,
-      B: bulk,
-      north: (width / 2, height),
-      south: (width / 2, 0),
-      east: (width, mid-y),
-      west: (0, mid-y),
-      center: (width / 2, mid-y),
-      default: gate,
-    ),
+    (G: gate, D: drain, S: source, B: bulk, east: (width, mid-y)),
     label-pos: "D",
     label-anchor: "north-west",
     label-offset: (0.05, 0.05),
@@ -163,25 +126,7 @@
       line((-half-w, -lead - idx * spacing), (half-w, -lead - idx * spacing), ..styling)
     }
   }
-  let bottom = -lead - 2 * spacing
-  symbol(
-    position,
-    name,
-    body,
-    (
-      T: (0, 0),
-      north: (0, 0),
-      south: (0, bottom),
-      west: (-widths.first(), -lead),
-      east: (widths.first(), -lead),
-      center: (0, (-lead + bottom) / 2),
-      default: (0, 0),
-    ),
-    label-pos: "north",
-    label-anchor: "south",
-    label-offset: (0, 0.1),
-    ..opts,
-  )
+  symbol(position, name, body, (T: (0, 0)), ..opts)
 }
 
 // Supply rail: a short stem capped by a horizontal bar.
@@ -195,17 +140,8 @@
     position,
     name,
     body,
-    (
-      B: (0, 0),
-      south: (0, 0),
-      T: (0, stem),
-      north: (0, stem),
-      west: (-half-w, stem),
-      east: (half-w, stem),
-      center: (0, stem / 2),
-      default: (0, 0),
-    ),
-    label-pos: "north",
+    (B: (0, 0), T: (0, stem)),
+    label-pos: "T",
     label-anchor: "south",
     label-offset: (0, 0.1),
     ..opts,
@@ -220,98 +156,53 @@
   radius: 0.3,
   lead: 0.3,
   arrow-offset: 0.7,
-  label-size: 12pt,
   ..opts,
 ) = {
   let arrow-x = -radius * (1 + arrow-offset)
-  let half-arrow = radius // half of the arrow's length, which spans 2 * radius
   let body(..styling) = {
     circle((0, 0), radius: radius, ..styling)
     line((0, radius), (0, radius + lead), ..styling)
     line((0, -radius), (0, -radius - lead), ..styling)
+    // the voltage arrow spans the circle's diameter
     line(
-      (arrow-x, half-arrow),
-      (arrow-x, -half-arrow),
+      (arrow-x, radius),
+      (arrow-x, -radius),
       ..styling,
       mark: (end: "stealth", scale: 0.4, fill: black, stroke: (paint: black, thickness: 0.6pt)),
     )
     if label != none {
-      content(
-        (rel: (-0.1, 0), to: (arrow-x, 0)),
-        text(size: label-size, label),
-        anchor: "east",
-        offset: (-0.05, 0),
-      )
+      content((rel: (-0.1, 0), to: (arrow-x, 0)), label, anchor: "east", offset: (-0.05, 0))
     }
   }
-  let (top, bottom) = (radius + lead, -radius - lead)
-  symbol(
-    position,
-    name,
-    body,
-    (
-      T: (0, top),
-      north: (0, top),
-      B: (0, bottom),
-      south: (0, bottom),
-      east: (radius, 0),
-      west: (-radius, 0),
-      center: (0, 0),
-      default: (0, top),
-    ),
-    ..opts,
-  )
+  symbol(position, name, body, (T: (0, radius + lead), B: (0, -radius - lead)), ..opts)
 }
 
-#let node(position, name, radius: 0.05, fill: rgb("#cdd3da"), ..opts) = {
-  let diag = radius * calc.cos(45deg)
-  symbol(
-    position,
-    name,
-    (..styling) => circle((0, 0), radius: radius, ..styling, fill: fill),
-    (
-      center: (0, 0),
-      default: (0, 0),
-      north: (0, radius),
-      south: (0, -radius),
-      east: (radius, 0),
-      west: (-radius, 0),
-      north-east: (diag, diag),
-      north-west: (-diag, diag),
-      south-east: (diag, -diag),
-      south-west: (-diag, -diag),
-    ),
-    ..opts,
-  )
-}
+#let node(position, name, radius: 0.05, fill: rgb("#cdd3da"), ..opts) = symbol(
+  position,
+  name,
+  (..styling) => circle((0, 0), radius: radius, ..styling, fill: fill),
+  (center: (0, 0), default: (0, 0)),
+  ..opts,
+)
 
-// === Common-source amplifier schematic ===
+// === Source follower (common-drain amplifier) schematic ===
 #canvas({
   let thin = (stroke: (thickness: .6pt))
   let x-vin = 0
-  let x-r1 = 1.0
   let x-m1 = 1.9
   let x-out = x-m1 + 0.9
   let x-cl = x-out + 2.0
   let y-gate = 1.6
   let y-source = 1.0
-  let y-drain = y-source + 1.2
   let y-bulk = y-source + 0.6
   let y-gnd = -1.0
 
-  voltage-source(
-    (x-vin, y-gate - 1),
-    "Vin",
-    label: $V_"in"$,
-    radius: 0.4,
-    lead: 0.2,
-    ..thin,
-  )
+  voltage-source((x-vin, y-gate - 1), "Vin", label: $V_"in"$, radius: 0.4, lead: 0.2, ..thin)
   resistor(
-    (x-r1, y-gate),
+    (1.0, y-gate),
     "R1",
     label: $R_1$,
-    label-pos: "north",
+    label-pos: "T",
     label-offset: (0, 0.4),
     width: 1.0,
     ..thin,
@@ -325,13 +216,13 @@
     label-offset: (0.3, 0.3),
     ..thin,
   )
-  vdd-symbol((x-out, y-drain + 1.5), "Vdd", label: $V_"DD"$, ..thin)
+  vdd-symbol((x-out, y-source + 2.7), "Vdd", label: $V_"DD"$, ..thin)
   resistor(
     (x-out, y-source - 1),
     "R2",
     rotate-by: 90deg,
     label: $R_2$,
-    label-pos: "west",
+    label-pos: "L",
     label-offset: (0.5, 0.5),
     ..thin,
   )
@@ -340,7 +231,7 @@
     "CL",
     rotate-by: 90deg,
     label: $C_L$,
-    label-pos: "east",
+    label-pos: "R",
     label-offset: (0.1, -0.55),
     ..thin,
   )

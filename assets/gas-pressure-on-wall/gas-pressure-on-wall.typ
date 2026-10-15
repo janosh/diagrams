@@ -9,69 +9,31 @@
   #place(line(start: (0%, 100%), end: (100%, 0%), stroke: 0.4pt))
 ]
 
-#let lennard-jones(x, A, B, alpha) = {
-  -A * calc.exp(-alpha * x) + B * calc.exp(-2 * alpha * x)
-}
+// Morse-type wall potential: long-range attraction, short-range repulsion.
+#let wall-potential(x, A, B, alpha) = -A * calc.exp(-alpha * x) + B * calc.exp(-2 * alpha * x)
 
 #canvas({
   let arrow-style = (mark: (end: ">", fill: black, scale: 0.7))
   let wall-width = 0.5
+  draw.line((-0.1, 0), (6.2, 0), ..arrow-style)
+  draw.line((0, -0.7), (0, 4), ..arrow-style)
+  content((6, 0.3), $x$)
+  content((0.5, 4), $U(x)$)
 
-  draw.line((-0.1, 0), (6.2, 0), ..arrow-style, name: "x-axis")
-  draw.line((0, -0.7), (0, 4), ..arrow-style, name: "y-axis")
+  // Draw the wall above the potential curves.
+  on-layer(1, draw.rect((0, 0), (wall-width, 3.6), fill: hatched, stroke: 0.75pt))
 
-  content((rel: (-0.2, 0.3), to: "x-axis.end"), $x$, name: "x-label")
-  content((rel: (0.5, 0), to: "y-axis.end"), $U(x)$, name: "y-label")
-
-  on-layer(
-    1, // draw wall above pressure lines
-    draw.rect(
-      (0, 0),
-      (wall-width, 3.6),
-      fill: hatched,
-      pattern: "north-east-lines",
-      stroke: 0.75pt,
-    ),
-  )
-
-  let samples = 100
-  let dx = (6 - wall-width) / samples
-
-  // First curve (blue)
-  let (A1, B1, alpha1) = (10, 25, 1)
-
-  for ii in range(samples - 1) {
-    let x1 = wall-width + ii * dx
-    let x2 = x1 + dx
-    let y1 = lennard-jones(x1, A1, B1, alpha1)
-    let y2 = lennard-jones(x2, A1, B1, alpha1)
+  let dx = (6 - wall-width) / 100
+  for (A, B, alpha, color, label, label-dy) in (
+    (10, 25, 1, blue, $1 \/ alpha approx ell$, -.45),
+    (15, 120, 3, orange, $1 \/ alpha << ell$, .4),
+  ) {
+    let potential(x) = wall-potential(x, A, B, alpha)
     draw.line(
-      (x1, y1),
-      (x2, y2),
-      stroke: blue,
-      name: if ii == 67 { "blue-curve-label-pos" } else { none },
+      ..range(100).map(idx => wall-width + idx * dx).map(x => (x, potential(x))),
+      stroke: color,
     )
+    let label-x = wall-width + 67.5 * dx
+    content((label-x, potential(label-x) + label-dy), text(fill: color, label))
   }
-  content((rel: (0, -.45), to: "blue-curve-label-pos.mid"), text(
-    fill: blue,
-  )[$1 \/ alpha << ell$])
-
-  // Second curve (orange)
-  let (A2, B2, alpha2) = (15, 120, 3)
-
-  for ii in range(samples - 1) {
-    let x1 = wall-width + ii * dx
-    let x2 = x1 + dx
-    let y1 = lennard-jones(x1, A2, B2, alpha2)
-    let y2 = lennard-jones(x2, A2, B2, alpha2)
-    draw.line(
-      (x1, y1),
-      (x2, y2),
-      stroke: orange,
-      name: if ii == 67 { "orange-curve-label-pos" } else { none },
-    )
-  }
-  content((rel: (0, .4), to: "orange-curve-label-pos.mid"), text(
-    fill: orange,
-  )[$1 \/ alpha << ell$])
 })

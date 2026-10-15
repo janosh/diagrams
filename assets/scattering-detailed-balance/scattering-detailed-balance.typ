@@ -5,61 +5,23 @@
 #set text(size: 12pt)
 
 #canvas({
-  // Diagram dimensions
-  let circle-radius = 0.3
-  let circle-spacing = 3 // distance of circles from center
-  let arrow-length = 2
-  let arrow-rise = 1 // vertical displacement of arrows
-  let equals-size = 24pt // font size for equals sign
+  let arrow-style = (mark: (start: "stealth", fill: black, scale: 0.5), stroke: (thickness: 1.1pt))
 
-  // Colors and styles
-  let arrow-style = (
-    mark: (start: "stealth", fill: black, scale: 0.5),
-    stroke: (thickness: 1.1pt),
-  )
+  content((0, 0), text(size: 24pt)[=])
 
-  content((0, 0), text(size: equals-size)[=])
-
-  let nodes = (
-    (side: "left", x: -circle-spacing, incoming: ($p'$, $k'$), outgoing: ($p$, $k$)),
-    (side: "right", x: circle-spacing, incoming: ($p$, $k$), outgoing: ($p'$, $k'$)),
-  )
-  for node in nodes {
-    circle(
-      (node.x, 0),
-      radius: circle-radius,
-      fill: gray.lighten(50%),
-      stroke: gray,
-      name: node.side + "-circle",
-    )
-  }
-  for node in nodes {
-    let circle-name = node.side + "-circle"
-    for (vertical, suffix, label) in (
-      (1, "ne", node.incoming.at(0)),
-      (-1, "se", node.incoming.at(1)),
-    ) {
-      let name = node.side + "-" + suffix
-      line(
-        (rel: (arrow-length, vertical * arrow-rise), to: circle-name),
-        circle-name,
-        ..arrow-style,
-        name: name,
-      )
-      content(name + ".start", label, anchor: "west")
-    }
-    for (vertical, suffix, label) in (
-      (1, "nw", node.outgoing.at(0)),
-      (-1, "sw", node.outgoing.at(1)),
-    ) {
-      let name = node.side + "-" + suffix
-      line(
-        circle-name,
-        (rel: (-arrow-length, vertical * arrow-rise), to: circle-name),
-        ..arrow-style,
-        name: name,
-      )
-      content(name + ".end", label, anchor: "east")
+  // The process p, k -> p', k' (left) balances its reverse p', k' -> p, k (right).
+  for (x, in-labels, out-labels) in (
+    (-3, ($p$, $k$), ($p'$, $k'$)),
+    (3, ($p'$, $k'$), ($p$, $k$)),
+  ) {
+    circle((x, 0), radius: 0.3, fill: gray.lighten(50%), stroke: gray, name: "vertex")
+    // Arrowheads sit at each line's start: on the vertex for incoming legs, at the far end
+    // for outgoing ones.
+    for (dy, in-label, out-label) in (1, -1).zip(in-labels, out-labels) {
+      line((rel: (2, dy), to: "vertex"), "vertex", ..arrow-style, name: "out")
+      content("out.start", out-label, anchor: "west")
+      line("vertex", (rel: (-2, dy), to: "vertex"), ..arrow-style, name: "in")
+      content("in.end", in-label, anchor: "east")
     }
   }
 })

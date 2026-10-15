@@ -7,14 +7,10 @@
 #let radius = 1
 #let axis-length = 2.5
 #let arrow-sep = 3.5
-#let arrow-width = 1.5
 #let x-shift = 8.5
 
-#let dot-style = (fill: gray, radius: 0.08, stroke: none)
-#let arrow-style = (
-  mark: (end: "stealth", fill: black, scale: 0.7),
-  stroke: 0.8pt,
-)
+#let region-fill = rgb(220, 220, 220).transparentize(60%)
+#let arrow-style = (mark: (end: "stealth", fill: black, scale: 0.7), stroke: 0.8pt)
 #let direction-marks(paint) = (
   end: (25%, 75%).map(pos => (
     pos: pos,
@@ -25,56 +21,26 @@
   )),
 )
 #canvas({
-  let axes(origin, x-name, x-label, y-name, y-label, padding) = {
-    let (x, y) = origin
-    line((x - axis-length, y), (x + axis-length, y), ..arrow-style, name: x-name)
-    content(x-name + ".end", x-label, anchor: "west", padding: padding)
-    line((x, y - axis-length), (x, y + axis-length), ..arrow-style, name: y-name)
-    content(y-name + ".end", y-label, anchor: "south", padding: padding)
+  let axes(x, x-label, y-label, padding) = {
+    line((x - axis-length, 0), (x + axis-length, 0), ..arrow-style, name: "x-axis")
+    content("x-axis.end", x-label, anchor: "west", padding: padding)
+    line((x, -axis-length), (x, axis-length), ..arrow-style, name: "y-axis")
+    content("y-axis.end", y-label, anchor: "south", padding: padding)
   }
 
-  axes((0, 0), "x-axis", $x$, "y-axis", $y$, (0, 3pt, 2pt))
+  axes(0, $x$, $y$, (0, 3pt, 2pt))
 
   // Transformation arrow and label
-  line(
-    (arrow-sep, 0),
-    (arrow-sep + arrow-width, 0),
-    ..arrow-style,
-    name: "transform-arrow",
-  )
-  content(
-    (rel: (0, 0), to: "transform-arrow.mid"),
-    $z &= S(w)\ &= (w + i) / (i w + 1)$,
-    anchor: "south",
-    padding: 4pt,
-  )
+  line((arrow-sep, 0), (arrow-sep + 1.5, 0), ..arrow-style, name: "transform-arrow")
+  content("transform-arrow.mid", $z &= S(w)\ &= (w + i) / (i w + 1)$, anchor: "south", padding: 4pt)
 
-  // Unit disk with gray fill
-  circle(
-    (0, 0),
-    radius: radius,
-    stroke: 0.8pt,
-    fill: rgb(220, 220, 220).transparentize(60%),
-    name: "disk",
-  )
-  content((rel: (-0.4, 0.5), to: "disk.center"), $DD^2$)
+  circle((0, 0), radius: radius, stroke: 0.8pt, fill: region-fill)
+  content((-0.4, 0.5), $DD^2$)
 
-  let disk-points = (
-    (name: "w0", pos: (0, 0), rel: (2, 1), label: $w_0 = 0$, args: (name: "w0-label")),
-    (name: "w1", pos: (radius, 0), rel: (0.3, -0.3), label: $w_1 = 1$),
-    (name: "w2", pos: (0, -radius), rel: (.8, -0.2), label: $w_2 = -i$),
-    (name: "w3", pos: (-radius, 0), rel: (-0.2, -0.3), label: $w_3 = -1$),
-    (name: "w4", pos: (0, radius), rel: (0.2, 0.3), label: $w_4 = i$, args: (anchor: "west")),
-  )
-  for point in disk-points { circle(point.pos, ..dot-style, name: point.name) }
-  for point in disk-points {
-    content((rel: point.rel, to: point.name), point.label, ..point.at("args", default: (:)))
-  }
-  line("w0-label", "w0", stroke: gray + 0.5pt)
-
-  for (pos, start, paint, thickness, name) in (
-    ((-radius, 0), 270deg, blue, 1.2pt, "blue-arc"),
-    ((radius, 0), -90deg, red, 0.8pt, "red-arc"),
+  // Boundary semicircles from w_4 = i down to w_2 = -i through w_3 = -1 (blue) and w_1 = 1 (red)
+  for (pos, start, paint, thickness) in (
+    ((-radius, 0), 270deg, blue, 1.2pt),
+    ((radius, 0), -90deg, red, 0.8pt),
   ) {
     arc(
       pos,
@@ -84,19 +50,18 @@
       stroke: paint + thickness,
       anchor: "arc-center",
       mark: direction-marks(paint),
-      name: name,
     )
   }
 
-  axes((x-shift, 0), "u-axis", $u$, "v-axis", $v$, 2pt)
+  axes(x-shift, $u$, $v$, 2pt)
 
-  for (direction, paint, name) in ((1, blue, "pos-real-line"), (-1, red, "neg-real-line")) {
+  // Images of the semicircles: S maps w_3 = -1 to -1 and w_1 = 1 to 1, with w_4 to infinity and w_2 to 0
+  for (direction, paint) in ((1, red), (-1, blue)) {
     line(
       (x-shift, 0),
       (x-shift + direction * axis-length, 0),
       stroke: paint + 1.2pt,
       mark: direction-marks(paint),
-      name: name,
     )
   }
 
@@ -105,25 +70,27 @@
     (x-shift - axis-length, 0),
     (x-shift + axis-length, axis-length),
     stroke: none,
-    fill: rgb(220, 220, 220).transparentize(60%),
+    fill: region-fill,
     name: "plane",
   )
   content("plane.north-west", $HH$, anchor: "north-west", padding: 4pt)
 
-  let plane-points = (
-    (name: "z0", pos: (x-shift, radius), rel: (0.2, 0), label: $z_0 = i$, args: (anchor: "west")),
-    (name: "z1", pos: (x-shift + radius, 0), rel: (0, -0.4), label: $z_1 = 1$),
-    (name: "z2", pos: (x-shift, 0), rel: (-1, 0.8), label: $z_2 = 0$, args: (name: "z2-label")),
-    (name: "z3", pos: (x-shift - radius, 0), rel: (0, -0.4), label: $z_3 = -1$),
-  )
-  for point in plane-points { circle(point.pos, ..dot-style, name: point.name) }
-  for point in plane-points {
-    content((rel: point.rel, to: point.name), point.label, ..point.at("args", default: (:)))
+  // Leader lines connect w_0 and z_2 to their offset labels
+  for (name, pos, offset, label, anchor) in (
+    ("w0", (0, 0), (2, 0.75), $w_0 = 0$, "center"),
+    ("w1", (radius, 0), (0.08, -0.08), $w_1 = 1$, "north-west"),
+    ("w2", (0, -radius), (0.08, -0.08), $w_2 = -i$, "north-west"),
+    ("w3", (-radius, 0), (-0.08, -0.08), $w_3 = -1$, "north-east"),
+    ("w4", (0, radius), (0.2, 0.3), $w_4 = i$, "west"),
+    ("z0", (x-shift, radius), (0.2, 0), $z_0 = i$, "west"),
+    ("z1", (x-shift + radius, 0), (0, -0.4), $z_1 = 1$, "center"),
+    ("z2", (x-shift, 0), (-1, 0.8), $z_2 = 0$, "center"),
+    ("z3", (x-shift - radius, 0), (0, -0.4), $z_3 = -1$, "center"),
+  ) {
+    circle(pos, fill: gray, radius: 0.08, stroke: none, name: name)
+    content((rel: offset, to: pos), label, anchor: anchor, name: name + "-label")
   }
-  content(
-    (rel: (0.2, -0.2), to: "v-axis.end"),
-    $z_4 = +i infinity$,
-    anchor: "west",
-  )
+  content((rel: (0.2, -0.2), to: "y-axis.end"), $z_4 = +i infinity$, anchor: "west")
+  line("w0-label", "w0", stroke: gray + 0.5pt)
   line("z2-label", "z2", stroke: gray + 0.5pt)
 })

@@ -72,7 +72,12 @@
     })
   }
 }
-
+// Edge color by the coordinate that changes along it: r (teal), theta (amber) or phi (blue).
+#let edge-paint(start, end) = if start.at(0) != end.at(0) { teal } else if (
+  start.at(1) != end.at(1)
+) {
+  amber
+} else { blue }
 
 // === Linear scaling: the original square example ===
 #let linear_artwork = canvas(length: 1cm, {
@@ -86,12 +91,12 @@
     content((origin_x + extent, -.18), horizontal, anchor: "north", padding: 0)
     content((origin_x - .18, extent - .5), vertical, anchor: "east", padding: 0)
   }
-  rect((0, 0), (1, 1), fill: blue.transparentize(88%), stroke: blue + 1.3pt)
-  rect((3, 0), (5, 2), fill: blue.transparentize(88%), stroke: blue + 1.3pt)
-  content((.5, .5), text(blue)[$1$])
-  content((4, 1), text(blue)[$4$])
-  content((.5, 1.4), $"unit area"$, anchor: "south")
-  content((4, 2.4), $"scaled area"$, anchor: "south")
+  for (corner, side, label) in (((0, 0), 1, $"unit area"$), ((3, 0), 2, $"scaled area"$)) {
+    let center = corner.map(coord => coord + side / 2)
+    rect(corner, (rel: (side, side)), fill: blue.transparentize(88%), stroke: blue + 1.3pt)
+    content(center, text(blue)[$#(side * side)$])
+    content((center.at(0), center.at(1) + side / 2 + .4), label, anchor: "south")
+  }
   line((1.45, .65), (2.5, .65), stroke: ink + .9pt, mark: arrow(ink))
   content((1.97, .92), $f$, anchor: "south")
   line((3, -.5), (5, -.5), stroke: teal + 1.2pt, mark: (start: arrow(teal).end, ..arrow(teal)))
@@ -182,35 +187,17 @@
     })
     // All radial construction rays meet at the sphere's center, the coordinate origin.
     for point in (ring.at(4), far_corner, ring.at(2), ring.at(3)) {
-      line((0, 0, 0), spherical(..point), stroke: (
-        paint: guide,
-        dash: "dotted",
-        thickness: .7pt,
-      ))
+      line((0, 0, 0), spherical(..point), stroke: (paint: guide, dash: "dotted", thickness: .7pt))
     }
-    for (idx, start, end) in (
-      (0, far_corner, ring.at(0)),
-      (1, far_corner, ring.at(4)),
-      (2, far_corner, ring.at(2)),
-    ) {
-      edge(start, end, stroke: (
-        paint: (teal, blue, amber).at(idx).transparentize(55%),
-        dash: "dashed",
-        thickness: 1pt,
-      ))
+    // Hidden edges meeting at the far corner, dashed and faded.
+    for end in (ring.at(0), ring.at(4), ring.at(2)) {
+      let paint = edge-paint(far_corner, end).transparentize(55%)
+      edge(far_corner, end, stroke: (paint: paint, dash: "dashed", thickness: 1pt))
     }
     for (idx, start) in ring.enumerate() {
       let end = ring.at(calc.rem(idx + 1, ring.len()))
-      let paint = if start.at(0) != end.at(0) { teal } else if start.at(1) != end.at(1) {
-        amber
-      } else { blue }
-      edge(start, end, stroke: paint + 1.6pt)
-      if calc.odd(idx) {
-        let paint = if start.at(0) != near_corner.at(0) { teal } else if (
-          start.at(1) != near_corner.at(1)
-        ) { amber } else { blue }
-        edge(start, near_corner, stroke: paint + 1.6pt)
-      }
+      edge(start, end, stroke: edge-paint(start, end) + 1.6pt)
+      if calc.odd(idx) { edge(start, near_corner, stroke: edge-paint(start, near_corner) + 1.6pt) }
     }
     content(spherical(2.7, theta_min, phi_min), text(teal)[$dif r$], anchor: "east", padding: .2)
     content(
@@ -242,7 +229,7 @@
 #block(width: 100%, inset: 14pt, radius: 8pt, fill: rgb("edf3fa"))[
   #align(center, text(size: 24pt)[$
     integral_(f(U)) g(bold(x)) dif bold(x)
-    = integral_U g(f(bold(u))) abs(det J_f(bold(u))) dif bold(u)
+    = integral_U g(f(bold(u))) abs(det J_f (bold(u))) dif bold(u)
   $])
 ]
 #v(18pt)

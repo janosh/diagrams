@@ -3,4 +3,4 @@ tags:
   - machine learning
   - neural networks
 description: |
-  Illustration of skip connection in a residual block. Inspired by the [ResNet paper](https://arxiv.org/abs/1512.03385).
+  Skip connection in a residual block. The input $\vec x$ passes through two layers to give the residual $\mathcal{F}(\vec x)$, while an identity shortcut carries $\vec x$ around them so the block outputs $a(\mathcal{F}(\vec x) + \vec x)$. Learning a residual on top of the identity makes very deep networks easier to optimize. Inspired by the [ResNet paper](https://arxiv.org/abs/1512.03385).

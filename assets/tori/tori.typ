@@ -37,9 +37,7 @@
           draw.circle(project(grid_idx, row_idx), radius: 0.035, fill: rgb("a8b3c2"), stroke: none)
         }
       }
-      let first = project(1, 0)
-      let second = project(0, 1)
-      let diagonal = project(1, 1)
+      let (first, second, diagonal) = (project(1, 0), project(0, 1), project(1, 1))
       draw.line((0, 0), first, diagonal, second, close: true, fill: rgb("edf4f8"), stroke: none)
       // Matching colors and directions identify the pairs of opposite edges.
       for (start, end, color) in (
@@ -57,27 +55,23 @@
       for point in ((0, 0), first, second, diagonal) {
         draw.circle(point, radius: 0.045, fill: rgb("243247"), stroke: none)
       }
-      draw.content(vector.scale(diagonal, 0.5), text(size: 12pt)[#align(center)[Fundamental\ cell]])
+      draw.content(vector.scale(diagonal, 0.5), align(center)[Fundamental\ cell])
       draw.content((0, -0.2), $0$)
-      draw.content(vector.add(vector.scale(first, 0.5), (0, -0.28)), text(
-        fill: u_color,
-        labels.at(0),
-      ))
-      draw.content(
-        vector.add(vector.scale(second, 0.5), (-0.18, 0)),
-        text(fill: v_color, labels.at(1)),
-        anchor: "east",
-      )
+      let edge_mid(edge, offset) = vector.add(vector.scale(edge, 0.5), offset)
+      draw.content(edge_mid(first, (0, -0.28)), text(fill: u_color, labels.at(0)))
+      draw.content(edge_mid(second, (-0.18, 0)), text(fill: v_color, labels.at(1)), anchor: "east")
     })
   }),
 )
 
 #canvas({
-  draw.content((6.3, 7.0), text(size: 16pt, weight: "bold")[A torus from a repeating lattice])
-  draw.content((2.9, 5.9), text(size: 16pt, weight: "bold")[#align(center)[Choose two\ generators]])
-  draw.content((9.7, 5.9), text(size: 16pt, weight: "bold")[#align(
-    center,
-  )[Normalize the\ first generator]])
+  for (pos, title) in (
+    ((6.3, 7.0), [A torus from a repeating lattice]),
+    ((2.9, 5.9), [Choose two\ generators]),
+    ((9.7, 5.9), [Normalize the\ first generator]),
+  ) {
+    draw.content(pos, text(size: 16pt, weight: "bold", align(center, title)))
+  }
   draw.content((0, 0), panel(basis_u, basis_v), anchor: "south-west")
   draw.content(
     (6.8, 0),
@@ -87,7 +81,7 @@
 
   draw.line((5.4, 2.25), (6.6, 2.25), stroke: rgb("697586") + 1pt, mark: arrow(rgb("697586")))
   draw.content((6.0, 2.7), $z mapsto z \/ u$)
-  draw.content((6.0, 1.65), text(size: 12pt)[#align(center)[Rotate\ + scale]])
+  draw.content((6.0, 1.65), align(center)[Rotate\ + scale])
 
   draw.content((2.9, -0.15), $z equiv z + 2 pi u equiv z + 2 pi v$)
   draw.content((9.7, -0.15), $tau = v \/ u, quad op("Im") tau > 0$)

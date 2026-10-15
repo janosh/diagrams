@@ -44,11 +44,12 @@
     (l, l, l, l, m),
   )
   let (width, height) = (2 * cells.first().len(), cells.len())
-  for (y, row) in cells.enumerate() {
-    y = height - y - 1
-    for (x, fill) in row.enumerate() {
-      rect(..cell(x, y), fill: fill)
-      rect(..cell(width - x - 1, y), fill: fill)
+  // risks on the left, mirrored opportunities on the right
+  for (row-idx, row) in cells.enumerate() {
+    let y = height - row-idx - 1
+    for (col-idx, fill) in row.enumerate() {
+      rect(..cell(col-idx, y), fill: fill)
+      rect(..cell(width - col-idx - 1, y), fill: fill)
     }
   }
 
@@ -63,22 +64,20 @@
   big-label((width - 2, 1.5), opportunities)
 
   // intensity grid labels
-  for (i, intensity) in intensities.enumerate() {
+  for (idx, intensity) in intensities.enumerate() {
     let intensity = pad(4pt, align(center + horizon, intensity))
-    content(..cell(-1.25, i), intensity)
-    content(..cell(width + 0.25, i), intensity)
-    content(..cell(i, -1), intensity)
-    content(..cell(width - i - 1, -1), intensity)
+    content(..cell(-1.25, idx), intensity)
+    content(..cell(width + 0.25, idx), intensity)
+    content(..cell(idx, -1), intensity)
+    content(..cell(width - idx - 1, -1), intensity)
   }
 
-  // axis labeling arrows
-  let labeled-arrow(start, end, name, label, dir: ltr, align: top) = {
-    assert(dir in (ltr, rtl))
-    assert(align in (top, bottom))
-    line(start, end, name: name, stroke: gray, mark: (end: ">", fill: gray))
+  // axis labeling arrows, labels read along the arrow (ltr) or against it (rtl)
+  let labeled-arrow(start, end, label, dir, align) = {
+    line(start, end, name: "axis", stroke: gray, mark: (end: ">", fill: gray))
     content(
-      (name + ".start", 50%, name + ".end"),
-      angle: if dir == ltr { name + ".end" } else { name + ".start" },
+      ("axis.start", 50%, "axis.end"),
+      angle: if dir == ltr { "axis.end" } else { "axis.start" },
       padding: if align == top { (bottom: 0.3) } else { (top: 0.3) },
       anchor: if align == top { "south" } else { "north" },
       text(1.2em, label),
@@ -86,27 +85,13 @@
   }
 
   let arrow-inset = 0.3
-  for (start, end, name, label, dir, align) in (
-    ((-1.6, arrow-inset), (-1.6, height - arrow-inset), "probability1", probability, ltr, top),
-    (
-      (width + 1.6, arrow-inset),
-      (width + 1.6, height - arrow-inset),
-      "probability2",
-      probability,
-      rtl,
-      top,
-    ),
-    ((arrow-inset, -1), (width / 2 - arrow-inset, -1), "neg-impact", neg-impact, ltr, bottom),
-    (
-      (width - arrow-inset, -1),
-      (width / 2 + arrow-inset, -1),
-      "pos-impact",
-      pos-impact,
-      rtl,
-      bottom,
-    ),
+  for (start, end, label, dir, align) in (
+    ((-1.6, arrow-inset), (-1.6, height - arrow-inset), probability, ltr, top),
+    ((width + 1.6, arrow-inset), (width + 1.6, height - arrow-inset), probability, rtl, top),
+    ((arrow-inset, -1), (width / 2 - arrow-inset, -1), neg-impact, ltr, bottom),
+    ((width - arrow-inset, -1), (width / 2 + arrow-inset, -1), pos-impact, rtl, bottom),
   ) {
-    labeled-arrow(start, end, name, label, dir: dir, align: align)
+    labeled-arrow(start, end, label, dir, align)
   }
 
   // arrow of attention
@@ -120,7 +105,7 @@
     fill: gray.transparentize(80%),
     stroke: gray,
   )
-  content((5, (5 + (cone-start + cone-length)) / 2), {
+  content((width / 2, (height + cone-start + cone-length) / 2), {
     set text(1.7em)
     set align(center + horizon)
     attention-arrow

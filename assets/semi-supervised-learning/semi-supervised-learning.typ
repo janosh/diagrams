@@ -50,31 +50,18 @@
 #let example(use_unlabeled: false) = canvas(length: 30pt, {
   // Shared bounds keep the same samples aligned in both panels.
   rect((1.2, -2.2), (9.2, 2.2), stroke: none)
-  let gray_dot = rgb("#7c858e")
+  let boundary_style = (stroke: (paint: rgb("#19324f"), dash: "dashed", thickness: 1.4pt))
   if use_unlabeled {
+    // Sinusoid threading the low-density gap between the two clusters
     line(
-      (1.5, -1),
-      (2, -.866),
-      (2.5, -.5),
-      (3, 0),
-      (3.5, .5),
-      (4, .866),
-      (4.5, 1),
-      (5, .866),
-      (5.5, .5),
-      (6, 0),
-      (6.5, -.5),
-      (7, -.866),
-      (7.5, -1),
-      (8, -.866),
-      (8.5, -.5),
-      (9, 0),
-      stroke: (paint: rgb("#19324f"), dash: "dashed", thickness: 1.4pt),
+      ..range(16).map(idx => (1.5 + idx / 2, calc.sin(calc.pi * (idx - 3) / 6))),
+      ..boundary_style,
     )
   } else {
-    line((5.5, 2), (5.5, -2), stroke: (paint: rgb("#19324f"), dash: "dashed", thickness: 1.4pt))
+    // Midway between the two labeled samples
+    line((5.5, 2), (5.5, -2), ..boundary_style)
   }
-  for point in samples { circle(point, radius: .15, fill: gray_dot, stroke: none) }
+  for point in samples { circle(point, radius: .15, fill: rgb("#7c858e"), stroke: none) }
   for (point, color) in labeled_samples { circle(point, radius: .16, fill: color, stroke: none) }
 })
 #grid(

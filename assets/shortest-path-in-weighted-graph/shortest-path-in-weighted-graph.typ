@@ -15,67 +15,49 @@
     f: (4, -2),
     t: (6, 0),
   )
-  let edge-color(shortest) = if shortest { red } else { black }
-  let arrow(color) = (
-    mark: (end: "stealth", fill: color, scale: .55),
-    stroke: color + .75pt,
-  )
-
-  let vertex(name, fill: rgb("#cdd3da")) = {
-    circle(nodes.at(name), radius: .28, fill: fill, stroke: .7pt, name: name)
+  let fills = (s: red.lighten(50%), t: blue.lighten(50%))
+  for (name, pos) in nodes {
+    circle(
+      pos,
+      radius: .28,
+      fill: fills.at(name, default: rgb("#cdd3da")),
+      stroke: .7pt,
+      name: name,
+    )
     content(name, $upright(#name)$)
   }
-  let label(pos, value, color) = content(
-    pos,
-    text(fill: color)[$#value$],
-    fill: rgb("#cdd3da"),
-    padding: 1pt,
-  )
-  let straight(from, to, weight, offset, shortest: false) = {
-    let color = edge-color(shortest)
-    let edge = from + "-" + to
-    line(from, to, ..arrow(color), name: edge)
-    label((rel: offset, to: edge + ".mid"), weight, color)
+
+  let arrow(color) = (mark: (end: "stealth", fill: color, scale: .55), stroke: color + .75pt)
+  // red edges form the minimum-cost path s → c → f → e → t (total weight 8)
+  for (from, to, weight, offset, shortest) in (
+    ("s", "a", "6", (-.25, .2), false),
+    ("s", "b", "2", (0, .28), false),
+    ("s", "c", "2", (-.25, -.2), true),
+    ("a", "d", "5", (0, .3), false),
+    ("a", "e", "4", (.25, .05), false),
+    ("c", "f", "1", (0, .3), true),
+    ("d", "t", "1", (.25, .2), false),
+    ("e", "t", "3", (0, .28), true),
+    ("f", "e", "2", (-.32, 0), true),
+    ("f", "t", "5", (.25, -.2), false),
+  ) {
+    let color = if shortest { red } else { black }
+    let name = from + "-" + to
+    line(from, to, ..arrow(color), name: name)
+    content((rel: offset, to: name + ".mid"), text(fill: color)[$#weight$], padding: 1pt)
   }
 
-  for (name, fill) in (
-    ("s", red.lighten(50%)),
-    ("a", rgb("#cdd3da")),
-    ("b", rgb("#cdd3da")),
-    ("c", rgb("#cdd3da")),
-    ("d", rgb("#cdd3da")),
-    ("e", rgb("#cdd3da")),
-    ("f", rgb("#cdd3da")),
-    ("t", blue.lighten(50%)),
-  ) { vertex(name, fill: fill) }
-
-  straight("s", "a", "6", (-.25, .2))
-  straight("s", "b", "2", (0, .28))
-  straight("s", "c", "2", (-.25, -.2), shortest: true)
-  straight("a", "d", "5", (0, .3))
-  straight("a", "e", "4", (.25, .05))
-  straight("c", "f", "1", (0, .3), shortest: true)
-  straight("d", "t", "1", (.25, .2))
-  straight("e", "t", "3", (0, .28), shortest: true)
-  straight("f", "e", "2", (-.32, 0), shortest: true)
-  straight("f", "t", "5", (.25, -.2))
-
-  bezier(
-    (rel: (.28, .05), to: "b"),
-    (rel: (-.28, .05), to: "e"),
-    (rel: (.7, .28), to: "b"),
-    (rel: (-.7, .28), to: "e"),
-    ..arrow(black),
-    name: "b-e",
-  )
-  label((rel: (0, .23), to: "b-e.mid"), "4", black)
-  bezier(
-    (rel: (-.28, -.05), to: "e"),
-    (rel: (.28, -.05), to: "b"),
-    (rel: (-.7, -.28), to: "e"),
-    (rel: (.7, -.28), to: "b"),
-    ..arrow(black),
-    name: "e-b",
-  )
-  label((rel: (0, -.23), to: "e-b.mid"), "-2", black)
+  // opposing curved edges between b and e, bowing above (b → e) and below (e → b)
+  for (from, to, weight, side) in (("b", "e", "4", 1), ("e", "b", "-2", -1)) {
+    let name = from + "-" + to
+    bezier(
+      (rel: (side * .28, side * .05), to: from),
+      (rel: (-side * .28, side * .05), to: to),
+      (rel: (side * .7, side * .28), to: from),
+      (rel: (-side * .7, side * .28), to: to),
+      ..arrow(black),
+      name: name,
+    )
+    content((rel: (0, side * .23), to: name + ".mid"), $#weight$, padding: 1pt)
+  }
 })

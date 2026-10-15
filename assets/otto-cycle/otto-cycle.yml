@@ -3,4 +3,4 @@ tags:
   - physics
   - thermodynamics
 description: |
-  The [Otto cycle](https://www.grc.nasa.gov/www/k-12/airplane/otto.html) is an idealized thermodynamic cycle of a typical spark ignition piston engine. It is the thermodynamic cycle most commonly found in automobile engines.
+  The [Otto cycle](https://www.grc.nasa.gov/www/k-12/airplane/otto.html) is an idealized thermodynamic cycle of a typical spark ignition piston engine. It is the thermodynamic cycle most commonly found in automobile engines. In the $p$-$V$ diagram, 1 → 2 is the adiabatic expansion (power stroke, $\Delta Q = 0$), 2 → 3 isochoric heat rejection $Q_\text{out}$ at $V_\text{max}$, 3 → 4 adiabatic compression, and 4 → 1 isochoric heat addition $Q_\text{in}$ (combustion) at $V_\text{min}$.

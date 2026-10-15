@@ -3,5 +3,4 @@ tags:
   - physics
   - statistical mechanics
   - thermodynamics
-description: |
-  The [Maxwell-Boltzmann distribution](../particle-statistics) plotted at different temperatures reveals that the most probable velocity $v_p$ of ideal gas particles scales with the square root of temperature.
+description: The [Maxwell-Boltzmann](../particle-statistics) speed distribution $P(v)$ for ideal gas particles of mass 1 u at 100, 300 and 1000 K. Higher temperatures broaden and flatten the curve, and the most probable speed $v_p = \sqrt{2 k_B T / m}$ grows with the square root of temperature.

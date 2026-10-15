@@ -3,29 +3,10 @@
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
-// Atom with 3D shading effect
-#let shaded-circle(pos, color, radius: 0.1, name: none, stroke: 0.2pt) = {
-  circle(
-    pos,
-    radius: radius,
-    stroke: stroke,
-    fill: gradient.radial(
-      color.lighten(85%),
-      color,
-      color.darken(25%),
-      focal-center: (25%, 20%),
-      focal-radius: 10%,
-      center: (30%, 25%),
-    ),
-    name: name,
-  )
-}
-
 #canvas({
-  let spacing = 0.6 // spacing between points
-  let dot-radius = 0.1
+  let spacing = 0.6 // half the lattice constant
 
-  // Colors in order of appearance
+  // One color per coset of the index-8 sublattice spanned by (2, 1) and (0, 4)
   let colors = (
     rgb("#4040d9"), // blue
     rgb("#90EE90"), // light green
@@ -37,30 +18,29 @@
     rgb("#800080"), // purple
   )
 
-  for ii in range(0, 5) {
-    for jj in range(0, 8) {
-      let x = 2 * ii * spacing
-      let y = 2 * jj * spacing
-      // Every 2 right and 1 up is same color
-      // Use modulo to cycle through colors
-      let color-idx = calc.rem(ii - 2 * jj, colors.len())
-      if color-idx < 0 { color-idx += colors.len() }
-
-      // Use the shaded-circle function instead of regular circle
-      shaded-circle(
-        (x, y),
-        colors.at(color-idx),
-        radius: dot-radius * 1.2,
+  for ii in range(5) {
+    for jj in range(8) {
+      // ii - 2 jj is invariant under both sublattice translations (mod 8)
+      let color = colors.at(calc.rem-euclid(ii - 2 * jj, colors.len()))
+      // Atom with 3D shading effect
+      circle(
+        (2 * ii * spacing, 2 * jj * spacing),
+        radius: 0.12,
+        stroke: 0.2pt,
+        fill: gradient.radial(
+          color.lighten(85%),
+          color,
+          color.darken(25%),
+          focal-center: (25%, 20%),
+          focal-radius: 10%,
+          center: (30%, 25%),
+        ),
         name: str(ii) + "," + str(jj),
       )
     }
   }
 
-  let arrow-style = (
-    mark: (end: "stealth", fill: black, scale: .5),
-    stroke: 1pt,
-  )
-
+  let arrow-style = (mark: (end: "stealth", fill: black, scale: .5), stroke: 1pt)
   on-layer(-1, {
     line("0,0", "2,1", ..arrow-style)
     line("0,0", "0,4", ..arrow-style)

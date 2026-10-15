@@ -1,11 +1,14 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: circle, content
 
+#set page(width: auto, height: auto, margin: 5pt, fill: none)
+#set text(size: 12pt)
+
 // The flat disc underneath is fully covered by the gradient, but drawing both
 // doubles up the antialiased rim so the sphere keeps a crisp edge.
-#let sphere(pos, radius: 0.25, fill: luma(50), ..args) = {
-  circle(pos, radius: radius, stroke: none, fill: fill, ..args)
-  circle(pos, radius: radius, stroke: none, fill: gradient.radial(
+#let atom(pos, fill, element: none) = {
+  circle(pos, radius: 0.3, stroke: none, fill: fill)
+  circle(pos, radius: 0.3, stroke: none, fill: gradient.radial(
     (fill.lighten(40%), 0%),
     (fill, 75%),
     (fill.darken(15%), 100%),
@@ -14,86 +17,40 @@
     focal-radius: 0%,
     center: (50%, 50%),
   ))
-}
-
-#set page(width: auto, height: auto, margin: 5pt, fill: none)
-#set text(size: 12pt)
-
-#let atom(pos, color, radius: 0.3, element: none, name: none) = {
-  sphere(pos, radius: radius, fill: color)
-
-  if element != none {
-    content(
-      pos,
-      text(fill: white, weight: "bold", size: 12pt)[#element],
-      anchor: "center",
-      name: name,
-    )
-  }
+  if element != none { content(pos, text(fill: white, weight: "bold", element)) }
 }
 
 #canvas({
-  // Define colors for the high-entropy alloy (equivalent to the LaTeX colors but toned down)
   let colors = (
-    rgb("#cc3333"),
-    rgb("#006666"),
-    rgb("#3333cc"),
-    rgb("#cc8000"),
-    rgb("#aaaaee"),
+    Al: rgb("#cc3333"),
+    Co: rgb("#3333cc"),
+    Cr: rgb("#006666"),
+    Fe: rgb("#cc8000"),
+    Ni: rgb("#aaaaee"),
   )
+  // Deterministic position hash scatters the five elements across lattice sites.
+  let hash-order = ("Al", "Cr", "Co", "Fe", "Ni")
+  let site-color(i, j, k) = colors.at(hash-order.at(calc.rem(i * 3 + j * 5 + k * 7, 5)))
 
-  // Function to get a "random" color from the colors array
-  // Since Typst doesn't have a random function, we'll use a deterministic pattern
-  // based on position to create a random-looking distribution
-  let pseudo-random-color(i, j, k) = {
-    let index = calc.rem(i * 3 + j * 5 + k * 7, colors.len())
-    colors.at(index)
-  }
-
-  // viewing angle parameters
-  let x-factor = 0.3
-  let y-factor = -0.18
-  let z-spacing = 1.1
-
-  // This is equivalent to the nested foreach loops in the LaTeX code
+  // Oblique projection: deeper layers j shift down and to the right.
+  let (x-factor, y-factor, z-spacing) = (0.3, -0.18, 1.1)
   for i in range(12) {
     for j in range(4) {
-      // First set of atoms (equivalent to the first nested loop in LaTeX)
+      // Corner sites, then body-center sites offset by half a cell.
       for k in range(4) {
-        atom(
-          (-i + x-factor * j, y-factor * j + z-spacing * k),
-          pseudo-random-color(i, j, k),
-        )
+        atom((-i + x-factor * j, y-factor * j + z-spacing * k), site-color(i, j, k))
       }
-
-      // Second set of atoms (equivalent to the second nested loop in LaTeX)
       for k in range(3) {
-        atom(
-          (-i + 0.5 + x-factor * j, y-factor * j + z-spacing * k + 0.65),
-          pseudo-random-color(i, j, k + 10),
-        )
+        atom((-i + 0.5 + x-factor * j, y-factor * j + z-spacing * k + 0.65), site-color(
+          i,
+          j,
+          k + 10,
+        ))
       }
     }
   }
 
-  // Draw the legend (moved further down)
-  let elements = (
-    ("Al", rgb("#cc3333")), // red!80 (toned down)
-    ("Co", rgb("#3333cc")), // blue!80 (toned down)
-    ("Cr", rgb("#006666")), // teal (toned down)
-    ("Fe", rgb("#cc8000")), // orange (toned down)
-    ("Ni", rgb("#aaaaee")), // blue!20 (toned down)
-  )
-
-  // Position the legend further down
-  let legend-y-start = 3
-  let legend-spacing = 0.8
-
-  for (idx, (element, color)) in elements.enumerate() {
-    atom(
-      (2.5, legend-y-start - idx * legend-spacing),
-      color,
-      element: element,
-    )
+  for (idx, (element, color)) in colors.pairs().enumerate() {
+    atom((2.5, 3 - idx * 0.8), color, element: element)
   }
 })

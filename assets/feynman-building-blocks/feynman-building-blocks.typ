@@ -95,73 +95,62 @@
   },
 )
 
-// === 3  Three-point vertex ===
-#let figure-2 = [
+// Hatched n-point vertex at the origin with its legs, inward momentum arrows given as
+// (start, end, label offset) and its Γ label.
+#let vertex-figure(length, legs, arrows, label) = canvas(length: length, {
+  legs
+  for (idx, (start, end, label-offset)) in arrows.enumerate(start: 1) {
+    line(
+      start,
+      end,
+      mark: (end: "stealth", fill: black, scale: .3),
+      stroke: (thickness: 0.5pt),
+      name: "p" + str(idx),
+    )
+    content((rel: label-offset, to: "p" + str(idx)), $p_#idx$)
+  }
+  circle((0, 0), radius: 0.25, fill: hatched, name: "vertex")
+  content((rel: (0.35, -.05), to: "vertex"), label, anchor: "west")
+})
 
-  #canvas(length: 2.85cm, {
-    let arrow = (mark: (end: "stealth", fill: black, scale: .3), stroke: (thickness: 0.5pt))
-
+#let three-point = vertex-figure(
+  2.85cm,
+  {
     line((-2, 0), (0, 0), name: "in")
     line((0, 0), (1.5, 1.5), name: "up")
     line((0, 0), (1.5, -1.5), name: "down")
     content("in.start", $phi_a$, anchor: "east", padding: 1pt)
     content("up.end", $phi_b$, anchor: "south-west", padding: 1pt)
     content("down.end", $phi_c$, anchor: "north-west", padding: 1pt)
+  },
+  (
+    ((-1.7, 0.15), (-0.7, 0.15), (0, 0.3)),
+    ((1.0, 1.2), (0.3, 0.5), (-0.3, 0.3)),
+    ((1.4, -1.2), (0.6, -0.4), (0.3, 0.3)),
+  ),
+  $Gamma_(k,a b c)^((3))(p_1,p_2,p_3)$,
+)
 
-    // momentum arrows point inward along each leg
-    for (idx, start, end, label-offset) in (
-      (1, (-1.7, 0.15), (-0.7, 0.15), (0, 0.3)),
-      (2, (1.0, 1.2), (0.3, 0.5), (-0.3, 0.3)),
-      (3, (1.4, -1.2), (0.6, -0.4), (0.3, 0.3)),
-    ) {
-      line(start, end, ..arrow, name: "p" + str(idx))
-      content((rel: label-offset, to: "p" + str(idx)), $p_#idx$)
-    }
-
-    circle((0, 0), radius: 0.25, fill: hatched, name: "vertex")
-    content(
-      (rel: (0.35, -.05), to: "vertex"),
-      $Gamma_(k,a b c)^((3))(p_1,p_2,p_3)$,
-      anchor: "west",
-    )
-  })
-]
-
-// === 4  Four-point vertex ===
-#let figure-3 = [
-
-  // draw the four-point vertex on axes rotated 45 deg so the legs run diagonally
-  #let rot45(x, y) = ((x - y) / calc.sqrt(2), (x + y) / calc.sqrt(2))
-
-  #canvas(length: 3cm, {
-    let arrow = (mark: (end: "stealth", fill: black, scale: .3), stroke: (thickness: 0.5pt))
-
+// The four-point legs run along axes rotated by 45° so they point diagonally.
+#let rot45(x, y) = ((x - y) / calc.sqrt(2), (x + y) / calc.sqrt(2))
+#let four-point = vertex-figure(
+  3cm,
+  {
     line(rot45(-2, 0), rot45(2, 0), name: "horiz")
     line(rot45(0, 2), rot45(0, -2), name: "vert")
     content("horiz.start", $phi_a$, anchor: "north-east", padding: -1pt)
     content("horiz.end", $phi_c$, anchor: "south-west", padding: 1pt)
     content("vert.start", $phi_b$, anchor: "south-east", padding: 1pt)
     content("vert.end", $phi_d$, anchor: "north-west", padding: 1pt)
-
-    // all four momenta flow into the vertex
-    for (idx, outer, inner, label-offset) in (
-      (1, (-1.7, 0.15), (-0.7, 0.15), (-0.1, 0.3)),
-      (3, (1.7, 0.15), (0.7, 0.15), (-0.1, 0.3)),
-      (2, (0.15, 1.7), (0.15, 0.7), (0.3, 0.2)),
-      (4, (0.15, -1.7), (0.15, -0.7), (0.3, 0.1)),
-    ) {
-      line(rot45(..outer), rot45(..inner), ..arrow, name: "p" + str(idx))
-      content((rel: label-offset, to: "p" + str(idx)), $p_#idx$)
-    }
-
-    circle(rot45(0, 0), radius: 0.25, fill: hatched, name: "vertex")
-    content(
-      (rel: (0.35, -.05), to: "vertex"),
-      $Gamma_(k,a b c d)^((4))(p_1,p_2,p_3,p_4)$,
-      anchor: "west",
-    )
-  })
-]
+  },
+  (
+    ((-1.7, 0.15), (-0.7, 0.15), (-0.1, 0.3)),
+    ((0.15, 1.7), (0.15, 0.7), (0.3, 0.2)),
+    ((1.7, 0.15), (0.7, 0.15), (-0.1, 0.3)),
+    ((0.15, -1.7), (0.15, -0.7), (0.3, 0.1)),
+  ).map(((outer, inner, label-offset)) => (rot45(..outer), rot45(..inner), label-offset)),
+  $Gamma_(k,a b c d)^((4))(p_1,p_2,p_3,p_4)$,
+)
 
 Read a functional renormalization-group diagram one symbol at a time. Lines connect fields; vertices encode their interactions.
 #v(14pt)
@@ -174,17 +163,16 @@ Read a functional renormalization-group diagram one symbol at a time. Lines conn
   (
     [2  Regulator insertion],
     two-point(regulator: true),
-    [The circled cross means $partial_k R_k$: change the momentum cutoff. It is an insertion on a line, not a new particle.],
+    [The circled cross means $partial_t R_k$ with RG time $t = ln(k \/ Lambda)$: the change of the momentum cutoff. It is an insertion on a line, not a new particle.],
   ),
-
   (
     [3  Three-point vertex],
-    figure-2,
+    three-point,
     [$Gamma_k^((3))$ couples three field legs. Each $p_i$ labels a momentum; letter indices label field components.],
   ),
   (
     [4  Four-point vertex],
-    figure-3,
+    four-point,
     [$Gamma_k^((4))$ couples four field legs. The hatched disc marks a dressed vertex, including fluctuation effects.],
   ),
 )
