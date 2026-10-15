@@ -1,9 +1,5 @@
 title: Sublattice Points
-description: |
-  Visualization of [lattice points](../basis-plus-lattice) with basis vectors showing a [fundamental domain](../plane-to-torus).
-  The points are colored to show the periodicity of the lattice, with points of the
-  same color related by lattice translations. The arrows indicate the basis vectors
-  that generate the lattice.
+description: A square [lattice](../basis-plus-lattice) with an index-8 sublattice. The arrows are the sublattice basis vectors $(2, 1)$ and $(0, 4)$ in units of the lattice constant, and the parallelogram they span is a [fundamental domain](../plane-to-torus) of the sublattice containing 8 lattice points. Points of the same color are related by sublattice translations, so the 8 colors label the cosets of the sublattice in the lattice.
 
 attribution:
   title: Crystal Symmetry Primer

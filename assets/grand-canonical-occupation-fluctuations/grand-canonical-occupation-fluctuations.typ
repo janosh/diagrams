@@ -13,7 +13,8 @@
     y: (mark: axis-mark, label: (anchor: "north-west", offset: -0.2)),
   ))
 
-  let fluctuation-plot(statistics, y-label, y-tick-step, name, y-max: auto) = plot.plot(
+  // Occupation-number variance of a mode with ε_k - μ = 1 at temperature T = 1 / beta.
+  let fluctuation-plot(variance, y-label, y-tick-step, y-max: auto) = plot.plot(
     size: size,
     x-min: 0,
     x-max: 4.2,
@@ -24,24 +25,16 @@
     x-tick-step: 1,
     y-tick-step: y-tick-step,
     axis-style: "left",
-    name: name,
     plot.add(
       style: (stroke: blue + 1.5pt),
       domain: (0.01, 4.2), // avoid T = 0
       samples: 200,
-      x => {
-        let beta = 1 / x
-        if statistics == "bose" {
-          let sinh-term = calc.sinh(beta / 2)
-          1 / (2 * sinh-term * sinh-term)
-        } else {
-          1 / (2 + 2 * calc.cosh(beta))
-        }
-      },
+      temp => variance(1 / temp),
     ),
   )
 
-  fluctuation-plot("bose", $Delta n_k^+$, 10, "bose-plot")
+  // Bose: ⟨n⟩(1 + ⟨n⟩) = 1 / (4 sinh²(β/2)), Fermi: ⟨n⟩(1 - ⟨n⟩) = 1 / (4 cosh²(β/2)).
+  fluctuation-plot(beta => 1 / calc.pow(2 * calc.sinh(beta / 2), 2), $Delta n_k^+$, 5)
   draw.translate((size.at(0) + 2.5, 0))
-  fluctuation-plot("fermi", $Delta n_k^-$, 0.05, "fermi-plot", y-max: 0.28)
+  fluctuation-plot(beta => 1 / (2 + 2 * calc.cosh(beta)), $Delta n_k^-$, 0.05, y-max: 0.28)
 })

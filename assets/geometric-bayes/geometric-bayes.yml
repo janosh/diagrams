@@ -3,10 +3,5 @@ tags:
   - Bayesian
   - probability
   - math
-description: >-
-  Bayes' theorem as an argument about areas. The square is the whole probability space, split
-  horizontally by the prior $p(H)$ against $p(\neg H)$ and vertically by the likelihoods, so
-  each of the four rectangles is a joint probability. Conditioning on the evidence $E$ keeps only
-  the two rectangles where $E$ occurred; rescaling those to full height renormalizes them into
-  the posterior $p(H|E)$ shown on the right. Following
-  [3blue1brown](https://youtu.be/HZGCoVF3YvM).
+description: |
+  Bayes' theorem as an argument about areas. The rectangle is the whole probability space, divided into columns by the prior $p(H)$ against $p(\neg H)$ and each column into rows by the likelihoods, so each of the four cells is a joint probability. Conditioning on the evidence $E$ keeps only the two cells where $E$ occurred; renormalizing their areas to sum to one gives the posterior $p(H|E) = p(E|H)\,p(H) / p(E)$ shown in the bar on the right (here $4/7$ for $p(H) = 2/5$, $p(E|H) = 1/2$, $p(E|\neg H) = 1/4$). Following [3blue1brown](https://youtu.be/HZGCoVF3YvM).

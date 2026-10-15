@@ -1,5 +1,5 @@
 title: DFT Choices
-description: A diagram illustrating the various choices and components in [density functional theory (DFT)](../kohn-sham-cycle) calculations, including kinetic energy, external potential, Hartree potential, and [exchange-correlation terms](../xc-functional).
+description: The Kohn-Sham equation of [density functional theory (DFT)](../kohn-sham-cycle) annotated with the modeling choices behind each term, namely non-relativistic vs. relativistic kinetic energy, pseudopotentials vs. all-electron treatment of the external potential, how the Hartree potential is computed, the [exchange-correlation functional](../xc-functional), the basis set for the orbitals, and whether the eigenvalues $E_i$ are interpreted as band energies or merely as Lagrange multipliers.
 tags:
   - physics
   - quantum mechanics

@@ -1,13 +1,12 @@
 <script lang="ts">
-  import { afterNavigate, goto } from '$app/navigation'
+  import { afterNavigate, beforeNavigate, goto } from '$app/navigation'
   import { page } from '$app/state'
   import { diagrams } from '#lib'
-  import { filters, replace_url } from '#lib/state.svelte.js'
+  import { cancel_search_write, filters, write_filter_url } from '#lib/state.svelte.js'
   import { repository } from '#package.json'
   import { untrack, type Snippet } from 'svelte'
   import { CommandMenu, Footer, GitHubCorner, Icon, ThemeToggle } from 'svelte-widgets'
   import { FileCertificate, Quote } from 'svelte-widgets/icons'
-  import { sync_url_params } from 'svelte-widgets/url-params'
   // oxlint-disable-next-line import/no-unassigned-import -- KaTeX styles for description math
   import 'katex/dist/katex.min.css'
   // oxlint-disable-next-line import/no-unassigned-import -- global app styles
@@ -21,10 +20,12 @@
     filters.read_url(page.url.searchParams)
     navigation_ready = true
   })
+  // A pending search write must not land on the page the user is navigating to.
+  beforeNavigate(cancel_search_write)
   $effect(() => {
     if (!navigation_ready) return
-    const entries = filters.url_entries
-    untrack(() => sync_url_params(entries, page.url, replace_url))
+    void filters.url_entries // rerun on every filter change
+    untrack(() => write_filter_url(page))
   })
 
   const actions = diagrams.map(({ title, slug }) => ({

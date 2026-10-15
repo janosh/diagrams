@@ -15,29 +15,15 @@
 )
 
 #canvas({
-  let node-radius = 0.22
   let blue-fill = rgb("#7a7aff")
   let red-fill = rgb("#ff4a4a")
 
-  let mix(from, to, ratio) = {
-    let (from-x, from-y) = from
-    let (to-x, to-y) = to
-    (from-x + (to-x - from-x) * ratio, from-y + (to-y - from-y) * ratio)
-  }
-
-  let tree-node(position, fill) = circle(position, radius: node-radius, fill: fill, stroke: none)
-
+  let mix(from, to, ratio) = from.zip(to).map(((start, end)) => start + (end - start) * ratio)
   let red-path-arrow(from, to) = line(
     (rel: (0.18, 0), to: mix(from, to, 0.3)),
     (rel: (0.18, 0), to: mix(from, to, 0.78)),
     ..red-arrow-style,
   )
-
-  let tree-edge(from, to, arrow: false) = {
-    line(from, to, ..edge-style)
-    if arrow { red-path-arrow(from, to) }
-  }
-  let edge(from, to, arrow: false) = (from, to, arrow)
 
   let node-box(position, body, name) = content(
     position,
@@ -51,23 +37,32 @@
     name: name,
   )
 
-  // a tree is a list of (name, horizontal offset, row, color) plus edges joining those
-  // names; edges flagged as arrows trace the path one sample takes down to its leaf
-  let draw-tree(box-name, x, label-inset, label, nodes, edges) = {
-    let at = (:)
-    for (name, dx, y, _) in nodes { at.insert(name, (x + dx, y)) }
+  // A tree is a list of (name, parent, horizontal offset) with each node one row below its
+  // parent. Red nodes and arrows trace the path one sample takes from the root to its leaf.
+  let rows = (-1.55, -2.9, -4.4, -6.0)
+  let draw-tree(box-name, x, label-inset, label, nodes, path) = {
+    let (at, depth) = ((:), (:))
+    for (name, parent, dx) in nodes {
+      depth.insert(name, if parent == none { 0 } else { depth.at(parent) + 1 })
+      at.insert(name, (x + dx, rows.at(depth.at(name))))
+    }
     group(name: box-name, padding: (0.45, 0.5, 0.35, 0.35), {
-      content((x - label-inset, -1.32), text(size: 16pt, label), anchor: "west")
-      for (from, to, arrow) in edges { tree-edge(at.at(from), at.at(to), arrow: arrow) }
-      for (name, _, _, fill) in nodes { tree-node(at.at(name), fill) }
+      content((x - label-inset, rows.at(0) + 0.23), text(size: 16pt, label), anchor: "west")
+      for (name, parent, _) in nodes.slice(1) {
+        line(at.at(parent), at.at(name), ..edge-style)
+        if name in path and parent in path { red-path-arrow(at.at(parent), at.at(name)) }
+      }
+      for (name, ..) in nodes {
+        circle(
+          at.at(name),
+          radius: 0.22,
+          fill: if name in path { red-fill } else { blue-fill },
+          stroke: none,
+        )
+      }
     })
     rect(box-name + ".north-west", box-name + ".south-east", stroke: 0.5pt, fill: none, radius: 3pt)
   }
-
-  let y-root = -1.55
-  let y-child = -2.9
-  let y-grandchild = -4.4
-  let y-leaf = -6.0
 
   draw-tree(
     "tree1",
@@ -75,30 +70,19 @@
     2.85,
     [Tree 1],
     (
-      ("root", 0, y-root, red-fill),
-      ("left", -1.25, y-child, blue-fill),
-      ("right", 1.25, y-child, red-fill),
-      ("left-left", -1.9, y-grandchild, blue-fill),
-      ("left-right", -0.75, y-grandchild, blue-fill),
-      ("right-left", 0.35, y-grandchild, blue-fill),
-      ("right-right", 2.1, y-grandchild, red-fill),
-      ("mid-left", -0.35, y-leaf, blue-fill),
-      ("mid-right", 0.75, y-leaf, blue-fill),
-      ("red-leaf", 1.85, y-leaf, red-fill),
-      ("blue-leaf", 2.95, y-leaf, blue-fill),
+      ("root", none, 0),
+      ("left", "root", -1.25),
+      ("right", "root", 1.25),
+      ("left-left", "left", -1.9),
+      ("left-right", "left", -0.75),
+      ("right-left", "right", 0.35),
+      ("right-right", "right", 2.1),
+      ("mid-left", "right-left", -0.35),
+      ("mid-right", "right-left", 0.75),
+      ("red-leaf", "right-right", 1.85),
+      ("blue-leaf", "right-right", 2.95),
     ),
-    (
-      edge("root", "left"),
-      edge("root", "right", arrow: true),
-      edge("left", "left-left"),
-      edge("left", "left-right"),
-      edge("right", "right-left"),
-      edge("right", "right-right", arrow: true),
-      edge("right-left", "mid-left"),
-      edge("right-left", "mid-right"),
-      edge("right-right", "red-leaf", arrow: true),
-      edge("right-right", "blue-leaf"),
-    ),
+    ("root", "right", "right-right", "red-leaf"),
   )
 
   draw-tree(
@@ -107,30 +91,19 @@
     2.35,
     [Tree 2],
     (
-      ("root", 0, y-root, red-fill),
-      ("left", -1.15, y-child, red-fill),
-      ("right", 1.15, y-child, blue-fill),
-      ("left-left", -1.55, y-grandchild, blue-fill),
-      ("red-leaf", -0.45, y-grandchild, red-fill),
-      ("right-left", 0.75, y-grandchild, blue-fill),
-      ("right-right", 1.65, y-grandchild, blue-fill),
-      ("left-leaf-a", -2.0, y-leaf, blue-fill),
-      ("left-leaf-b", -1.1, y-leaf, blue-fill),
-      ("right-leaf-a", 1.3, y-leaf, blue-fill),
-      ("right-leaf-b", 2.2, y-leaf, blue-fill),
+      ("root", none, 0),
+      ("left", "root", -1.15),
+      ("right", "root", 1.15),
+      ("left-left", "left", -1.55),
+      ("red-leaf", "left", -0.45),
+      ("right-left", "right", 0.75),
+      ("right-right", "right", 1.65),
+      ("left-leaf-a", "left-left", -2.0),
+      ("left-leaf-b", "left-left", -1.1),
+      ("right-leaf-a", "right-right", 1.3),
+      ("right-leaf-b", "right-right", 2.2),
     ),
-    (
-      edge("root", "left", arrow: true),
-      edge("root", "right"),
-      edge("left", "left-left"),
-      edge("left", "red-leaf", arrow: true),
-      edge("left-left", "left-leaf-a"),
-      edge("left-left", "left-leaf-b"),
-      edge("right", "right-left"),
-      edge("right", "right-right"),
-      edge("right-right", "right-leaf-a"),
-      edge("right-right", "right-leaf-b"),
-    ),
+    ("root", "left", "red-leaf"),
   )
 
   draw-tree(
@@ -139,37 +112,28 @@
     1.95,
     [Tree $n$],
     (
-      ("root", 0, y-root, red-fill),
-      ("left", -1.15, y-child, blue-fill),
-      ("right", 1.15, y-child, red-fill),
-      ("left-left", -1.55, y-grandchild, blue-fill),
-      ("left-right", -0.55, y-grandchild, blue-fill),
-      ("red-child", 0.55, y-grandchild, red-fill),
-      ("right-leaf", 1.55, y-grandchild, blue-fill),
-      ("blue-leaf", 0.05, y-leaf, blue-fill),
-      ("red-leaf", 1.05, y-leaf, red-fill),
+      ("root", none, 0),
+      ("left", "root", -1.15),
+      ("right", "root", 1.15),
+      ("left-left", "left", -1.55),
+      ("left-right", "left", -0.55),
+      ("red-child", "right", 0.55),
+      ("right-leaf", "right", 1.55),
+      ("blue-leaf", "red-child", 0.05),
+      ("red-leaf", "red-child", 1.05),
     ),
-    (
-      edge("root", "left"),
-      edge("root", "right", arrow: true),
-      edge("left", "left-left"),
-      edge("left", "left-right"),
-      edge("right", "red-child", arrow: true),
-      edge("right", "right-leaf"),
-      edge("red-child", "blue-leaf"),
-      edge("red-child", "red-leaf", arrow: true),
-    ),
+    ("root", "right", "red-child", "red-leaf"),
   )
 
   node-box((0, 1.75), [Training Data], "training")
-  node-box((0, 0.55), [sample and feature bagging], "bagging")
+  node-box((rel: (0, -1.2), to: "training"), [sample and feature bagging], "bagging")
   content((3.2, -3.55), text(size: 1.8em)[$dots.c$])
   node-box(
     (0, -7.8),
     text(size: 14pt)[mean in regression or majority vote in classification],
     "mean",
   )
-  node-box((0, -9.2), [prediction], "pred")
+  node-box((rel: (0, -1.4), to: "mean"), [prediction], "pred")
 
   line("training", "bagging", ..edge-style)
   for tree in ("tree1", "tree2", "tree3") {

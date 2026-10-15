@@ -5,11 +5,10 @@
 #set text(size: 12pt)
 
 #canvas({
-  // Helper coordinates
   let rad = 2.5
   let vec-a = (rad / 3, rad / 2)
   let phi-point = (rad / 3, -rad / 5)
-  let mark = (end: "stealth", fill: black)
+  let x1-end = (-rad / 5 * 1.2, -rad / 3 * 1.2)
 
   // Bloch vector
   line((0, 0), vec-a, mark: (
@@ -21,45 +20,25 @@
   ))
   content((rel: (0.08, 0.08), to: vec-a), $arrow(a)$, anchor: "south-west")
 
-  // Dashed line forming angle
-  line((0, 0), phi-point, style: "dashed")
-  line(phi-point, vec-a, style: "dashed")
-  let arrow-extend = 1.15
-  line((0, 0), (-rad / 5 * 1.2, -rad / 3 * 1.2), mark: mark, name: "x1")
-  content("x1.end", [$x_1$], anchor: "north")
-
-  line((0, 0), (arrow-extend * rad, 0), mark: mark, name: "x2")
-  content("x2.end", [$x_2$], anchor: "west")
-
-  line((0, 0), (0, arrow-extend * rad), mark: mark, name: "x3")
-  content("x3.end", [$x_3$], anchor: "south")
+  // Dashed projection onto the equatorial plane
+  line((0, 0), phi-point, vec-a, style: "dashed")
+  for (end, label, anchor) in (
+    (x1-end, $x_1$, "north"),
+    ((1.15 * rad, 0), $x_2$, "west"),
+    ((0, 1.15 * rad), $x_3$, "south"),
+  ) {
+    line((0, 0), end, mark: (end: "stealth", fill: black))
+    content(end, label, anchor: anchor)
+  }
 
   // Angles
-  angle.angle(
-    (0, 0),
-    (-1, -calc.tan(60deg)),
-    (1, -calc.tan(30deg)),
-    label: [$phi$],
-    stroke: (paint: gray, thickness: .5pt),
-    mark: (end: "stealth", fill: gray, scale: .7),
-  )
-
-  angle.angle(
-    (0, 0),
-    (1, calc.tan(60deg)),
-    (1, calc.tan(90deg)),
-    label: [$theta$],
-    stroke: (paint: gray, thickness: .5pt),
-    mark: (start: "stealth", fill: gray, scale: .7),
-    label-radius: 0.75,
-  )
+  // Darker than Typst gray so the angle arcs read on both page themes.
+  let ink = luma(100)
+  draw.set-style(angle: (stroke: (paint: ink, thickness: .5pt), mark: (fill: ink, scale: .7)))
+  angle.angle((0, 0), x1-end, phi-point, label: $phi$, mark: (end: "stealth"))
+  angle.angle((0, 0), vec-a, (0, 1), label: $theta$, label-radius: 0.75, mark: (start: "stealth"))
 
   // Sphere
   circle((0, 0), radius: rad)
-  circle(
-    (0, 0),
-    radius: (rad, rad / 3),
-    stroke: (dash: "dashed"),
-    fill: gray.transparentize(70%),
-  )
+  circle((0, 0), radius: (rad, rad / 3), stroke: (dash: "dashed"), fill: gray.transparentize(70%))
 })

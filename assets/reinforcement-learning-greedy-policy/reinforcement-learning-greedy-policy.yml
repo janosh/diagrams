@@ -10,4 +10,4 @@ tags:
   - reinforcement learning
   - decision making
 description: |
-  A grid-world policy that [greedily selects](https://mitpress.mit.edu/9780262039246/reinforcement-learning/) the locally best action under estimated state values, steering toward the goal while avoiding a penalty state.
+  A three-step rollout of a [greedy policy](https://mitpress.mit.edu/9780262039246/reinforcement-learning/) in a small grid world. In each state $s_t$, the policy $\pi_\theta(s_t)$ scores the available actions and the agent takes the highest-scoring one (bold), receiving reward $\mathcal{R}(s_t, a_t)$ and moving to the next state via the transition $\mathcal{T}(s_t, a_t)$. Moving up and right earns nothing, while picking up the money (green dollar signs) at the goal earns $r_2 = 2$.

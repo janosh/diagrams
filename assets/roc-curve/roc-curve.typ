@@ -1,24 +1,18 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import "@preview/cetz-plot:0.1.4": plot
 
+// Power-law ROC curves y = x^a, whose area under the curve is 1 / (1 + a).
+#let classifiers = (
+  ("Near-Perfect", 0.01),
+  ("Excellent", 0.15),
+  ("Good", 0.3),
+  ("Fair", 0.6),
+  ("Poor", 0.8),
+)
+#let auc(exponent) = calc.round(1 / (1 + exponent), digits: 2)
+
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 #set text(size: 12pt)
-
-// ROC curve functions for different classifiers
-#let clamp-unit-interval(x, interior-value) = {
-  if x <= 0 { return 0 }
-  if x >= 1 { return 1 }
-  interior-value
-}
-
-#let perfect-classifier(x) = if x == 0 { 0 } else if x == 1 { 1 } else if x > 0 { 0.99 } else { 0 }
-
-#let excellent-classifier(x) = clamp-unit-interval(x, calc.pow(x, 0.15))
-#let good-classifier(x) = clamp-unit-interval(x, calc.pow(x, 0.3))
-#let fair-classifier(x) = clamp-unit-interval(x, calc.pow(x, 0.6))
-#let poor-classifier(x) = clamp-unit-interval(x, 0.2 * x + 0.8 * x * x)
-
-#let random-classifier(x) = x
 
 #canvas({
   let axis-mark = (end: "stealth", fill: black, scale: 0.7)
@@ -49,51 +43,26 @@
       offset: (7.8, 0.3),
     ),
     {
-      let curves = (
-        (
-          func: random-classifier,
-          samples: 2,
-          stroke: (paint: rgb("#4A5560"), dash: "dashed", thickness: 0.8pt),
-          label: "Random Guess (AUC = 0.5)",
-        ),
-        (
-          func: perfect-classifier,
-          samples: 50,
-          stroke: rgb("#0B5FA5") + 1.5pt,
-          label: "Near-Perfect Classifier (AUC = 0.99)",
-        ),
-        (
-          func: excellent-classifier,
-          samples: 100,
-          stroke: rgb("#C2570A") + 1.5pt,
-          label: "Excellent Classifier (AUC = 0.93)",
-        ),
-        (
-          func: good-classifier,
-          samples: 100,
-          stroke: rgb("#12793F") + 1.5pt,
-          label: "Good Classifier (AUC = 0.85)",
-        ),
-        (
-          func: fair-classifier,
-          samples: 100,
-          stroke: rgb("#A81E7A") + 1.5pt,
-          label: "Fair Classifier (AUC = 0.73)",
-        ),
-        (
-          func: poor-classifier,
-          samples: 100,
-          stroke: (paint: rgb("#7A3E9D"), thickness: 1.5pt, dash: "dashed"),
-          label: "Poor Classifier (AUC = 0.65)",
-        ),
+      plot.add(
+        style: (stroke: (paint: rgb("#4A5560"), dash: "dashed", thickness: 0.8pt)),
+        domain: (0, 1),
+        samples: 2,
+        x => x,
+        label: "Random Guess (AUC = 0.5)",
       )
-      for curve in curves {
+      for ((name, exponent), stroke) in classifiers.zip((
+        rgb("#0B5FA5") + 1.5pt,
+        rgb("#C2570A") + 1.5pt,
+        rgb("#12793F") + 1.5pt,
+        rgb("#A81E7A") + 1.5pt,
+        (paint: rgb("#7A3E9D"), thickness: 1.5pt, dash: "dashed"),
+      )) {
         plot.add(
-          style: (stroke: curve.stroke),
+          style: (stroke: stroke),
           domain: (0, 1),
-          samples: curve.samples,
-          curve.func,
-          label: curve.label,
+          samples: 100,
+          x => calc.pow(x, exponent),
+          label: [#name Classifier (AUC = #auc(exponent))],
         )
       }
     },

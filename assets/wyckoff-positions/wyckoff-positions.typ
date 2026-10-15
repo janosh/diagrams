@@ -4,92 +4,44 @@
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
 #canvas({
-  let size = 5 // Base radius/size
-  let small-square = 0.3 // Size of small squares
-  let circle-radius = 0.3 // Size of circles
-
-  let colors = (
-    teal: rgb("#19d4d4"),
-    yellow: rgb("#f3f380"),
-    red: rgb("#f36969"),
+  let size = 5 // half the unit cell's side length
+  let marker-size = 0.3 // half side of square markers, radius of circular ones
+  let colors = (teal: rgb("#19d4d4"), yellow: rgb("#f3f380"), red: rgb("#f36969"))
+  let square((x, y), fill) = rect(
+    (x - marker-size, y - marker-size),
+    (x + marker-size, y + marker-size),
+    fill: fill,
   )
 
-  // Fill colored regions
-  // Teal triangle
-  line(
-    (0, 0),
-    (size, 0),
-    (size, -size),
-    fill: colors.teal,
-    name: "teal-triangle",
-    close: true,
-    stroke: none,
-  )
+  // asymmetric unit (teal) and strips marking the mirror lines that constrain
+  // the yellow (diagonal mirror) and red (axial mirror) Wyckoff positions
+  line((0, 0), (size, 0), (size, -size), fill: colors.teal, close: true, stroke: none)
+  let yellow-strip = ((size - .5, -size), (0, -.5), (0, 0), (size, -size))
+  line(..yellow-strip, fill: colors.yellow, close: true, stroke: none)
+  rect((0, 0), (size, 0.35), fill: colors.red, stroke: none)
 
-  // Yellow region
-  line(
-    (size - .5, -size),
-    (0, -.5),
-    (0, 0),
-    (size, -size),
-    fill: colors.yellow,
-    name: "yellow-region",
-    close: true,
-    stroke: none,
-  )
+  rect((-size, -size), (size, size))
+  // mirror lines
+  for (start, end) in (
+    ((-size, -size), (size, size)),
+    ((size, -size), (-size, size)),
+    ((-size, 0), (size, 0)),
+    ((0, -size), (0, size)),
+  ) { line(start, end, stroke: (dash: "dashed")) }
 
-  // Red rectangle
-  rect((0, 0), (size, 0.35), fill: colors.red, name: "red-rect", stroke: none)
-
-  // Main square outline
-  rect((-size, -size), (size, size), name: "main-square")
-
-  // Dashed lines
-  let dash-style = (stroke: (dash: "dashed"))
-  line((-size, -size), (size, size), ..dash-style, name: "diag1")
-  line((size, -size), (-size, size), ..dash-style, name: "diag2")
-  line((-size, 0), (size, 0), ..dash-style, name: "horiz")
-  line((0, -size), (0, size), ..dash-style, name: "vert")
-
-  // Corner squares (yellow)
-  for a in (-0.8 * size, 0.8 * size) {
-    for b in (-0.8 * size, 0.8 * size) {
-      rect(
-        (a - small-square, b - small-square),
-        (a + small-square, b + small-square),
-        fill: colors.yellow,
-        name: "corner-square-" + str(a).replace(".", "p") + "-" + str(b).replace(".", "p"),
-      )
-    }
+  // 4 sites on the diagonal mirrors
+  for x in (-0.8 * size, 0.8 * size) {
+    for y in (-0.8 * size, 0.8 * size) { square((x, y), colors.yellow) }
   }
-
-  // Red circles on axes
-  for a in (-0.7 * size, 0.7 * size) {
-    circle(
-      (a, 0),
-      radius: circle-radius,
-      fill: colors.red,
-      name: "horiz-circle-" + str(a).replace(".", "p"),
-    )
-    circle(
-      (0, a),
-      radius: circle-radius,
-      fill: colors.red,
-      name: "vert-circle-" + str(a).replace(".", "p"),
-    )
+  // 4 sites on the axial mirrors
+  for offset in (-0.7 * size, 0.7 * size) {
+    circle((offset, 0), radius: marker-size, fill: colors.red)
+    circle((0, offset), radius: marker-size, fill: colors.red)
   }
-
-  // Rotated teal squares
+  // 8 sites in the general position
   rotate(45deg)
-  for i in range(8) {
-    let angle = i * 360deg / 8 + 22.5deg
-    let x = 2 * calc.cos(angle)
-    let y = 2 * calc.sin(angle)
-    rect(
-      (x - small-square, y - small-square),
-      (x + small-square, y + small-square),
-      fill: colors.teal,
-      name: "rot-square-" + str(i).replace(".", "p"),
-    )
+  for idx in range(8) {
+    let (angle, ring-radius) = (idx * 360deg / 8 + 22.5deg, 0.4 * size)
+    square((ring-radius * calc.cos(angle), ring-radius * calc.sin(angle)), colors.teal)
   }
 })

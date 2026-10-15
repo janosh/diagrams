@@ -58,6 +58,8 @@
   let length_arrow = (end: "stealth", start: "stealth", fill: blue, scale: .4)
   let guide = (paint: gray, thickness: .5pt)
   let hidden_guide = (paint: gray.lighten(25%), thickness: .5pt, dash: "dotted")
+  // Darker than Typst red/gray so angle and projection labels stay legible on the light page.
+  let red = rgb("#d62a1e")
   let angle_stroke = (paint: red, thickness: .5pt, cap: "round")
   let visible_edge = (paint: blue, thickness: 1pt, cap: "round", join: "round")
   let hidden_edge = (paint: blue.lighten(60%), thickness: .6pt, dash: "dotted", cap: "round")
@@ -101,11 +103,7 @@
     content(spherical(1, 90deg, phi_min / 2), text(red)[$phi$], anchor: "north", padding: 0)
     for (direction, label) in (((1, 0, 0), $x$), ((0, 1, 0), $y$), ((0, 0, 1), $z$)) {
       if direction != (0, 0, 1) {
-        line(
-          (0, 0),
-          direction.map(value => -1.1 * sphere_radius * value),
-          stroke: hidden_guide,
-        )
+        line((0, 0), direction.map(value => -1.1 * sphere_radius * value), stroke: hidden_guide)
       }
       line((0, 0), direction.map(value => (sphere_radius + .8) * value), mark: axis_mark)
       content(direction.map(value => (sphere_radius + 1.1) * value), label)
@@ -130,18 +128,12 @@
     }
 
     // === Edge lengths and position vector ===
-    edge(
-      (radius_min, theta_max * 1.03, phi_min),
-      (radius_min, theta_max * 1.03, phi_max),
-      stroke: length_stroke,
-      mark: length_arrow,
-    )
-    edge(
-      (radius_max, theta_min, phi_max * 1.03),
-      (radius_max, theta_max, phi_max * 1.03),
-      stroke: length_stroke,
-      mark: length_arrow,
-    )
+    for (start, end) in (
+      ((radius_min, theta_max * 1.03, phi_min), (radius_min, theta_max * 1.03, phi_max)),
+      ((radius_max, theta_min, phi_max * 1.03), (radius_max, theta_max, phi_max * 1.03)),
+    ) {
+      edge(start, end, stroke: length_stroke, mark: length_arrow)
+    }
     let vector_tip = spherical(radius_min, theta_max, phi_min)
     let foot = spherical(radius_min * calc.sin(theta_max), 90deg, phi_min)
     let projection_stroke = (dash: "dashed", paint: gray, thickness: .3pt)
@@ -149,7 +141,7 @@
     line((0, 0), foot, stroke: projection_stroke)
     line((0, 0), vector_tip, stroke: 1.2pt, mark: axis_mark)
     for (position, label, paint, anchor, padding) in (
-      ((2, 90deg, phi_min), $r sin theta$, gray, "north", 0),
+      ((2, 90deg, phi_min), $r sin theta$, rgb("#666666"), "north", 0),
       ((2, theta_max, phi_min), $arrow(r)$, black, "south-east", 0),
       ((radius_max, theta_min, phi_min), $d r$, blue, "east", .1),
       ((radius_max, (theta_min + theta_max) / 2, phi_max), $r d theta$, blue, "west", .15),

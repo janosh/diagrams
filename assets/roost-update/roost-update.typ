@@ -11,107 +11,74 @@
   let (node-r, small-r) = (0.3, 0.22)
   let thick = (thickness: 2.5pt, paint: black)
 
-  // Draw triangle with La at origin_pos, O at (-3, -1), Cu at (-3, +1) relative offset
-  let tri(origin, labels: none) = {
-    let pts = (
-      origin,
-      (origin.at(0) - 3, origin.at(1) - 1),
-      (origin.at(0) - 3, origin.at(1) + 1),
-    )
+  // Triangle with La at `origin`, O at (-3, -1) and Cu at (-3, +1) relative to it. La's
+  // label sits to its right, the others to their left.
+  let tri(origin, labels: (none, none, none)) = {
+    let (x, y) = origin
+    let pts = (origin, (x - 3, y - 1), (x - 3, y + 1))
     set-style(stroke: thick)
     line(..pts, close: true)
-    for (idx, pt) in pts.enumerate() {
-      circle(pt, radius: node-r, fill: colors.at(idx), stroke: thick)
-    }
-    if labels != none {
-      content(
-        (pts.at(0).at(0) + 0.45, pts.at(0).at(1)),
-        labels.at(0),
-        anchor: "west",
-      )
-      for idx in (1, 2) {
-        content(
-          (pts.at(idx).at(0) - 0.45, pts.at(idx).at(1)),
-          labels.at(idx),
-          anchor: "east",
-        )
+    for (idx, ((pt-x, pt-y), label)) in pts.zip(labels).enumerate() {
+      circle((pt-x, pt-y), radius: node-r, fill: colors.at(idx), stroke: thick)
+      if label != none {
+        let side = if idx == 0 { 1 } else { -1 }
+        content((pt-x + side * 0.45, pt-y), label, anchor: if idx == 0 { "west" } else { "east" })
       }
     }
   }
 
   // Left input triangle with formula
-  tri((0, 0), labels: ([$h_"La"$], [$h_"O"$], [$h_"Cu"$]))
-  content((-4.8, 0), [La#sub[2]CuO#sub[4]], anchor: "east")
-  line((-4.5, 0), (-3.7, 0), mark: (end: "stealth", fill: black, size: 0.2))
+  tri((0, 0), labels: ($h_"La"$, $h_"O"$, $h_"Cu"$))
+  line((-4.5, 0), (-3.7, 0), mark: (end: "stealth", fill: black, size: 0.2), name: "input")
+  content((rel: (-0.3, 0), to: "input.start"), [La#sub[2]CuO#sub[4]], anchor: "east")
 
-  // Separator and triangles
-  set-style(stroke: (thickness: 1.8pt, paint: black))
-  line((2, -1.95), (2, 2.75))
+  line((2, -1.95), (2, 2.75), stroke: 1.8pt + black)
 
   let (rt, tp1) = ((7, 0.75), (13, -1.25)) // right-t and t+1 La positions
-  set-style(stroke: thick)
-  tri(rt, labels: ([$h_"La"^t$], [$h_"O"^t$], [$h_"Cu"^t$]))
-  tri(tp1, labels: none)
-  content((tp1.at(0) + 0.45, tp1.at(1)), [$h_"La"^(t+1)$], anchor: "west")
+  tri(rt, labels: ($h_"La"^t$, $h_"O"^t$, $h_"Cu"^t$))
+  tri(tp1, labels: ($h_"La"^(t+1)$, none, none))
 
-  // Braces on edges
-  let brace = (
-    stroke: (thickness: 1.3pt, paint: black),
-    fill: none,
-    amplitude: 0.35,
-    flip: false,
-  )
-  decorations.flat-brace(
-    (rt.at(0) - 2.65, rt.at(1) + 1.15),
-    (rt.at(0) - 0.15, rt.at(1) + 0.35),
-    ..brace,
-  )
-  decorations.flat-brace(
-    (rt.at(0) - 0.15, rt.at(1) - 0.35),
-    (rt.at(0) - 2.65, rt.at(1) - 1.15),
-    ..brace,
-  )
-
-  // Message nodes: (y, color, label, attention-label, sign for curve direction)
-  let msg-nodes = (
-    (2.25, rgb("#c00"), [$g(h_"La"^t || h_"Cu"^t)$], $alpha_"LaCu"$, 1),
-    (-0.7, rgb("#282"), [$g(h_"La"^t || h_"O"^t)$], $alpha_"LaO"$, -1),
-  )
-  let alpha = (rt.at(0) + 2, rt.at(1))
-
-  for (gy, col, lbl, attn, sign) in msg-nodes {
-    circle((5.85, gy), radius: small-r, fill: col, stroke: (thickness: 2pt))
-    content((5.85, gy + sign * 0.5), lbl, anchor: if sign > 0 { "south" } else {
-      "north"
-    })
+  // Braces over the La-Cu and La-O edges that each message is computed from.
+  for (start, end) in (((-2.65, 1.15), (-0.15, 0.35)), ((-0.15, -0.35), (-2.65, -1.15))) {
+    decorations.flat-brace(
+      (rel: start, to: rt),
+      (rel: end, to: rt),
+      stroke: (thickness: 1.3pt, paint: black),
+      fill: none,
+      amplitude: 0.35,
+    )
   }
-  circle(alpha, radius: small-r, fill: yellow, stroke: (thickness: 2pt))
+
+  // Message nodes: (y offset from rt, color, label, attention-label, sign for curve direction)
+  let msg-nodes = (
+    (1.5, rgb("#c00"), [$g(h_"La"^t || h_"Cu"^t)$], $alpha_"LaCu"$, 1),
+    (-1.45, rgb("#282"), [$g(h_"La"^t || h_"O"^t)$], $alpha_"LaO"$, -1),
+  )
+  circle((rel: (2, 0), to: rt), radius: small-r, fill: yellow, stroke: 2pt + black, name: "alpha")
 
   // Dashed arrows from g nodes to alpha
   let dashed = (dash: "dashed", thickness: 1.5pt, paint: black)
   set-style(mark: (fill: black, size: 0.15, end: "stealth"))
-  for (gy, _, _, attn, sign) in msg-nodes {
+  for (dy, col, lbl, attn, sign) in msg-nodes {
+    circle((rel: (-1.15, dy), to: rt), radius: small-r, fill: col, stroke: 2pt + black, name: "g")
+    content((rel: (0, sign * 0.5), to: "g"), lbl, anchor: if sign > 0 { "south" } else { "north" })
     bezier(
-      (5.85 + small-r, gy),
-      (alpha.at(0), alpha.at(1) + sign * small-r),
-      (6.75, gy + sign * 0.05),
-      (alpha.at(0) - 0.6, alpha.at(1) + sign * 0.9),
+      "g.east",
+      (rel: (0, sign * small-r), to: "alpha"),
+      (rel: (0.9, sign * 0.05), to: "g"),
+      (rel: (-0.6, sign * 0.9), to: "alpha"),
       stroke: dashed,
     )
-    content((7.35, gy + sign * 0.1), attn, anchor: "west")
+    content((rel: (1.5, sign * 0.1), to: "g"), attn, anchor: "west")
   }
 
   // Plus and final arrow
-  content(
-    (alpha.at(0) + 0.5, alpha.at(1)),
-    text(weight: "bold", size: 1.2em)[+],
-    anchor: "west",
-  )
+  content((rel: (0.5, 0), to: "alpha"), text(weight: "bold", size: 1.2em)[+], anchor: "west")
   bezier(
-    (alpha.at(0) + 0.9, alpha.at(1)),
-    (tp1.at(0), tp1.at(1) + node-r),
-    (alpha.at(0) + 2.2, alpha.at(1) - 0.2),
-    (tp1.at(0) - 0.3, tp1.at(1) + 1),
+    (rel: (0.9, 0), to: "alpha"),
+    (rel: (0, node-r), to: tp1),
+    (rel: (2.2, -0.2), to: "alpha"),
+    (rel: (-0.3, 1), to: tp1),
     stroke: dashed,
   )
 })

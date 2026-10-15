@@ -10,8 +10,7 @@
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 #set text(size: 12pt)
 
-#let radius = 1.25 // \lrad in original
-#let med-rad = 0.175 * radius // \mrad
+#let radius = 1.25
 
 #canvas({
   circle((0, 0), radius: radius, stroke: 1pt, name: "loop")
@@ -20,8 +19,7 @@
     let turn = fraction * 360deg
     // trail the label a few degrees behind its arrowhead
     let lag = turn - 3deg
-    let offset = ((0.75 * radius) * calc.cos(lag), (0.75 * radius) * calc.sin(lag))
-    content((rel: offset, to: "loop"), text(size: 12pt)[$p_#idx$])
+    content((rel: (lag, 0.75 * radius), to: "loop"), $p_#idx$)
     mark(
       (name: "loop", anchor: turn),
       (name: "loop", anchor: turn + 1deg),
@@ -45,11 +43,11 @@
     padding: -2.75pt,
     name: "regulator",
   )
-  content((rel: (-0.25, 0), to: (-radius, 0)), $partial_k R_(k,i j)(p_1,p_2)$, anchor: "east")
+  content((rel: (-0.25, 0), to: "regulator"), $partial_k R_(k,i j)(p_1,p_2)$, anchor: "east")
 
-  circle((radius, 0), radius: med-rad, fill: hatched, name: "vertex", stroke: 0.5pt)
+  circle((radius, 0), radius: 0.175 * radius, fill: hatched, name: "vertex", stroke: 0.5pt)
   content(
-    (rel: (0.25, 0), to: (radius, 0)),
+    (rel: (0.25, 0), to: "vertex"),
     $[Gamma_k^((2)) + R_k]_(j i)^(-1)(p_2,p_1)$,
     anchor: "west",
   )

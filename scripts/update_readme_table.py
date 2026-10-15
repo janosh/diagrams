@@ -17,12 +17,17 @@ with open(f"{ROOT}/site/package.json") as file:
     SITE_URL = json.load(file)["homepage"]
 
 
+# Source extensions in README link order, with the language each badge counts.
+LANGUAGES = {".tex": "LaTeX", ".typ": "Typst"}
+
+
 @dataclass(frozen=True)
 class DiagramInfo:
-    """Diagram name and display title."""
+    """Diagram name, display title, and the source files it ships."""
 
     name: str
     title: str
+    source_exts: tuple[str, ...]
     preserve_colors: bool = False
     provenance_links: str = ""
 
@@ -64,11 +69,15 @@ def collect_diagrams() -> list[DiagramInfo]:
         if "title" not in metadata:
             raise ValueError(f"Missing 'title' in {yaml_path}")
 
-        if any(os.path.isfile(f"{dir_name}/{name}{ext}") for ext in (".typ", ".tex")):
+        source_exts = tuple(
+            ext for ext in LANGUAGES if os.path.isfile(f"{dir_name}/{name}{ext}")
+        )
+        if source_exts:
             diagrams.append(
                 DiagramInfo(
                     name=name,
                     title=metadata["title"],
+                    source_exts=source_exts,
                     preserve_colors=metadata.get("preserve_colors", False),
                     provenance_links=get_provenance_links(metadata),
                 )
@@ -77,18 +86,14 @@ def collect_diagrams() -> list[DiagramInfo]:
     return sorted(diagrams, key=lambda diagram: diagram.name)
 
 
-def get_code_links(figure_name: str) -> str:
+def get_code_links(diagram: DiagramInfo) -> str:
     """Generate markdown links to source files as language logo icons."""
-    links: list[str] = []
-    for ext, lang_logo in ((".tex", "LaTeX"), (".typ", "Typst")):
-        src_path = f"assets/{figure_name}/{figure_name}{ext}"
-        if os.path.isfile(f"{ROOT}/{src_path}"):
-            links.append(f"[![{lang_logo}][{lang_logo.lower()}-logo]]({src_path})")
-
-    if not links:
-        raise ValueError(f"No source code found for {figure_name}")
-
-    return "&nbsp;" + "&nbsp;".join(links)
+    name = diagram.name
+    return "".join(
+        f"&nbsp;[![{LANGUAGES[ext]}][{LANGUAGES[ext].lower()}-logo]]"
+        f"(assets/{name}/{name}{ext})"
+        for ext in diagram.source_exts
+    )
 
 
 def get_provenance_links(metadata: dict) -> str:
@@ -164,7 +169,7 @@ def table_cell(diagram: DiagramInfo | None) -> tuple[str, str]:
         )
     return (
         f"[{title}]({SITE_URL}/{name}) "
-        f"<sub>{get_code_links(name)}{diagram.provenance_links}</sub>",
+        f"<sub>{get_code_links(diagram)}{diagram.provenance_links}</sub>",
         image,
     )
 
@@ -185,22 +190,27 @@ def generate_table(diagrams: list[DiagramInfo]) -> str:
     return table
 
 
-def update_readme(table: str, diagram_count: int) -> None:
+def source_counts(diagrams: list[DiagramInfo]) -> dict[str, int]:
+    """Count visible diagrams per source language, matching the heading's total."""
+    return {
+        lang: sum(ext in diagram.source_exts for diagram in diagrams)
+        for ext, lang in LANGUAGES.items()
+    }
+
+
+def update_readme(diagrams: list[DiagramInfo]) -> None:
     """Update README diagram table, heading count, and language badges."""
     with open(f"{ROOT}/readme.md") as file:
         readme = file.read()
 
     table_pattern = r"(?<=<!-- diagram-table -->\n)(.*)(?=## Scripts\n)"
+    table = generate_table(diagrams)
     readme = re.sub(table_pattern, f"\n{table}\n", readme, flags=re.DOTALL)
 
-    for pattern in (
-        r"(?<=Collection of \*\*)\d+(?=\*\* Scientific Diagrams)",
-        r"(?<=\n  )\d+(?= Scientific Diagrams\n</h1>)",
-    ):
-        readme = re.sub(pattern, str(diagram_count), readme)
+    heading_pattern = r"(?<=\n  )\d+(?= Scientific Diagrams\n</h1>)"
+    readme = re.sub(heading_pattern, str(len(diagrams)), readme)
 
-    for ext, lang in ((".typ", "Typst"), (".tex", "LaTeX")):
-        count = len(get_diagram_sources(ext))
+    for lang, count in source_counts(diagrams).items():
         readme = re.sub(
             rf"\[\!\[(\d+) with {lang}\]", f"[![{count} with {lang}]", readme
         )
@@ -213,5 +223,4 @@ def update_readme(table: str, diagram_count: int) -> None:
 
 
 if __name__ == "__main__":
-    diagrams = collect_diagrams()
-    update_readme(generate_table(diagrams), len(diagrams))
+    update_readme(collect_diagrams())

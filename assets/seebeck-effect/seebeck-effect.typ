@@ -5,36 +5,17 @@
 #set text(size: 12pt)
 
 #let dy = 0.45
-#let sink-dx = 0.84
-#let sink-dy = 0.58
-#let bar-dx = 0.66
 #let pillar-dx = 0.66
+#let pillar-w = 2.45
+#let pillar-h = 5.35
 #let edge-stroke = (paint: black, thickness: 0.6pt)
 #let circuit-stroke = (paint: black, thickness: 1.1pt)
-#let circuit-mark = (symbol: "stealth", fill: black, scale: 0.5, shorten-to: none)
 #let field-color = black.transparentize(10%)
-#let field-stroke = (paint: field-color, thickness: 1.0pt)
-#let field-mark = (end: "stealth", fill: field-color, scale: 0.55)
+#let pillar-grad = gradient.linear(rgb("#d20a17"), rgb("#5660d4"), angle: 90deg)
 
-#let sink-blue = rgb("#0b0bff")
-#let sink-side-blue = rgb("#0606cf")
-#let pillar-grad = gradient.linear(
-  rgb("#d20a17"),
-  rgb("#5660d4"),
-  angle: 90deg,
-)
-#let bar-red = rgb("#ef1313")
-#let bar-side-red = rgb("#de1313")
-#let bar-top-red = rgb("#ff2222")
-#let n-color = rgb("#11b7ef")
-#let p-color = rgb("#ffa300")
-#let bar-x0 = 1.0
-#let bar-y0 = 7.0
-#let bar-w = 9.95
-#let bar-h = 0.9
-
-#let draw-prism(x0, y0, w, h, depth-x, front-fill, right-fill, top-fill, stroke, depth-y: dy) = {
-  rect((x0, y0), (x0 + w, y0 + h), fill: front-fill, stroke: stroke)
+// Box with front, right and top faces, receding by (depth-x, depth-y).
+#let draw-prism(x0, y0, w, h, depth-x, front-fill, right-fill, top-fill, depth-y: dy) = {
+  rect((x0, y0), (x0 + w, y0 + h), fill: front-fill, stroke: edge-stroke)
   line(
     (x0 + w, y0),
     (x0 + w + depth-x, y0 + depth-y),
@@ -42,7 +23,7 @@
     (x0 + w, y0 + h),
     close: true,
     fill: right-fill,
-    stroke: stroke,
+    stroke: edge-stroke,
   )
   line(
     (x0, y0 + h),
@@ -51,17 +32,14 @@
     (x0 + depth-x, y0 + h + depth-y),
     close: true,
     fill: top-fill,
-    stroke: stroke,
+    stroke: edge-stroke,
   )
 }
 
-#let charge-marker(x, y, sign: $+$, fill: p-color) = {
+// Charge carrier drifting down from the hot to the cold end.
+#let charge-marker(x, y, sign, fill) = {
   circle((x, y), radius: 0.2, fill: fill, stroke: none)
-  content(
-    (x, y + 0.03),
-    text(size: 12pt, weight: "light", fill: black)[#sign],
-    anchor: "center",
-  )
+  content((x, y + 0.03), text(weight: "light")[#sign])
   line(
     (x, y - 0.22),
     (x, y - 0.72),
@@ -71,29 +49,23 @@
 }
 
 #let sink-block(x0, y0, w: 2.9, h: 0.85) = {
+  let sink-side-blue = rgb("#0606cf")
   draw-prism(
     x0,
     y0,
     w,
     h,
-    sink-dx,
-    sink-blue,
+    0.84,
+    rgb("#0b0bff"),
     sink-side-blue,
     sink-side-blue.lighten(20%),
-    edge-stroke,
-    depth-y: sink-dy,
+    depth-y: 0.58,
   )
-  content(
-    (x0 + w / 2, y0 + h / 2),
-    text(size: 14pt, fill: white)[heat sink],
-    anchor: "center",
-  )
+  content((x0 + w / 2, y0 + h / 2), text(size: 14pt, fill: white)[heat sink])
 }
 
-#let pillar-w = 2.45
-#let pillar-h = 5.35
-
-#let pillar-block(x0, y0, w: pillar-w, h: pillar-h, label: [N]) = {
+#let pillar-block(x0, y0, label) = {
+  let (w, h) = (pillar-w, pillar-h)
   rect((x0, y0), (x0 + w, y0 + h), fill: pillar-grad, stroke: none)
   line(
     (x0 + w, y0),
@@ -104,34 +76,21 @@
     fill: pillar-grad,
     stroke: none,
   )
-  circle((x0 + w / 2, y0 + h * 0.58), radius: 0.38, stroke: (
+  circle((x0 + w / 2, y0 + h * 0.58), radius: 0.38, name: "badge", stroke: (
     paint: white.transparentize(25%),
     thickness: 0.7pt,
   ))
-  content(
-    (x0 + w / 2, y0 + h * 0.58),
-    text(size: 16pt, fill: white.transparentize(25%))[#label],
-    anchor: "center",
-  )
+  content("badge", text(size: 16pt, fill: white.transparentize(25%))[#label])
 }
 
-#let field-arrow-with-polarity(x, y-start, y-end, top-label, bottom-label, label-side) = {
-  line((x, y-start), (x, y-end), stroke: field-stroke, mark: field-mark)
+// The internal field points from the positively (+) to the negatively (−) charged end of a leg.
+#let field-arrow(x, y-plus, y-minus, label-side) = {
+  let mark = (end: "stealth", fill: field-color, scale: 0.55)
+  line((x, y-plus), (x, y-minus), stroke: (paint: field-color, thickness: 1.0pt), mark: mark)
   let x-offset = if label-side == "west" { 0.18 } else { -0.18 }
-  content(
-    (x + x-offset, y-start),
-    text(size: 12pt, fill: field-color)[#top-label],
-    anchor: label-side,
-  )
-  content(
-    (x + x-offset, y-end),
-    text(size: 12pt, fill: field-color)[#bottom-label],
-    anchor: label-side,
-  )
-}
-
-#let draw-circuit-leg(..pts) = {
-  line(..pts, stroke: circuit-stroke)
+  for (y, label) in ((y-plus, [+]), (y-minus, [−])) {
+    content((x + x-offset, y), text(fill: field-color)[#label], anchor: label-side)
+  }
 }
 
 #canvas({
@@ -139,112 +98,72 @@
   let right-sink-x = 7.9
   let sink-y = 0.8
   let pillar-y = sink-y + 0.95
-  let left-pillar-x = left-sink-x + 0.35
-  let right-pillar-x = right-sink-x + 0.35
+  let left-field-x = left-sink-x + 0.35 + pillar-w + pillar-dx + 0.25
+  let right-field-x = right-sink-x + 0.35 - 0.25
 
-  // Left (N) pillar and sink
-  sink-block(left-sink-x, sink-y)
-  pillar-block(left-pillar-x, pillar-y, label: [N])
-  let left-field-x = left-pillar-x + pillar-w + pillar-dx + 0.25
-  field-arrow-with-polarity(
-    left-field-x,
-    pillar-y + pillar-h - 0.6,
-    pillar-y + 0.6,
-    [+],
-    [-],
-    "west",
-  )
-  for (dx-offset, dy-offset) in (
-    (1.05, 5.2),
-    (2.25, 5.2),
-    (1.05, 2.3),
-    (2.35, 2.45),
+  // Electrons (N) and holes (P) both diffuse to the cold end, so the two fields point oppositely.
+  for (sink-x, label, sign, fill, field-x, field-ys, label-side, charge-offsets) in (
+    (
+      left-sink-x,
+      [N],
+      [−],
+      rgb("#11b7ef"),
+      left-field-x,
+      (pillar-y + pillar-h - 0.6, pillar-y + 0.6),
+      "west",
+      ((1.05, 5.2), (2.25, 5.2), (1.05, 2.3), (2.35, 2.45)),
+    ),
+    (
+      right-sink-x,
+      [P],
+      [+],
+      rgb("#ffa300"),
+      right-field-x,
+      (pillar-y + 0.55, pillar-y + pillar-h - 0.55),
+      "east",
+      ((1.02, 5.2), (2.2, 5.2), (1.02, 2.3), (2.32, 2.45)),
+    ),
   ) {
-    charge-marker(left-sink-x + dx-offset, sink-y + dy-offset, sign: [−], fill: n-color)
+    sink-block(sink-x, sink-y)
+    pillar-block(sink-x + 0.35, pillar-y, label)
+    field-arrow(field-x, ..field-ys, label-side)
+    for (dx-offset, dy-offset) in charge-offsets {
+      charge-marker(sink-x + dx-offset, sink-y + dy-offset, sign, fill)
+    }
   }
-
-  // Right (P) pillar and sink
-  sink-block(right-sink-x, sink-y)
-  pillar-block(right-pillar-x, pillar-y, label: [P])
-  let right-field-x = right-pillar-x - 0.25
-  field-arrow-with-polarity(
-    right-field-x,
-    pillar-y + 0.55,
-    pillar-y + pillar-h - 0.55,
-    [-],
-    [+],
-    "east",
-  )
   content(
     ((left-field-x + right-field-x) / 2, pillar-y + pillar-h * 0.55),
     text(size: 15pt, fill: field-color)[electric field],
-    anchor: "center",
   )
-  for (dx-offset, dy-offset) in (
-    (1.02, 5.2),
-    (2.2, 5.2),
-    (1.02, 2.3),
-    (2.32, 2.45),
-  ) {
-    charge-marker(right-sink-x + dx-offset, sink-y + dy-offset, sign: [+], fill: p-color)
-  }
 
-  // Top heat source bar (foreground so it occludes pillars/charges)
+  // Top heat source bar resting on the pillars (foreground so it occludes pillars/charges)
+  let (bar-x, bar-y) = (left-sink-x - 0.05, pillar-y + pillar-h - 0.1)
   on-layer(20, {
-    draw-prism(
-      bar-x0,
-      bar-y0,
-      bar-w,
-      bar-h,
-      bar-dx,
-      bar-red,
-      bar-side-red,
-      bar-top-red,
-      edge-stroke,
-    )
-    content(
-      (6.05, 8.16),
-      text(size: 15pt, fill: white)[heat source],
-      anchor: "center",
-    )
-    content(
-      (5.68, 7.4),
-      text(size: 20pt, fill: white)[$J arrow.r$],
-      anchor: "center",
-    )
+    draw-prism(bar-x, bar-y, 9.95, 0.9, 0.66, rgb("#ef1313"), rgb("#de1313"), rgb("#ff2222"))
+    content((bar-x + 5.05, bar-y + 1.16), text(size: 15pt, fill: white)[heat source])
+    content((bar-x + 4.68, bar-y + 0.4), text(size: 20pt, fill: white)[$J arrow.r$])
   })
 
-  // Bottom wire closing the electric circuit with central resistor zig-zag.
+  // Bottom wire closing the electric circuit through a central load resistor.
   let wire-y = 0.12
   let left-wire-x = left-sink-x + 0.2
   let right-wire-x = right-sink-x + 2.55
-  let zig-right-x = 5.85
-  let zig-left-x = 4.65
-
-  // Right-angle segments.
-  draw-circuit-leg(
+  let (zig-left-x, zig-right-x) = (4.65, 5.85)
+  line(
     (right-wire-x, sink-y),
     (right-wire-x, wire-y),
     (zig-right-x, wire-y),
+    stroke: circuit-stroke,
   )
-  draw-circuit-leg(
-    (zig-left-x, wire-y),
-    (left-wire-x, wire-y),
-    (left-wire-x, sink-y),
-  )
-  // Center resistor as a decorated zigzag, with multiple arrow tips on the same path.
+  line((zig-left-x, wire-y), (left-wire-x, wire-y), (left-wire-x, sink-y), stroke: circuit-stroke)
+  // Resistor zigzag, with arrow tips along the path showing the current direction.
+  let circuit-mark = (symbol: "stealth", fill: black, scale: 0.5, shorten-to: none)
   decorations.zigzag(
     line(
       (zig-right-x, wire-y),
       (zig-left-x, wire-y),
       stroke: circuit-stroke,
-      mark: (
-        end: (
-          (pos: 20%, ..circuit-mark),
-          (pos: 50%, ..circuit-mark),
-          (pos: 80%, ..circuit-mark),
-        ),
-      ),
+      mark: (end: (20%, 50%, 80%).map(pos => (pos: pos, ..circuit-mark))),
     ),
     amplitude: 0.12,
     segment-length: 0.2,

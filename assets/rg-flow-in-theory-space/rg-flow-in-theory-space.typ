@@ -5,65 +5,49 @@
 #set text(size: 12pt)
 
 #let unit = 5
+#let scaled((x, y)) = (x * unit, y * unit)
 
 #canvas({
   let arrow-style = (mark: (end: "stealth", fill: black, scale: 0.5))
 
-  let qea = (-0.225 * unit, -5 / 12 * unit) // quantum effective action
-  let ma1 = (0.4 * unit, 0.5 * unit) // microscopic action 1
-  let ma2 = (0.6 * unit, 0.33 * unit) // microscopic action 2
-  let ma3 = (unit, 0.5 * unit) // microscopic action 3
-  let r1 = (0.17 * unit, 0.25 * unit) // regulator 1
-  let r2 = (0.4 * unit, 0.1 * unit) // regulator 2
-  let r3 = (0.5 * unit, -0.2 * unit) // regulator 3
-
   for (idx, end, anchor) in (
-    (1, (0, 0.67 * unit), "south"),
-    (2, (-0.5 * unit, -0.5 * unit), "north-east"),
-    (3, (0.14 * unit, -0.67 * unit), "north"),
-    (4, (0.83 * unit, -0.5 * unit), "north-west"),
+    (1, (0, 0.67), "south"),
+    (2, (-0.5, -0.5), "north-east"),
+    (3, (0.14, -0.67), "north"),
+    (4, (0.83, -0.5), "north-west"),
   ) {
     let name = "lambda_" + str(idx)
-    line((0, 0), end, ..arrow-style, name: name)
+    line((0, 0), scaled(end), ..arrow-style, name: name)
     content(name + ".end", $lambda_#idx$, anchor: anchor)
   }
-
   line((0, 0), (unit, 0), ..arrow-style)
 
+  // dots hinting at further coupling directions
   hobby(
-    (0.75 * unit, -0.3 * unit),
-    (0.82 * unit, -0.2 * unit),
-    (0.83 * unit, -0.1 * unit),
-    stroke: (
-      dash: "loosely-dotted",
-      thickness: 1.5pt,
-    ),
+    ..((0.75, -0.3), (0.82, -0.2), (0.83, -0.1)).map(scaled),
+    stroke: (dash: "loosely-dotted", thickness: 1.5pt),
   )
 
-  for (idx, points, regulator) in (
-    (1, (ma1, r1, (0, -.8), qea), r1),
-    (2, (ma2, r2, (0, -1.7), qea), r2),
-    (3, (ma3, r3, qea), r3),
-  ) {
-    hobby(..points, stroke: (dash: "dashed"))
-    content(regulator, $R_#idx$, anchor: "north-west")
-  }
-
-  let dark-red = rgb("8B0000")
-  circle(qea, radius: 0.1, fill: dark-red, stroke: none)
-  content(
-    (rel: (0, -0.2), to: qea),
-    text(fill: dark-red)[$Gamma_(k=0) = Gamma$],
-    anchor: "north",
-  )
-
+  // flows from microscopic actions S_i to the quantum effective action Γ
+  let qea = scaled((-0.225, -5 / 12))
   let dark-blue = rgb("00008B")
-  for (idx, pos) in ((1, ma1), (2, ma2), (3, ma3)) {
-    circle(pos, radius: 0.1, fill: dark-blue, stroke: none)
+  for (idx, action, regulator, waypoints) in (
+    (1, (0.4, 0.5), (0.17, 0.25), ((0, -.8),)),
+    (2, (0.6, 0.33), (0.4, 0.1), ((0, -1.7),)),
+    (3, (1, 0.5), (0.5, -0.2), ()),
+  ) {
+    let (action, regulator) = (scaled(action), scaled(regulator))
+    hobby(action, regulator, ..waypoints, qea, stroke: (dash: "dashed"))
+    content(regulator, $R_#idx$, anchor: "north-west")
+    circle(action, radius: 0.1, fill: dark-blue, stroke: none)
     content(
-      (rel: (0, 0.2), to: pos),
+      (rel: (0, 0.2), to: action),
       text(fill: dark-blue)[$Gamma_(k=Lambda_#idx) = S_#idx$],
       anchor: "south",
     )
   }
+
+  let dark-red = rgb("8B0000")
+  circle(qea, radius: 0.1, fill: dark-red, stroke: none)
+  content((rel: (0, -0.2), to: qea), text(fill: dark-red)[$Gamma_(k=0) = Gamma$], anchor: "north")
 })

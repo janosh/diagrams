@@ -30,12 +30,8 @@
   let pos(name) = nodes.at(name).map(coord => coord * unit)
 
   // solid directed edges with labeled midpoints
-  let arr = (
-    mark: (end: "stealth", fill: black, scale: .9),
-    stroke: black + 1.7pt,
-  )
   let edge(from, to, label, frac: .5) = {
-    line(from, to, ..arr)
+    line(from, to, mark: (end: "stealth", fill: black, scale: .9), stroke: black + 1.7pt)
     let (x0, y0) = pos(from)
     let (x1, y1) = pos(to)
     let mid = (x0 + (x1 - x0) * frac, y0 + (y1 - y0) * frac)
@@ -46,17 +42,6 @@
     circle(pos(name), radius: node-r, fill: rgb("#cdd3da"), stroke: 1.7pt, name: name)
     content(pos(name), raw(name))
   }
-
-  edge("AT", "TG", [ATG])
-  edge("TG", "GG", [TGG])
-  edge("GG", "GC", [GGC])
-  edge("GC", "CG", [GCG])
-  edge("CG", "GT", [CGT])
-  edge("GT", "TG", [GTG])
-  edge("TG", "GC", [TGC])
-  edge("GC", "CA", [GCA], frac: .3)
-  edge("CA", "AA", [CAA])
-  edge("AA", "AT", [AAT])
 
   // red dashed Eulerian tour: arcs around nodes joined by straight segments
   // connecting each arc's stop angle to the next arc's start angle
@@ -73,6 +58,12 @@
     ("AA", -490, -590),
     ("AT", -490, -590),
   )
+  // The tour visits every 3-mer edge once, from its 2-mer prefix to its 2-mer suffix.
+  for ((from, ..), (to, ..)) in tour.windows(2) {
+    // shift the GCA label off its crossing with the GTG edge
+    edge(from, to, [#(from + to.last())], frac: if from + to == "GCCA" { .3 } else { .5 })
+  }
+
   for (name, start, stop) in tour {
     arc(
       pos(name),

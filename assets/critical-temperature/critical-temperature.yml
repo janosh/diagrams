@@ -7,4 +7,4 @@ tags:
   - critical-temperature
   - statistical physics
 
-description: A plot illustrating a temperature-dependent phase transition as a function of the critical temperature ($T_c$). The orange curve shows the [order parameter](../spontaneous-magnetization) ($m_c$) as a function of temperature, which vanishes continuously at $T_c$. The blue and red curves represent the mathematical components of the order parameter expression near the transition.
+description: Mean-field [order parameter](../spontaneous-magnetization) near a continuous phase transition at the critical temperature $T_c$. The green curve $m_c(T) = \sqrt{3}\,(T/T_c)^{3/2}\,(T_c/T - 1)^{1/2}$ follows from expanding the self-consistency equation $m = \tanh(T_c m / T)$ to third order and vanishes continuously at $T_c$ with exponent $1/2$. The blue and orange curves are its two factors, each carrying the prefactor $\sqrt{3}$.

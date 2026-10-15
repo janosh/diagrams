@@ -1,4 +1,3 @@
-
 // adapted from https://github.com/cetz-package/cetz/blob/a082e02a/gallery/waves.typ
 #import "@preview/cetz:0.5.2": canvas, draw, matrix
 #import draw: content, grid, group, line, rotate, scale, set-transform
@@ -7,17 +6,15 @@
 #set text(size: 12pt)
 
 #canvas({
-  // Set up the transformation matrix
   set-transform(matrix.transform-rotate-dir((1, 1, -1.3), (0, 1, .4)))
   scale(x: 1.5, z: -1)
   let arrow-style = (mark: (end: "stealth", fill: black, scale: 0.5))
-  // Coordinate axes labels and arrows
-  draw.line((0, -2, 0), (0, 2.5, 0), ..arrow-style)
-  draw.line((-0.5, 0, 0), (8.5, 0, 0), ..arrow-style)
-  draw.line((0, 0, -1.5), (0, 0, 2), ..arrow-style)
-  content((0, 0, 2.3), [$arrow(E)$])
-  content((0, 3, 0), [$arrow(B)$])
-  content((8.7, 0, 0), [$arrow(v)$])
+  line((0, -2, 0), (0, 2.5, 0), ..arrow-style, name: "b-axis")
+  line((-0.5, 0, 0), (8.5, 0, 0), ..arrow-style, name: "v-axis")
+  line((0, 0, -1.5), (0, 0, 2), ..arrow-style, name: "e-axis")
+  content((rel: (0, 0, 0.3), to: "e-axis.end"), [$arrow(E)$])
+  content((rel: (0, 0.5, 0), to: "b-axis.end"), [$arrow(B)$])
+  content((rel: (0.2, 0, 0), to: "v-axis.end"), [$arrow(v)$])
 
   grid(
     (0, -2),
@@ -25,25 +22,19 @@
     stroke: gray + .5pt,
   )
 
-  let wave(amplitude: 1, fill: none, phases: 2, scale: 8, samples: 100) = {
+  // filled sine wave of two periods along x with 8 vertical stems per period
+  let wave(amplitude, fill, phases: 2, length: 8, samples: 100, subdivs: 8) = {
     line(
-      ..(
-        for x in range(0, samples + 1) {
-          let x = x / samples
-          let p = (2 * phases * calc.pi) * x
-          ((x * scale, calc.sin(p) * amplitude),)
-        }
-      ),
+      ..range(samples + 1).map(idx => {
+        let x = idx / samples
+        (x * length, calc.sin(2 * phases * calc.pi * x) * amplitude)
+      }),
       fill: fill,
     )
-
-    let subdivs = 8
-    for phase in range(0, phases) {
-      let x = phase / phases
+    for phase in range(phases) {
       for div in range(1, subdivs + 1) {
-        let p = 2 * calc.pi * (div / subdivs)
-        let y = calc.sin(p) * amplitude
-        let x = x * scale + div / subdivs * scale / phases
+        let x = phase / phases * length + div / subdivs * length / phases
+        let y = calc.sin(2 * calc.pi * (div / subdivs)) * amplitude
         line((x, 0), (x, y), stroke: rgb(0, 0, 0, 150) + .5pt)
       }
     }
@@ -51,7 +42,7 @@
 
   group({
     rotate(x: 90deg)
-    wave(amplitude: 1.6, fill: rgb(0, 0, 255, 50))
+    wave(1.6, rgb(0, 0, 255, 50))
   })
-  wave(amplitude: 1, fill: rgb(255, 0, 0, 50))
+  wave(1, rgb(255, 0, 0, 50))
 })

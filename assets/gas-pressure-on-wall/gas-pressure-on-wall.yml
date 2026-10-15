@@ -5,4 +5,4 @@ tags:
   - undergrad
   - exercise
 description: |
-  Exercise illustration: Compute the pressure of an ideal gas in three dimensions upon a wall at $x = 0$ that attracts molecules at large distance and repels them at smaller distance. Let the force be given by the potential $U(x) = -A \, e^{-\alpha x} + B \, e^{-2 \alpha x}$, with $A,B > 0$.
+  Exercise illustration: Compute the pressure of an ideal gas in three dimensions upon a wall at $x = 0$ that attracts molecules at large distance and repels them at smaller distance. Let the force be given by the potential $U(x) = -A \, e^{-\alpha x} + B \, e^{-2 \alpha x}$, with $A,B > 0$. The curves compare a wall potential whose range $1/\alpha$ is comparable to the length scale $\ell$ (blue) with a short-ranged one, $1/\alpha \ll \ell$ (orange).

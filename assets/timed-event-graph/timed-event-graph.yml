@@ -12,4 +12,4 @@ tags:
   - graphs
   - automation
 description: |
-  A representation of a Timed Event Graph, a specific type of [Petri net](https://www.informatik.uni-hamburg.de/TGI/PetriNets/faq/). Uses custom functions to draw places (circles, potentially with tokens) and transitions (bars), connected by directed arcs to model processes or workflows with timing considerations.
+  A Timed Event Graph, the class of [Petri nets](https://www.informatik.uni-hamburg.de/TGI/PetriNets/faq/) in which every place has exactly one input and one output transition. Bars are transitions (events) and circles are places annotated with their holding times $\tau$ and $\rho$. Two stages each fork into parallel places between their input and output transitions, and the single token in the feedback place $\tau_{60}$ initially enables the input transition and recirculates from the output back to the input, closing the cycle.

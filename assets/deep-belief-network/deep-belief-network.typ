@@ -7,25 +7,28 @@
 
 // Hinton et al. (2006): https://www.cs.toronto.edu/~hinton/absps/fastnc.pdf
 #align(center)[#canvas(length: 1pt, {
-  rect((-26, 28), (166, -108), radius: 8pt, fill: rgb("#cdd3da"), stroke: none)
+  let (gap, radius, top, mid, bottom) = (70, 13, 0, -80, -180)
+  rect((-26, top + 28), (166, mid - 28), radius: 8pt, fill: rgb("#cdd3da"), stroke: none)
   // Nine undirected edges in the top RBM, nine downward generative edges below it.
   for upper in range(3) {
     for lower in range(3) {
-      line((upper * 70, -13), (lower * 70, -67), stroke: rgb("#60768c") + 0.8pt)
-      line((upper * 70, -93), (lower * 70, -167), stroke: rgb("#0b5fa5") + 0.8pt, mark: (
-        end: "stealth",
-        scale: 0.55,
-      ))
+      line((upper * gap, top - radius), (lower * gap, mid + radius), stroke: rgb("#60768c") + 0.8pt)
+      line(
+        (upper * gap, mid - radius),
+        (lower * gap, bottom + radius),
+        stroke: rgb("#0b5fa5") + 0.8pt,
+        mark: (end: "stealth", scale: 0.55),
+      )
     }
   }
   for (height, label, fill) in (
-    (0, $h_2$, rgb("#b9c7d9")),
-    (-80, $h_1$, rgb("#b9c7d9")),
-    (-180, $x$, rgb("#c6d8d2")),
+    (top, $h_2$, rgb("#b9c7d9")),
+    (mid, $h_1$, rgb("#b9c7d9")),
+    (bottom, $x$, rgb("#c6d8d2")),
   ) {
     content((-44, height), label)
     for idx in range(3) {
-      circle((idx * 70, height), radius: 13, fill: fill, stroke: rgb("#19324f") + 0.9pt)
+      circle((idx * gap, height), radius: radius, fill: fill, stroke: rgb("#19324f") + 0.9pt)
     }
   }
   for (height, title, body) in (

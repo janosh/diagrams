@@ -6,4 +6,4 @@ tags:
 - propagators
 - Green's function
 - effective action
-description: Read a [functional renormalization-group](../wetterich-equation) diagram one symbol at a time. Lines connect fields; vertices encode their interactions.
+description: Read a [functional renormalization-group](../wetterich-equation) diagram one symbol at a time. Lines connect fields; vertices encode their interactions. The four building blocks are the full propagator $G_k$, the regulator insertion $\partial_t R_k$ (circled cross), and the dressed three- and four-point vertices $\Gamma_k^{(3)}$ and $\Gamma_k^{(4)}$ (hatched discs), with all vertex momenta drawn flowing inward.

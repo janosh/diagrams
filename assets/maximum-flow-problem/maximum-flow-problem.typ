@@ -7,18 +7,12 @@
 #let pure-blue = rgb(0, 0, 255)
 
 #canvas({
-  let nodes = (
-    s: (0, 0),
-    "2": (1.85, 1.55),
-    "3": (1.85, 0),
-    "4": (3.7, 1.55),
-    "5": (3.7, 0),
-    t: (5.55, 0),
-  )
+  // (column, row) grid slots, spaced 1.85 apart horizontally and 1.55 vertically
+  let nodes = (s: (0, 0), "2": (1, 1), "3": (1, 0), "4": (2, 1), "5": (2, 0), t: (3, 0))
   let fills = (s: rgb(255, 0, 0).lighten(50%), t: pure-blue.lighten(50%))
-  for (name, pos) in nodes {
+  for (name, (col, row)) in nodes {
     circle(
-      pos,
+      (col * 1.85, row * 1.55),
       radius: .26,
       fill: fills.at(name, default: rgb("#cdd3da")),
       stroke: .9pt,
@@ -30,7 +24,7 @@
   for (from, to, label, color) in (
     ("s", "2", "10/10", pure-blue),
     ("s", "3", "9/10", pure-blue.lighten(10%)),
-    ("2", "3", "0/2", gray),
+    ("2", "3", "0/2", rgb("#595959")),
     ("2", "4", "4/4", pure-blue),
     ("2", "5", "6/8", pure-blue.lighten(25%)),
     ("3", "5", "9/9", pure-blue),
@@ -38,17 +32,16 @@
     ("5", "4", "6/6", pure-blue),
     ("5", "t", "9/10", pure-blue.lighten(10%)),
   ) {
-    let name = from + "-" + to
     line(
       from,
       to,
       mark: (end: "stealth", fill: color, scale: .6),
       stroke: color + 1.1pt,
-      name: name,
+      name: "edge",
     )
     content(
-      name + ".mid",
-      text(fill: color, size: 12pt, raw(label)),
+      "edge.mid",
+      text(fill: color, raw(label)),
       fill: rgb("#cdd3da"),
       frame: "rect",
       stroke: none,

@@ -40,18 +40,10 @@
   line("labeling.east", "label.west", ..arrow-style, name: "label-arrow")
   content((rel: (0, .18), to: "label-arrow.mid"), $h(x)$, anchor: "south")
 
-  decorations.wave(
-    line("learning.south", (rel: (0, .13), to: "labeling.north")),
-    amplitude: .04,
-    segments: 12,
-    stroke: 1pt,
-  )
-  line(
-    (rel: (0, .13), to: "labeling.north"),
-    "labeling.north",
-    ..arrow-style,
-    name: "learned-map-end",
-  )
+  // wavy learned map, finished by a short straight arrowhead segment
+  let wave-end = (rel: (0, .13), to: "labeling.north")
+  decorations.wave(line("learning.south", wave-end), amplitude: .04, segments: 12, stroke: 1pt)
+  line(wave-end, "labeling.north", ..arrow-style, name: "learned-map-end")
   content(
     (rel: (.25, .9), to: "learned-map-end"),
     $L(arrow(s))$,

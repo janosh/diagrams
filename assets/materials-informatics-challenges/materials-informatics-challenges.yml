@@ -4,5 +4,4 @@ tags:
   - solid state physics
   - info-graphics
 description: |
-  Consolidated into [Materials Informatics](https://diagrams.janosh.dev/materials-informatics), which now includes concrete challenges and remedies at each pipeline stage.
-hide: true
+  The three stages of a materials-informatics pipeline and what goes wrong at each. Data challenges cover the four Vs of big data (volume, velocity, variety, veracity) plus visualization, standardization and long-term storage. Descriptor challenges are about encoding a structure so the representation respects its symmetry and is invariant under translation, rotation and atom permutation, while staying compact and cheap to compute. Model challenges decide whether a result is usable at all: extrapolation beyond the training data, transfer learning, reproducibility, benchmarking, sharing models and results, computational cost, and building in known physics. [Materials Informatics](../materials-informatics) walks through one concrete pipeline of this kind. Inspired by <https://tex.stackexchange.com/a/387466>.

@@ -2,10 +2,17 @@ import { render } from 'svelte/server'
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { expect, it, vi } from 'vitest'
+import { expect, it, onTestFinished, vi } from 'vitest'
+import { goto } from '$app/navigation'
 import { url_with_params } from 'svelte-widgets/url-params'
 import { gallery_count_for } from '../src/lib/gallery.js'
-import { filters } from '../src/lib/state.svelte.js'
+import {
+  cancel_search_write,
+  filters,
+  is_refinement,
+  search_settle_ms,
+  write_filter_url,
+} from '../src/lib/state.svelte.js'
 import euler_angles from '../../assets/euler-angles/euler-angles.yml'
 import euler_angles_source from '../../assets/euler-angles/euler-angles.typ?raw'
 import euler_angles_tex from '../../assets/euler-angles/euler-angles.tex?raw'
@@ -307,3 +314,59 @@ it.each([
   (required_count, total_count, expected_count) =>
     expect(gallery_count_for(required_count, total_count)).toBe(expected_count),
 )
+
+it.each([
+  [`a first search adds an entry`, ``, [`t`, `torus`], [false]],
+  [`refining a search updates its entry`, `torus`, [`torus p`, `torus plane`], [true]],
+  [`an unrelated search adds an entry`, `magnet`, [`g`, `graph`], [false]],
+  [`clearing the search adds an entry`, `torus`, [`toru`, ``], [false]],
+  [`a settled search writes nothing`, `torus`, [`toru`, `torus`], []],
+] as const)(`search history: %s`, (_, committed, edits, expected_replace) => {
+  vi.useFakeTimers()
+  onTestFinished(() => {
+    vi.useRealTimers()
+  })
+  vi.mocked(goto).mockClear()
+  const page = { url: new URL(`https://example.test/?search=${committed}`) }
+  filters.read_url(page.url.searchParams)
+  for (const search of edits) {
+    filters.search = search
+    write_filter_url(page)
+    vi.advanceTimersByTime(search_settle_ms - 1) // keystrokes faster than the settle time
+  }
+  expect(goto).not.toHaveBeenCalled()
+  vi.advanceTimersByTime(1)
+  const calls = vi.mocked(goto).mock.calls
+  expect(calls.map(([, options]) => options?.replace)).toEqual(expected_replace)
+})
+
+it(`writes tag changes at once and drops a pending search write on navigation`, () => {
+  vi.useFakeTimers()
+  onTestFinished(() => {
+    vi.useRealTimers()
+  })
+  vi.mocked(goto).mockClear()
+  const page = { url: new URL(`https://example.test/?search=torus`) }
+  filters.read_url(page.url.searchParams)
+  filters.tags = [`physics`]
+  write_filter_url(page)
+  expect(vi.mocked(goto).mock.calls).toEqual([
+    [`/?search=torus&tag=physics`, { replace: true, reset: false }],
+  ])
+  filters.search = `magnet`
+  write_filter_url(page)
+  cancel_search_write()
+  vi.runAllTimers()
+  expect(goto).toHaveBeenCalledTimes(1)
+  filters.read_url(new URLSearchParams())
+})
+
+it.each([
+  [``, ``, true],
+  [``, `a`, false],
+  [`torus`, `TORUS  plane`, true],
+  [`torus plane`, `plane`, true],
+  [`torus`, `tours`, false],
+])(`is_refinement(%j, %j) is %s`, (before, after, expected) => {
+  expect(is_refinement(before, after)).toBe(expected)
+})

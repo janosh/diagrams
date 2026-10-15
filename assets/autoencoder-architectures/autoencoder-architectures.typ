@@ -58,45 +58,31 @@
   length: (plain: 1.38cm, sparse: 1.05cm, vae: 1.21cm, denoise: 1.08cm, conv: 1.7cm).at(kind),
   {
     let arrow = (stroke: rgb("#61758a") + 1pt, mark: (end: "stealth", scale: .65))
-    for (name, pos, label, fill) in (
-      ("input", (0, 0), if kind == "denoise" { $tilde(x)$ } else { $x$ }, rgb("#d6e9f8")),
-      ("encoder", (2, 0), [encoder], rgb("#d6e9f8")),
-      (
-        "latent",
-        (4.2, 0),
-        if kind in ("vae", "denoise") { $mu, sigma$ } else { $z$ },
-        rgb("#d3ede5"),
-      ),
-      ("decoder", (6.4, 0), [decoder], rgb("#fbe4d4")),
-      ("output", (8.5, 0), $hat(x)$, rgb("#fbe4d4")),
+    let input-label = if kind == "denoise" { $tilde(x)$ } else { $x$ }
+    let latent-label = if kind in ("vae", "denoise") { $mu, sigma$ } else { $z$ }
+    let box-style = (frame: "rect", stroke: none, padding: (x: 8pt, y: 9pt))
+    for (name, x, label, fill) in (
+      ("input", 0, input-label, rgb("#d6e9f8")),
+      ("encoder", 2, [encoder], rgb("#d6e9f8")),
+      ("latent", 4.2, latent-label, rgb("#d3ede5")),
+      ("decoder", 6.4, [decoder], rgb("#fbe4d4")),
+      ("output", 8.5, $hat(x)$, rgb("#fbe4d4")),
     ) {
-      draw.content(pos, label, name: name, frame: "rect", fill: fill, stroke: none, padding: (
-        x: 8pt,
-        y: 9pt,
-      ))
+      draw.content((x, 0), label, name: name, fill: fill, ..box-style)
     }
-    for (left, right) in (
-      ("input", "encoder"),
-      ("encoder", "latent"),
-      ("latent", "decoder"),
-      ("decoder", "output"),
-    ) {
+    for (left, right) in ("input", "encoder", "latent", "decoder", "output").windows(2) {
       draw.line(left + ".east", right + ".west", ..arrow)
     }
     if kind == "sparse" {
       for idx in range(8) {
-        draw.circle(
-          (3.2 + idx * .28, -1),
-          radius: .09,
-          fill: if idx in (1, 5) { rgb("#008580") } else { rgb("#cdd3da") },
-          stroke: rgb("#008580") + .5pt,
-        )
+        let fill = if idx in (1, 5) { rgb("#008580") } else { rgb("#cdd3da") }
+        draw.circle((3.2 + idx * .28, -1), radius: .09, fill: fill, stroke: rgb("#008580") + .5pt)
       }
-      draw.content((4.2, -1.65), [few active components])
+      draw.content((rel: (0, -1.65), to: "latent"), [few active components])
     } else if kind in ("vae", "denoise") {
-      draw.content((5.3, .6), [sample $z$])
-      draw.content((4.2, -1.1), $z = mu + sigma dot epsilon$)
-      draw.content((4.2, -1.7), $epsilon ~ cal(N)(0, I)$)
+      draw.content((rel: (0, .6), to: ("latent", 50%, "decoder")), [sample $z$])
+      draw.content((rel: (0, -1.1), to: "latent"), $z = mu + sigma dot epsilon$)
+      draw.content((rel: (0, -1.7), to: "latent"), $epsilon ~ cal(N)(0, I)$)
     } else if kind == "conv" {
       for (start, side) in ((1.2, "encode"), (5.7, "decode")) {
         for idx in range(3) {
@@ -109,14 +95,14 @@
           )
         }
       }
-      draw.content((4.2, -1.8), [spatial feature maps])
+      draw.content((rel: (0, -1.8), to: "latent"), [spatial feature maps])
     } else {
-      draw.content((4.2, -1.1), [compact bottleneck])
+      draw.content((rel: (0, -1.1), to: "latent"), [compact bottleneck])
     }
     if kind == "denoise" {
-      draw.content((0, .95), [corrupt $x$])
-      draw.line((0, .65), "input.north", ..arrow)
-      draw.content((8.5, .95), [target: clean $x$])
+      draw.content((rel: (0, .95), to: "input"), [corrupt $x$])
+      draw.line((rel: (0, .65), to: "input"), "input.north", ..arrow)
+      draw.content((rel: (0, .95), to: "output"), [target: clean $x$])
     }
   },
 )
@@ -124,11 +110,11 @@
 // === 6  These choices can be combined ===
 #let figure-5 = [
   #align(center)[
-    #text(size: 16pt, fill: rgb("#008580"))[representation]\
+    #text(size: 16pt, fill: rgb("#006560"))[representation]\
     #v(9pt)
     bottleneck · sparse · stochastic\
     #v(18pt)
-    #text(size: 16pt, fill: rgb("#c2570a"))[architecture and training]\
+    #text(size: 16pt, fill: rgb("#8f4007"))[architecture and training]\
     #v(9pt)
     convolutional · denoising
   ]
@@ -147,7 +133,6 @@ Every autoencoder learns to reconstruct an input through an intermediate represe
     architecture("sparse"),
     [Penalize latent activity so only a few components activate for one input. The latent layer may be wider than the input; sparsity is the constraint.],
   ),
-
   (
     [3  Variational autoencoder],
     architecture("vae"),
@@ -158,7 +143,6 @@ Every autoencoder learns to reconstruct an input through an intermediate represe
     architecture("denoise"),
     [Corrupt the input, then reconstruct the clean target. The stochastic latent step remains; robustness and distribution learning are separate ingredients.],
   ),
-
   (
     [5  Convolutional autoencoder],
     architecture("conv"),

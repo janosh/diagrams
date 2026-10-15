@@ -18,17 +18,10 @@
   let ac-inner = (0.334, 0.193)
   let bc-inner = (-0.334, 0.193)
 
-  let fills = (
-    a: blue.transparentize(40%), // Mechanical (blue)
-    b: red.transparentize(40%), // Thermal (red)
-    c: green.transparentize(40%), // Chemical (green)
-    ab: purple.transparentize(40%), // Overlap
-    bc: yellow.transparentize(40%), // Overlap
-    ac: teal.transparentize(40%), // Overlap
-    abc: gray.transparentize(70%), // Center
-  )
+  // Single-term regions: mechanical (a), thermal (b), chemical (c), then their overlaps
+  let fills = (a: blue, b: red, c: green, ab: purple, bc: yellow, ac: teal)
 
-  rect((-1.95, 1.95), (1.95, -1.95), fill: none, stroke: auto)
+  rect((-1.95, 1.95), (1.95, -1.95))
 
   for (region, angle) in (("ab", 0deg), ("ac", 120deg), ("bc", 240deg)) {
     scope({
@@ -39,7 +32,7 @@
           arc-through((), (rel: (+1, 0), to: mechanical-center), ac-inner)
           arc-through((), (rel: (0, +1), to: chemical-center), bc-inner)
         },
-        fill: fills.at(region),
+        fill: fills.at(region).transparentize(40%),
         stroke: none,
         close: true,
       )
@@ -48,16 +41,11 @@
 
   merge-path(
     {
-      arc-through(
-        ab-inner,
-        (rel: (0.866, -0.5), to: mechanical-center),
-        ac-inner,
-      )
+      arc-through(ab-inner, (rel: (0.866, -0.5), to: mechanical-center), ac-inner)
       arc-through((), (rel: (0, 1), to: chemical-center), bc-inner)
       arc-through((), (rel: (-0.866, -0.5), to: thermal-center), ab-inner)
     },
-    fill: fills.abc,
-    stroke: auto,
+    fill: gray.transparentize(70%),
     close: true,
   )
 
@@ -70,36 +58,23 @@
           arc-through((), (rel: (-0.5, 0.866), to: chemical-center), bc-inner)
           arc-through((), (rel: (-1, 0), to: thermal-center), ab-outer)
         },
-        fill: fills.at(region),
-        stroke: auto,
+        fill: fills.at(region).transparentize(40%),
         close: true,
       )
     })
   }
 
-  for spec in (
-    (
-      pos: (-0.992, 0.573),
-      body: [#text(size: 16pt)[Mechanical]\ $F_[mu] = -P V$],
-      args: (anchor: "center"),
-    ),
-    (pos: (-0.95, 0.28), body: text(size: 14pt)[(Grand potential)], args: (anchor: "center")),
-    (
-      pos: (0.992, 0.573),
-      body: [#text(size: 16pt)[Thermal]\ $H_[mu] = T S$],
-      args: (anchor: "center"),
-    ),
-    (pos: (0, -1.146), body: [#text(size: 16pt)[Chemical]\ $G = mu N$], args: (anchor: "center")),
-    (pos: (0, 0.523), body: align(center, $U_[mu] =\ T S - P V$), args: (anchor: "center")),
-    (pos: (0, 0), body: text(12pt, align(center, $U = T S -\ P V + mu N$)), args: (:)),
-    (pos: (-0.496, -0.336), body: align(center, $F =\ -P V + mu N$), args: (anchor: "center")),
-    (pos: (0.496, -0.336), body: align(center, $H =\ T S + mu N$), args: (anchor: "center")),
-    (pos: (0, 1.6), body: $G_[mu]$, args: (:)),
-    (pos: (0, 1.4), body: text(size: 14pt)[(Gibbs-Duhem)], args: (:)),
-  ) { content(spec.pos, spec.body, ..spec.args) }
-  circle((0, 0), radius: 1.75, fill: rgb(70%, 70%, 90%, 20%), stroke: rgb(
-    0%,
-    0%,
-    0%,
-  ))
+  for (pos, body) in (
+    ((-0.992, 0.573), [#text(size: 16pt)[Mechanical]\ $F_[mu] = -P V$]),
+    ((-0.95, 0.28), text(size: 14pt)[(Grand potential)]),
+    ((0.992, 0.573), [#text(size: 16pt)[Thermal]\ $H_[mu] = T S$]),
+    ((0, -1.146), [#text(size: 16pt)[Chemical]\ $G = mu N$]),
+    ((0, 0.523), align(center, $U_[mu] =\ T S - P V$)),
+    ((0, 0), align(center, $U = T S -\ P V + mu N$)),
+    ((-0.496, -0.336), align(center, $F =\ -P V + mu N$)),
+    ((0.496, -0.336), align(center, $H =\ T S + mu N$)),
+    ((0, 1.6), $G_[mu]$),
+    ((0, 1.4), text(size: 14pt)[(Gibbs-Duhem)]),
+  ) { content(pos, body) }
+  circle((0, 0), radius: 1.75, fill: rgb(70%, 70%, 90%, 20%), stroke: black)
 })

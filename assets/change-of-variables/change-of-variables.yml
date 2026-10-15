@@ -6,7 +6,7 @@ tags:
   - calculus
   - coordinate systems
 description: |
-  The Jacobian determinant as local area and volume scaling, comparing linear scaling, Cartesian-to-polar projections and polar area dA = r dr dφ, and spherical volume dV = r² sin θ dr dθ dφ. The linear example is inspired by Ari Seff in <https://youtu.be/i7LjDvsLWCg?t=250>; the spherical volume element is based on Juan Falgueras-Cano's diagram.
+  The Jacobian determinant as local area and volume scaling, comparing a linear scaling (dA = 4 du dv), the polar area element dA = r dr dφ and the spherical volume element dV = r² sin θ dr dθ dφ, each built from the side lengths of a small coordinate cell. The linear example is inspired by Ari Seff in <https://youtu.be/i7LjDvsLWCg?t=250>; the spherical volume element is based on Juan Falgueras-Cano's diagram.
 
   See also [Euler Angles](../euler-angles) and [Spherical Volume Element](../spherical-volume-element).
 attribution:

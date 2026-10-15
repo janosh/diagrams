@@ -60,7 +60,7 @@
 
 #let axis-arrow = (mark: (end: "stealth", fill: black, scale: 0.5))
 
-#let dark-blue = blue.darken(20%)
+#let dark-blue = blue.darken(30%)
 
 #let contour-stroke = (paint: dark-blue, thickness: 0.8pt)
 
@@ -143,199 +143,172 @@
 }
 
 // === 1  Enclose the thermal poles ===
-#let figure-0 = [
+#let enclose-poles = canvas(length: 1.39cm, {
+  let range-xy = 3
+  let axis = (..axis-arrow, stroke: 0.5pt)
+  let contour = (stroke: dark-blue, mark: (end: "stealth", scale: 0.5))
 
-  #let range-xy = 3
-  #let axis = (..axis-arrow, stroke: 0.5pt)
-  #let contour = (stroke: dark-blue, mark: (end: "stealth", scale: 0.5))
+  line((-range-xy - 1, 0), (range-xy + 1, 0), ..axis, name: "x-axis")
+  content("x-axis.end", $"Re"(p_0)$, anchor: "south-east", padding: 2pt)
 
-  #canvas(length: 1.39cm, {
-    line((-range-xy - 1, 0), (range-xy + 1, 0), ..axis, name: "x-axis")
-    content("x-axis.end", $"Re"(p_0)$, anchor: "south-east", padding: 2pt)
+  line((0, -range-xy - 0.7), (0, range-xy + 0.7), ..axis, name: "y-axis")
+  content(
+    (rel: (-1, 0), to: "y-axis.95%"),
+    $"Im"(p_0)$,
+    name: "y-label",
+    anchor: "south-east",
+    padding: 2pt,
+  )
+  line("y-axis.98%", "y-label", stroke: leader)
 
-    line((0, -range-xy - 0.7), (0, range-xy + 0.7), ..axis, name: "y-axis")
-    content(
-      (rel: (-1, 0), to: "y-axis.95%"),
-      $"Im"(p_0)$,
-      name: "y-label",
-      anchor: "south-east",
-      padding: 2pt,
-    )
-    line("y-axis.98%", "y-label", stroke: leader)
+  thermal-poles(range-xy)
+  content("origin", [0], anchor: "south-west", padding: (left: 3pt, bottom: 2pt))
 
-    thermal-poles(range-xy)
-    content("origin", [0], anchor: "south-west", padding: (left: 3pt, bottom: 2pt))
+  // Contour C hugs the imaginary axis, closed by semicircles beyond the last frequency
+  line((1, -range-xy - 0.3), (1, range-xy + 0.3), ..contour, name: "right-line")
+  line((-1, range-xy + 0.3), (-1, -range-xy - 0.3), ..contour)
+  arc((0, range-xy + 0.6), radius: 1, start: 0deg, stop: 180deg, anchor: "center", ..contour)
+  arc((0, -range-xy - 0.5), radius: 1, start: 180deg, stop: 360deg, anchor: "center", ..contour)
+  content("right-line.end", text(fill: dark-blue)[$C$], anchor: "south-west", padding: 2pt)
 
-    // Contour C hugs the imaginary axis, closed by semicircles beyond the last frequency
-    line((1, -range-xy - 0.3), (1, range-xy + 0.3), ..contour, name: "right-line")
-    line((-1, range-xy + 0.3), (-1, -range-xy - 0.3), ..contour)
-    arc((0, range-xy + 0.6), radius: 1, start: 0deg, stop: 180deg, anchor: "center", ..contour)
-    arc((0, -range-xy - 0.5), radius: 1, start: 180deg, stop: 360deg, anchor: "center", ..contour)
-    content("right-line.end", text(fill: dark-blue)[$C$], anchor: "south-west", padding: 2pt)
-
-    function-poles((2.75, 1.5))
-  })
-]
+  function-poles((2.75, 1.5))
+})
 
 // === 2  Expand, then subtract ===
-#let figure-1 = [
+#let expand-contour = canvas(length: 1.3cm, {
+  let y-range = 3
+  let main-radius = y-range + 1.5
 
+  line((-main-radius, 0), (main-radius, 0), ..axis-arrow, name: "x-axis")
+  content("x-axis.end", $"Re"(p_0)$, anchor: "south-east", padding: 2pt)
 
-  #let y-range = 3
-  #let main-radius = y-range + 1.5
-  #let axis = (mark: (end: "stealth", scale: 0.5))
+  line((0, -main-radius), (0, main-radius), ..axis-arrow, name: "y-axis")
+  content("y-axis.97%", $"Im"(p_0)$, anchor: "north-east", padding: 2pt)
 
-  #canvas(length: 1.3cm, {
-    line((-main-radius, 0), (main-radius, 0), ..axis, name: "x-axis")
-    content("x-axis.end", $"Re"(p_0)$, anchor: "south-east", padding: 2pt)
+  thermal-poles(y-range)
+  content("origin", [0], anchor: "south-west", padding: (left: 3pt, bottom: 2pt))
 
-    line((0, -main-radius), (0, main-radius), ..axis, name: "y-axis")
-    content("y-axis.97%", $"Im"(p_0)$, anchor: "north-east", padding: 2pt)
+  // Outer contour C, deformable into the four small clockwise pole contours C_1..C_4
+  arc(
+    (0, 0),
+    radius: main-radius,
+    start: 0deg,
+    stop: 360deg,
+    anchor: "origin",
+    stroke: dark-blue,
+    mark: contour-marks(12.5%, 37.5%, 62.5%, 87.5%),
+    name: "main-contour",
+  )
+  content("main-contour.90%", text(fill: dark-blue)[$C$], anchor: "north-west", padding: 2pt)
 
-    thermal-poles(y-range)
-    content("origin", [0], anchor: "south-west", padding: (left: 3pt, bottom: 2pt))
+  function-poles((2.5, 1.5))
 
-    // Outer contour C, deformable into the four small pole contours C_1..C_4
+  for idx in range(1, 5) {
+    let name = "c" + str(idx)
     arc(
-      (0, 0),
-      radius: main-radius,
+      "p" + str(idx),
+      radius: 0.5,
       start: 0deg,
-      stop: 360deg,
+      stop: -360deg,
       anchor: "origin",
       stroke: dark-blue,
-      mark: contour-marks(12.5%, 37.5%, 62.5%, 87.5%),
-      name: "main-contour",
+      mark: contour-marks(25%, 75%),
+      name: name,
     )
-    content(
-      "main-contour.90%",
-      text(fill: dark-blue)[$C$],
-      anchor: "north-west",
-      padding: 2pt,
-    )
-
-    function-poles((2.5, 1.5))
-
-    for idx in range(1, 5) {
-      let name = "c" + str(idx)
-      arc(
-        "p" + str(idx),
-        radius: 0.5,
-        start: 0deg,
-        stop: 360deg,
-        anchor: "origin",
-        stroke: dark-blue,
-        mark: contour-marks(25%, 75%),
-        name: name,
-      )
-      content(
-        (rel: (0, 0.8), to: name),
-        text(fill: dark-blue)[$C_#idx$],
-        anchor: "north",
-      )
-    }
-  })
-]
+    content((rel: (0, 0.8), to: name), text(fill: dark-blue)[$C_#idx$], anchor: "north")
+  }
+})
 
 // === 3  Separate the half-planes ===
-#let figure-2 = [
+#let half-planes = canvas(length: 1.18cm, {
+  let y-range = 3
+  let main-radius = y-range + 1.5
+  let y-offset = 0.25
 
-  #let y-range = 3
-  #let main-radius = y-range + 1.5
-  #let y-offset = 0.25
-  #let axis = (mark: (end: "stealth", scale: 0.5))
+  line(
+    (-main-radius - y-offset, 0),
+    (main-radius + y-offset, 0),
+    ..axis-arrow,
+    name: "x-axis",
+  )
+  content("x-axis.end", $"Re"(p_0)$, anchor: "south-east", padding: 2pt)
 
-  #canvas(length: 1.18cm, {
-    line(
-      (-main-radius - y-offset, 0),
-      (main-radius + y-offset, 0),
-      ..axis,
-      name: "x-axis",
-    )
-    content("x-axis.end", $"Re"(p_0)$, anchor: "south-east", padding: 2pt)
+  line((0, -main-radius), (0, main-radius), ..axis-arrow, name: "y-axis")
+  content("y-axis.97%", $"Im"(p_0)$, anchor: "north-east", padding: (right: 8pt))
 
-    line((0, -main-radius), (0, main-radius), ..axis, name: "y-axis")
-    content("y-axis.97%", $"Im"(p_0)$, anchor: "north-east", padding: (right: 8pt))
-
-    thermal-poles(y-range, label-padding: (left: 10pt))
-    content("origin", [0], anchor: "south-west", padding: (left: 10pt, bottom: 3pt))
-    half-contours(main-radius, y-offset)
-    function-poles((2.5, 1.5))
-  })
-]
+  thermal-poles(y-range, label-padding: (left: 10pt))
+  content("origin", [0], anchor: "south-west", padding: (left: 10pt, bottom: 3pt))
+  half-contours(main-radius, y-offset)
+  function-poles((2.5, 1.5))
+})
 
 // === 4  Identify additional singularities ===
-#let figure-3 = [
+#let extra-singularities = canvas(length: 1.4cm, {
+  let (x-range, y-range) = (3.5, 3)
+  let main-radius = y-range + 0.75
+  let y-offset = 0.25
 
-  #let (x-range, y-range) = (3.5, 3)
-  #let main-radius = y-range + 0.75
-  #let y-offset = 0.25
+  // Right zigzag stops where the x-axis meets the right arc.
+  cut-axis(-x-range - 0.4, y-offset + main-radius, amplitude: 0.15, segment-length: 0.25)
+  content("x-axis.end", $"Re"(p_0)$, anchor: "south-east", padding: 2pt)
 
-  #canvas(length: 1.4cm, {
-    // Right zigzag stops where the x-axis meets the right arc.
-    cut-axis(-x-range - 0.4, y-offset + main-radius, amplitude: 0.15, segment-length: 0.25)
-    content("x-axis.end", $"Re"(p_0)$, anchor: "south-east", padding: 2pt)
+  line((0, -y-range - 0.7), (0, y-range + 0.7), ..axis-arrow, name: "y-axis")
+  content("y-axis.97%", $"Im"(p_0)$, anchor: "north-east", padding: (right: 8pt))
 
-    line((0, -y-range - 0.7), (0, y-range + 0.7), ..axis-arrow, name: "y-axis")
-    content("y-axis.97%", $"Im"(p_0)$, anchor: "north-east", padding: (right: 8pt))
+  thermal-poles(y-range, label-padding: (left: 10pt))
+  content("origin", [0], anchor: "north-east", padding: 2pt)
+  half-contours(main-radius, y-offset)
 
-    thermal-poles(y-range, label-padding: (left: 10pt))
-    content("origin", [0], anchor: "north-east", padding: 2pt)
-    half-contours(main-radius, y-offset)
-
-    for (name, pos, label, anchor) in (
-      ("pole-e", (x-range / 2, y-range / 4), $E$, "west"),
-      ("pole-minus-e", (-x-range / 2, -y-range / 4), $-E$, "east"),
-    ) {
-      circle(pos, radius: 0.05, fill: black, name: name)
-      content(name, label, anchor: anchor, padding: 2pt)
-    }
-  })
-]
+  for (name, pos, label, anchor) in (
+    ("pole-e", (x-range / 2, y-range / 4), $E$, "west"),
+    ("pole-minus-e", (-x-range / 2, -y-range / 4), $-E$, "east"),
+  ) {
+    circle(pos, radius: 0.05, fill: black, name: name)
+    content(name, label, anchor: anchor, padding: 2pt)
+  }
+})
 
 // === 5  Follow both sides of a cut ===
-#let figure-4 = [
+#let branch-cut = canvas(length: 2.06cm, {
+  let (x-range, y-range) = (3, 1)
+  let radius = y-range / 4
 
-  #let (x-range, y-range) = (3, 1)
-  #let radius = y-range / 4
+  cut-axis(-1.05 * x-range, 1.05 * x-range)
+  content("x-axis.end", $"Re"(p_0)$, anchor: "west", padding: 2pt)
 
-  #canvas(length: 2.06cm, {
-    cut-axis(-1.05 * x-range, 1.05 * x-range)
-    content("x-axis.end", $"Re"(p_0)$, anchor: "west", padding: 2pt)
+  line((0, -y-range), (0, y-range), ..axis-arrow, name: "y-axis")
+  content("y-axis.end", $"Im"(p_0)$, anchor: "north-west", padding: 4pt)
 
-    line((0, -y-range), (0, y-range), ..axis-arrow, name: "y-axis")
-    content("y-axis.end", $"Im"(p_0)$, anchor: "north-west", padding: 4pt)
-
-    // C_b and its point reflection: each runs in from x = ±x-range, hooks around the
-    // origin on a semicircle and back out. Reflection swaps the arc's start and end.
-    let leg = (start, end, ..args) => line(
-      start,
-      end,
+  // C_b and its point reflection: each runs in from x = ±x-range, hooks around the
+  // origin on a semicircle and back out. Reflection swaps the arc's start and end.
+  let leg = (start, end, ..args) => line(
+    start,
+    end,
+    stroke: contour-stroke,
+    mark: contour-marks(25%, 75%),
+    ..args,
+  )
+  for sign in (1, -1) {
+    let name = "arc" + str(sign)
+    arc(
+      (sign * radius, 0),
+      radius: radius,
+      start: 90deg + sign * 180deg,
+      stop: 90deg,
+      anchor: "arc-center",
       stroke: contour-stroke,
-      mark: contour-marks(25%, 75%),
-      ..args,
+      name: name,
     )
-    for sign in (1, -1) {
-      let name = "arc" + str(sign)
-      arc(
-        (sign * radius, 0),
-        radius: radius,
-        start: 90deg + sign * 180deg,
-        stop: 90deg,
-        anchor: "arc-center",
-        stroke: contour-stroke,
-        name: name,
-      )
-      let (near, far) = if sign == 1 { ("start", "end") } else { ("end", "start") }
-      leg((sign * x-range, -sign * radius), name + "." + near)
-      leg(name + "." + far, (sign * x-range, sign * radius), name: "outflow" + str(sign))
-    }
+    let (near, far) = if sign == 1 { ("start", "end") } else { ("end", "start") }
+    leg((sign * x-range, -sign * radius), name + "." + near)
+    leg(name + "." + far, (sign * x-range, sign * radius), name: "outflow" + str(sign))
+  }
 
-    content("outflow1.end", text(fill: dark-blue)[$C_b$], anchor: "south-east", padding: 2pt)
-  })
-]
+  content("outflow1.end", text(fill: dark-blue)[$C_b$], anchor: "south-east", padding: 2pt)
+})
 
 // === 6  Account for every contribution ===
-#let figure-5 = align(center, stack(
+#let bookkeeping = align(center, stack(
   dir: ttb,
   spacing: 6pt,
   $ sum_(n in ZZ) T h(i omega_n) $,
@@ -351,34 +324,32 @@ A thermal frequency sum can be rewritten as a contour integral. Follow which sin
 #card-grid(
   (
     [1  Enclose the thermal poles],
-    figure-0,
-    [The blue contour encloses the imaginary-axis Matsubara poles of the thermal factor. Dots away from that axis are poles of the other factor, $h(z)$.],
+    enclose-poles,
+    [The blue contour encloses the imaginary-axis Matsubara poles of the thermal factor. Dots away from that axis are poles of the other factor, $h(p_0)$.],
   ),
   (
     [2  Expand, then subtract],
-    figure-1,
+    expand-contour,
     [Expanding the contour also encloses poles of $h$. Clockwise circles subtract them back out. The outer arc vanishes only if the full integrand decays sufficiently fast.],
   ),
-
   (
     [3  Separate the half-planes],
-    figure-2,
+    half-planes,
     [Contours $C_1$ and $C_2$ run on opposite sides of the imaginary axis. Deformation preserves the integral only while no singularity crosses the path.],
   ),
   (
     [4  Identify additional singularities],
-    figure-3,
+    extra-singularities,
     [Here the example has poles at $+E$ and $-E$ and a real-axis cut. This is a different singularity pattern from the four-pole sketch above.],
   ),
-
   (
     [5  Follow both sides of a cut],
-    figure-4,
+    branch-cut,
     [The branch-cut contour samples the difference between the limiting values above and below the cut. A cut contributes through this discontinuity.],
   ),
   (
     [6  Account for every contribution],
-    figure-5,
+    bookkeeping,
     [The pictures are a bookkeeping guide, not a universal signed formula. Specify the thermal factor, its residues, and the analytic structure of the complete integrand.],
   ),
 )

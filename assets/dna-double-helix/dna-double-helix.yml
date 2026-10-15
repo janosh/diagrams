@@ -10,5 +10,4 @@ tags:
   - bioinformatics
   - genetics
 description: |
-  Schematic DNA double helix drawn as a two-strand braid with hydrogen-bonded base pairs shown as dotted rungs between the antiparallel backbones.
-hide: true
+  B-DNA double helix drawn to scale: 2 nm across, with base pairs stacked 0.34 nm apart and 10 per 3.4 nm turn. The two sugar-phosphate backbones run antiparallel (5′→3′ against 3′→5′) and are offset by 3/8 of a turn around the axis rather than sitting opposite each other, which carves the alternating narrow minor and wide major grooves into the helix. Each rung is one base pair split between its two bases, colored by the Watson-Crick pairing (adenine-thymine, guanine-cytosine), with a gap at the hydrogen bonds. Backbones and base pairs on the far side of the axis are drawn paler and behind the near side to convey depth. Redrawn from a TikZ original.

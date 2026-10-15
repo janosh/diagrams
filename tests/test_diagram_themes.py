@@ -13,6 +13,7 @@ from convert_assets import finalize_assets
 from update_readme_table import (
     collect_diagrams,
     generate_table,
+    source_counts,
     table_cell,
 )
 
@@ -183,19 +184,14 @@ def test_readme_preview_files_exist(n_diagrams: int) -> None:
     visible = {diagram.name for diagram in diagrams}
     assert {
         "materials-informatics",
+        "materials-informatics-challenges",
         "ergodic",
         "change-of-variables",
         "spherical-volume-element",
+        "dna-double-helix",
+        "physics-mindmap",
     } <= visible
-    assert visible.isdisjoint(
-        {
-            "materials-informatics-challenges",
-            "momentum-shell",
-            "dna-double-helix",
-            "risk-opportunity-matrix",
-            "cartesian-vs-polar-coordinates",
-        }
-    )
+    assert "iron-lattice-ferrox-logo" not in visible
 
 
 @pytest.mark.parametrize("preserve_colors", [False, True])
@@ -307,3 +303,35 @@ def test_sources_render_shaded_backgrounds(
             alpha >= 128 and min(red, green, blue) > 235
             for red, green, blue, alpha in pixels
         ), f"{slug} still contains white or near-white artwork"
+
+
+def test_source_counts_skip_hidden_diagrams(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Count per-language badges from the same visible diagrams as the README heading."""
+    monkeypatch.setattr("update_readme_table.ROOT", str(tmp_path))
+    for name, extensions, hide in (
+        ("shown", (".typ", ".tex"), False),
+        ("tex-only", (".tex",), False),
+        ("hidden", (".typ", ".tex"), True),
+    ):
+        asset_dir = tmp_path / "assets" / name
+        asset_dir.mkdir(parents=True)
+        for extension in extensions:
+            (asset_dir / f"{name}{extension}").touch()
+        metadata = {"title": name, "description": "A diagram.", "hide": hide}
+        (asset_dir / f"{name}.yml").write_text(yaml.safe_dump(metadata))
+    assert source_counts(collect_diagrams()) == {"Typst": 1, "LaTeX": 2}
+
+
+def test_readme_counts_match_visible_diagrams() -> None:
+    """Keep the committed README heading and badges in sync with the visible diagrams."""
+    diagrams = collect_diagrams()
+    with open(f"{ROOT}/readme.md") as file:
+        readme = file.read()
+    assert f"\n  {len(diagrams)} Scientific Diagrams\n" in readme
+    for lang, count in source_counts(diagrams).items():
+        assert (
+            f"[![{count} with {lang}](https://img.shields.io/badge/{count}%20with-{lang}"
+            in readme
+        )

@@ -23,9 +23,9 @@
 
 #let ink = rgb("#19304E")
 #let muted = rgb("#43536A")
-#let blue = rgb("#2764C3")
-#let teal = rgb("#087F7C")
-#let orange = rgb("#BC502D")
+#let blue = rgb("#2158B0")
+#let teal = rgb("#066E6B")
+#let orange = rgb("#A6462A")
 #let purple = rgb("#7948AD")
 #let grid_color = rgb("#98A7B8")
 #let cell_indices = range(-3, 4)
@@ -88,13 +88,10 @@
 #let gaas_bond = make_bond(1 - 0.617, 0.3)
 
 #let label(left, top, width, body, size: 17pt, color: muted, weight: "regular", centered: false) = {
+  let aligned = if centered { align(center, body) } else { body }
   content(
     (left, -top),
-    block(width: width * 1pt)[
-      #text(size: size, fill: color, weight: weight, if centered { align(center, body) } else {
-        body
-      })
-    ],
+    block(width: width * 1pt, text(size: size, fill: color, weight: weight, aligned)),
     anchor: "north-west",
     padding: 0pt,
   )
@@ -116,12 +113,8 @@
   line(start, end, stroke: (paint: color, thickness: thickness, dash: "dashed"))
 }
 #let arrow(start_x, start_y, end_x, end_y, color: ink) = {
-  line((start_x, -start_y), (end_x, -end_y), stroke: 1.5pt + color, mark: (
-    start: none,
-    end: "stealth",
-    scale: 0.7,
-    fill: color,
-  ))
+  let head = (end: "stealth", scale: 0.7, fill: color)
+  line((start_x, -start_y), (end_x, -end_y), stroke: 1.5pt + color, mark: head)
 }
 #let center_mark(center_x, center_y, radius: 6) = {
   line(
@@ -173,10 +166,7 @@
 #let density_cloud(left, baseline, width, amplitude, density) = {
   let samples = range(121).map(sample_idx => {
     let position = -0.65 + 2.3 * sample_idx / 120
-    (
-      left + (position + 0.65) * width / 2.3,
-      amplitude * density(position),
-    )
+    (left + (position + 0.65) * width / 2.3, amplitude * density(position))
   })
   let upper = samples.map(((center_x, height)) => (center_x, -baseline + height))
   let lower = samples.rev().map(((center_x, height)) => (center_x, -baseline - height))
@@ -184,14 +174,18 @@
 }
 
 #canvas(length: 1pt, {
-  rect((0, 0), (1000, -1700), fill: none, stroke: none)
+  // Panels keep their authored coordinates; shift them up under the one-line header.
+  let header-shift = 50
+  rect((0, 0), (1000, -1700 + header-shift), fill: none, stroke: none)
   rect((24, -10), (976, -16), fill: teal, stroke: none)
-  heading(28, 34, 790, size: 33pt, color: ink)[Wannierization & Wannier centers]
-  label(30, 86, 770, size: 22pt)[From extended waves to local orbitals and their centers.]
-  circle((814, -47), radius: 4, fill: ink, stroke: none)
-  label(830, 36, 146)[nucleus]
-  center_mark(814, 88)
-  label(830, 77, 146, color: orange)[Wannier center]
+  label(30, 30, 600, size: 22pt)[From extended waves to local orbitals and their centers.]
+  // markers centered on the labels' lowercase letters, not their baseline
+  circle((654, -42), radius: 4, fill: ink, stroke: none)
+  label(668, 34, 90)[nucleus]
+  center_mark(782, 42)
+  label(797, 34, 179, color: orange)[Wannier center]
+
+  draw.translate((0, header-shift))
 
   // === 1. Many Bloch states form each Wannier orbital ===
   panel(24, 122, 952, 452, rgb("#CCD8E5"))
@@ -205,10 +199,11 @@
   }
   // One bracket encloses the entire basis; it cannot imply a row-by-row conversion.
   line((402, -210), (413, -210), (413, -390), (402, -390), stroke: 1.6pt + purple)
-  arrow(414, 300, 440, 300, color: purple)
-  circle((465, -300), radius: 22, fill: purple.lighten(80%), stroke: 1.3pt + purple)
-  symbol(465, 300, $sum$, size: 24pt, color: purple)
-  arrow(489, 300, 574, 300, color: purple)
+  let (sum_x, sum_y) = (465, 300)
+  arrow(414, sum_y, sum_x - 25, sum_y, color: purple)
+  circle((sum_x, -sum_y), radius: 22, fill: purple.lighten(80%), stroke: 1.3pt + purple)
+  symbol(sum_x, sum_y, $sum$, size: 24pt, color: purple)
+  arrow(sum_x + 24, sum_y, 574, sum_y, color: purple)
   label(426, 336, 146, color: purple, centered: true)[all seven\ contribute]
   label(55, 404, 347, color: blue, centered: true)[Real parts shown; $k_j = (2pi j)/(7a)$.]
 
@@ -217,14 +212,7 @@
   symbol(819, 254, $w_0$, size: 24pt, color: teal)
   label(604, 318, 340, color: teal, centered: true)[Translate the result to other cells:]
   for (plot_left, selected_cell, orbital_label) in ((601, -1, $w_(-a)$), (792, 1, $w_a$)) {
-    wave_plot(
-      plot_left,
-      392,
-      153,
-      12,
-      position => local_orbital(position - selected_cell),
-      teal,
-    )
+    wave_plot(plot_left, 392, 153, 12, position => local_orbital(position - selected_cell), teal)
     center_mark(plot_left + (selected_cell + 3.5) * 153 / 7, 392, radius: 5)
     symbol(plot_left + 76, 355, orbital_label, size: 20pt, color: teal)
   }
@@ -273,31 +261,29 @@
   heading(43, 735, 427, size: 17pt, color: purple)[Same physical state; change the basis.]
   label(55, 771, 172, color: purple, centered: true)[Spread over cells]
   label(285, 771, 188, color: teal, centered: true)[Maximally localized]
-  guide_line((51, -800), (462, -800), thickness: 0.6pt)
-  symbol(42, 800, $1$, size: 15pt, color: muted)
-  symbol(42, 860, $0$, size: 15pt, color: muted)
+  // Bars rise 60 units per unit probability from bar_y.
+  let bar_y = 860
+  guide_line((51, -bar_y + 60), (462, -bar_y + 60), thickness: 0.6pt)
+  symbol(42, bar_y - 60, $1$, size: 15pt, color: muted)
+  symbol(42, bar_y, $0$, size: 15pt, color: muted)
   for (plot_left, gauge, accent) in ((66, spread_gauge, purple), (306, localized_gauge, teal)) {
-    line((plot_left - 8, -860), (plot_left + 152, -860), stroke: 1pt + grid_color)
+    line((plot_left - 8, -bar_y), (plot_left + 152, -bar_y), stroke: 1pt + grid_color)
     for (cell_idx, probability) in cell_indices.zip(gauge.probabilities) {
       let center_x = plot_left + (cell_idx + 3) * 24
-      line(
-        (center_x, -860),
-        (center_x, -860 + 60 * probability),
-        stroke: 7pt + accent,
-      )
+      line((center_x, -bar_y), (center_x, -bar_y + 60 * probability), stroke: 7pt + accent)
     }
     for (offset, tick) in ((0, $-3a$), (72, $0$), (144, $3a$)) {
-      symbol(plot_left + offset, 880, tick, size: 15pt, color: muted)
+      symbol(plot_left + offset, bar_y + 20, tick, size: 15pt, color: muted)
     }
   }
   arrow(248, 832, 283, 832, color: purple)
   // Qualitative cell-range brackets, not numerical RMS widths.
   for (midpoint, half_width) in ((138, 84), (378, 12)) {
     line(
-      (midpoint - half_width, -890),
-      (midpoint - half_width, -896),
-      (midpoint + half_width, -896),
-      (midpoint + half_width, -890),
+      (midpoint - half_width, -bar_y - 30),
+      (midpoint - half_width, -bar_y - 36),
+      (midpoint + half_width, -bar_y - 36),
+      (midpoint + half_width, -bar_y - 30),
       stroke: 1pt + muted,
     )
   }
@@ -333,9 +319,7 @@
   // === 3. A center balances the whole probability density ===
   heading(527, 696, 429, color: orange)[3  MEASURE THE CENTER]
   label(528, 735, 427)[Probability density → mean position]
-  let density_left = 548
-  let density_width = 390
-  let density_baseline = 904
+  let (density_left, density_width, density_baseline) = (548, 390, 904)
   let density_x(position) = density_left + (position + 0.65) * density_width / 2.3
   let density_points = range(301).map(sample_idx => {
     let position = -0.65 + 2.3 * sample_idx / 300
@@ -357,17 +341,13 @@
     density_baseline,
     color: muted,
   )
-  symbol(958, density_baseline, $x$, size: 16pt)
-  guide_line(
-    (density_x(center_example.center), -792),
-    (density_x(center_example.center), -904),
-    color: orange,
-    thickness: 1.4pt,
-  )
-  center_mark(density_x(center_example.center), density_baseline, radius: 7)
+  symbol(density_left + density_width + 20, density_baseline, $x$, size: 16pt)
+  let center_x = density_x(center_example.center)
+  guide_line((center_x, -792), (center_x, -density_baseline), color: orange, thickness: 1.4pt)
+  center_mark(center_x, density_baseline, radius: 7)
   for (position, tick) in ((0, $0$), (1, $a$)) {
     circle((density_x(position), -density_baseline), radius: 4.5, fill: ink, stroke: none)
-    symbol(density_x(position), 925, tick, size: 17pt)
+    symbol(density_x(position), density_baseline + 21, tick, size: 17pt)
   }
   label(539, 780, 134, size: 21pt, color: teal)[$abs(w(x))^2$]
   label(548, 822, 121, color: teal)[#(100 * center_example.left_weight)% area]
@@ -376,11 +356,12 @@
   arrow(865, 797, density_x(1) + 5, 817, color: teal)
   label(708, 777, 118, size: 22pt, color: orange, centered: true)[$overline(x)$]
   // A fulcrum at the first moment: 0.3 × 0.7a = 0.7 × 0.3a.
-  line((density_x(0), -944), (density_x(1), -944), stroke: 1.2pt + muted)
+  let fulcrum_y = -density_baseline - 40
+  line((density_x(0), fulcrum_y), (density_x(1), fulcrum_y), stroke: 1.2pt + muted)
   line(
-    (density_x(center_example.center), -944),
-    (density_x(center_example.center) - 7, -954),
-    (density_x(center_example.center) + 7, -954),
+    (center_x, fulcrum_y),
+    (center_x - 7, fulcrum_y - 10),
+    (center_x + 7, fulcrum_y - 10),
     close: true,
     fill: orange,
     stroke: none,
@@ -407,29 +388,23 @@
   heading(528, 1188, 429, size: 20pt, color: blue)[B  FOLLOW A PHYSICAL RESPONSE]
   label(45, 1226, 422)[Valence orbitals; density shapes schematic.]
   label(529, 1226, 422)[Apply an electric field; keep ions fixed.]
+  let (cloud_left, cloud_width) = (45, 250)
   for (baseline, atom_left, atom_right, bond, explanation) in (
     (1284, [Si], [Si], si_bond, [Equal sharing:\ symmetric bond]),
     (1370, [Ga], [As], gaas_bond, [Toward As:\ polar bond]),
   ) {
-    density_cloud(45, baseline, 250, 30, bond.density)
-    let atom_start = 45 + 0.65 * 250 / 2.3
-    let bond_length = 250 / 2.3
+    density_cloud(cloud_left, baseline, cloud_width, 30, bond.density)
+    let atom_start = cloud_left + 0.65 * cloud_width / 2.3
+    let bond_length = cloud_width / 2.3
     let midpoint = atom_start + 0.5 * bond_length
     guide_line((midpoint, -baseline + 29), (midpoint, -baseline - 29))
     for (center_x, species) in ((atom_start, atom_left), (atom_start + bond_length, atom_right)) {
       circle((center_x, -baseline), radius: 16, fill: rgb("#CCD8E5"), stroke: 1pt + blue)
       symbol(center_x, baseline, species, size: 17pt, color: blue)
     }
-    center_mark(atom_start + bond.center * bond_length, baseline, radius: 7)
-    if bond.center != 0.5 {
-      arrow(
-        midpoint,
-        baseline + 35,
-        atom_start + bond.center * bond_length,
-        baseline + 35,
-        color: orange,
-      )
-    }
+    let center_x = atom_start + bond.center * bond_length
+    center_mark(center_x, baseline, radius: 7)
+    if bond.center != 0.5 { arrow(midpoint, baseline + 35, center_x, baseline + 35, color: orange) }
     label(326, baseline - 22, 149, explanation, color: teal)
   }
   label(
@@ -443,24 +418,19 @@
 
   arrow(923, 1264, 860, 1264, color: blue)
   symbol(842, 1264, $bold(E)$, size: 20pt, color: blue)
-  for (baseline, center_x, state_label) in ((1300, 736, [before]), (1365, 779, [after])) {
+  let (before_x, after_x, track_ends) = (736, 779, (619, 944))
+  for (baseline, center_x, state_label) in ((1300, before_x, [before]), (1365, after_x, [after])) {
     label(530, baseline - 10, 78, state_label)
-    line((619, -baseline), (944, -baseline), stroke: 1pt + grid_color)
-    for boundary_x in (619, 944) {
+    line(..track_ends.map(end_x => (end_x, -baseline)), stroke: 1pt + grid_color)
+    for boundary_x in track_ends {
       guide_line((boundary_x, -baseline + 19), (boundary_x, -baseline - 19))
     }
-    density_cloud(
-      center_x - 54,
-      baseline,
-      108,
-      9,
-      position => gaussian(position, 0.5, 0.23),
-    )
+    density_cloud(center_x - 54, baseline, 108, 9, position => gaussian(position, 0.5, 0.23))
     for ion_x in (655, 914) { circle((ion_x, -baseline), radius: 5, fill: ink, stroke: none) }
     center_mark(center_x, baseline, radius: 7)
   }
-  guide_line((736, -1338), (736, -1390), color: orange)
-  arrow(736, 1333, 779, 1333, color: orange)
+  guide_line((before_x, -1338), (before_x, -1390), color: orange)
+  arrow(before_x, 1333, after_x, 1333, color: orange)
   label(801, 1321, 140, size: 19pt, color: orange)[$Delta overline(x) > 0$]
   arrow(701, 1406, 653, 1406, color: blue)
   label(719, 1395, 222, size: 20pt, color: blue)[$Delta P_("el",x) < 0$]

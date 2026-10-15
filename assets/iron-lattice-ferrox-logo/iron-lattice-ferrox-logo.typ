@@ -5,8 +5,8 @@
 #let show-grid = true // false = render single logo, true = render all in grid
 #let selected = 0 // gradient index for single mode (0–5)
 
-#let s = 1.0
-#let nr = 0.1
+#let cell-size = 1.0
+#let node-radius = 0.1
 
 // === Gradient Definitions ===
 // Each: (name, ((r-base, r-scale), (g-base, g-scale), (b-base, b-scale)))
@@ -19,142 +19,68 @@
   ("Indigo → Cyan", ((25, 5), (20, 210), (100, 155))),
 )
 
-// F letter cell positions (col, row)
+// F letter cell positions (col, row), from the top bar down to the baseline
 #let f-cells = (
-  (0, 5),
-  (1, 5),
-  (2, 5),
-  (3, 5), // top bar
-  (0, 4), // vertical stroke
-  (0, 3),
-  (1, 3),
-  (2, 3), // middle bar
-  (0, 2),
-  (0, 1),
-  (0, 0), // vertical stroke + bottom
+  range(4).map(col => (col, 5)) // top bar
+    + ((0, 4),) // stem
+    + range(3).map(col => (col, 3)) // middle bar
+    + range(3).rev().map(row => (0, row)) // stem down to the baseline
 )
 
 // x letter diamond offsets from center — inner (full) and outer tips (truncated)
-#let x-inner = (
-  (0, 0),
-  (1, 1),
-  (2, 2),
-  (-1, 1),
-  (-2, 2),
-  (1, -1),
-  (2, -2),
-  (-1, -1),
-  (-2, -2),
-)
+#let x-inner = ((0, 0), (1, 1), (2, 2), (-1, 1), (-2, 2), (1, -1), (2, -2), (-1, -1), (-2, -2))
 #let x-tips = ((3, 3), (-3, 3), (3, -3), (-3, -3))
 
 // === Render one Fx logo with a given gradient ===
 #let render-fx(grad, scale: 1cm) = {
   let ratio = scale / 1cm
-  let sw = 1.5pt * ratio
-  let nw = 3pt * ratio
-  let (rc, gc, bc) = grad
+  let (red, green, blue) = grad
 
   let color-at(x, y) = {
-    let t = calc.clamp((x + 0.4 * y) / 11, 0, 1)
-    let ch(base, sc) = calc.clamp(calc.floor(base + t * sc), 0, 255)
-    rgb(ch(..rc), ch(..gc), ch(..bc))
+    let fraction = calc.clamp((x + 0.4 * y) / 11, 0, 1)
+    let channel(base, slope) = calc.clamp(calc.floor(base + fraction * slope), 0, 255)
+    rgb(channel(..red), channel(..green), channel(..blue))
   }
 
-  let lattice-edge(from, to) = {
-    let mx = (from.at(0) + to.at(0)) / 2
-    let my = (from.at(1) + to.at(1)) / 2
-    line(from, to, stroke: (paint: color-at(mx, my), thickness: sw))
-  }
-
-  let lattice-node(pos) = {
-    circle(pos, radius: nr, fill: white, stroke: (
+  // Edges go on a lower layer so every node is drawn on top of them.
+  let lattice-edges(..pairs) = on-layer(-1, for (from, to) in pairs.pos() {
+    let mid = ((from.at(0) + to.at(0)) / 2, (from.at(1) + to.at(1)) / 2)
+    line(from, to, stroke: (paint: color-at(..mid), thickness: 1.5pt * ratio))
+  })
+  let lattice-nodes(..positions) = for pos in positions.pos() {
+    circle(pos, radius: node-radius, fill: white, stroke: (
       paint: color-at(..pos),
-      thickness: nw,
+      thickness: 3pt * ratio,
     ))
   }
 
-  let square-cell-edges(col, row) = {
-    let (x0, y0) = (col * s, row * s)
-    let (x1, y1) = (x0 + s, y0 + s)
-    lattice-edge((x0, y0), (x1, y0))
-    lattice-edge((x1, y0), (x1, y1))
-    lattice-edge((x1, y1), (x0, y1))
-    lattice-edge((x0, y1), (x0, y0))
-    lattice-edge((x0, y0), (x1, y1))
-    lattice-edge((x1, y0), (x0, y1))
-  }
-
-  let square-cell-nodes(col, row) = {
-    let (x0, y0) = (col * s, row * s)
-    lattice-node((x0, y0))
-    lattice-node((x0 + s, y0))
-    lattice-node((x0 + s, y0 + s))
-    lattice-node((x0, y0 + s))
-    lattice-node((x0 + s / 2, y0 + s / 2))
-  }
-
-  let diamond-cell-edges(cx, cy, d) = {
-    let top = (cx, cy + d)
-    let right = (cx + d, cy)
-    let bottom = (cx, cy - d)
-    let left = (cx - d, cy)
-    lattice-edge(top, right)
-    lattice-edge(right, bottom)
-    lattice-edge(bottom, left)
-    lattice-edge(left, top)
-    lattice-edge(top, bottom)
-    lattice-edge(left, right)
-  }
-
-  let diamond-cell-nodes(cx, cy, d) = {
-    for v in (
-      (cx, cy + d),
-      (cx + d, cy),
-      (cx, cy - d),
-      (cx - d, cy),
-      (cx, cy),
-    ) {
-      lattice-node(v)
-    }
+  // Four corners in order around the cell plus a center node, joined by sides and both diagonals.
+  let cell((c0, c1, c2, c3), center) = {
+    lattice-edges((c0, c1), (c1, c2), (c2, c3), (c3, c0), (c0, c2), (c1, c3))
+    lattice-nodes(c0, c1, c2, c3, center)
   }
 
   canvas(length: scale, {
-    let x-cx = 6.8 * s
-    let x-cy = 2.25 * s // 3*d so flat bottom aligns with F baseline
-    let d = 0.75 * s
+    let d = 0.75 * cell-size
+    let x-cx = 6.8 * cell-size
+    let x-cy = 3 * d // flat bottom of the truncated x aligns with the F baseline
 
-    on-layer(-1, {
-      for (col, row) in f-cells { square-cell-edges(col, row) }
-      for (ox, oy) in x-inner {
-        diamond-cell-edges(x-cx + ox * d, x-cy + oy * d, d)
-      }
-      // Truncated tip diamonds: remove outward vertex (top for upper, bottom for lower)
-      for (ox, oy) in x-tips {
-        let cx = x-cx + ox * d
-        let cy = x-cy + oy * d
-        let sy = if oy > 0 { 1 } else { -1 }
-        let kept = (cx, cy - sy * d)
-        let right = (cx + d, cy)
-        let left = (cx - d, cy)
-        lattice-edge(right, kept)
-        lattice-edge(kept, left)
-        lattice-edge(left, right)
-        lattice-edge((cx, cy), kept)
-      }
-    })
-
-    for (col, row) in f-cells { square-cell-nodes(col, row) }
-    for (ox, oy) in x-inner {
-      diamond-cell-nodes(x-cx + ox * d, x-cy + oy * d, d)
+    for (col, row) in f-cells {
+      let (x0, y0) = (col * cell-size, row * cell-size)
+      let (x1, y1) = (x0 + cell-size, y0 + cell-size)
+      cell(((x0, y0), (x1, y0), (x1, y1), (x0, y1)), (x0 + cell-size / 2, y0 + cell-size / 2))
     }
+    for (ox, oy) in x-inner {
+      let (cx, cy) = (x-cx + ox * d, x-cy + oy * d)
+      cell(((cx, cy + d), (cx + d, cy), (cx, cy - d), (cx - d, cy)), (cx, cy))
+    }
+    // Truncated tip diamonds: remove outward vertex (top for upper, bottom for lower)
     for (ox, oy) in x-tips {
-      let cx = x-cx + ox * d
-      let cy = x-cy + oy * d
-      let sy = if oy > 0 { 1 } else { -1 }
-      for v in ((cx + d, cy), (cx - d, cy), (cx, cy), (cx, cy - sy * d)) {
-        lattice-node(v)
-      }
+      let (cx, cy) = (x-cx + ox * d, x-cy + oy * d)
+      let kept = (cx, cy - if oy > 0 { d } else { -d })
+      let (right, left) = ((cx + d, cy), (cx - d, cy))
+      lattice-edges((right, kept), (kept, left), (left, right), ((cx, cy), kept))
+      lattice-nodes(right, left, (cx, cy), kept)
     }
   })
 }
@@ -172,7 +98,7 @@
       dir: ttb,
       spacing: 6pt,
       render-fx(grad, scale: 0.5cm),
-      align(center, text(size: 12pt, weight: "bold", name)),
+      align(center, text(weight: "bold", name)),
     ))
   )
 } else {

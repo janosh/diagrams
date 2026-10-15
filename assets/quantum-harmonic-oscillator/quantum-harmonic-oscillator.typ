@@ -65,43 +65,61 @@
 }
 
 // Both views use the same horizontal variable and plot geometry, but different energy units.
-#let energy-plot(thermal-units: false) = canvas(length: 1cm, {
-  draw.set-style(legend: (fill: rgb("#cdd3da")))
-  plot.plot(
-    size: (9, 6),
-    x-min: 0,
-    x-max: 8,
-    y-min: 0,
-    y-max: 4.2,
-    x-label: none,
-    y-label: if thermal-units { $chevron.l E chevron.r \/ (k_"B" T)$ } else {
-      $chevron.l E chevron.r \/ (ℏ omega)$
-    },
-    axis-style: "left",
-    x-tick-step: 2,
-    y-tick-step: 1,
-    legend-style: (item: (spacing: .12), padding: .15, stroke: .4pt),
-    legend: if thermal-units { "inner-north-west" } else { "inner-north-east" },
-    {
-      plot.add(
-        style: (stroke: (paint: rgb("#c2570a"), thickness: 1pt, dash: "dashed")),
-        domain: (0.1, 8),
-        x => if thermal-units { x / 2 } else { 0.5 },
-        label: if thermal-units { [zero-point contribution] } else { [zero-point floor] },
-      )
-      plot.add(
-        style: (stroke: rgb("#008580") + 1.8pt),
-        domain: (0.03, 8),
-        samples: 240,
-        if thermal-units { energy-in-thermal-units } else { energy-in-quanta },
-        label: [quantum mean energy],
-      )
-    },
-  )
-  draw.content((4.5, -0.8), if thermal-units { $x = ℏ omega \/ (k_"B" T)$ } else {
-    $x = beta ℏ omega$
+#let energy-plot(thermal-units: false) = {
+  let (y-label, x-label, legend, zero-point, zero-point-label, mean-energy) = if thermal-units {
+    (
+      $chevron.l E chevron.r \/ (k_"B" T)$,
+      $x = ℏ omega \/ (k_"B" T)$,
+      "inner-north-west",
+      x => x / 2,
+      [zero-point contribution],
+      energy-in-thermal-units,
+    )
+  } else {
+    (
+      $chevron.l E chevron.r \/ (ℏ omega)$,
+      $x = beta ℏ omega$,
+      "inner-north-east",
+      x => 0.5,
+      [zero-point floor],
+      energy-in-quanta,
+    )
+  }
+  let plot-size = (9, 6)
+  canvas(length: 1cm, {
+    draw.set-style(legend: (fill: rgb("#cdd3da")))
+    plot.plot(
+      size: plot-size,
+      x-min: 0,
+      x-max: 8,
+      y-min: 0,
+      y-max: 4.2,
+      x-label: none,
+      y-label: y-label,
+      axis-style: "left",
+      x-tick-step: 2,
+      y-tick-step: 1,
+      legend-style: (item: (spacing: .12), padding: .15, stroke: .4pt),
+      legend: legend,
+      {
+        plot.add(
+          style: (stroke: (paint: rgb("#a64a08"), thickness: 1pt, dash: "dashed")),
+          domain: (0.1, 8),
+          zero-point,
+          label: zero-point-label,
+        )
+        plot.add(
+          style: (stroke: rgb("#00706c") + 1.8pt),
+          domain: (0.03, 8),
+          samples: 240,
+          mean-energy,
+          label: [quantum mean energy],
+        )
+      },
+    )
+    draw.content((plot-size.at(0) / 2, -0.8), x-label)
   })
-})
+}
 
 One energy formula connects thermal motion with zero-point motion. Compare the level spacing $ℏ omega$ with the thermal energy $k_"B" T$.
 #v(14pt)

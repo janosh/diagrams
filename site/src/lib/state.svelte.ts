@@ -2,7 +2,11 @@ import { goto } from '$app/navigation'
 import { resolve } from '$app/paths'
 import { type Diagram, sorted_diagrams, tags as available_tags } from '#lib'
 import type { QueryParams, UrlParamEntry } from 'svelte-widgets/url-params'
-import { url_with_params, valid_query_param } from 'svelte-widgets/url-params'
+import {
+  sync_url_params,
+  url_with_params,
+  valid_query_param,
+} from 'svelte-widgets/url-params'
 
 // searchable text from human-readable fields only, not JSON.stringify(file) which also
 // matched image paths/source code and re-serialized the whole object on every keystroke
@@ -17,6 +21,10 @@ const search_haystack = (file: Diagram): string =>
     .join(` `)
     .normalize(`NFKC`)
     .toLowerCase()
+
+// Split on whitespace and drop empties so stray or pasted spaces don't break search.
+const search_terms = (query: string) =>
+  query.normalize(`NFKC`).toLowerCase().split(/\s+/).filter(Boolean)
 
 // site-wide reactive filter store; a class instance keeps `filtered` a live derived across
 // module imports (a bare module-level $derived can't be exported and stay reactive)
@@ -54,15 +62,10 @@ class DiagramFilters {
   }
 
   search_matches = $derived.by(() => {
-    // split on whitespace, drop empties so stray/pasted spaces don't break search
-    const search_terms = this.search
-      .normalize(`NFKC`)
-      .toLowerCase()
-      .split(/\s+/)
-      .filter(Boolean)
+    const terms = search_terms(this.search)
     return sorted_diagrams.filter((diagram) => {
       const haystack = search_haystack(diagram)
-      return search_terms.every((term) => haystack.includes(term))
+      return terms.every((term) => haystack.includes(term))
     })
   })
 
@@ -109,3 +112,37 @@ export function preserve_filter_links(element: HTMLElement): void {
 
 // Query controls replace the current entry without moving keyboard focus or the viewport.
 export const replace_url = (url: string) => goto(url, { replace: true, reset: false })
+
+// One query containing the other (typing on, deleting, adding or removing words) is the same
+// search; switching between an empty and a non-empty query is not, so Back from a first search
+// returns to the unfiltered gallery.
+export const is_refinement = (before: string, after: string) => {
+  const [old_query, new_query] = [before, after].map((query) =>
+    search_terms(query).join(` `),
+  )
+  if (!old_query || !new_query) return old_query === new_query
+  return old_query.includes(new_query) || new_query.includes(old_query)
+}
+
+// Filter changes update the current history entry at once, except search edits: those wait until
+// the query rests, then add an entry for a different search or update the current one when the
+// new query refines it. Back thus steps through distinct searches, never through keystrokes, and
+// one write per settled query can't race SvelteKit's own navigation.
+export const search_settle_ms = 500
+let search_timer: ReturnType<typeof setTimeout> | undefined
+export const cancel_search_write = () => clearTimeout(search_timer)
+type FilterLocation = Pick<URL, `pathname` | `search` | `hash`> & {
+  searchParams: QueryParams
+}
+export const write_filter_url = (page: { url: FilterLocation }) => {
+  cancel_search_write()
+  const committed_search = () => page.url.searchParams.get(`search`) ?? ``
+  const write = (replace: boolean) => (url: string) =>
+    void goto(url, { replace, reset: false })
+  if (filters.search === committed_search())
+    return sync_url_params(filters.url_entries, page.url, write(true))
+  search_timer = setTimeout(() => {
+    const replace = is_refinement(committed_search(), filters.search)
+    sync_url_params(filters.url_entries, page.url, write(replace))
+  }, search_settle_ms)
+}

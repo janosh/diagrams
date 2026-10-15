@@ -8,6 +8,6 @@ tags:
   - chaos theory
   - trajectories
 description: |
-  Energy contours, enclosed phase-space volume, and finite-width energy shells for a harmonic oscillator in canonical coordinates (q,p), followed by rational and irrational angle trajectories on a two-oscillator fixed-action torus. The guide distinguishes ergodicity on that torus from ergodicity on the full energy surface. Incorporates the former Momentum Shell entry. See [ergodic theory and statistical mechanics](https://pmc.ncbi.nlm.nih.gov/articles/PMC4343160/).
+  Energy contours, enclosed phase-space volume, and finite-width energy shells for a harmonic oscillator in canonical coordinates (q,p), followed by rational and irrational angle trajectories on a two-oscillator fixed-action torus. The guide distinguishes ergodicity on that torus from ergodicity on the full energy surface. See [ergodic theory and statistical mechanics](https://pmc.ncbi.nlm.nih.gov/articles/PMC4343160/).
 
   The interior counts states below E; the annulus counts a finite energy interval; exact-energy dynamics stays on the contour. Opposite edges of each angle plot are identified. An irrational frequency ratio produces a dense trajectory over infinite time, while the drawing shows only a finite segment. Uniform-angle ergodicity applies to the fixed-action torus: uncoupled oscillators conserve their individual actions, so this does not establish microcanonical ergodicity on the full energy surface.

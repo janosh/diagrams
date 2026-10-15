@@ -16,9 +16,9 @@
 
 #let ink = rgb("#19304E")
 #let muted = rgb("#344257")
-#let blue = rgb("#2764C3")
-#let teal = rgb("#087F7C")
-#let orange = rgb("#BC502D")
+#let blue = rgb("#1F55A8")
+#let teal = rgb("#066664")
+#let orange = rgb("#9A3F21")
 #let purple = rgb("#7948AD")
 #let label(left, top, width, body, size: 18pt, color: ink, weight: "regular", centered: false) = {
   content(
@@ -32,6 +32,7 @@
     padding: 0pt,
   )
 }
+#let centered_label = label.with(centered: true)
 #let symbol(center_x, center_y, body, size: 22pt, color: ink) = {
   content(
     (center_x, -center_y),
@@ -78,7 +79,6 @@
     120,
     940,
     [Follow one orbital per atom: coupling creates the energy spread; electron filling decides what the solid can do.],
-    size: 18pt,
   )
 
   draw.translate((0, -30))
@@ -92,7 +92,7 @@
     color: blue,
     weight: "bold",
   )
-  label(638, 164, 320, [Each line is one allowed wave pattern.], size: 18pt, color: blue)
+  label(638, 164, 320, [Each line is one allowed wave pattern.], color: blue)
   arrow(58, 380, 58, 278, color: muted)
   symbol(58, 264, $E$, size: 21pt, color: muted)
   for (center_x, atom_count, heading) in (
@@ -101,54 +101,41 @@
     (590, 6, [6 atoms]),
     (822, 40, [many atoms]),
   ) {
-    label(center_x - 95, 201, 190, heading, size: 21pt, weight: "bold", centered: true)
+    centered_label(center_x - 95, 201, 190, heading, size: 21pt, weight: "bold")
     let shown = calc.min(atom_count, 7)
     for idx in range(shown) { atom(center_x + (idx - (shown - 1) / 2) * 21, 245, radius: 12) }
     if atom_count > shown { symbol(center_x + 88, 245, $dots.c$, size: 18pt, color: blue) }
     for level_idx in range(1, atom_count + 1) {
       let energy = -2 * calc.cos(level_idx * calc.pi / (atom_count + 1))
       let level_y = 327 - 29 * energy
-      line(
-        (center_x - 44, -level_y),
-        (center_x + 44, -level_y),
-        stroke: (if atom_count > 6 { 0.9pt } else { 2pt }) + blue,
-      )
+      let thickness = if atom_count > shown { 0.9pt } else { 2pt }
+      line((center_x - 44, -level_y), (center_x + 44, -level_y), stroke: thickness + blue)
     }
-    label(
-      center_x - 98,
-      390,
-      196,
-      if atom_count == 1 { [1 spatial state] } else if atom_count == 40 {
-        [$N$ states → a dense band]
-      } else { [#atom_count spatial states] },
-      size: 18pt,
-      color: blue,
-      centered: true,
-    )
+    let count_label = if atom_count == 1 { [1 spatial state] } else if atom_count > shown {
+      [$N$ states → a dense band]
+    } else { [#atom_count spatial states] }
+    centered_label(center_x - 115, 390, 230, count_label, color: blue)
   }
   for center_x in (252, 477, 704) { arrow(center_x - 16, 327, center_x + 16, 327, color: muted) }
-  label(310, 273, 111, [antibonding], size: 16pt, color: orange, centered: true)
-  label(316, 365, 100, [bonding], size: 16pt, color: teal, centered: true)
+  centered_label(310, 273, 111, [antibonding], size: 16pt, color: orange)
+  centered_label(316, 365, 100, [bonding], size: 16pt, color: teal)
 
   draw.translate((0, -22))
   panel(24, 435, 952, 104, rgb("#c7d8d1"))
-  label(
+  centered_label(
     42,
     447,
     916,
     [*$N$ atomic orbitals → $N$ spatial states → room for $2N$ electrons.*],
     size: 24pt,
     color: teal,
-    centered: true,
   )
-  label(
+  centered_label(
     42,
     488,
     916,
     [Two opposite spins fit in each spatial state. Pauli exclusion controls occupation; coupling causes the splitting.],
-    size: 18pt,
     color: muted,
-    centered: true,
   )
 
   draw.translate((0, -45))
@@ -158,7 +145,6 @@
     552,
     930,
     [Minimal model: identical atoms, spacing $a$, one orbital each, and coupling $-t$ between neighbors ($t > 0$).],
-    size: 18pt,
   )
 
   draw.translate((0, -25))
@@ -168,57 +154,63 @@
   let plot_width = 410
   let plot_top = 594
   let plot_height = 178
+  let (plot_right, plot_bottom) = (plot_left + plot_width, plot_top + plot_height)
+  let (axis_y, tick_y, footnote_top) = (plot_bottom + 8, plot_bottom + 28, plot_bottom + 58)
   let energy_y(energy) = plot_top + plot_height / 2 - energy * plot_height / 4
-  arrow(plot_left, plot_top + plot_height + 8, plot_left, plot_top - 14)
-  arrow(
-    plot_left,
-    plot_top + plot_height + 8,
-    plot_left + plot_width + 22,
-    plot_top + plot_height + 8,
-  )
+  arrow(plot_left, axis_y, plot_left, plot_top - 14)
+  arrow(plot_left, axis_y, plot_right + 22, axis_y)
   let curve = range(121).map(idx => {
     let phase = -calc.pi + 2 * calc.pi * idx / 120
     (plot_left + plot_width * idx / 120, -energy_y(-2 * calc.cos(phase)))
   })
   line(..curve, stroke: 2.6pt + blue)
-  line((plot_left, -energy_y(0)), (plot_left + plot_width, -energy_y(0)), stroke: (
+  line((plot_left, -energy_y(0)), (plot_right, -energy_y(0)), stroke: (
     paint: muted.lighten(55%),
     thickness: 0.8pt,
     dash: "dashed",
   ))
   for (fraction, tick) in ((0, $-pi \/ a$), (0.5, $0$), (1, $pi \/ a$)) {
-    symbol(plot_left + plot_width * fraction, 800, tick, size: 21pt)
+    symbol(plot_left + plot_width * fraction, tick_y, tick, size: 21pt)
   }
-  symbol(52, energy_y(0), $epsilon_0$, size: 21pt, color: muted)
-  symbol(48, 585, $E$, size: 18pt)
-  symbol(526, 800, $k$, size: 18pt)
-  label(111, 576, 362, [$E(k) = epsilon_0 - 2t cos(k a)$], size: 22pt, color: blue, centered: true)
-  arrow(513, 770, 513, 597, color: teal, both: true)
-  label(533, 659, 95, [$W = 4t$], size: 21pt, color: teal)
+  symbol(plot_left - 28, energy_y(0), $epsilon_0$, size: 21pt, color: muted)
+  symbol(plot_left - 32, plot_top - 9, $E$, size: 18pt)
+  symbol(plot_right + 36, tick_y, $k$, size: 18pt)
+  centered_label(111, 576, 362, [$E(k) = epsilon_0 - 2t cos(k a)$], size: 22pt, color: blue)
+  arrow(plot_right + 23, plot_bottom - 2, plot_right + 23, plot_top + 3, color: teal, both: true)
+  label(plot_right + 43, plot_top + 65, 95, [$W = 4t$], size: 21pt, color: teal)
   label(
-    93,
-    830,
-    442,
+    plot_left + 13,
+    footnote_top,
+    520,
     [$k$: phase change per distance; $epsilon_0$: isolated orbital energy.\ This interval is one Brillouin zone: distinct lattice phases.],
-    size: 18pt,
     color: muted,
   )
 
   // Phase patterns at the band extrema: colors indicate sign, not electric charge.
-  label(651, 583, 300, [HIGH ENERGY  •  $k = pi \/ a$], size: 21pt, color: orange, weight: "bold")
-  for idx in range(7) {
-    atom(667 + idx * 42, 631, phase: if calc.rem(idx, 2) == 0 { 1 } else { -1 }, radius: 23)
+  for (title_top, atoms_y, caption_top, color, title, alternating, caption) in (
+    (
+      583,
+      631,
+      666,
+      orange,
+      [HIGH ENERGY  •  $k = pi \/ a$],
+      true,
+      [Alternating phase: antibonding.],
+    ),
+    (708, 751, 784, teal, [LOW ENERGY  •  $k = 0$], false, [Same phase on neighbors: bonding.]),
+  ) {
+    label(651, title_top, 300, title, size: 21pt, color: color, weight: "bold")
+    for idx in range(7) {
+      let phase = if alternating and calc.odd(idx) { -1 } else { 1 }
+      atom(667 + idx * 42, atoms_y, phase: phase, radius: 23)
+    }
+    label(652, caption_top, 330, caption, color: color)
   }
-  label(652, 666, 300, [Alternating phase: antibonding.], size: 18pt, color: orange)
-  label(651, 708, 300, [LOW ENERGY  •  $k = 0$], size: 21pt, color: teal, weight: "bold")
-  for idx in range(7) { atom(667 + idx * 42, 751, radius: 23) }
-  label(652, 784, 300, [Same phase on neighbors: bonding.], size: 18pt, color: teal)
   label(
     650,
-    830,
+    footnote_top,
     302,
     [Blue / orange = wavefunction sign, not charge. Each pattern extends across the chain.],
-    size: 18pt,
     color: muted,
   )
 
@@ -234,32 +226,31 @@
     weight: "bold",
   )
   // Occupied portions solid; empty portions pale. Both cartoons are schematic bands.
-  rect((48, -926), (186, -971), fill: blue.lighten(87%), stroke: none)
-  rect((48, -949), (186, -971), fill: blue.lighten(30%), stroke: none)
-  line((38, -949), (199, -949), stroke: (paint: ink, thickness: 1pt, dash: "dashed"))
+  let (metal_x0, metal_x1, fermi_y) = (48, 186, 949)
+  rect((metal_x0, -926), (metal_x1, -971), fill: blue.lighten(87%), stroke: none)
+  rect((metal_x0, -fermi_y), (metal_x1, -971), fill: blue.lighten(30%), stroke: none)
+  line((metal_x0 - 10, -fermi_y), (metal_x1 + 13, -fermi_y), stroke: (paint: ink, dash: "dashed"))
   label(
-    208,
+    metal_x1 + 22,
     925,
     236,
     [*Partly filled band*\ Nearby empty states permit a metallic response.],
-    size: 18pt,
   )
-  rect((495, -966), (631, -981), fill: blue.lighten(30%), stroke: none)
-  rect((495, -923), (631, -938), fill: blue.lighten(87%), stroke: none)
-  arrow(647, 963, 647, 941, color: purple, both: true)
+  let (full_x1, gap_top, gap_bottom) = (631, 938, 966)
+  rect((495, -gap_bottom), (full_x1, -gap_bottom - 15), fill: blue.lighten(30%), stroke: none)
+  rect((495, -gap_top + 15), (full_x1, -gap_top), fill: blue.lighten(87%), stroke: none)
+  arrow(full_x1 + 16, gap_bottom - 3, full_x1 + 16, gap_top + 3, color: purple, both: true)
   label(
-    669,
+    full_x1 + 38,
     923,
     286,
     [*Full band + gap above it*\ A band insulator; a small gap can allow thermally excited carriers.],
-    size: 18pt,
   )
   label(
     42,
     1040,
     908,
     [Dark: occupied; pale: empty. Dashed: Fermi level, the filling boundary at zero temperature. This independent-electron picture can change with overlapping bands, correlations, or symmetry breaking.],
-    size: 18pt,
     color: muted,
   )
 })

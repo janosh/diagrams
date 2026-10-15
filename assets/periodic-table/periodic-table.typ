@@ -4,20 +4,20 @@
 #set page(width: auto, height: auto, margin: 15pt, fill: none)
 #set text(size: 12pt)
 
-// Element colors
+// Alkali and lanthanide fills stay light enough that their mid-tone dark-mode inversion
+// keeps black text and the gray man-made symbols readable.
 #let colors = (
-  alkali-metal: rgb("#8989ff"),
+  alkali-metal: rgb("#9b9bff"),
   alkaline-earth: rgb("#89a9ff"),
   metal: rgb("#89c9ff"),
   metalloid: rgb("#ffa959"),
   nonmetal: rgb("#59d9d9"),
   halogen: rgb("#ffff59"),
   noble-gas: rgb("#89ff89"),
-  lanthanide: rgb("#ff8989"),
-  synthetic: rgb("#525252"),
+  lanthanide: rgb("#ffa0a0"),
+  synthetic: rgb("#444444"),
 )
 
-// Element data
 #let elements = (
   // Period 1
   (
@@ -135,7 +135,6 @@
   ),
 )
 
-// Lanthanide data
 #let lanthanides = (
   (57, 138.91, "La", "Lanthanum"),
   (58, 140.12, "Ce", "Cerium"),
@@ -154,7 +153,6 @@
   (71, 174.97, "Lu", "Lutetium"),
 )
 
-// Actinide data
 #let actinides = (
   (89, 227, "Ac", "Actinium"),
   (90, 232.04, "Th", "Thorium"),
@@ -173,119 +171,74 @@
   (103, 262, "Lr", "Lawrencium"),
 )
 
-#let element(number, mass, symbol, name, fill: rgb("#cdd3da"), text-color: black) = {
+// Elements past uranium (Z > 92) are man-made and get a gray symbol.
+#let element(number, mass, symbol, name, fill: rgb("#cdd3da")) = {
+  let symbol-color = if type(number) == int and number > 92 { colors.synthetic } else { black }
   box(width: 3cm, height: 3cm, fill: fill, stroke: 0.7pt, inset: 4pt)[
     #set align(center)
     #text(size: 18pt, weight: "bold")[#number #h(1fr) #mass]\
     #v(1fr)
-    #text(size: 40pt, weight: "bold", fill: text-color)[#symbol]\
+    #text(size: 40pt, weight: "bold", fill: symbol-color)[#symbol]\
     #v(1fr)
     #text(size: 13pt)[#name]
   ]
 }
 
 #canvas({
-  let cell-size = 3.25 // Increased cell size
-  let (start-x, start-y) = (0, 0)
-  let lanthanide-gap = 2.5 // Gap before lanthanides/actinides
+  let cell-size = 3.25
+  let lanthanide-gap = 2.5 // extra gap above the f-block rows (periods 8 and 9)
+  let pos(group, period) = (
+    (group - 1) * cell-size,
+    -(period - 1) * cell-size - if period > 7 { lanthanide-gap } else { 0 },
+  )
 
-  // Function to calculate element position
-  let pos(group, period) = {
-    let y-offset = if period > 7 { lanthanide-gap } else { 0 }
-    let x = start-x + (group - 1) * cell-size
-    let y = start-y - (period - 1) * cell-size - y-offset
-    (x, y)
-  }
-
-  // The f-block rows hang below the main table, starting under group 3
-  let special-pos(num, is-actinide: false) = {
-    let (row, first) = if is-actinide { (9, 89) } else { (8, 57) }
-    pos(num - first + 3, row)
-  }
-
-  for period in range(1, elements.len() + 1) {
-    for group in range(1, 19) {
-      let data = elements.at(period - 1).at(group - 1)
-      if data != none {
-        content(pos(group, period), element(
-          ..data.slice(0, 4),
-          fill: data.at(4),
-        ))
-      }
+  for (period, row) in elements.enumerate(start: 1) {
+    for (group, data) in row.enumerate(start: 1) {
+      if data != none { content(pos(group, period), element(..data.slice(0, 4), fill: data.at(4))) }
     }
   }
 
-  // Lanthanides
-  for (idx, data) in lanthanides.enumerate() {
-    content(special-pos(57 + idx), element(..data, fill: colors.lanthanide))
+  // The f-block rows hang below the main table, starting under group 3
+  for (period, series) in ((8, lanthanides), (9, actinides)) {
+    for (idx, data) in series.enumerate() {
+      content(pos(idx + 3, period), element(..data, fill: colors.lanthanide))
+    }
   }
 
-  // Actinides
-  for (idx, data) in actinides.enumerate() {
-    // Ac through U occur naturally; everything past uranium is man-made, shown in gray
-    let text-color = if idx <= 3 { black } else { colors.synthetic }
-    content(
-      special-pos(89 + idx, is-actinide: true),
-      element(..data, fill: colors.lanthanide, text-color: text-color),
-    )
-  }
-
-  // Period labels
   for period in range(1, 8) {
-    content(
-      (start-x - cell-size * 0.6, start-y - (period - 1) * cell-size),
-      text(size: 16pt, weight: "bold")[#period],
-    )
+    content((rel: (-cell-size * 0.6, 0), to: pos(1, period)), text(
+      size: 16pt,
+      weight: "bold",
+    )[#period])
   }
 
-  // Group labels
-  let groups = "IA IIA IIIB IVB VB VIB VIIB VIIIB VIIIB VIIIB IB IIB IIIA IVA VA VIA VIIA VIIIA".split(
-    " ",
-  )
-
-  // Find first element in each column
+  // Group labels sit above the first element in each column
+  let groups = "IA IIA IIIB IVB VB VIB VIIB VIIIB VIIIB VIIIB IB IIB IIIA IVA VA VIA VIIA VIIIA".split()
   for (num, label) in groups.enumerate(start: 1) {
-    let first-period = if num == 1 { 1 } else if num == 2 { 2 } else if (
-      num <= 12
-    ) { 4 } else { 2 }
-    let (x, y) = pos(num, first-period)
-    content((x, y + cell-size * 0.7), box(width: 3cm)[
+    let first-period = if num in (1, 18) { 1 } else if num <= 2 or num >= 13 { 2 } else { 4 }
+    content((rel: (0, cell-size * 0.7), to: pos(num, first-period)), box(width: 3cm)[
       #text(size: 14pt, weight: "bold")[#num #h(1fr) #label]
     ])
   }
 
-  // Legend
-  let legend-start = (start-x - 0.5 * cell-size, start-y - 6.8 * cell-size)
-  let legend-items = (
-    ("AlkaliMetal", colors.alkali-metal),
-    ("AlkalineEarth etal", colors.alkaline-earth),
-    ("TransitionMetal", colors.metal),
+  let (legend-x, legend-y) = (-0.5 * cell-size, -6.8 * cell-size)
+  for (idx, (label, color)) in (
+    ("Alkali Metal", colors.alkali-metal),
+    ("Alkaline Earth Metal", colors.alkaline-earth),
+    ("Transition/Other Metal", colors.metal),
     ("Metalloid", colors.metalloid),
     ("Nonmetal", colors.nonmetal),
     ("Halogen", colors.halogen),
-    ("NobleGas", colors.noble-gas),
-    ("LanthanideActinide", colors.lanthanide),
-  )
-
-  for (idx, (label, color)) in legend-items.enumerate() {
-    let y-offset = idx
-    rect(
-      (legend-start.at(0), legend-start.at(1) - y-offset),
-      (legend-start.at(0) + 0.8, legend-start.at(1) - y-offset - 0.8),
-      fill: color,
-      stroke: 0.7pt,
-    )
-    content(
-      (legend-start.at(0) + 1, legend-start.at(1) - y-offset - 0.4),
-      text(size: 14pt)[#label],
-      anchor: "west",
-    )
+    ("Noble Gas", colors.noble-gas),
+    ("Lanthanide & Actinide", colors.lanthanide),
+  ).enumerate() {
+    rect((legend-x, legend-y - idx), (rel: (0.8, -0.8)), fill: color, stroke: 0.7pt, name: "swatch")
+    content((rel: (0.2, 0), to: "swatch.east"), text(size: 14pt, label), anchor: "west")
   }
 
   // Element key
-  let legend = element("Z", "mass", text("Symbol", size: 22pt), "Name")
-  content((12, -4), legend)
-  content((16.5, -4), text(size: 18pt)[
+  content((12, -4), element("Z", "mass", text("Symbol", size: 22pt), "Name"), name: "key")
+  content((rel: (4.5, 0), to: "key"), text(size: 18pt)[
     black: natural\
     #text(fill: colors.synthetic)[gray: man-made]
   ])

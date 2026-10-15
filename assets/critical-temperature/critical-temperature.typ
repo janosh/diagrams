@@ -6,17 +6,12 @@
 
 #let tc = 1
 
-#let f1(x) = {
-  if x == tc { return 0 }
-  calc.sqrt(3) * calc.pow(tc / x - 1, 1 / 2)
-}
+// The two factors of the order parameter, each carrying the prefactor sqrt(3).
+#let diverging-factor(x) = if x == tc { 0 } else { calc.sqrt(3) * calc.pow(tc / x - 1, 1 / 2) }
+#let growing-factor(x) = calc.sqrt(3) * calc.pow(x / tc, 3 / 2)
 
-#let f2(x) = calc.sqrt(3) * calc.pow(x / tc, 3 / 2)
-
-#let f3(x) = {
-  if x == tc { return 0 }
-  calc.sqrt(3) * calc.pow(x / tc, 3 / 2) * calc.pow(tc / x - 1, 1 / 2)
-}
+// Mean-field order parameter from expanding m = tanh(T_c m / T) to third order in m.
+#let order-parameter(x) = diverging-factor(x) * calc.pow(x / tc, 3 / 2)
 
 #canvas({
   let axis-mark = (end: "stealth", fill: black)
@@ -38,32 +33,17 @@
     legend: "inner-north-east",
     // Compact legend with a thin border.
     legend-style: (fill: rgb("#cdd3da"), item: (spacing: 0.15), padding: 0.15, stroke: 0.5pt),
-    {
-      // First function (blue)
+    for (color, samples, domain, fn, label) in (
+      ("#0B5FA5", 100, (0.01, 1), diverging-factor, $sqrt(3)(T_c \/ T - 1)^(1 \/ 2)$),
+      ("#C2570A", 50, (0, 1.1), growing-factor, $sqrt(3)(T \/ T_c)^(3 \/ 2)$),
+      ("#12793F", 125, (0.01, 1), order-parameter, $m_(c)(T)$),
+    ) {
       plot.add(
-        style: (stroke: rgb("#0B5FA5") + 1.5pt),
-        samples: 100,
-        domain: (0.01, 1),
-        f1,
-        label: $sqrt(3)(T_c \/ T - 1)^(1 \/ 2)$,
-      )
-
-      // Second function (red)
-      plot.add(
-        style: (stroke: rgb("#C2570A") + 1.5pt),
-        samples: 50,
-        domain: (0, 1.1),
-        f2,
-        label: $sqrt(3)(T \/ T_c)^(3 \/ 2)$,
-      )
-
-      // Third function (orange)
-      plot.add(
-        style: (stroke: rgb("#12793F") + 1.5pt),
-        samples: 125,
-        domain: (0.01, 1),
-        f3,
-        label: $m_(c)(T)$,
+        fn,
+        style: (stroke: rgb(color) + 1.5pt),
+        samples: samples,
+        domain: domain,
+        label: label,
       )
     },
   )

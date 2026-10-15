@@ -5,19 +5,7 @@
 #set text(size: 12pt)
 
 #canvas({
-  rect(
-    (-4, -6),
-    (4, 3.25),
-    frame: "rect",
-    stroke: (dash: "dashed"),
-    fill: none,
-    width: 22em,
-    height: 12em,
-    name: "enclosure",
-    radius: 5pt,
-  )
-
-  // Enclosure label
+  rect((-4, -6), (4, 3.25), stroke: (dash: "dashed"), name: "enclosure", radius: 5pt)
   on-layer(1, content(
     "enclosure.north",
     text(weight: "bold", size: 16pt)[Kohn-Sham method],
@@ -35,15 +23,12 @@
     width: 15em,
   )
 
-  let arrow-style = (
-    mark: (end: "stealth", fill: black, scale: .5),
-    stroke: 1pt,
-  )
+  let arrow-style = (mark: (end: "stealth", fill: black, scale: .5), stroke: 1pt)
 
   // Initial density box
   content(
     (rel: (0, 1.25), to: "enclosure.north"),
-    [Supply initial density guess\ $rho_"init" (arrow(r))$ to Kohn Sham equations],
+    [Supply initial density guess\ $rho_"init" (arrow(r))$ to Kohn-Sham equations],
     ..box-style,
     fill: rgb("#c6aa0c").lighten(60%),
     width: 20em,
@@ -52,44 +37,23 @@
     radius: 1em,
   )
 
-  let chain = (
-    (
-      name: "potential",
-      offset: -2,
-      body: [$v_("ext,s") (arrow(r))=v_H (arrow(r)) + v_"xc" (arrow(r)) + v_"ext" (arrow(r))$],
-    ),
-    (
-      name: "hamiltonian",
-      offset: -1.25,
-      body: [$hat(H)_"KS"=-frac(planck^2, 2m)arrow(nabla)^2 + v_("ext,s") (arrow(r))$],
-    ),
-    (
-      name: "schrodinger-eq",
-      offset: -1.25,
-      body: [$hat(H)_"KS" phi_i (arrow(r))= E_i phi_i (arrow(r))$],
-    ),
-    (
-      name: "density",
-      offset: -1.25,
-      body: [$rho (arrow(r))=sum_(i=1)^n f_i |phi_i (arrow(r_i))|^2$],
-    ),
-    (name: "criterion", offset: -1.25, body: [Convergence criterion satisfied?]),
-  )
+  // Each box hangs below its predecessor and receives an arrow from it.
   let parent = "initial"
-  for box in chain {
-    content(
-      (rel: (0, box.offset), to: parent + ".south"),
-      box.body,
-      ..box-style,
-      name: box.name,
-    )
-    parent = box.name
+  for (name, offset, body) in (
+    ("potential", -2, $v_s (arrow(r))=v_H (arrow(r)) + v_"xc" (arrow(r)) + v_"ext" (arrow(r))$),
+    ("hamiltonian", -1.25, $hat(H)_"KS"=-frac(planck^2, 2m)arrow(nabla)^2 + v_s (arrow(r))$),
+    ("schrodinger-eq", -1.25, $hat(H)_"KS" phi_i (arrow(r))= E_i phi_i (arrow(r))$),
+    ("density", -1.25, $rho (arrow(r))=sum_(i=1)^n f_i |phi_i (arrow(r))|^2$),
+    ("criterion", -1.25, [Convergence criterion satisfied?]),
+  ) {
+    content((rel: (0, offset), to: parent + ".south"), body, ..box-style, name: name)
+    parent = name
   }
 
   // Final energy box
   content(
-    (0, -7.5),
-    [Use $rho_"final" (arrow(r))$ to minimize total energy functional\
+    (rel: (0, -1.5), to: "enclosure.south"),
+    [Use $rho_"final" (arrow(r))$ to evaluate total energy functional\
       $E_(V_"ext")[rho] = T_(e,s)[phi_i {rho}] + V_(e e,H) [rho] + E_"xc" [rho] + V_"eI" [rho]$],
     ..box-style,
     fill: rgb("#54aef8").lighten(30%),
@@ -99,12 +63,15 @@
   )
 
   for (start, end) in (
-    ("initial", "potential"),
-    ("potential", "hamiltonian"),
-    ("hamiltonian", "schrodinger-eq"),
-    ("schrodinger-eq", "density"),
-    ("density", "criterion"),
-  ) { line(start, end, ..arrow-style) }
+    "initial",
+    "potential",
+    "hamiltonian",
+    "schrodinger-eq",
+    "density",
+    "criterion",
+  ).windows(2) {
+    line(start, end, ..arrow-style)
+  }
   line("criterion", "energy", ..arrow-style, name: "converged-yes")
 
   // Yes/No labels
@@ -114,10 +81,7 @@
     frame: "rect",
     stroke: none,
     anchor: "west",
-    padding: (
-      3pt,
-      2pt,
-    ),
+    padding: (3pt, 2pt),
   )
 
   // No feedback loop

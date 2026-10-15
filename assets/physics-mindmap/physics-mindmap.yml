@@ -4,5 +4,5 @@ tags:
   - info-graphics
   - mindmap
   - education
-description: A mindmap showing the main branches of physics, including Classical Mechanics, Quantum Mechanics, Relativity, Statistical Mechanics, High-Energy Physics, and Cosmology. Each branch is further divided into subcategories.
-hide: true
+description: |
+  A mindmap of six major branches of physics radiating from a central hub: classical physics (analytical mechanics, chaos theory, fluid dynamics, electrodynamics), high-energy physics (particle physics, quantum field theory, nuclear physics), cosmology (astrophysics, the early universe), statistical mechanics (thermodynamics, kinetic theory, condensed matter), relativity (special and general) and quantum mechanics (atomic and molecular physics, quantum optics, quantum information). Each branch shares one color with its subfields, and the connectors taper from the hub outwards. The split is a teaching overview, not a strict taxonomy: condensed matter, for example, draws as much on quantum mechanics as on statistical mechanics.

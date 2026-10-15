@@ -1,0 +1,12 @@
+title: Stacking Faults
+tags:
+  - solid state physics
+  - crystallography
+  - materials science
+  - crystals
+description: |
+  Close-packed crystals are stacks of identical hexagonal layers, and each layer can sit on only one of three lateral positions: A, or one of the two kinds of hollows B and C that the layer below offers (left). Face-centered cubic (fcc) metals stack them ABCABC, while hexagonal close-packed (hcp) metals stack ABAB. A [stacking fault](https://wikipedia.org/wiki/Stacking_fault) is a planar defect where this sequence breaks.
+
+  The four columns show the layers edge-on, each shifted sideways by its site so that the gray line tracing one atom up the stack climbs a straight slope in perfect fcc and kinks at every fault. Frank's notation writes each step as △ when it advances A→B→C→A and ▽ when it reverses. An intrinsic fault removes one layer (ABCA·CABC, a single ▽); an extrinsic fault inserts one (ABCA·C·BCA, two ▽ in a row); a twin boundary mirrors the stacking (ABCAB·ACBA, ▽ from there on). Shaded layers have the same site above and below, so they are locally hcp. A fault's excess energy per area, the stacking-fault energy γ, comes mostly from these hcp-like layers, so intrinsic and extrinsic faults (two each) cost about γ and a twin boundary (one) about γ/2.
+
+  An intrinsic fault is what a Shockley partial dislocation leaves behind when it glides through the crystal, so the stacking-fault energy sets how far a dissociated dislocation's two partials spread apart. That spacing controls cross slip, work hardening and twinning, which is why low-stacking-fault-energy alloys such as brass and austenitic steel deform so differently from aluminum.

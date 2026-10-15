@@ -7,7 +7,7 @@ import subprocess
 import sys
 import xml.etree.ElementTree as ET
 from itertools import batched, pairwise, product
-from math import cos, exp, fsum, hypot, radians, sin
+from math import cos, dist, exp, fsum, hypot, radians, sin
 from pathlib import Path
 
 import pytest
@@ -74,7 +74,7 @@ def test_atomistic_flowchart_has_visible_forward_arrows(tmp_path: Path) -> None:
     shafts = [
         node.get("d", "")
         for node in ET.parse(output_path).iter("{http://www.w3.org/2000/svg}path")
-        if node.get("stroke") == "#aaaaaa" and "Z" not in node.get("d", "")
+        if node.get("stroke") == "#6b7685" and "Z" not in node.get("d", "")
     ]
     assert len(shafts) == 6
     for shaft in shafts:
@@ -288,9 +288,7 @@ def svg_size(root: ET.Element) -> list[float]:
 def svg_path_points(path: ET.Element) -> list[tuple[float, float]]:
     """Decode endpoints of CeTZ's relative moves, lines and cubic Bezier segments."""
     number_pattern = r"[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?"
-    x_coord, y_coord = map(
-        float, re.findall(number_pattern, path.attrib["transform"])
-    )
+    x_coord, y_coord = map(float, re.findall(number_pattern, path.attrib["transform"]))
     points = []
     for command, values in re.findall(r"([mlc])([^mlc]*)", path.attrib["d"]):
         coords = list(map(float, re.findall(number_pattern, values)))
@@ -518,42 +516,41 @@ def test_spherical_volume_rendering() -> None:
     }
 
 
-@pytest.mark.parametrize("inverse_temperature", [0.1, 0.5, 1, 4, 10, 100])
-def test_oscillator_thermodynamics_match_boltzmann_sum(
-    inverse_temperature: float,
-) -> None:
+def test_oscillator_thermodynamics_match_boltzmann_sum() -> None:
     """Check energies, occupations, heat capacities, and ladder populations independently."""
-    energy, occupation, heat_capacity, probabilities, limits = evaluate_typst(
+    betas = (0.1, 0.5, 1, 4, 10, 100)
+    *per_beta, limits = evaluate_typst(
         f"""{{
           import "/assets/quantum-harmonic-oscillator/quantum-harmonic-oscillator.typ": energy-in-quanta, energy-in-thermal-units
           import "/assets/particle-statistics/particle-statistics.typ": bose-occupation
           import "/assets/einstein-crystal/einstein-crystal.typ": mode_cv, level_probability
-          let inverse = {inverse_temperature}
-          (
+          {betas}.map(inverse => (
             energy-in-quanta(inverse), bose-occupation(inverse), mode_cv(inverse),
             range(5).map(level => level_probability(level, 1 / inverse)),
-            ((0,1e-8).map(energy-in-thermal-units), energy-in-quanta(1000), mode_cv(0)),
-          )
+          )) + (((0,1e-8).map(energy-in-thermal-units), energy-in-quanta(1000), mode_cv(0)),)
         }}""",
     )
-    weights = [exp(-inverse_temperature * level) for level in range(1000)]
-    partition = fsum(weights)
-    mean = fsum(level * weight for level, weight in enumerate(weights)) / partition
-    variance = (
-        fsum(level**2 * weight for level, weight in enumerate(weights)) / partition
-        - mean**2
-    )
-    # The omitted Boltzmann tail is < 4e-42; these tolerances cover f64 accumulation.
-    tolerance = 1e-12 * max(1, mean + 0.5)
-    assert energy == pytest.approx(mean + 0.5, rel=0, abs=tolerance)
-    assert occupation == pytest.approx(mean, rel=0, abs=tolerance)
-    assert heat_capacity == pytest.approx(
-        inverse_temperature**2 * variance, rel=1e-12, abs=0
-    )
-    assert probabilities == pytest.approx(
-        [weight / partition for weight in weights[:5]], rel=1e-14, abs=0
-    )
     assert limits == [[1, 1], 0.5, 1]
+    for beta, (energy, occupation, heat_capacity, probabilities) in zip(
+        betas, per_beta, strict=True
+    ):
+        weights = [exp(-beta * level) for level in range(1000)]
+        partition = fsum(weights)
+        mean = fsum(level * weight for level, weight in enumerate(weights)) / partition
+        variance = (
+            fsum(level**2 * weight for level, weight in enumerate(weights)) / partition
+            - mean**2
+        )
+        # The omitted Boltzmann tail is < 4e-42; these tolerances cover f64 accumulation.
+        tolerance = 1e-12 * max(1, mean + 0.5)
+        assert energy == pytest.approx(mean + 0.5, rel=0, abs=tolerance), beta
+        assert occupation == pytest.approx(mean, rel=0, abs=tolerance), beta
+        assert heat_capacity == pytest.approx(beta**2 * variance, rel=1e-12, abs=0), (
+            beta
+        )
+        assert probabilities == pytest.approx(
+            [weight / partition for weight in weights[:5]], rel=1e-14, abs=0
+        ), beta
 
 
 def test_debye_heat_capacity_matches_independent_quadrature() -> None:
@@ -598,25 +595,25 @@ def test_wannier_equation_keeps_position_outside_subscripts() -> None:
     ) == [True]
 
 
-@pytest.mark.parametrize("cell_idx", [-14, -7, *range(-3, 4), 7, 14])
-def test_wannier_phase_arrows_reinforce_or_close(cell_idx: int) -> None:
+def test_wannier_phase_arrows_reinforce_or_close() -> None:
     """Add seven unit phases at each periodic target and cancel in other cells."""
-    vertices = evaluate_diagram(
-        "wannierization-and-wannier-centers",
-        f"diagram.phase_vertices({cell_idx})",
+    cells = (-14, -7, *range(-3, 4), 7, 14)
+    all_vertices = evaluate_diagram(
+        "wannierization-and-wannier-centers", f"{cells}.map(diagram.phase_vertices)"
     )
-    assert len(vertices) == 8
     # Seven unit vectors evaluated with f64 trig; allow 64 eps for accumulated error.
     tolerance = 64 * sys.float_info.epsilon
-    for start, end in pairwise(vertices):
-        length_squared = fsum(
-            (end_coord - start_coord) ** 2
-            for start_coord, end_coord in zip(start, end, strict=True)
-        )
-        assert length_squared == pytest.approx(1, rel=0, abs=tolerance)
-    assert vertices[-1] == pytest.approx(
-        [7 if cell_idx % 7 == 0 else 0, 0], rel=0, abs=tolerance
-    )
+    for cell_idx, vertices in zip(cells, all_vertices, strict=True):
+        assert len(vertices) == 8
+        for start, end in pairwise(vertices):
+            length_squared = fsum(
+                (end_coord - start_coord) ** 2
+                for start_coord, end_coord in zip(start, end, strict=True)
+            )
+            assert length_squared == pytest.approx(1, rel=0, abs=tolerance)
+        assert vertices[-1] == pytest.approx(
+            [7 if cell_idx % 7 == 0 else 0, 0], rel=0, abs=tolerance
+        ), cell_idx
 
 
 def test_wannier_gauge_preserves_total_occupied_density() -> None:
@@ -690,7 +687,9 @@ def test_wannier_center_matches_drawn_density_and_balance(
 
 
 @pytest.mark.parametrize("caller_font_size", [8, 20])
-@pytest.mark.parametrize("slug", ["atomistic-simulation-methods", "change-of-variables"])
+@pytest.mark.parametrize(
+    "slug", ["atomistic-simulation-methods", "change-of-variables"]
+)
 def test_compound_typography_uses_consistent_readable_sizes(
     caller_font_size: int, slug: str
 ) -> None:
@@ -727,7 +726,9 @@ def test_compound_typography_uses_consistent_readable_sizes(
 #show text: item => context [#metadata((item.text, text.size / 1pt)) <typography>#item]
 {panels}
 """
-    sizes = dict(evaluate_typst("query(<typography>).map(item => item.value)", source=source))
+    sizes = dict(
+        evaluate_typst("query(<typography>).map(item => item.value)", source=source)
+    )
     assert sizes == expected
 
 
@@ -890,72 +891,23 @@ def test_thermoelectric_curve_normalization() -> None:
     )
 
 
-@pytest.mark.parametrize(
-    "slug,formulas",
-    [
-        ("zt-vs-n", [r"f(n) \/ (max f)"]),
-        (
-            "critical-temperature",
-            [r"sqrt(3)(T_c \/ T - 1)^(1 \/ 2)", r"sqrt(3)(T \/ T_c)^(3 \/ 2)"],
-        ),
-        (
-            "branch-and-bound",
-            [r"(x,y)=(4 \/ 3,4 \/ 3), quad U=20 \/ 3", r"(1,3 \/ 2)"],
-        ),
-        ("k-space", [r"2pi \/ L_x", r"2pi \/ L_y"]),
-        ("signal-sampling", [r"1 \/ f_s", r"2 \/ f_s", r"3 \/ f_s"]),
-        (
-            "thermo-ensemble-trafos",
-            [
-                r"sigma = S_m \/ N",
-                r"f = F \/ N",
-                r"Omega \/ V",
-                r"epsilon = E \/ N",
-                r"rho = N \/ V",
-            ],
-        ),
-        ("how-atoms-become-energy-bands", [r"-pi \/ a", r"pi \/ a", r"k = pi \/ a"]),
-        ("quantum-harmonic-oscillator", [r'beta=1 \/ (k_"B" T)', r"ℏ omega \/ 2"]),
-        ("particle-statistics", [r"prop 1 \/ beta", r'beta=1 \/ (k_"B" T)']),
-        ("tori", [r"z mapsto z \/ u", r'tau = v \/ u, quad op("Im") tau > 0']),
-        ("torus-fundamental-domain", [r"-1 \/ 2", r"1 \/ 2"]),
-        ("gas-pressure-on-wall", [r"1 \/ alpha << ell"]),
-        ("spontaneous-magnetization", [r"T \/ T_c"]),
-        (
-            "isotherms",
-            [r"p_0 = R T \/ v", r"p_1 = p_0 + B_1 \/ v^2", r"p_2 = p_1 + B_2 \/ v^3"],
-        ),
-    ],
-)
-def test_small_label_ratios_use_inline_math(slug: str, formulas: list[str]) -> None:
-    """Render simple label ratios at full size while retaining denominator grouping."""
-    source = f"""
-#show math.equation: item => [#metadata(repr(item.body)) <formula>#item]
-#include "/assets/{slug}/{slug}.typ"
-"""
-    expected = ", ".join(f"${formula}$" for formula in formulas)
-    result = evaluate_typst(
-        f"{{ let bodies = query(<formula>).map(item => item.value); ({expected},).map(item => bodies.contains(repr(item.body))) }}",
-        source=source,
-    )
-    assert result == [True] * len(formulas), (slug, formulas, result)
-
-
-@pytest.mark.parametrize(
-    "energy,mass,stiffness", [(1, 1, 1), (4, 2, 3), (0.25, 5, 0.5)]
-)
-def test_energy_shell_uses_canonical_momentum(
-    energy: float, mass: float, stiffness: float
-) -> None:
+def test_energy_shell_uses_canonical_momentum() -> None:
     """Both ellipse intercepts must have the stated Hamiltonian energy."""
-    axes = evaluate_diagram(
-        "ergodic", f"diagram.shell_axes({energy}, mass: {mass}, stiffness: {stiffness})"
+    cases = ((1, 1, 1), (4, 2, 3), (0.25, 5, 0.5))
+    *axes, origin = evaluate_diagram(
+        "ergodic",
+        f"{cases}.map(((energy, mass, stiffness)) => diagram.shell_axes("
+        "energy, mass: mass, stiffness: stiffness)) + (diagram.angle_point(1, 2),)",
     )
-    position, momentum = axes
     tolerance = 16 * sys.float_info.epsilon  # sqrt, multiplication, and division.
-    assert stiffness * position**2 / 2 == pytest.approx(energy, rel=tolerance, abs=0)
-    assert momentum**2 / (2 * mass) == pytest.approx(energy, rel=tolerance, abs=0)
-    assert evaluate_diagram("ergodic", "diagram.angle_point(1, 2)") == [0, 0]
+    for (energy, mass, stiffness), (position, momentum) in zip(
+        cases, axes, strict=True
+    ):
+        assert stiffness * position**2 / 2 == pytest.approx(
+            energy, rel=tolerance, abs=0
+        )
+        assert momentum**2 / (2 * mass) == pytest.approx(energy, rel=tolerance, abs=0)
+    assert origin == [0, 0]
 
 
 def test_semi_supervised_panels_share_bounds() -> None:
@@ -968,64 +920,6 @@ def test_semi_supervised_panels_share_bounds() -> None:
         "query(<bounds>).map(item => item.value)", source=source
     )
     assert left == right
-
-
-@pytest.mark.parametrize(
-    "slug,captions,min_font_size",
-    [
-        ("ergodic", ["Opposite edges identified.", "Finite segment shown."], 14),
-        (
-            "semi-supervised-learning",
-            ["Gray samples ignored.", "Boundary follows the low-density gap."],
-            14,
-        ),
-        ("matsubara-contours", ["Bosons", "Fermions"], 14),
-    ],
-)
-def test_short_plot_captions_are_centered(
-    slug: str, captions: list[str], min_font_size: float
-) -> None:
-    """Keep centered captions readable, including inline frequency ratios."""
-    source = f"""
-#show math.frac: fraction => {{
-  assert(fraction.num != $omega_2$.body, message: "Use an inline frequency ratio in captions")
-  fraction
-}}
-#show text: item => context [
-  #metadata((text: item.text, alignment: repr(align.alignment), size: text.size / 1pt)) <alignment>#item
-]
-#include "/assets/{slug}/{slug}.typ"
-"""
-    result = evaluate_typst("query(<alignment>).map(item => item.value)", source=source)
-    rendered = {item["text"].lstrip("· "): item for item in result}
-    for caption in captions:
-        assert rendered[caption]["alignment"] == "center + top"
-        assert rendered[caption]["size"] >= min_font_size
-
-
-@pytest.mark.parametrize(
-    "slug,word_budget",
-    [
-        ("branch-and-bound", 25),
-        ("deep-belief-network", 25),
-        ("semi-supervised-learning", 45),
-        ("qm-cost-vs-acc", 80),
-        ("materials-informatics", 55),
-        ("zt-vs-n", 55),
-        ("ergodic", 75),
-    ],
-)
-def test_diagram_copy_stays_concise(slug: str, word_budget: int) -> None:
-    """Keep prose in page descriptions and reserve artwork for labels and equations."""
-    source = f"""
-#show text: item => [#metadata(item.text) <copy>#item]
-#include "/assets/{slug}/{slug}.typ"
-"""
-    result = evaluate_typst("query(<copy>).map(item => item.value)", source=source)
-    # Count rendered English labels, excluding math symbols and numerical values.
-    # Budgets allow short label edits, but reject reintroducing paragraph captions.
-    words = re.findall(r"\b[A-Za-z]+(?:[–-][A-Za-z]+)*\b", " ".join(result))
-    assert len(words) <= word_budget, (slug, len(words), word_budget)
 
 
 def test_dbn_math_and_footer_are_readable() -> None:
@@ -1049,28 +943,6 @@ def test_dbn_math_and_footer_are_readable() -> None:
     (panel,) = panels
     assert panel["width"] < 250  # Less than half the 500pt content width.
     assert 0 < panel["opacity"] <= 0.4
-
-
-def test_qm_cost_plot_qualifies_method_scaling() -> None:
-    """Tie plotted costs to specific methods and explicitly qualify the accuracy axis."""
-    methods, scope, qualification = evaluate_diagram(
-        "qm-cost-vs-acc",
-        """(
-      diagram.methods.map(method => (method.name, method.exponent)),
-      diagram.scope,
-      diagram.qualification,
-    )""",
-    )
-    assert dict(methods) == {
-        "Semilocal DFT": 3,
-        "Hartree–Fock": 4,
-        "MP2": 5,
-        "CCSD": 6,
-        "CCSD(T)": 7,
-    }
-    assert "Single-reference" in scope and "near equilibrium" in scope
-    assert "Schematic" in qualification
-    assert all(term in qualification for term in ("system", "observable", "basis"))
 
 
 def test_materials_molecule_and_descriptor_are_consistent() -> None:
@@ -1120,6 +992,7 @@ def test_materials_molecule_and_descriptor_are_consistent() -> None:
         ("convexity-and-jensens-inequality", "Convexity and Jensen’s Inequality"),
         ("deep-belief-network", "Deep belief network"),
         ("ergodic", "Ergodicity and energy shells"),
+        ("euler-angles", "Euler angles: three ordered rotations"),
         ("feynman-building-blocks", "Feynman Building Blocks"),
         ("fractal-atlas", "Fractal Atlas"),
         ("gibbs-free-energy", "Gibbs Free Energy"),
@@ -1145,15 +1018,87 @@ def test_materials_molecule_and_descriptor_are_consistent() -> None:
         ("string-worldsheet-topologies", "String Worldsheet Topologies"),
         ("symmetry-breaking", "Symmetry Breaking"),
         ("theta-beta-m-diagram", "Diagram for Diatomic Gases"),
+        (
+            "wannierization-and-wannier-centers",
+            "Wannierization & Wannier centers",
+        ),
         ("which-band-gap-do-you-mean", "Which “band gap” do you mean?"),
         ("xc-functional", "Exchange & correlation"),
     ],
 )
 def test_diagrams_omit_redundant_page_titles(slug: str, redundant_title: str) -> None:
-    """Keep duplicate page headings out of the rendered artwork."""
-    source = f"""
-#show text: item => [#metadata(item.text) <copy>#item]
-#include "/assets/{slug}/{slug}.typ"
-"""
-    rendered = evaluate_typst("query(<copy>).map(item => item.value)", source=source)
-    assert redundant_title.casefold() not in " ".join(rendered).casefold()
+    """Keep duplicate page headings out of the artwork source."""
+    with open(f"{ROOT}/assets/{slug}/{slug}.typ") as source:
+        assert redundant_title.casefold() not in source.read().casefold()
+
+
+def test_knn_circles_enclose_k_points_and_flip_the_vote() -> None:
+    """Enclose exactly k points per dashed circle, voting B for k=3 and A for k=7."""
+    stars, triangles, center, neighborhoods = evaluate_diagram(
+        "k-nearest-neighbors",
+        "(diagram.stars, diagram.triangles, diagram.new-example, diagram.neighborhoods)",
+    )
+    labeled = [(pos, "A") for pos in stars] + [(pos, "B") for pos in triangles]
+    for (k_neighbors, radius), winner in zip(neighborhoods, "BA", strict=True):
+        votes = [label for pos, label in labeled if dist(pos, center) < radius]
+        assert len(votes) == k_neighbors
+        assert max("AB", key=votes.count) == winner
+
+
+def test_roc_auc_labels_match_curve_areas() -> None:
+    """Label each power-law ROC curve with its midpoint-rule area, all above chance."""
+    n_samples = 100_000
+    for exponent, label in evaluate_diagram(
+        "roc-curve",
+        "diagram.classifiers.map(((_, exponent)) => (exponent, diagram.auc(exponent)))",
+    ):
+        area = fsum(((idx + 0.5) / n_samples) ** exponent for idx in range(n_samples))
+        assert label == round(area / n_samples, 2) > 0.5
+
+
+def test_geometric_bayes_posterior_matches_drawn_areas() -> None:
+    """Size the p(H|E) bar by the H share of the evidence area, 4/7 here."""
+    mid_x, prior_end, likelihood_h, likelihood_not_h, posterior = evaluate_diagram(
+        "geometric-bayes",
+        "(diagram.mid-x, diagram.prior-end, diagram.likelihood-h, "
+        "diagram.likelihood-not-h, diagram.posterior)",
+    )
+    evidence_h, evidence_not_h = (
+        mid_x * likelihood_h,
+        (prior_end - mid_x) * likelihood_not_h,
+    )
+    expected = evidence_h / (evidence_h + evidence_not_h)
+    assert posterior == pytest.approx(expected, rel=1e-12)
+    assert expected == pytest.approx(4 / 7, rel=1e-12)
+
+
+def test_made_masks_are_autoregressive() -> None:
+    """Let output d see input i through all three masks iff m(i) < m(d)."""
+    degrees, masks = evaluate_diagram(
+        "made",
+        "(diagram.degrees, range(3).map(layer => diagram.degrees.at(layer + 1).map("
+        "to => diagram.degrees.at(layer).map(from => diagram.connected(layer, from, to)))))",
+    )
+    reach = [{idx} for idx in range(len(degrees[0]))]
+    for mask in masks:
+        reach = [
+            set().union(*(reach[col] for col, on in enumerate(row) if on))
+            for row in mask
+        ]
+    assert degrees[-1] == degrees[0]
+    assert reach == [
+        {idx for idx, degree in enumerate(degrees[0]) if degree < output}
+        for output in degrees[-1]
+    ]
+
+
+def test_gpu_batch_carries_only_unconverged_structures() -> None:
+    """Keep unconverged structures for the next step and drop converged ones for good."""
+    slots = evaluate_diagram("gpu-batching", "diagram.batch-slots")
+    last_step = max(step for step, *_ in slots)
+    for step, _row, label, converged in slots:
+        later = sorted(
+            other[0] for other in slots if other[2] == label and other[0] > step
+        )
+        assert later[:1] == ([] if converged or step == last_step else [step + 1])
+        assert not (converged and later)

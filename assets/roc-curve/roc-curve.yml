@@ -6,10 +6,5 @@ tags:
   - performance metrics
   - data science
   - model evaluation
-description: >-
-  The [Receiver Operating Characteristic curve](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_curve.html) plots the true positive rate (sensitivity) against
-  the false positive rate (1 − specificity) as the classification threshold is swept. Six
-  classifiers are shown, from near-perfect (AUC = 0.99) down to poor (AUC = 0.65), against the
-  diagonal a random guess would trace (AUC = 0.5). The area under each curve summarizes
-  performance independently of any single threshold, so the ordering of the curves holds however
-  the operating point is later chosen.
+description: |
+  The [Receiver Operating Characteristic curve](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_curve.html) plots the true positive rate (sensitivity) against the false positive rate (1 − specificity) as the classification threshold is swept. Five power-law curves $y = x^a$ with $\text{AUC} = 1/(1+a)$ range from near-perfect (AUC = 0.99) down to poor (AUC = 0.56), compared against the diagonal a random guess would trace (AUC = 0.5). The area under each curve summarizes performance independently of any single threshold, and since these curves never cross, their ordering holds at every operating point.

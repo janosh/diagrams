@@ -1,11 +1,6 @@
 title: RG Flow in Theory Space
 description: |
-  Visualization of [renormalization group (RG) flow](../wetterich-equation) trajectories in the theory space
-  of all possible coupling constants (λ₁, λ₂, λ₃, λ₄) allowed by symmetries. The
-  diagram shows how different microscopic actions (S₁, S₂, S₃) obey the same symmetries and thus flow to the same
-  quantum effective action (Γ) through different paths, each corresponding to a
-  different choice of infrared regulator R_k(q). This illustrates the universality
-  of the effective action despite different starting points and regulators.
+  Visualization of [renormalization group (RG) flow](../wetterich-equation) trajectories in the theory space spanned by all coupling constants (λ₁, λ₂, λ₃, λ₄, …) allowed by the symmetries. Each trajectory uses a different infrared regulator R_k(q) and therefore starts from a different microscopic action Γ_{k=Λᵢ} = Sᵢ at its UV cutoff Λᵢ. When these initial conditions describe the same physics, all flows end at the same quantum effective action Γ = Γ_{k=0}: the path through theory space depends on the regulator, the endpoint does not.
 
 references:
   - wetterich_exact_1993:

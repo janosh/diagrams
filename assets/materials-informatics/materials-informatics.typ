@@ -16,6 +16,7 @@
   (element: "H", charge: 1, pos: (-2, 0.75)),
   (element: "H", charge: 1, pos: (1, 2)),
 )
+// (left atom index, right atom index, bond order)
 #let bonds = (
   (0, 1, 1),
   (0, 2, 1),
@@ -60,32 +61,19 @@
   for atom in atoms {
     let color = palette.at(atom.element)
     let pos = molecule_pos(atom.pos)
-    circle(
-      pos,
-      radius: if atom.element == "H" { 0.3 } else { 0.44 },
-      stroke: none,
-      fill: gradient.radial(
-        color.lighten(75%),
-        color,
-        color.darken(15%),
-        focal-center: (30%, 25%),
-        focal-radius: 5%,
-        center: (35%, 30%),
-      ),
-    )
-    content(pos, text(
-      fill: if atom.element == "C" { white } else { black },
-      weight: "bold",
-      atom.element,
-    ))
+    // Flat discs with a darker rim: a lit-sphere highlight would invert into a dark pit under
+    // the site's dark-mode filter.
+    let radius = if atom.element == "H" { 0.3 } else { 0.44 }
+    circle(pos, radius: radius, fill: color, stroke: color.darken(35%) + 0.8pt)
+    let label_color = if atom.element == "C" { white } else { black }
+    content(pos, text(fill: label_color, weight: "bold", atom.element))
   }
   caption(0, [Molecular structure])
 
   // Rounded entries retain one decimal below one so small interactions stay visible.
-  let cell_size = 0.8
+  let (cell_size, matrix_x, property_x) = (0.8, 8.5, 23.1)
   let matrix_top = atoms.len() * cell_size / 2
-  let matrix_left = 8.5 - matrix_top
-  let matrix_right = 8.5 + matrix_top
+  let (matrix_left, matrix_right) = (matrix_x - matrix_top, matrix_x + matrix_top)
   let maximum = calc.max(..matrix.flatten())
   for (row_idx, row) in matrix.enumerate() {
     for (col_idx, value) in row.enumerate() {
@@ -98,12 +86,10 @@
         stroke: none,
         fill: color.mix((rgb("#f6d9b8"), 1 - intensity), (rgb("#ba432d"), intensity)),
       )
-      content(
-        (cell_left + cell_size / 2, cell_top - cell_size / 2),
-        text(size: 12pt, fill: if intensity > 0.65 { white } else { black })[
-          #calc.round(value, digits: if value < 1 { 1 } else { 0 })
-        ],
-      )
+      let rounded = calc.round(value, digits: if value < 1 { 1 } else { 0 })
+      let text_color = if intensity > 0.65 { white } else { black }
+      let cell_center = (cell_left + cell_size / 2, cell_top - cell_size / 2)
+      content(cell_center, text(size: 12pt, fill: text_color)[#rounded])
     }
   }
   let grid_stroke = rgb("#888").transparentize(60%) + 0.2pt
@@ -113,7 +99,7 @@
     line((grid_x, -matrix_top), (grid_x, matrix_top), stroke: grid_stroke)
     line((matrix_left, grid_y), (matrix_right, grid_y), stroke: grid_stroke)
   }
-  caption(matrix_left + atoms.len() * cell_size / 2, [Coulomb matrix])
+  caption(matrix_x, [Coulomb matrix])
 
   // A schematic network: its displayed node counts are not input dimensions.
   let layers = (
@@ -131,16 +117,17 @@
   }
   for layer in layers {
     for node_idx in range(layer.count) {
-      circle(node_pos(layer, node_idx), radius: 0.4, fill: layer.color, stroke: none)
-      content(node_pos(layer, node_idx), text(size: 12pt)[#layer.prefix#(node_idx + 1)])
+      let pos = node_pos(layer, node_idx)
+      circle(pos, radius: 0.4, fill: layer.color, stroke: none)
+      content(pos, text(size: 12pt)[#layer.prefix#(node_idx + 1)])
     }
   }
-  caption(16.4, [Trained model])
+  caption(layers.at(1).center_x, [Trained model])
 
-  content((23.1, 0), text(size: 42pt)[$hat(alpha)_"iso"$])
-  caption(23.1, [Predicted property])
+  content((property_x, 0), text(size: 42pt)[$hat(alpha)_"iso"$])
+  caption(property_x, [Predicted property])
 
-  for (start_x, end_x) in ((3.5, matrix_left - 0.5), (matrix_right + 0.6, 13.1), (20, 21.6)) {
-    line((start_x, 0), (end_x, 0), stroke: rgb("#888") + 3pt, mark: (end: "stealth", size: 12pt))
+  for (from, to) in ((3.5, matrix_left - 0.5), (matrix_right + 0.6, 13.1), (20, property_x - 1.5)) {
+    line((from, 0), (to, 0), stroke: rgb("#888") + 3pt, mark: (end: "stealth", size: 12pt))
   }
 })

@@ -4,27 +4,25 @@
 #let paragraph-size = 14pt
 #let heading-size = 16pt
 
-#let card_body(title, body, caption) = block(
-  width: 100%,
-  inset: 12pt,
-  radius: 8pt,
-  fill: rgb("#cdd3da"),
-  breakable: false,
-)[
-  #text(size: heading-size, weight: "bold", title)
-  #v(8pt)
-  // Measure unconstrained artwork before scaling, including content wider than its card.
-  #layout(size => {
-    let artwork = text(size: label-size, body)
-    std.scale(size.width / measure(artwork).width * 100%, reflow: true, artwork)
-  })
-  #v(7pt)
-  #text(size: paragraph-size, caption)
-]
-
 #let card(title, body, caption) = grid(
   columns: (100%,),
-  card_body(title, body, caption),
+  block(
+    width: 100%,
+    inset: 12pt,
+    radius: 8pt,
+    fill: rgb("#cdd3da"),
+    breakable: false,
+  )[
+    #text(size: heading-size, weight: "bold", title)
+    #v(8pt)
+    // Measure unconstrained artwork before scaling, including content wider than its card.
+    #layout(size => {
+      let artwork = text(size: label-size, body)
+      std.scale(size.width / measure(artwork).width * 100%, reflow: true, artwork)
+    })
+    #v(7pt)
+    #text(size: paragraph-size, caption)
+  ],
 )
 
 #let takeaway(body) = block(
@@ -40,9 +38,6 @@
 #set text(font: "Avenir Next", size: paragraph-size, fill: rgb("#19324f"))
 #set par(leading: 0.55em)
 
-// Size of compact annotations shared by both panels.
-#let annotation-size = label-size
-
 // === 1  Compare scheduling strategies ===
 #let figure-0 = [
 
@@ -55,17 +50,9 @@
 
   // Vega category10: ten hues that stay distinct, unlike shades of one hue.
   #let struct-colors = (
-    rgb("#4C78A8"),
-    rgb("#F58518"),
-    rgb("#54A24B"),
-    rgb("#E45756"),
-    rgb("#B279A2"),
-    rgb("#72B7B2"),
-    rgb("#B8A02E"),
-    rgb("#9D755D"),
-    rgb("#D6698E"),
-    rgb("#7F7F7F"),
-  )
+    ("#4C78A8", "#F58518", "#54A24B", "#E45756", "#B279A2")
+      + ("#72B7B2", "#B8A02E", "#9D755D", "#D6698E", "#7F7F7F")
+  ).map(rgb)
 
   // Each schedule is a list of steps, each step listing which structure occupies each
   // slot, or -1 for an idle slot.
@@ -124,11 +111,12 @@
   }
 
   #canvas(length: .95cm, {
-    let dark-gray = rgb("#5D6B7A")
+    // Secondary text stays dark enough that the site's dark-mode inversion turns it light gray.
+    let muted = rgb("#404040")
     let section-bg = rgb("#d1d6db")
     let idle-stroke = rgb("#C7D0D9")
-    let good = rgb("#2E7D32")
-    let bad = rgb("#C62828")
+    let good = rgb("#1b5e20")
+    let bad = rgb("#9b1c1c")
 
     let plot-width = 24
     let x0 = 5.0 // left edge of step 0
@@ -141,7 +129,8 @@
     // step i spans [x0 + i, x0 + i + 1]; its tick and label sit under the center
     let step-center(i) = x0 + (i + 0.5) * cell
 
-    let slot-y(base, slot) = base + slot * (row-height + row-gap)
+    // slot rows start just below each panel's base-y
+    let slot-y(base-y, slot) = base-y - 0.6 + slot * (row-height + row-gap)
 
     let panels = (
       (11.2, "Unbatched\nSimulations", unbatched-schedule),
@@ -151,47 +140,49 @@
 
     content(
       (plot-width / 2, 14.2),
-      text(size: label-size, fill: dark-gray)[
-        Ten structures needing #steps-needed.map(str).join(", ") ionic steps, on #slots GPU slots
-      ],
+      text(
+        fill: muted,
+      )[Ten structures needing #steps-needed.map(str).join(", ") ionic steps, on #slots GPU slots],
     )
 
     for (base-y, name, schedule) in panels {
-      let rows-bottom = base-y - 0.6
-      let axis-y = rows-bottom - 0.55
+      let axis-y = slot-y(base-y, 0) - 0.55
       rect(
         (0.5, axis-y - 0.75),
-        (plot-width - 0.5, slot-y(rows-bottom, slots - 1) + 0.75),
+        (plot-width - 0.5, slot-y(base-y, slots - 1) + 0.75),
         fill: section-bg,
         stroke: none,
         radius: radius * 3,
       )
-      content((2.3, base-y + 0.9), text(weight: "bold", size: 12pt)[#name])
+      content((2.3, base-y + 0.9), text(weight: "bold")[#name])
 
       // occupancy meter, sized to its own text so the label cannot overflow it
       let busy = utilization(schedule)
-      let meter = 3.6
+      let (meter, meter-origin) = (3.6, (1.0, base-y - 0.65))
       rect(
-        (1.0, base-y - 0.65),
-        (1.0 + meter, base-y - 0.05),
+        meter-origin,
+        (rel: (meter, 0.6)),
         fill: rgb("#c6cdd6"),
         stroke: 0.5pt,
         radius: 0.08,
         name: "meter-" + name,
       )
+      let meter-fill = if busy < 40 { bad.lighten(70%) } else if busy < 75 {
+        rgb("#F9A825").lighten(55%)
+      } else {
+        good.lighten(70%)
+      }
       rect(
-        (1.0, base-y - 0.65),
-        (1.0 + meter * busy / 100, base-y - 0.05),
-        fill: if busy < 40 { bad.lighten(60%) } else if busy < 75 {
-          rgb("#F9A825").lighten(55%)
-        } else { good.lighten(60%) },
+        meter-origin,
+        (rel: (meter * busy / 100, 0.6)),
+        fill: meter-fill,
         stroke: none,
         radius: (west: 0.08),
       )
-      content("meter-" + name, text(size: annotation-size, weight: "bold")[#busy% slots busy])
+      content("meter-" + name, text(weight: "bold")[#busy% slots busy])
       content(
-        (1.0, base-y - 1.3),
-        text(size: annotation-size, fill: dark-gray)[#schedule.len() steps\ to finish all 10],
+        (rel: (0, -0.65), to: meter-origin),
+        text(fill: muted)[#schedule.len() steps\ to finish all 10],
         anchor: "west",
       )
 
@@ -199,19 +190,19 @@
       for (step, occupants) in schedule.slice(0, calc.min(schedule.len(), window)).enumerate() {
         for slot in range(slots) {
           let who = occupants.at(slot)
-          let (x, y) = (step-center(step), slot-y(rows-bottom, slot))
-          let color = if who == -1 { none } else { struct-colors.at(who) }
-          rect(
-            (x - box-width / 2, y),
-            (x + box-width / 2, y + row-height),
-            fill: if color == none { none } else { color.lighten(60%) },
-            stroke: if color == none {
-              (dash: "dotted", paint: idle-stroke, thickness: 0.6pt)
-            } else { color },
-            radius: radius,
-          )
-          if who != -1 {
-            content((x, y + row-height / 2), text(size: annotation-size)[S#(who + 1)])
+          let (x, y) = (step-center(step), slot-y(base-y, slot))
+          let (left, right, top) = (x - box-width / 2, x + box-width / 2, y + row-height)
+          if who == -1 {
+            rect(
+              (left, y),
+              (right, top),
+              stroke: (dash: "dotted", paint: idle-stroke, thickness: 0.6pt),
+              radius: radius,
+            )
+          } else {
+            let color = struct-colors.at(who)
+            rect((left, y), (right, top), fill: color.lighten(60%), stroke: color, radius: radius)
+            content((x, y + row-height / 2))[S#(who + 1)]
           }
         }
       }
@@ -223,49 +214,64 @@
         mark: (end: "stealth", fill: black, scale: 0.5),
       )
       for step in range(window) {
-        line(
-          (step-center(step), axis-y - 0.05),
-          (step-center(step), axis-y + 0.05),
-          stroke: 0.8pt,
-        )
-        content(
-          (step-center(step), axis-y - 0.12),
-          text(size: annotation-size)[t=#(step + 1)],
-          anchor: "north",
-        )
+        line((step-center(step), axis-y - 0.05), (step-center(step), axis-y + 0.05), stroke: 0.8pt)
+        content((step-center(step), axis-y - 0.12), [t=#(step + 1)], anchor: "north")
       }
     }
 
     // each panel's dead space on the right carries its own verdict
     let (unbatched-y, binning-y, inflight-y) = panels.map(panel => panel.first())
-    let mid-rows(base-y) = slot-y(base-y - 0.6, 2) + row-height / 2
+    let mid-row(base-y, slot) = slot-y(base-y, slot) + row-height / 2
     content(
-      (step-center(16.9), slot-y(unbatched-y - 0.6, 0) + row-height / 2),
-      text(size: annotation-size, fill: bad)[
-        …#(unbatched-schedule.len() - window) more steps
-      ],
+      (step-center(16.9), mid-row(unbatched-y, 0)),
+      text(fill: bad)[…#(unbatched-schedule.len() - window) more steps],
       anchor: "west",
     )
     content(
-      (step-center(13.8), mid-rows(binning-y)),
-      text(size: annotation-size, fill: bad, style: "italic")[
-        #align(
-          center,
-        )[holes open up as a batch\ drains, and stay open until\ its slowest member converges]
-      ],
-      anchor: "center",
+      (step-center(13.8), mid-row(binning-y, 2)),
+      text(fill: bad, style: "italic", align(center)[
+        holes open up as a batch\ drains, and stay open until\ its slowest member converges
+      ]),
     )
     content(
-      (step-center(13.8), mid-rows(inflight-y)),
-      text(size: annotation-size, fill: good, style: "italic")[
-        #align(center)[all ten converged by t=#inflight-schedule.len()]
-      ],
-      anchor: "center",
+      (step-center(13.8), mid-row(inflight-y, 2)),
+      text(fill: good, style: "italic", align(
+        center,
+      )[all ten converged by t=#inflight-schedule.len()]),
     )
   })
 ]
 
 // === 2  Follow a replacement ===
+// Atoms per structure, fixed while it stays in the batch
+#let structure-atoms = (
+  "1": 50,
+  "2": 45,
+  "3": 55,
+  "4": 40,
+  "5": 20,
+  "6": 60,
+  "7": 35,
+  "8": 45,
+  "9": 30,
+)
+// (step, row, structure, converged) of each occupied batch slot
+#let batch-slots = (
+  (0, 0, "1", true),
+  (0, 1, "2", false),
+  (0, 2, "3", false),
+  (1, 0, "4", true),
+  (1, 1, "2", true),
+  (1, 2, "3", false),
+  (1, 3, "5", true),
+  (2, 0, "3", true),
+  (2, 1, "6", false),
+  (2, 2, "7", false),
+  (3, 0, "6", false),
+  (3, 1, "7", true),
+  (3, 2, "8", false),
+  (3, 3, "9", false),
+)
 #let figure-1 = [
 
   #canvas(length: 1.12cm, {
@@ -322,9 +328,10 @@
         (7pt, 9pt, 4pt),
       ),
     ) {
+      let body = text(size: 14pt, label)
       content(
         (x, title-height - 1.2),
-        text(size: 14pt, label),
+        body,
         frame: "rect",
         padding: padding,
         stroke: none,
@@ -344,16 +351,29 @@
     line((0, 7), (plot.width, 7), stroke: (dash: "dotted", thickness: 1pt), name: "memory-limit")
     content(
       (rel: (0.2, -0.1), to: "memory-limit.start"),
-      text(size: label-size)[Maximum memory threshold\ (based on GPU capacity)],
+      [Maximum memory threshold\ (based on GPU capacity)],
       anchor: "north-west",
     )
 
+    let colors = (
+      "1": blue,
+      "2": green,
+      "3": orange,
+      "4": purple-1,
+      "5": red,
+      "6": pink,
+      "7": yellow,
+      "8": teal,
+      "9": purple-2,
+    )
+
     // memory-usage region, atom total and step label per batch
-    for (idx, (rows, total)) in ((3, "150"), (4, "160"), (3, "145"), (4, "170")).enumerate() {
+    for idx in range(4) {
+      let batch = batch-slots.filter(entry => entry.first() == idx)
       let name = "batch" + str(idx + 1)
       rect(
         (step-x(idx) - step.width / 2, step.y-offset),
-        (step-x(idx) + step.width / 2, rows * structure.row-height + step.padding + step.y-offset),
+        (rel: (step.width, batch.len() * structure.row-height + step.padding)),
         fill: rgb(240, 240, 240),
         stroke: none,
         radius: 0.5,
@@ -361,54 +381,32 @@
       )
       content(
         (rel: (0, 0.1), to: name + ".north"),
-        text(size: annotation-size)[#total atoms total],
+        [#batch.map(entry => structure-atoms.at(entry.at(2))).sum() atoms total],
         anchor: "south",
       )
       content((rel: (0, -0.7), to: name + ".south"), [*Step #(idx + 1)*])
     }
 
     let base-y = step.y-offset + 0.8
-
-    // (step, row, color, label, atoms, name suffix, converged); the suffix distinguishes
-    // repeat appearances of a structure that has not relaxed yet
-    for (step-idx, row, color, label, atoms, suffix, converged) in (
-      (0, 0, blue, "1", 50, "", true),
-      (0, 1, green, "2", 45, "", false),
-      (0, 2, orange, "3", 55, "", false),
-      (1, 0, purple-1, "4", 40, "", true),
-      (1, 1, green, "2", 45, "-2", true),
-      (1, 2, orange, "3", 55, "-2", false),
-      (1, 3, red, "5", 20, "", true),
-      (2, 0, orange, "3", 50, "-3", true),
-      (2, 1, pink, "6", 60, "", false),
-      (2, 2, yellow, "7", 35, "", false),
-      (3, 0, pink, "6", 60, "-2", false),
-      (3, 1, yellow, "7", 35, "-2", true),
-      (3, 2, teal, "8", 45, "", false),
-      (3, 3, purple-2, "9", 30, "", false),
-    ) {
+    for (step-idx, row, label, converged) in batch-slots {
       let (x, y) = (step-x(step-idx), base-y + row * structure.row-height)
-      let name = "struct-" + label + suffix
+      // repeat appearances of a structure that has not relaxed yet get a -2, -3, ... suffix
+      let repeats = batch-slots.filter(entry => entry.at(2) == label and entry.first() < step-idx)
+      let name = (
+        "struct-" + label + if repeats.len() > 0 { "-" + str(repeats.len() + 1) } else { "" }
+      )
       rect(
         (x - structure.width / 2, y - 0.4),
-        (x + structure.width / 2, y + 0.4),
-        fill: color,
+        (rel: (structure.width, 0.8)),
+        fill: colors.at(label).lighten(50%),
         stroke: 0.5pt,
         radius: 0.2, // max 0.2 due to CeTZ 0.5.0 border anchor bug with rounded rects
         name: name,
       )
       content(name, [Structure #label])
-      content(
-        (rel: (0, -0.5), to: name),
-        text(size: annotation-size)[#atoms atoms],
-        anchor: "north",
-      )
+      content((rel: (0, -0.5), to: name), [#structure-atoms.at(label) atoms], anchor: "north")
       if converged {
-        content(
-          (rel: (0.1, 0), to: name + ".east"),
-          text(size: 12pt, fill: rgb("#38A169"))[✓],
-          anchor: "west",
-        )
+        content((rel: (0.1, 0), to: name + ".east"), text(fill: rgb("#2E7D32"))[✓], anchor: "west")
       }
     }
 
@@ -449,7 +447,7 @@
 
     // freed capacity is refilled from the initial pool
     for (anchor, ctrl-from, color, mark-pos) in (
-      ("struct-4.north-west", (-0.5, -5), purple-2, 50%),
+      ("struct-4.north-west", (-0.5, -5), purple-1, 50%),
       ("struct-5.north-east", (0.15, -0.5), red, 50%),
       ("struct-6.north-west", (-0.15, -0.5), pink, 20%),
       ("struct-7.north-west", (-0.3, -0.5), yellow, 20%),
@@ -474,7 +472,7 @@ Small atomistic jobs can leave a GPU underused. Batching runs several together; 
   card(
     [2  Follow a replacement],
     figure-1,
-    [Each structure has its own convergence state. After a structure finishes, move it to the completed pool and fill the available capacity from the waiting pool.],
+    [Each structure has its own convergence state. After a structure finishes, move it to the converged pool and fill the freed capacity from the initial pool.],
   ),
 )
 #v(12pt)

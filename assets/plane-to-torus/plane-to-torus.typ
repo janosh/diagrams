@@ -1,19 +1,17 @@
 #import "@preview/cetz:0.5.2": canvas, draw
 #import draw: content, grid, line, rect
 
-// Size of compact annotations.
-#let annotation-size = 12pt
-
 #set page(width: auto, height: auto, margin: 10pt, fill: none)
 #set text(size: 12pt)
 
 // Each edge pair keeps its color through every stage, so it stays visible which edge of
 // the square becomes which circle on the torus.
 #let rim-color = rgb("#0B5FA5") // vertical edges -> the cylinder rims -> the short circle
-#let seam-color = rgb("#C2570A") // horizontal edges -> the seam -> the long circle
+#let seam-color = rgb("#B04E09") // horizontal edges -> the seam -> the long circle
 #let surface-fill = rgb("#DFE6EF")
 #let mesh-stroke = rgb("#A2AEBD") + 0.3pt
 #let edge-weight = 2.2pt
+#let ink = rgb("#4A5560")
 
 // === orthographic camera, shared by both 3D panels ===
 // The azimuth matters: viewed square-on, a tube's rims collapse to straight lines.
@@ -132,24 +130,11 @@
   }
 }
 
-#let caption(x, body) = content(
-  (x, -2.6),
-  text(size: 14pt, fill: rgb("#4A5560"))[#body],
-  anchor: "north",
-)
+#let caption(x, body) = content((x, -2.6), text(size: 14pt, fill: ink, body), anchor: "north")
 
 #let step-arrow(x, body, paint) = {
-  line(
-    (x, 0),
-    (x + 1.45, 0),
-    stroke: rgb("#4A5560") + 0.9pt,
-    mark: (end: "stealth", fill: rgb("#4A5560"), scale: 0.55),
-  )
-  content(
-    (x + 0.725, 0.2),
-    text(size: annotation-size, fill: paint)[#body],
-    anchor: "south",
-  )
+  line((x, 0), (x + 1.45, 0), stroke: ink + 0.9pt, mark: (end: "stealth", fill: ink, scale: 0.55))
+  content((x + 0.725, 0.2), text(fill: paint, body), anchor: "south")
 }
 
 #canvas({
@@ -164,12 +149,7 @@
     ((-1.85 * cell, 0), (1.85 * cell, 0)),
     ((0, -1.85 * cell), (0, 1.85 * cell)),
   ) {
-    line(
-      from,
-      to,
-      stroke: rgb("#4A5560") + 0.7pt,
-      mark: (end: "stealth", fill: rgb("#4A5560"), scale: 0.5),
-    )
+    line(from, to, stroke: ink + 0.7pt, mark: (end: "stealth", fill: ink, scale: 0.5))
   }
   // shifting this cell by 2pi in either direction lands on a copy of itself
   rect((0, 0), (cell, cell), fill: seam-color.transparentize(90%), stroke: none)
@@ -179,12 +159,12 @@
     ((0, 0), (0, cell), rim-color),
     ((cell, 0), (cell, cell), rim-color),
   ) { line(from, to, stroke: paint + 1.5pt) }
-  content((cell / 2, -0.22), text(size: annotation-size)[$2pi$], anchor: "north")
-  content((cell + 0.16, cell / 2), text(size: annotation-size)[$2pi$], anchor: "west")
+  content((cell / 2, -0.22), $2pi$, anchor: "north")
+  content((cell + 0.16, cell / 2), $2pi$, anchor: "west")
   caption(0, [plane with $2pi$ periodicity])
 
   // === 2. the fundamental domain and its two identifications ===
-  step-arrow(2.55, [one cell], rgb("#4A5560"))
+  step-arrow(2.55, [one cell], ink)
 
   let (square-x, side) = (4.75, 2.15)
   grid(
@@ -208,24 +188,15 @@
     line(at(0), at(1), stroke: paint + edge-weight)
     for idx in range(chevrons) {
       let base = 0.5 + (idx - (chevrons - 1) / 2) * 0.11
-      line(
-        at(base),
-        at(base + 0.012),
-        stroke: paint + edge-weight,
-        mark: (end: "stealth", fill: paint, scale: 0.6),
-      )
+      line(at(base), at(base + 0.012), stroke: paint + edge-weight, mark: (
+        end: "stealth",
+        fill: paint,
+        scale: 0.6,
+      ))
     }
   }
-  content(
-    (square-x - 0.24, 0),
-    text(size: annotation-size, fill: rim-color)[$a$],
-    anchor: "east",
-  )
-  content(
-    (square-x + side / 2, -side / 2 - 0.16),
-    text(size: annotation-size, fill: seam-color)[$b$],
-    anchor: "north",
-  )
+  content((square-x - 0.24, 0), text(fill: rim-color)[$a$], anchor: "east")
+  content((square-x + side / 2, -side / 2 - 0.16), text(fill: seam-color)[$b$], anchor: "north")
   caption(square-x + side / 2, [fundamental domain])
 
   // === 3. glue the horizontal pair -> cylinder ===
@@ -242,15 +213,7 @@
   let torus-x = 17.1
   // The seam closes the long way round; the two rims fuse into one short circle.
   tube_panel(ring-axis(1.32), .5, torus-x, (36, 16), 72, (.60,), (.2,), (.86, .895))
-  content(
-    (torus-x - 0.1, 1.02),
-    text(size: annotation-size, fill: seam-color)[$b$],
-    anchor: "south",
-  )
-  content(
-    (torus-x + 1.62, -0.5),
-    text(size: annotation-size, fill: rim-color)[$a$],
-    anchor: "west",
-  )
+  content((torus-x - 0.1, 1.02), text(fill: seam-color)[$b$], anchor: "south")
+  content((torus-x + 1.62, -0.5), text(fill: rim-color)[$a$], anchor: "west")
   caption(torus-x, [torus])
 })

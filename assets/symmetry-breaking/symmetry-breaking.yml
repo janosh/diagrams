@@ -3,4 +3,5 @@ tags:
 - physics
 - quantum field theory
 - symmetry
-description: A symmetric energy landscape can have an entire family of equally good minima. Choosing one ground state need not preserve the symmetry of the equations.
+description: |
+  Spontaneous symmetry breaking in the Mexican-hat potential $V(\phi) = \lambda (|\phi|^2 - v^2)^2$: the rotationally symmetric state at $\phi = 0$ is an unstable maximum, while the minima form a ring of equally good ground states. Selecting one of them breaks the symmetry. Angular motion along the valley costs no energy (a massless Goldstone mode for a global continuous symmetry), whereas radial motion climbs the potential (the massive Higgs-like mode).

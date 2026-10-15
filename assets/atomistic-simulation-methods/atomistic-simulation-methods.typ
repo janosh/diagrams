@@ -3,27 +3,25 @@
 #let paragraph-size = 14pt
 #let heading-size = 16pt
 
-#let card_body(title, body, caption) = block(
-  width: 100%,
-  inset: 12pt,
-  radius: 8pt,
-  fill: rgb("#cdd3da"),
-  breakable: false,
-)[
-  #text(size: heading-size, weight: "bold", title)
-  #v(8pt)
-  // Measure unconstrained artwork before scaling, including content wider than its card.
-  #layout(size => {
-    let artwork = text(size: label-size, body)
-    std.scale(size.width / measure(artwork).width * 100%, reflow: true, artwork)
-  })
-  #v(7pt)
-  #text(size: paragraph-size, caption)
-]
-
 #let card(title, body, caption) = grid(
   columns: (100%,),
-  card_body(title, body, caption),
+  block(
+    width: 100%,
+    inset: 12pt,
+    radius: 8pt,
+    fill: rgb("#cdd3da"),
+    breakable: false,
+  )[
+    #text(size: heading-size, weight: "bold", title)
+    #v(8pt)
+    // Measure unconstrained artwork before scaling, including content wider than its card.
+    #layout(size => {
+      let artwork = text(size: label-size, body)
+      std.scale(size.width / measure(artwork).width * 100%, reflow: true, artwork)
+    })
+    #v(7pt)
+    #text(size: paragraph-size, caption)
+  ],
 )
 
 #let takeaway(body) = block(
@@ -42,34 +40,23 @@
 // === 1  What is evaluated? ===
 #let figure-0 = canvas(length: 1.7cm, {
   let rows = (
-    (
-      [Classical force field],
-      [positions],
-      [fitted energy formula],
-      [energy + forces],
-      rgb("#d6e9f8"),
-    ),
-    (
-      [ML potential],
-      [local environments],
-      [trained neural model],
-      [energy + forces],
-      rgb("#d3ede5"),
-    ),
+    ([Classical force field], [positions], [fitted energy formula], rgb("#d6e9f8")),
+    ([ML potential], [local environments], [trained neural model], rgb("#d3ede5")),
     (
       [Density functional theory],
       [nuclei + electrons],
       [self-consistent electrons],
-      [energy + forces],
       rgb("#fbe4d4"),
     ),
   )
-  for (idx, (title, input, method, output, color)) in rows.enumerate() {
+  for (idx, (title, input, method, color)) in rows.enumerate() {
     let y = -idx * 1.9
-    for (col, label) in ((0, input), (1, method), (2, output)) {
+    for (col, label) in (input, method, [energy + forces]).enumerate() {
+      // left-align the input boxes so each row's title lines up with the others
       draw.content(
-        (col * 5.2, y),
+        if col == 0 { (-1.3, y) } else { (col * 5.2, y) },
         label,
+        anchor: if col == 0 { "west" } else { "center" },
         frame: "rect",
         padding: 10pt,
         fill: color,
@@ -77,17 +64,13 @@
         name: str(idx) + "-" + str(col),
       )
     }
-    draw.content(
-      (rel: (0, .45), to: str(idx) + "-0.north-west"),
-      title,
-      anchor: "west",
-    )
+    draw.content((rel: (0, .45), to: str(idx) + "-0.north-west"), title, anchor: "west")
     for col in range(2) {
       draw.line(
         str(idx) + "-" + str(col) + ".east",
         str(idx) + "-" + str(col + 1) + ".west",
         mark: (end: "stealth"),
-        stroke: gray + 1pt,
+        stroke: rgb("#6b7685") + 1pt,
       )
     }
   }

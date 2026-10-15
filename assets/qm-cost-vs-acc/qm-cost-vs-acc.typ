@@ -18,26 +18,24 @@
 
 #canvas({
   let plot_x(exponent) = (exponent - 2) * 2.3
-  content((0, 6.95), text(size: 14pt, scope), anchor: "west")
+  let (axis_width, axis_height) = (13.2, 6.4)
+  content((0, axis_height + 0.55), text(size: 14pt, scope), anchor: "west")
 
   let arrow = (mark: (end: "stealth", scale: 0.7), stroke: 0.9pt)
-  line((0, 0), (13.2, 0), ..arrow)
-  line((0, 0), (0, 6.4), ..arrow)
-  content((0.15, 6.25), [higher accuracy], anchor: "west")
-  content((0.15, 5.75), text(size: 12pt)[qualitative], anchor: "west")
+  line((0, 0), (axis_width, 0), ..arrow)
+  line((0, 0), (0, axis_height), ..arrow)
+  content((0.15, axis_height - 0.15), [higher accuracy], anchor: "west")
+  content((0.15, axis_height - 0.65), [qualitative], anchor: "west")
+  content((axis_width / 2, -1.0), text(size: 14pt)[Conventional scaling · $N$ = basis functions])
 
-  for exponent in range(3, 8) {
+  // One method per scaling exponent: axis tick, label and schematic point
+  for (name, exponent, height, color) in methods {
     let axis_x = plot_x(exponent)
     line((axis_x, -0.08), (axis_x, 0.08), stroke: 0.7pt)
     content((axis_x, -0.4), $O(N^#exponent)$)
+    circle((axis_x, height), radius: 0.085, fill: color, stroke: none)
+    content((axis_x, height + 0.36), text(weight: "bold", name))
+    if name == "Semilocal DFT" { content((axis_x, height - 0.45), [functional-dependent]) }
   }
-  content((6.6, -1.0), text(size: 14pt)[Conventional scaling · $N$ = basis functions])
-
-  for method in methods {
-    let point = (plot_x(method.exponent), method.height)
-    circle(point, radius: 0.085, fill: method.color, stroke: none)
-    content((point.at(0), point.at(1) + 0.36), text(weight: "bold", method.name))
-  }
-  content((plot_x(3), 2.95), text(size: 12pt)[functional-dependent])
-  content((6.6, -1.8), text(size: 14pt, qualification))
+  content((axis_width / 2, -1.8), text(size: 14pt, qualification))
 })

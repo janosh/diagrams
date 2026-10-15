@@ -25,6 +25,9 @@
 #let atom-inert = rgb("#9AA4AE")
 #let ligand-color = if dark { rgb("#6FBF7C") } else { rgb("#5FA86B") }
 
+// Grey annotation glyph: axis letters, k-point names, symmetry markers.
+#let annotation(body) = text(fill: ink.annotation, body)
+
 #let spin-paint(angle) = if calc.sin(angle) >= 0 { spin-up } else { spin-down }
 
 // Solid for the up channel, dashed for the down channel, so a degenerate pair drawn one on
@@ -54,17 +57,13 @@
   )
 }
 
+// Flat discs with a darker rim: a lit-sphere highlight would invert into a dark pit under the
+// site's dark-mode filter.
 #let atom(pos, color, radius: 0.15, stroke-width: 0.3pt) = circle(
   pos,
   radius: radius,
   stroke: stroke-width + color.darken(35%),
-  fill: gradient.radial(
-    color.lighten(70%),
-    color,
-    color.darken(20%),
-    focal-center: (32%, 26%),
-    focal-radius: 8%,
-  ),
+  fill: color,
 )
 
 #let moment-site(pos, angle, len: 0.62, radius: 0.15, color: atom-inert) = {
@@ -87,9 +86,9 @@
 #let ligand-cage(pos, angle, half-len: 0.36, radius: 0.08) = {
   let (cx, cy) = (pos.at(0), pos.at(1))
   let (dx, dy) = (calc.cos(angle) * half-len, calc.sin(angle) * half-len)
-  line((cx - dx, cy - dy), (cx + dx, cy + dy), stroke: 0.5pt + ligand-color.darken(10%))
-  atom((cx - dx, cy - dy), ligand-color, radius: radius)
-  atom((cx + dx, cy + dy), ligand-color, radius: radius)
+  let ends = ((cx - dx, cy - dy), (cx + dx, cy + dy))
+  line(..ends, stroke: 0.5pt + ligand-color.darken(10%))
+  for end in ends { atom(end, ligand-color, radius: radius) }
 }
 
 // Typst has no RNG at compile time, so the disordered paramagnetic supercell uses a hash.
@@ -119,10 +118,7 @@
 // Clamped straight line: the linear, remanence-free response of everything that is not a
 // ferro- or ferrimagnet. A negative slope is a diamagnet.
 #let linear-response(slope) = (
-  (
-    h => calc.max(-1.0, calc.min(1.0, slope * h)),
-    (paint: ink.annotation, thickness: 1.2pt),
-  ),
+  (h => calc.max(-1.0, calc.min(1.0, slope * h)), (paint: ink.annotation, thickness: 1.2pt)),
 )
 
 // Two tanh branches offset by the coercive field: the textbook hysteresis loop.
@@ -210,12 +206,11 @@
 #let frame-stroke = 0.6pt + (if dark { rgb("#39424E") } else { rgb("#C3CAD2") })
 
 // The three orders that are never mistaken for an altermagnet stack down the left column,
-// and the three collinear orders
-// run as rows against the four observables that tell them apart.
+// and the three collinear orders run as rows against the four observables that tell them apart.
 #let row-y = (7.8, 0.0, -7.8)
 #let frame-half = 3.8
-// panels sit slightly high in their row so the note below them has room
-#let panel-rise = 0.9
+// panels sit slightly high in their row so the note below them has room; titles top each row
+#let (panel-rise, title-rise) = (0.9, 3.2)
 #let note-drop = 0.75
 #let (side-x, side-half) = (-11, 3.3)
 #let side-text-width = (2 * side-half - 0.3) * 1cm
@@ -239,6 +234,11 @@
   stroke: frame-stroke,
   radius: 0.12,
 )
+// Draw `body` with its origin moved to `origin`.
+#let place-at(origin, body) = scope({
+  translate(origin)
+  body
+})
 
 // === Magnetization response M(H) ===
 
@@ -247,8 +247,8 @@
   let tip = mark-to(ink.annotation, scale: 0.3)
   line((-sx - 0.12, 0), (sx + 0.18, 0), stroke: axis-stroke, mark: tip)
   line((0, -sy - 0.12), (0, sy + 0.18), stroke: axis-stroke, mark: tip)
-  content((sx + 0.28, -0.02), text(size: 16pt, fill: ink.annotation)[$H$])
-  content((-0.1, sy + 0.28), text(size: 16pt, fill: ink.annotation)[$M$], anchor: "east")
+  content((sx + 0.28, -0.02), annotation[$H$])
+  content((-0.1, sy + 0.28), annotation[$M$], anchor: "east")
   for (func, stroke) in branches {
     plot-curve(func, sx, sy, stroke: stroke)
   }
@@ -263,25 +263,19 @@
   for col-idx in range(3) {
     paired-site((-1.0 + col-idx * 0.48, 0), radius: 0.18, len: 0.28, offset: 0.075)
   }
-  line(
-    (0.62, -0.52),
-    (0.62, 0.52),
-    stroke: 2pt + ink.hairline,
-    mark: mark-to(ink.hairline, scale: 0.42),
-  )
-  content((0.62, 0.72), text(size: 16pt, fill: ink.annotation)[$bold(B)$])
-  spin((1.12, 0.06), -90deg, len: 0.5, paint: ink.annotation, thickness: 1.2pt)
-  content((1.14, -0.44), text(size: 16pt, fill: ink.annotation)[$bold(m)_"orb"$])
+  line((0.62, -0.52), (0.62, 0.52), stroke: 2pt + ink.hairline, mark: mark-to(
+    ink.hairline,
+    scale: 0.42,
+  ))
+  content((0.62, 0.72), annotation[$bold(B)$])
+  spin((1.26, 0.06), -90deg, len: 0.5, paint: ink.annotation, thickness: 1.2pt)
+  content((1.36, -0.5), annotation[$bold(m)_"orb"$])
 }
 
 // The dashed box is load-bearing: it says the vanishing moment is a supercell average, not
 // an absence of moments.
 #let para-icon = {
-  rect(
-    (-1.0, -0.58),
-    (1.0, 0.58),
-    stroke: (paint: ink.hairline, dash: "dashed", thickness: 0.5pt),
-  )
+  rect((-1.0, -0.58), (1.0, 0.58), stroke: (paint: ink.hairline, dash: "dashed", thickness: 0.5pt))
   for col-idx in range(6) {
     for row-idx in range(3) {
       spin(
@@ -338,12 +332,8 @@
   rect((-band-sx, -band-sy), (band-sx, band-sy), stroke: 0.6pt + ink.hairline)
   line((0, -band-sy), (0, band-sy), stroke: hairline)
   line((-band-sx, 0), (band-sx, 0), stroke: (..hairline, dash: "dashed"))
-  content((band-sx + 0.3, 0), text(size: 16pt, fill: ink.annotation)[$E_F$])
-  content(
-    (-band-sx - 0.06, band-sy + 0.04),
-    text(size: 16pt, fill: ink.annotation)[$E$],
-    anchor: "south-east",
-  )
+  content((band-sx + 0.3, 0), annotation[$E_F$])
+  content((-band-sx - 0.06, band-sy + 0.04), annotation[$E$], anchor: "south-east")
   for (func, stroke) in bands {
     plot-curve(func, band-sx, band-sy, stroke: stroke)
   }
@@ -351,30 +341,24 @@
   // along the two diagonals differ by a reciprocal lattice vector and are the same k point,
   // so naming them M and M' would imply an inequivalence that does not exist.
   for (x, glyph) in ((-band-sx, $(-k, k)$), (0, $Gamma$), (band-sx, $(k, k)$)) {
-    content((x, -band-sy - 0.08), text(size: 16pt, fill: ink.annotation, glyph), anchor: "north")
+    content((x, -band-sy - 0.08), annotation(glyph), anchor: "north")
   }
   if split-at != none {
     let ys = bands.map(band => band.at(0)(split-at) * band-sy)
     let (upper, lower) = (calc.max(..ys), calc.min(..ys))
     let x = split-at * band-sx
-    line(
-      (x, lower),
-      (x, upper),
-      stroke: annotate,
-      mark: (..mark-to(ink.annotation, scale: 0.35), start: "stealth"),
-    )
-    content(
-      (x + 0.16, (upper + lower) / 2),
-      text(size: 16pt, fill: ink.annotation)[$Delta$],
-      anchor: "west",
-    )
+    line((x, lower), (x, upper), stroke: annotate, mark: (
+      ..mark-to(ink.annotation, scale: 0.35),
+      start: "stealth",
+    ))
+    content((x + 0.16, (upper + lower) / 2), annotation[$Delta$], anchor: "west")
   }
 }
 
 #let metal(s) = -0.6 * calc.cos(calc.pi * s)
 // Exchange splitting of a ferromagnet: rigid, so it does not depend on k at all.
 #let ferro-split = 0.5
-// The periodic d_xy form sin(k_x) sin(k_y) walked out along k = (pi|s|, pi s): zero at
+// The periodic d_xy form sin(k_x) sin(k_y) walked out along k = (pi s, pi|s|): zero at
 // Gamma and at the zone edge, opposite sign on the two C4-related diagonals.
 #let alter-split(s) = 0.58 * calc.sin(calc.pi * calc.abs(s)) * calc.sin(calc.pi * s)
 
@@ -403,15 +387,15 @@
   }
   content(
     (0, 0),
-    text(size: 16pt, fill: ink.annotation)[$Gamma$],
+    annotation[$Gamma$],
     frame: "rect",
     fill: if dark { page-fill } else { rgb("#cdd3da") },
     stroke: none,
     padding: 0.5pt,
   )
   contours
-  content((bz-size / 2 + 0.22, 0), text(size: 16pt)[$k_x$])
-  content((0, bz-size / 2), text(size: 16pt)[$k_y$], anchor: "south")
+  content((bz-size / 2 + 0.22, 0), $k_x$)
+  content((0, bz-size / 2), $k_y$, anchor: "south")
 }
 
 #canvas({
@@ -423,7 +407,7 @@
       [Diamagnetism],
       dia-icon,
       linear-response(-0.3),
-      [$bold(m)_"orb"$ opposes $bold(B)$, so $chi < 0$ \ closed shells, $|chi| tilde 10^(-5)$],
+      [closed shells, $bold(m)_"orb"$ opposes $bold(B)$ \ $chi tilde -10^(-5) < 0$],
     ),
     (
       [Paramagnetism],
@@ -435,21 +419,15 @@
       [Ferrimagnetism],
       ferri-icon,
       hysteresis(0.55, 0.3),
-      [antiparallel but $|bold(m)_A| != |bold(m)_B|$ \ $M_s = |bold(M)_A + bold(M)_B| != 0$],
+      [antiparallel but $|bold(m)_A| != |bold(m)_B|$, \ so $|bold(M)_A + bold(M)_B| != 0$],
     ),
   )
   for (idx, (name, icon, branches, note)) in side.enumerate() {
     let y = row-y.at(idx)
     cell-frame(side-x - side-half, side-x + side-half, y)
-    content((side-x, y + 3.2), text(weight: "bold", size: 21pt, name))
-    scope({
-      translate((side-x - 1.6, y + 0.8))
-      icon
-    })
-    scope({
-      translate((side-x + 1.5, y + 0.8))
-      response-cell(branches, sx: 0.6, sy: 0.44)
-    })
+    content((side-x, y + title-rise), text(weight: "bold", size: 21pt, name))
+    place-at((side-x - 1.6, y + 0.8), icon)
+    place-at((side-x + 1.5, y + 0.8), response-cell(branches, sx: 0.6, sy: 0.44))
     content((side-x, y - 0.66), caption-text(note, width: side-text-width), anchor: "north")
   }
 
@@ -482,11 +460,7 @@
         crystal(up => 45deg)
         let t-y = -0.5 * cell - 0.5
         line((-1.5 * cell, t-y), (-0.5 * cell, t-y), stroke: annotate, mark: annotate-mark)
-        content(
-          (-1.5 * cell - 0.12, t-y),
-          text(size: 16pt, fill: ink.annotation)[$bold(t)$],
-          anchor: "east",
-        )
+        content((-1.5 * cell - 0.12, t-y), annotation[$bold(t)$], anchor: "east")
       },
       structure-note: [identical ligand axes],
       branches: linear-response(0.4),
@@ -513,7 +487,7 @@
           stroke: annotate,
           mark: annotate-mark,
         )
-        content((0, 0), text(size: 16pt, fill: ink.annotation)[$C_4$])
+        content((0, 0), annotation[$C_4$])
       },
       structure-note: [ligand axes rotated $90degree$],
       branches: linear-response(0.4),
@@ -550,11 +524,7 @@
   for (idx, order) in orders.enumerate() {
     let y = row-y.at(idx)
     cell-frame(right-x0, right-x1, y)
-    content(
-      (label-x, y + 3.2),
-      text(weight: "bold", size: 21pt, order.name),
-      anchor: "west",
-    )
+    content((label-x, y + title-rise), text(weight: "bold", size: 21pt, order.name), anchor: "west")
     content(
       (label-x, y),
       box(width: label-width, text(size: 19pt, fill: ink.annotation, par(
@@ -570,10 +540,7 @@
       (bz-panel(order.form, order.contours, nodal: order.nodal), order.bz-note),
     )
     for (col, (panel, note)) in obs-columns.zip(cells) {
-      scope({
-        translate((col.x, y + panel-rise))
-        panel
-      })
+      place-at((col.x, y + panel-rise), panel)
       content((col.x, y - note-drop), caption-text(note, width: col.note-width), anchor: "north")
     }
   }

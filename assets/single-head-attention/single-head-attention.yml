@@ -8,4 +8,4 @@ tags:
   - attention is all you need
   - transformer
 description: |
-  Flow diagram of [single-head attention](../self-attention) illustrating the equation $\displaystyle \mathrm{Attention}(Q, K, V) = \mathrm{softmax}_\text{row} \left( \frac{Q K^\top}{\sqrt{d}} \right) V$ with border colors to indicate tensor dimensions.
+  Flow diagram of [single-head attention](../self-attention) illustrating the equation $\displaystyle \mathrm{Attention}(Q, K, V) = \mathrm{softmax}_\text{row} \left( \frac{Q K^\top}{\sqrt{d}} \right) V$. The colored bars along each matrix's top and left edges indicate its column and row dimensions, with equal colors marking equal sizes: teal for the number of queries, red for the number of keys and values, mustard for the key dimension $d$ and orange for the value dimension.

@@ -54,59 +54,44 @@
 #set text(font: "Avenir Next", size: paragraph-size, fill: rgb("#19324f"))
 #set par(leading: 0.55em)
 
-// === 1  Common nonlinearities ===
-#let figure-0 = [
-  #let relu(x) = if x < 0 { 0 } else { x }
-  #let gelu(x) = (
-    0.5 * x * (1 + calc.tanh(calc.sqrt(2 / calc.pi) * (x + 0.044715 * calc.pow(x, 3))))
-  )
-  #let leaky-relu(x) = if x < 0 { 0.01 * x } else { x }
-  #let sigmoid(x) = 1 / (1 + calc.exp(-x))
-  #let tanh(x) = (calc.exp(x) - calc.exp(-x)) / (calc.exp(x) + calc.exp(-x))
+#let axis-mark = (end: "stealth", fill: black)
+#let y-axis-style = (mark: axis-mark, label: (anchor: "north-west", offset: -0.2))
 
-  #canvas(length: 1.21cm, {
-    draw.set-style(legend: (fill: rgb("#cdd3da")))
-    let axis-mark = (end: "stealth", fill: black)
-    draw.set-style(axes: (
-      x: (mark: axis-mark),
-      y: (mark: axis-mark, label: (anchor: "north-west", offset: -0.2)),
-    ))
-    plot.plot(
-      size: (8, 5),
-      y-tick-step: 1,
-      x-tick-step: 2,
-      legend: "inner-north-west",
-      // Compact legend with a thin border.
-      legend-style: (item: (spacing: 0.15), padding: 0.15, stroke: 0.5pt),
-      axis-style: "left",
-      x-grid: true,
-      y-grid: true,
-      {
-        let curves = (
-          ("ReLU", relu, rgb("#0B5FA5") + 1.5pt),
-          ("GELU", gelu, rgb("#C2570A") + 1.5pt),
-          ("Leaky ReLU", leaky-relu, rgb("#12793F") + 1.5pt),
-          ("Sigmoid", sigmoid, rgb("#A81E7A") + 1.5pt),
-          // Dashes distinguish the less separable purple curve.
-          ("Tanh", tanh, (paint: rgb("#7A3E9D"), thickness: 1.5pt, dash: "dashed")),
-        )
-        for (key, func, stroke) in curves {
-          plot.add(style: (stroke: stroke), domain: (-4, 4), func, label: key)
-        }
-      },
-    )
-  })
-]
+// === 1  Common nonlinearities ===
+#let nonlinearities = canvas(length: 1.21cm, {
+  draw.set-style(legend: (fill: rgb("#cdd3da")), axes: (x: (mark: axis-mark), y: y-axis-style))
+  let gelu(x) = 0.5 * x * (1 + calc.tanh(calc.sqrt(2 / calc.pi) * (x + 0.044715 * calc.pow(x, 3))))
+  plot.plot(
+    size: (8, 5),
+    y-tick-step: 1,
+    x-tick-step: 2,
+    legend: "inner-north-west",
+    // Compact legend with a thin border.
+    legend-style: (item: (spacing: 0.15), padding: 0.15, stroke: 0.5pt),
+    axis-style: "left",
+    x-grid: true,
+    y-grid: true,
+    for (key, func, stroke) in (
+      ("ReLU", x => if x < 0 { 0 } else { x }, rgb("#0B5FA5") + 1.5pt),
+      ("GELU", gelu, rgb("#C2570A") + 1.5pt),
+      ("Leaky ReLU", x => if x < 0 { 0.01 * x } else { x }, rgb("#12793F") + 1.5pt),
+      ("Sigmoid", x => 1 / (1 + calc.exp(-x)), rgb("#A81E7A") + 1.5pt),
+      // Dashes distinguish the less separable purple curve.
+      ("Tanh", calc.tanh, (paint: rgb("#7A3E9D"), thickness: 1.5pt, dash: "dashed")),
+    ) {
+      plot.add(style: (stroke: stroke), domain: (-4, 4), func, label: key)
+    },
+  )
+})
 
 // === 2  Tanh: linear center, saturated tails ===
-#let figure-1 = canvas(length: 1.3cm, {
-  draw.set-style(legend: (fill: rgb("#cdd3da")))
-  let axis-mark = (end: "stealth", fill: black)
+#let tanh-saturation = canvas(length: 1.3cm, {
+  // Origin label goes in the empty upper-left quadrant, clear of the curve.
   draw.set-style(axes: (
+    shared-zero: [],
     x: (mark: axis-mark, label: (anchor: "south-east", offset: -0.2)),
-    y: (mark: axis-mark, label: (anchor: "north-west", offset: -0.2)),
+    y: y-axis-style,
   ))
-
   plot.plot(
     size: (8, 5),
     x-label: $x$,
@@ -119,21 +104,15 @@
     y-tick-step: 0.5,
     axis-style: "school-book",
     {
-      // Main tanh curve
-      plot.add(
-        style: (stroke: blue + 1.5pt),
-        domain: (-2, 2),
-        samples: 100,
-        x => calc.tanh(x),
-      )
-
-      // Dashed line y=x from -1 to 1
+      plot.add(style: (stroke: blue + 1.5pt), domain: (-2, 2), samples: 100, calc.tanh)
+      // Dashed tangent y = x at the origin
       plot.add(
         style: (stroke: (dash: "dashed", paint: blue, thickness: 0.5pt)),
         samples: 2,
         domain: (-1.4, 1.4),
-        x => { x },
+        x => x,
       )
+      plot.annotate(draw.content((0, 0), $0$, anchor: "south-east", padding: 0.04))
     },
   )
 })
@@ -143,12 +122,12 @@ Activation functions turn a linear network into a nonlinear model. Compare their
 #card-grid(
   (
     [1  Common nonlinearities],
-    figure-0,
+    nonlinearities,
     [ReLU clips negative inputs; leaky ReLU keeps a small negative slope. GELU gates smoothly. Sigmoid maps to $(0,1)$ and tanh to $(-1,1)$.],
   ),
   (
     [2  Tanh: linear center, saturated tails],
-    figure-1,
+    tanh-saturation,
     [Near zero, $tanh x approx x$. Far from zero, the output approaches $+1$ or $-1$ and its slope approaches zero.],
   ),
 )

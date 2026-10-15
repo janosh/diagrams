@@ -56,23 +56,20 @@
 #let worldsheet(kind) = canvas(
   length: if kind == "sphere" { 2.9cm } else { 3.35cm },
   {
-    let blue = rgb("#377db5")
-    let teal = rgb("#008580")
+    let (blue, teal, radius) = (rgb("#377db5"), rgb("#008580"), 1.65)
     if kind == "sphere" {
-      draw.circle((0, 0), radius: 1.65, fill: rgb("#bfd0de"), stroke: blue + 1pt)
-      draw.arc((0, 0), radius: (1.65, .5), start: 0deg, stop: 180deg, anchor: "origin", stroke: (
-        paint: blue,
-        dash: "dashed",
-      ))
-      draw.arc(
-        (0, 0),
-        radius: (1.65, .5),
-        start: 180deg,
-        stop: 360deg,
-        anchor: "origin",
-        stroke: blue + 1pt,
-      )
-      draw.content((0, -2.15), [$g=0, b=0, chi=2$])
+      draw.circle((0, 0), radius: radius, fill: rgb("#bfd0de"), stroke: blue + 1pt)
+      // Equator: dashed back half, solid front half.
+      for (start, stroke) in ((0deg, (paint: blue, dash: "dashed")), (180deg, blue + 1pt)) {
+        draw.arc(
+          (0, 0),
+          radius: (radius, .5),
+          start: start,
+          stop: start + 180deg,
+          anchor: "origin",
+          stroke: stroke,
+        )
+      }
     } else if kind == "torus" {
       draw.circle((0, 0), radius: (2, 1.3), fill: rgb("#bfd0de"), stroke: blue + 1pt)
       draw.circle((0, .1), radius: (.85, .4), fill: rgb("#cdd3da"), stroke: blue + 1pt)
@@ -84,16 +81,19 @@
         anchor: "origin",
         stroke: blue + 1pt,
       )
-      draw.content((0, -2.15), [$g=1, b=0, chi=0$])
-    } else if kind == "disk" {
-      draw.circle((0, 0), radius: 1.65, fill: rgb("#bfd5cc"), stroke: teal + 2pt)
-      draw.content((0, 0), [one boundary])
-      draw.content((0, -2.15), [$g=0, b=1, chi=1$])
     } else {
-      draw.circle((0, 0), radius: 1.65, fill: rgb("#bfd5cc"), stroke: teal + 2pt)
-      draw.circle((0, 0), radius: .8, fill: rgb("#cdd3da"), stroke: teal + 2pt)
-      draw.content((0, -2.15), [$g=0, b=2, chi=0$])
+      // Teal outlines are worldsheet boundaries.
+      draw.circle((0, 0), radius: radius, fill: rgb("#bfd5cc"), stroke: teal + 2pt)
+      if kind == "disk" {
+        draw.content((0, 0), [one boundary])
+      } else {
+        draw.circle((0, 0), radius: .8, fill: rgb("#cdd3da"), stroke: teal + 2pt)
+      }
     }
+    let (genus, boundaries) = (sphere: (0, 0), torus: (1, 0), disk: (0, 1), annulus: (0, 2)).at(
+      kind,
+    )
+    draw.content((0, -2.15), $g=#genus, b=#boundaries, chi=#(2 - 2 * genus - boundaries)$)
   },
 )
 
@@ -110,7 +110,6 @@ A moving string sweeps out a two-dimensional worldsheet. Perturbation theory sum
     worldsheet("torus"),
     [Add one handle to obtain the next closed-string loop topology. The central opening is a handle, not a boundary edge.],
   ),
-
   (
     [Open sector: disk],
     worldsheet("disk"),

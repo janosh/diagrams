@@ -13,7 +13,6 @@ import yaml
 # Special exceptions where folder name doesn't need to match param-cased title
 IGNORE_SET: Final[set[str]] = {
     "qm-cost-vs-acc",
-    "pie-physics-chemistry-ml",
 }
 
 # Mapping of abbreviations to their expansions

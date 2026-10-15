@@ -117,24 +117,10 @@
 }
 
 // === Dragon Curve ===
-#let figure-0 = curve-stages(
-  2cm,
-  (5, 9, 13),
-  square-steps,
-  ("X": "X+YF+", "Y": "-FX-Y"),
-  "FX",
-  "F",
-)
+#let figure-0 = curve-stages(2cm, (5, 9, 13), square-steps, ("X": "X+YF+", "Y": "-FX-Y"), "FX", "F")
 
 // === Koch Curve ===
-#let figure-1 = curve-stages(
-  7.9cm,
-  (2, 3, 4),
-  hexagonal-steps,
-  ("F": "F+F--F+F"),
-  "F",
-  "F",
-)
+#let figure-1 = curve-stages(7.9cm, (2, 3, 4), hexagonal-steps, ("F": "F+F--F+F"), "F", "F")
 
 // === 3  Gosper Curve ===
 #let figure-2 = curve-stages(
@@ -146,7 +132,7 @@
   "AB",
 )
 
-// === 4  Sierpinski Curve ===
+// === 4  Sierpiński Arrowhead Curve ===
 // Even orders keep the same triangle orientation.
 #let figure-3 = curve-stages(
   2.35cm,
@@ -157,10 +143,9 @@
   "AB",
 )
 
-// === 5  Sierpinski Carpet ===
+// === 5  Sierpiński Carpet ===
 #let figure-4 = [
   #let panel-size = 3.5cm
-  #let stages = (2, 3, 4)
 
   // Subdivide a square into 3×3 cells, drop the center, and recurse until unit cells.
   #let carpet(size, origin-x: 0.0, origin-y: 0.0) = {
@@ -189,7 +174,7 @@
     canvas(length: panel-size / size, carpet(size))
   }
 
-  #stage-panels(panel-size, stages, draw-stage)
+  #stage-panels(panel-size, (2, 3, 4), draw-stage)
 ]
 
 // === 6  Eisenstein ===
@@ -202,28 +187,16 @@
   )
 
   #let complex-from-angle(angle) = (calc.cos(angle), calc.sin(angle))
-
   #let omega = complex-from-angle(2.0 * calc.pi / 3.0)
 
-  #let eisenstein-vertices = (
-    (0.0, 0.0),
-    (1.0, 0.0),
-    omega,
-    complex-multiply(omega, omega),
-  )
+  #let eisenstein-vertices = ((0.0, 0.0), (1.0, 0.0), omega, complex-multiply(omega, omega))
 
+  // Grow the seed vertices (paper §2.1) for stages >= 2, then undo the last generation's rotation.
   #let eisenstein-positions(stage) = {
-    // Stage 1 is the seed vertices (paper §2.1). The final -r_p display rotation
-    // only applies after iterative growth (stage >= 2).
-    if stage <= 1 {
-      return eisenstein-vertices
-    }
     let positions = eisenstein-vertices
-    let last-rotation = complex-from-angle(0.0)
     for generation in range(2, stage + 1) {
       let spacing = calc.pow(2, generation - 1)
       let rotation = complex-from-angle((generation - 1) * calc.pi / 3.0)
-      last-rotation = rotation
       let next-positions = ()
       for vertex in eisenstein-vertices {
         let shift = complex-multiply(rotation, vertex).map(value => spacing * value)
@@ -233,10 +206,11 @@
       }
       positions = next-positions
     }
-    let negative-rotation = last-rotation.map(value => -1.0 * value)
+    let negative-rotation = complex-from-angle((stage - 1) * calc.pi / 3.0).map(value => (
+      -1.0 * value
+    ))
     positions.map(point => complex-multiply(negative-rotation, point))
   }
-
 
   #let draw-stage(stage) = {
     let points = eisenstein-positions(stage)
@@ -259,10 +233,7 @@
     })
   }
 
-
-  #let stages = (2, 3, 4)
-
-  #stage-panels(panel-size, stages, draw-stage)
+  #stage-panels(panel-size, (2, 3, 4), draw-stage)
 ]
 
 Simple repeated rules create intricate shapes. Within each row the iteration increases from left to right; each panel is resized to make its structure visible.
@@ -290,15 +261,15 @@ Simple repeated rules create intricate shapes. Within each row the iteration inc
     [A seven-part replacement on a hexagonal grid builds a denser curve. The two drawing symbols have different replacement rules.],
   ),
   (
-    [4  Sierpinski Curve],
+    [4  Sierpiński Arrowhead],
     figure-3,
-    [A recursive triangular path grows on a hexagonal grid. Keep this curve distinct from the filled Sierpiński triangle and the square carpet.],
+    [A recursive path of 60-degree turns on a hexagonal grid. It never crosses itself, yet in the limit traces out the Sierpiński triangle.],
   ),
 )
 #v(12pt)
 #card-grid(
   (
-    [5  Sierpinski Carpet],
+    [5  Sierpiński Carpet],
     figure-4,
     [Split a square into nine equal cells; remove the middle cell and repeat on the eight survivors. Black marks what remains.],
   ),

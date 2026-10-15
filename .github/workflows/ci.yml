@@ -35,14 +35,14 @@ jobs:
       - uses: typst-community/setup-typst@v5
       # Only prek needs uv: in the unit job, setup-uv's post step fails on a cache miss
       # because nothing ever creates its cache directory.
-      - uses: astral-sh/setup-uv@v10.0.1
+      - uses: astral-sh/setup-uv@v10.2.0
         if: matrix.task == 'lint'
         with:
           python-version: '3.14'
       - uses: actions/setup-node@v7
         with:
           node-version: 24
-      - uses: actions/cache@v5
+      - uses: actions/cache@v6
         with:
           path: |
             ~/.cache/pnpm
@@ -64,21 +64,24 @@ jobs:
 
       - name: Run prek
         if: matrix.task == 'lint'
-        uses: j178/prek-action@v3.0.0
+        uses: j178/prek-action@main
 
   python-tests:
-    # Artwork uses macOS fonts, including Avenir Next; match the authoring environment.
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
-      - uses: astral-sh/setup-uv@v10.0.1
+      - uses: astral-sh/setup-uv@v10.2.0
         with:
           python-version: '3.14'
       - uses: typst-community/setup-typst@v5
+      # apt only ships ImageMagick 6 (no `magick` CLI); the runner's Homebrew has 7 with AVIF.
       - name: Install image tools
-        run: brew install imagemagick zopfli
+        run: |
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          brew install imagemagick zopfli
+          echo "$(brew --prefix)/bin" >> "$GITHUB_PATH"
       - name: Python tests
         run: uv run --no-project --with pytest --with pyyaml pytest -q
 
@@ -105,7 +108,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24
-      - uses: actions/cache@v5
+      - uses: actions/cache@v6
         with:
           path: |
             ~/.cache/pnpm
@@ -140,7 +143,7 @@ jobs:
         working-directory: site
       - name: Upload visual failure report
         if: failure()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: visual-regression-report
           path: |

@@ -7,4 +7,4 @@ tags:
   - time ordering
   - propagators
 description: >-
-  Visualization of the six possible orderings of four spacetime points $y_1, y_2, y_3, y_4$ on the real line, relevant to the different [time-ordering prescriptions](../qft-propagators) in quantum field theory.
+  The six cyclic orderings of four points $y_1, y_2, y_3, y_4$ on the real line compactified at $\pm\infty$, relevant to the different [operator-ordering prescriptions](../qft-propagators) of four-point correlators in quantum field theory. A conformal map sends three of the points to $0, 1, \infty$, so each ordering is fixed by whether $y_1$ or $y_2$ sits at $0$ (left vs. right column) and by which of the three intervals, marked by the brace, contains $y_4$.

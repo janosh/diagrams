@@ -1,7 +1,7 @@
-title: Thermodynamic Ensemble transforms
+title: Thermodynamic Ensemble Transforms
 tags:
   - physics
   - thermodynamics
   - statistical mechanics
 description: |
-  Equivalence of thermodynamic ensembles through Laplace and Legendre transforms.
+  Microcanonical, canonical and grand canonical partition functions are linked by Laplace transforms in energy $E$ and particle number $N$, while their intensive thermodynamic potentials (entropy per particle, free energy per particle, grand potential per volume) are linked by the corresponding Legendre transforms.

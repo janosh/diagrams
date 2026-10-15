@@ -8,5 +8,4 @@ tags:
   - shock wave
   - lilaq
 description: |
-  In supersonic flow shock waves can occur due to small disturbances of the flow.
-  A θ-β-M Diagram shows the relations between the deflection angle θ, the shock angle β and the Mach number M for an oblique shock.
+  When a supersonic flow is turned by a wedge or compression corner, it passes through an oblique shock. The θ-β-M diagram relates the flow deflection angle θ, the shock angle β and the upstream Mach number M for a diatomic ideal gas (κ = 1.4). For each M, deflections below the maximum have two solutions: the weak shock (solid, smaller β) and the strong shock (dashed, larger β). The solid line through the curve tips marks the maximum deflection, beyond which the shock detaches, and the dash-dotted line marks where the downstream Mach number $\hat{M}$ equals 1.
