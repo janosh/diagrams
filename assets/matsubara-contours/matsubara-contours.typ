@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, decorations, draw
+#import "@preview/cetz:0.5.3": canvas, decorations, draw
 #import draw: arc, circle, content, line
 #let label-size = 12pt
 #let paragraph-size = 14pt
@@ -77,12 +77,14 @@
     )),
 )
 
-#let thermal-poles(extent, label-padding: (x: 3pt)) = {
+// Labels start `label-x` right of the axis (past any contour hugging it) plus a small gap.
+#let thermal-poles(extent, label-x: 0) = {
   // Dots on the imaginary axis at every non-zero Matsubara frequency i omega_n.
   for n in range(-extent, extent + 1).filter(n => n != 0) {
     let name = "freq-" + str(n)
     circle((0, n), radius: 0.03, fill: black, name: name)
-    content(name, $i omega_#text(size: 0.7em)[#n]$, anchor: "west", padding: label-padding)
+    // 6pt clears the arrowheads on a contour line at label-x
+    content((label-x, n), $i omega_#text(size: 0.7em)[#n]$, anchor: "west", padding: 6pt)
   }
   circle((0, 0), radius: 0.03, fill: black, name: "origin")
 }
@@ -99,7 +101,7 @@
   for (idx, (pos, anchor)) in sites.enumerate(start: 1) {
     let name = "p" + str(idx)
     circle(pos, radius: 0.05, fill: black, name: name)
-    content(name, $p_#idx$, anchor: anchor, padding: 2pt)
+    content(name, $p_#idx$, anchor: anchor, padding: 4pt)
     // p3 sits far to the left, so aim its hairline at the label's west edge
     let target = if idx == 3 { "poles-label.west" } else { "poles-label" }
     line(target, name, stroke: leader)
@@ -234,10 +236,10 @@
   content("x-axis.end", $"Re"(p_0)$, anchor: "south-east", padding: 2pt)
 
   line((0, -main-radius), (0, main-radius), ..axis-arrow, name: "y-axis")
-  content("y-axis.97%", $"Im"(p_0)$, anchor: "north-east", padding: (right: 8pt))
+  content(((-y-offset, 0), "|-", "y-axis.97%"), $"Im"(p_0)$, anchor: "north-east", padding: 3pt)
 
-  thermal-poles(y-range, label-padding: (left: 10pt))
-  content("origin", [0], anchor: "south-west", padding: (left: 10pt, bottom: 3pt))
+  thermal-poles(y-range, label-x: y-offset)
+  content((y-offset, 0), [0], anchor: "south-west", padding: 3pt)
   half-contours(main-radius, y-offset)
   function-poles((2.5, 1.5))
 })
@@ -253,10 +255,10 @@
   content("x-axis.end", $"Re"(p_0)$, anchor: "south-east", padding: 2pt)
 
   line((0, -y-range - 0.7), (0, y-range + 0.7), ..axis-arrow, name: "y-axis")
-  content("y-axis.97%", $"Im"(p_0)$, anchor: "north-east", padding: (right: 8pt))
+  content(((-y-offset, 0), "|-", "y-axis.97%"), $"Im"(p_0)$, anchor: "north-east", padding: 3pt)
 
-  thermal-poles(y-range, label-padding: (left: 10pt))
-  content("origin", [0], anchor: "north-east", padding: 2pt)
+  thermal-poles(y-range, label-x: y-offset)
+  content((y-offset, 0), [0], anchor: "south-west", padding: 3pt)
   half-contours(main-radius, y-offset)
 
   for (name, pos, label, anchor) in (
@@ -264,7 +266,7 @@
     ("pole-minus-e", (-x-range / 2, -y-range / 4), $-E$, "east"),
   ) {
     circle(pos, radius: 0.05, fill: black, name: name)
-    content(name, label, anchor: anchor, padding: 2pt)
+    content(name, label, anchor: anchor, padding: 4pt)
   }
 })
 

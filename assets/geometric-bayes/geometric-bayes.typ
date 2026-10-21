@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 #import draw: content, rect
 
 // Prior columns p(H) | p(not H) span [0, prior-end]; the posterior bar sits after a gap.

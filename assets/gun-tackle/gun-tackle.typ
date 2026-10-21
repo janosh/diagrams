@@ -1,7 +1,43 @@
-#import "@preview/cetz:0.3.4"
-#import "@preview/pull-eh:0.1.0"
-#import cetz.draw: content, line, on-layer
-#import pull-eh: ccw, cw, wind
+#import "@preview/cetz:0.5.3"
+#import cetz.draw: arc, content, get-ctx, line, merge-path, on-layer
+#import cetz.vector: add, angle2, len, scale, sub
+
+// Rope wound around pulleys, after pull-eh's `wind` (MIT, Clemens Koza), which only targets
+// CeTZ <= 0.4. Each winding is a coordinate or (coord:, radius:) + cw/ccw; consecutive windings
+// are joined by their common tangent and each pulley by the arc between its two tangents.
+#let (cw, ccw) = ((direction: "cw"), (direction: "ccw"))
+#let wind(..args) = get-ctx(ctx => {
+  // signed radii: positive winds clockwise, negative counter-clockwise, 0 is a plain point
+  let is-pulley(w) = type(w) == dictionary and "direction" in w
+  let sign(w) = if w.direction == "ccw" { -1 } else { 1 }
+  let radii = args.pos().map(w => if is-pulley(w) { sign(w) * w.radius } else { 0 })
+  let coords = args.pos().map(w => if is-pulley(w) { w.coord } else { w })
+  let (_, ..centers) = cetz.coordinate.resolve(ctx, ..coords)
+  merge-path(..args.named(), {
+    let prev-angle = none
+    for ((c1, r1), (c2, r2)) in centers.zip(radii).windows(2) {
+      // unit normal of the tangent: the center line's direction rotated by acos(-(r2 - r1) / d)
+      let center-line = sub(c2, c1)
+      let (dx, dy, _) = scale(center-line, 1 / len(center-line))
+      let cos = -(r2 - r1) / len(center-line)
+      let sin = calc.sqrt(1 - cos * cos)
+      let normal = (dx * cos - dy * sin, dy * cos + dx * sin, 0)
+      let (p1, p2) = (add(c1, scale(normal, r1)), add(c2, scale(normal, r2)))
+      let angle = angle2(p1, p2)
+      if prev-angle != none and r1 != 0 {
+        // the arc's ends are normal to the incoming and outgoing tangents; clockwise arcs run
+        // to decreasing angles, counter-clockwise ones to increasing angles
+        let turn = if r1 > 0 { 90deg } else { -90deg }
+        let (start, stop) = (prev-angle + turn, angle + turn)
+        if r1 > 0 and stop > start { stop -= 360deg }
+        if r1 < 0 and stop < start { stop += 360deg }
+        arc(c1, anchor: "origin", radius: calc.abs(r1), start: start, stop: stop)
+      }
+      prev-angle = angle
+      line(p1, p2)
+    }
+  })
+})
 
 #set page(width: auto, height: auto, margin: 5mm, fill: none)
 #set text(size: 12pt)

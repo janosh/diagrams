@@ -1,0 +1,15 @@
+title: Calabi-Yau Quintic
+preserve_colors: true
+tags:
+  - physics
+  - string theory
+  - topology
+  - complex geometry
+description: |
+  Hanson's 2D cross-section of the quintic Calabi-Yau threefold, the complex curve $z_1^5 + z_2^5 = 1$ in $\mathbb{C}^2$, projected to 3D as $(\operatorname{Re} z_1, \operatorname{Re} z_2, \cos\alpha \operatorname{Im} z_1 + \sin\alpha \operatorname{Im} z_2)$ with $\alpha = \pi/4$. Each of the 25 colored patches is one branch $z_1 = e^{2\pi i k_1/5} \cos^{2/5} z$, $z_2 = e^{2\pi i k_2/5} \sin^{2/5} z$ with $k_1, k_2 \in \{0, \dots, 4\}$, and the patches meet in fives at the ten points where $z_1 = 0$ or $z_2 = 0$. Compactifying the six extra dimensions of superstring theory on a Calabi-Yau manifold preserves supersymmetry, and its topology (e.g. its Hodge numbers) fixes the number of particle generations in the resulting 4D theory.
+references:
+  - hanson_construction_1994:
+      title: A construction for computer visualization of certain complex curves
+      authors: Andrew J. Hanson
+      year: 1994
+      publisher: Notices of the American Mathematical Society

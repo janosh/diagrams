@@ -1,0 +1,28 @@
+title: Ising Model Phase Transition
+tags:
+  - physics
+  - statistical mechanics
+  - phase-transitions
+  - ising model
+  - monte carlo
+  - critical phenomena
+description: Onsager's exact spontaneous magnetization of the 2D square-lattice Ising model, $m(T) = \left[1 - \sinh^{-4}(2J / k_B T)\right]^{1/8}$, which vanishes continuously at $T_c = 2J / [k_B \ln(1 + \sqrt{2})] \approx 2.269\,J/k_B$ with exponent $\beta = 1/8$. The $40 \times 40$ snapshots come from a Metropolis Monte Carlo simulation run in Typst at $k_B T / J = 1.5$, $T_c$ and $3.5$, showing an ordered ferromagnet, large ragged domains near [criticality](../critical-temperature) (after 300 sweeps, still coarsening toward the fractal equilibrium clusters), and a disordered paramagnet.
+references:
+  - onsager_1944:
+      title: "Crystal Statistics. I. A Two-Dimensional Model with an Order-Disorder Transition"
+      authors: Lars Onsager
+      year: 1944
+      publisher: Physical Review
+      doi: 10.1103/PhysRev.65.117
+  - yang_1952:
+      title: The Spontaneous Magnetization of a Two-Dimensional Ising Model
+      authors: C. N. Yang
+      year: 1952
+      publisher: Physical Review
+      doi: 10.1103/PhysRev.85.808
+  - metropolis_1953:
+      title: Equation of State Calculations by Fast Computing Machines
+      authors: Nicholas Metropolis, Arianna W. Rosenbluth, Marshall N. Rosenbluth, Augusta H. Teller, Edward Teller
+      year: 1953
+      publisher: The Journal of Chemical Physics
+      doi: 10.1063/1.1699114

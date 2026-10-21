@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 #import draw: content, line, rect
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
@@ -21,13 +21,14 @@
     line((x - 0.02, y + offset), (x + w + 0.02, y + offset), stroke: top-color + 2pt)
     line((x - offset, y + 0.02), (x - offset, y - h - 0.02), stroke: left-color + 2pt)
   }
-  let operation(pos, body, name, padding, stroke: mid-gray + .75pt) = content(
+  // Fixed-height body so every operation box is equally tall whatever its glyphs.
+  let operation(pos, body, name, pad-x: 3pt, stroke: mid-gray + .75pt) = content(
     pos,
-    body,
+    box(height: 0.9em, align(horizon, body)),
     frame: "rect",
     stroke: stroke,
     fill: rgb(30%, 80%, 80%, 30%),
-    padding: padding,
+    padding: (2pt, pad-x),
     name: name,
   )
 
@@ -51,9 +52,9 @@
     matrix(pos, size, label, top-color, left-color)
   }
 
-  operation((spacing + 0.4, 0), $dot.op^top$, "att", (5pt, 3pt, 1pt))
-  operation((2 * spacing + 0.6, 0), [softmax], "softmax", (2pt, 3pt, 3pt))
-  operation((4 * spacing + 1, 0), $dot.op$, "prod", (1pt, 4pt, 2pt), stroke: mid-gray)
+  operation((spacing + 0.4, 0), $dot.op^top$, "att")
+  operation((2 * spacing + 0.6, 0), [softmax], "softmax")
+  operation((4 * spacing + 1, 0), $dot.op$, "prod", pad-x: 5pt, stroke: mid-gray)
 
   // Inputs start with a bar and enter their operation at right angles.
   let edge-style = (mark: (start: "|", offset: 0.075, scale: 1.3), stroke: mid-gray)

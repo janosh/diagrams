@@ -10,15 +10,11 @@ def render_tikz(input_file: str) -> None:
     base_path = os.path.splitext(input_file)[0]
 
     print("Running latexmk to generate PDF from TeX file")
-    subprocess.run(
-        ["latexmk", "-pdf", f"-jobname={base_path}", input_file],
-        check=True,
-    )
+    subprocess.run(["latexmk", "-pdf", f"-jobname={base_path}", input_file], check=True)
 
     print("Delete LaTeX auxiliary files")
     for suffix in (".aux", ".log", ".fls", ".fdb_latexmk"):
-        auxiliary = f"{base_path}{suffix}"
-        if os.path.isfile(auxiliary):
+        if os.path.isfile(auxiliary := f"{base_path}{suffix}"):
             os.remove(auxiliary)
 
     pdf_to_svg_png_compressed(f"{base_path}.pdf")

@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 #import "@preview/cetz-plot:0.1.4": plot
 
 // Power-law ROC curves y = x^a, whose area under the curve is 1 / (1 + a).

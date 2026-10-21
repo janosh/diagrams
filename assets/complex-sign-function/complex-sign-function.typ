@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw, matrix
+#import "@preview/cetz:0.5.3": canvas, draw, matrix
 #import draw: content, scale, set-transform
 #let label-size = 12pt
 #let paragraph-size = 14pt

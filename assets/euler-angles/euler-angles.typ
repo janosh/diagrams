@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 #import draw: arc, content, line, rotate, scope
 
 #set page(width: auto, height: auto, margin: 12pt, fill: none)
@@ -80,8 +80,13 @@
     (0, nutation_color, [2. Nutation $theta$], [Tilt about $v$]),
     (4.6, rotation_color, [3. Spin $phi$], [Rotate about $z_1$]),
   ) {
-    content((position, -6.2), text(size: 16pt, fill: color, weight: "bold", heading))
-    content((position, -6.8), text(size: 14pt, detail))
+    // Shared baselines keep headings level whether or not their symbols have descenders
+    content(
+      (position, -6.4),
+      text(size: 16pt, fill: color, weight: "bold", heading),
+      anchor: "base",
+    )
+    content((position, -6.95), text(size: 14pt, detail), anchor: "base")
   }
   content((0, -7.6), text(size: 18pt)[$R = R_z (psi) R_y (theta) R_z (phi)$], name: "formula")
   let footer = [The final basis is $(x_1, y_1, z_1)$. \ Changing the rotation order changes the orientation.]

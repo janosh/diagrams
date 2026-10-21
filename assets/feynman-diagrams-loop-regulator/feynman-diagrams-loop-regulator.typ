@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 #import draw: arc, circle, content, group, line, translate
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
@@ -17,7 +17,6 @@
   let draw-diagram(offset: 0, regulator-top: false) = group({
     translate((offset, 0))
     circle((0, 0), radius: radius, stroke: 1pt, name: "loop")
-    content("loop.north", $m_1^2, gamma_1^2$, anchor: "south", padding: (bottom: 7pt))
 
     arc(
       (rel: (.23, 0), to: if regulator-top { "loop.35%" } else { "loop.15%" }),
@@ -31,7 +30,7 @@
       "momentum-arrow.mid",
       text(fill: dark-blue)[$q_0$],
       anchor: if regulator-top { "south" } else { "north" },
-      padding: if regulator-top { (bottom: 3pt) } else { none },
+      padding: 3pt,
     )
 
     // Regulator insertion: a circled cross on an opaque gray disc.
@@ -43,7 +42,12 @@
       frame: "circle",
       padding: -2.5pt,
     )
-    content("loop.50%", $m_2^2, gamma_2^2$, anchor: "north", padding: (top: 7pt))
+    // Mass labels clear the loop, and the regulator disc on the side where it sits.
+    let gap(regulated) = if regulated { 12pt } else { 7pt }
+    content("loop.north", $m_1^2, gamma_1^2$, anchor: "south", padding: (
+      bottom: gap(regulator-top),
+    ))
+    content("loop.50%", $m_2^2, gamma_2^2$, anchor: "north", padding: (top: gap(not regulator-top)))
 
     // External legs with coupling vertices and incoming/outgoing momentum arrows.
     for side in (-1, 1) {

@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw, vector
+#import "@preview/cetz:0.5.3": canvas, draw, vector
 #import draw: bezier, content, line, set-style
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)

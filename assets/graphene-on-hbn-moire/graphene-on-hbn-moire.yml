@@ -1,0 +1,10 @@
+title: Graphene on hBN Moire
+tags:
+  - physics
+  - solid state physics
+  - 2D materials
+  - van der Waals heterostructures
+  - density functional theory
+  - moiré superlattice
+  - graphene
+description: Graphene (dark) on hexagonal boron nitride (B pink, N blue), twisted by $\theta = 8^\circ$ on top of the real lattice mismatch $\delta = a_\text{hBN}/a_\text{G} - 1 \approx 1.8\,\%$ ($a_\text{G} = 2.46$ Å, $a_\text{hBN} = 2.504$ Å). The two honeycombs beat into a moiré superlattice of period $\lambda = (1+\delta)\,a_\text{G} / \sqrt{2(1+\delta)(1-\cos\theta) + \delta^2} \approx 1.8$ nm (about 14 nm at $\theta = 0$); highlighted AA spots, where the two hexagon lattices coincide and atoms sit on atoms, form a hexagonal superlattice separated by AB/BA regions where B or N atoms fill the graphene hexagons. The stacking registry is set by weak van der Waals interlayer binding, which plain DFT misses and dispersion corrections like DFT-D2 restore.

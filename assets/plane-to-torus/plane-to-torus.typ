@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 #import draw: content, grid, line, rect
 
 #set page(width: auto, height: auto, margin: 10pt, fill: none)

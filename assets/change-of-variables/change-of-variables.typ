@@ -1,5 +1,5 @@
 // Spherical geometry based on Juan Falgueras-Cano's volume-element illustration.
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 #import draw: arc, circle, content, line, merge-path, on-xy, on-xz, rect, rotate, scope
 
 #let ink = rgb("172b4d")

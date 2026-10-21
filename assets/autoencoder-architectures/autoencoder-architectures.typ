@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 #let label-size = 12pt
 #let paragraph-size = 14pt
 #let heading-size = 16pt
@@ -68,6 +68,8 @@
       ("decoder", 6.4, [decoder], rgb("#fbe4d4")),
       ("output", 8.5, $hat(x)$, rgb("#fbe4d4")),
     ) {
+      // Fixed height keeps math labels (measured by ink bounds) as tall as text labels.
+      let label = box(height: 0.7em, align(horizon, label))
       draw.content((x, 0), label, name: name, fill: fill, ..box-style)
     }
     for (left, right) in ("input", "encoder", "latent", "decoder", "output").windows(2) {

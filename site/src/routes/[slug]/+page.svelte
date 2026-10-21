@@ -1,19 +1,35 @@
+<script module lang="ts">
+  import grammar_typst from '@wooorm/starry-night/source.typst'
+  import grammar_latex from '@wooorm/starry-night/text.tex.latex'
+  import { create_highlighter } from 'svelte-widgets/highlight'
+
+  // shared across detail pages; grammars load on the first highlight
+  const { highlight } = create_highlighter([grammar_latex, grammar_typst])
+</script>
+
 <script lang="ts">
   import { afterNavigate } from '$app/navigation'
   import { page } from '$app/state'
-  import { CodeBlock, DiagramCard, sorted_diagrams, Tags } from '#lib'
+  import { DiagramCard, sorted_diagrams, source_langs, Tags, type SourceExt } from '#lib'
   import { filters, preserve_filter_links, replace_url } from '#lib/state.svelte.js'
   import { homepage, repository } from '#package.json'
-  import { FullscreenButton, Icon, PrevNext, Tabs, type IconData } from 'svelte-widgets'
+  import {
+    CodeBlock,
+    FullscreenButton,
+    Icon,
+    PrevNext,
+    Tabs,
+    type IconData,
+  } from 'svelte-widgets'
   import {
     Code,
     Download,
     FilePDF,
     FilePNG,
     FileXML,
+    GitHub,
     HomeOutline,
-    LaTeX,
-    Typst,
+    Overleaf,
   } from 'svelte-widgets/icons'
   import { sync_url_params } from 'svelte-widgets/url-params'
 
@@ -38,7 +54,8 @@
     [`.svg`]: { icon: FileXML, label: `SVG` },
   }
   // production serves downloads from GitHub so we don't re-upload assets with every build
-  let base_uri = $derived(`${repository}/raw/refs/heads/main/assets/${slug}/${slug}`)
+  let asset_path = $derived(`assets/${slug}/${slug}`)
+  let base_uri = $derived(`${repository}/raw/refs/heads/main/${asset_path}`)
   let plain_description = $derived(description?.replaceAll(/<[^>]*>/g, ``))
 
   // prev/next walks the active home-page filter; fall back to all diagrams when the current
@@ -50,13 +67,13 @@
   )
 
   const default_source = $derived(sources[0]?.ext)
-  let code_tab = $derived<`typ` | `tex` | undefined>(default_source)
+  let code_tab = $derived<SourceExt | undefined>(default_source)
   // Restore only after hydration, then follow query changes and reused detail routes.
   afterNavigate(() => {
     const source = page.url.searchParams.get(`source`)
     code_tab = sources.find(({ ext }) => ext === source)?.ext ?? default_source
   })
-  const change_source = (source: `typ` | `tex`) =>
+  const change_source = (source: SourceExt) =>
     sync_url_params(
       [...filters.url_entries, [`source`, source, default_source]],
       page.url,
@@ -159,12 +176,36 @@
 </h2>
 {#snippet source_block()}
   {#if selected_source}
-    <CodeBlock
-      code={selected_source.code}
-      title="{slug}.{selected_source.ext}"
-      repo_link={`${repository}/blob/main/assets/${slug}/${slug}.${selected_source.ext}`}
-      tex_file_uri={selected_source.ext === `tex` ? `${base_uri}.tex` : ``}
-    />
+    {@const { ext, code } = selected_source}
+    <div class="source">
+      <CodeBlock
+        {code}
+        language={ext}
+        {highlight}
+        title="{slug}.{ext}"
+        icon={source_langs[ext].icon}
+        line_count
+        copy
+      >
+        {#snippet actions()}
+          <a
+            href="{repository}/blob/main/{asset_path}.{ext}"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="View source on GitHub"><Icon icon={GitHub} /></a
+          >
+          <!-- https://github.com/typst/webapp-issues/issues/516 tracks a Typst web app API for opening code files -->
+          {#if ext === `tex`}
+            <a
+              href={`https://www.overleaf.com/docs?snip_uri=${base_uri}.tex`}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Open in Overleaf"><Icon icon={Overleaf} /></a
+            >
+          {/if}
+        {/snippet}
+      </CodeBlock>
+    </div>
   {/if}
 {/snippet}
 {#if sources.length > 1}
@@ -176,8 +217,8 @@
     class="code-tabs"
   >
     {#snippet tab({ item })}
-      {@const is_typst = item.value === `typ`}
-      <Icon icon={is_typst ? Typst : LaTeX} />{is_typst ? `Typst` : `TikZ`}
+      {@const { icon, lang } = source_langs[item.value]}
+      <Icon {icon} />{lang}
     {/snippet}
     {#snippet panel({ selected })}
       {#if selected}{@render source_block()}{/if}
@@ -292,6 +333,23 @@
   }
   a.large-link:hover {
     background: var(--card-bg);
+  }
+  .source {
+    max-width: var(--content-max-width);
+    margin: 3em auto;
+    --code-block-bg: var(--pre-bg);
+    --code-block-radius: 3pt;
+    --code-block-padding: 1em;
+    --code-block-header-padding: 0.75em 1em 0;
+    :is(a, :global([data-sms-copy])) {
+      display: inline-flex;
+      border: none;
+      padding: 3pt 1ex;
+      border-radius: 3pt;
+      background: var(--button-bg);
+      font: inherit;
+      cursor: pointer;
+    }
   }
   .home-link {
     position: absolute;

@@ -1,6 +1,6 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 #import "@preview/cetz-plot:0.1.4": plot
-#import draw: content, group, line, translate
+#import draw: circle, content, group, line, set-origin, translate
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 #set text(size: 12pt)
@@ -9,26 +9,13 @@
   let (layer-gap, node-gap) = (3.5, 1.5)
   let arrow-style = (mark: (end: "stealth", scale: 0.7), stroke: gray + 0.7pt, fill: gray)
 
-  let neuron(pos, fill, label) = content(
-    pos,
-    $#label$,
-    frame: "circle",
-    fill: fill,
-    stroke: none,
-    radius: 0.4,
-    padding: 3pt,
-    name: label,
-  )
+  let neuron(pos, fill, label) = {
+    circle(pos, radius: 0.4, fill: fill, stroke: none, name: label)
+    content(pos, $#label$)
+  }
 
   // Edge midpoint, slid along the edge by shift * 0.4 to keep neighboring annotations apart.
-  let edge-point(start, end, shift) = {
-    let (dx, dy) = (end.at(0) - start.at(0), end.at(1) - start.at(1))
-    let (len, dist) = (calc.sqrt(dx * dx + dy * dy), shift * 0.4)
-    (
-      (start.at(0) + end.at(0)) / 2 + dist * dx / len,
-      (start.at(1) + end.at(1)) / 2 + dist * dy / len,
-    )
-  }
+  let edge-point(start, end, shift) = ((start, 50%, end), shift * 0.4, end)
 
   let weight-label(pos, weight) = content(
     pos,
@@ -44,7 +31,8 @@
     let (width, height) = (0.6, 0.25)
     let variance = 0.3 + calc.abs(offset) * 0.1
     group({
-      translate((pos.at(0) - width / 2, pos.at(1) - height / 2))
+      set-origin(pos)
+      translate((-width / 2, -height / 2))
       plot.plot(size: (width, height), axis-style: none, plot.add(
         style: (stroke: orange + 1pt, fill: orange.lighten(80%)),
         domain: (-1, 1),

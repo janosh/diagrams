@@ -1,0 +1,8 @@
+title: Hydrogen Spectral Series
+tags:
+  - physics
+  - atomic physics
+  - spectroscopy
+  - quantum mechanics
+description: |
+  Energy levels of hydrogen, $E_n = -13.6\,\text{eV}/n^2$, drawn to scale with the transitions of the Lyman ($n \to 1$, ultraviolet), Balmer ($n \to 2$, visible) and Paschen ($n \to 3$, infrared) series. Each emitted photon has wavelength $1/\lambda = R_\infty (1/n_f^2 - 1/n_i^2)$ given by the Rydberg formula, so the four visible Balmer lines H$\alpha$ (656 nm), H$\beta$ (486 nm), H$\gamma$ (434 nm) and H$\delta$ (410 nm) form the characteristic emission spectrum shown below the arrows. Within each series the lines crowd together toward a series limit set by the ionization threshold $n_i \to \infty$ (dashed line).

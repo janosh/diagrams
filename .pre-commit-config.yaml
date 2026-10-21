@@ -12,6 +12,14 @@ repos:
       - id: mixed-line-ending
       - id: trailing-whitespace
 
+  - repo: https://github.com/astral-sh/ty-pre-commit
+    rev: v0.0.89
+    hooks:
+      - id: ty
+        # no [project] or uv.lock here: skip uv's project sync, resolve imports from the hook env
+        args: [--no-project]
+        additional_dependencies: [pytest, pyyaml]
+
   - repo: local
     hooks:
       - id: ruff
@@ -19,15 +27,6 @@ repos:
         entry: uvx ruff check
         language: system
         types: [python]
-      - id: ty
-        name: Python type check (ty)
-        # Keep the checker and its imports together in the hook environment.
-        entry: ty check
-        language: python
-        language_version: python3.14
-        additional_dependencies: [ty, pytest, pyyaml]
-        types: [python]
-        pass_filenames: false
       - id: vp-check
         name: Format + lint (oxfmt + oxlint)
         # sync first so type-aware lint has the generated $app/tsconfig (provides

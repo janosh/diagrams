@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 #import "@preview/cetz-plot:0.1.4": plot
 #set page(width: 500pt, height: auto, margin: 20pt, fill: none)
 #set text(font: "Avenir Next", size: 12pt, fill: rgb("#19324f"))

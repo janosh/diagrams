@@ -1,0 +1,18 @@
+title: Electron-Positron Annihilation
+tags:
+  - physics
+  - quantum field theory
+  - particle physics
+  - Feynman diagrams
+  - QED
+  - QCD
+  - gluons
+description: >-
+  An electron and a positron annihilate into a virtual photon $\gamma^*$ that converts into a quark-antiquark pair, and the outgoing quark radiates a hard gluon, giving $e^+e^- \to q\bar{q}g$. Each colored parton hadronizes into a jet, so this [Feynman diagram](../feynman-building-blocks) produces three-jet events whose rate relative to two-jet events is proportional to the strong coupling $\alpha_s$. Such events, observed at the PETRA collider at DESY in 1979, were the first direct evidence for the gluon.
+references:
+  - tasso_three_jet_1979:
+      title: Evidence for planar events in e+e- annihilation at high energies
+      authors: R. Brandelik et al. (TASSO Collaboration)
+      year: 1979
+      publisher: Physics Letters B
+      doi: 10.1016/0370-2693(79)90830-X

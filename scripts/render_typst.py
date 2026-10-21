@@ -1,9 +1,8 @@
 import os
-import shutil
 import subprocess
 import sys
 
-from convert_assets import PNG_PPI, finalize_assets
+from convert_assets import PNG_PPI, compress_svg, finalize_assets
 
 
 def render_typst(input_file: str) -> None:
@@ -17,8 +16,7 @@ def render_typst(input_file: str) -> None:
     print("Compiling Typst → SVG")
     svg_path = f"{base_path}.svg"
     subprocess.run([*compile_cmd, svg_path, "-f", "svg", "--pages", "1"], check=True)
-    if shutil.which("svgo"):
-        subprocess.run(["svgo", "--multipass", svg_path])
+    compress_svg(svg_path)
 
     print(f"Compiling Typst → PNG ({PNG_PPI} ppi)")
     subprocess.run(

@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 #import draw: circle, content, group, line, rect, set-origin
 
 // N identical atoms give M = 3N independent scalar oscillators of frequency omega_E.

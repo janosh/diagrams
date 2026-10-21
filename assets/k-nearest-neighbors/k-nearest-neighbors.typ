@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 #import draw: circle, content, line, n-star, polygon
 
 // Class A stars and class B triangles. Around the new example, the 3 nearest points hold

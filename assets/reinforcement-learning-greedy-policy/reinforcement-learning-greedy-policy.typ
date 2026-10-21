@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, decorations, draw
+#import "@preview/cetz:0.5.3": canvas, decorations, draw
 #import draw: bezier, content, line, rect
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
@@ -15,18 +15,8 @@
   let state-gap = 4.8
   let west-rim(x) = (x - .03, y-box + panel-w / 2)
 
-  let wave-arrow(start, end, segments: 8, straight-end: .18) = {
-    let direction = (end.at(0) - start.at(0), end.at(1) - start.at(1))
-    let distance = calc.sqrt(direction.at(0) * direction.at(0) + direction.at(1) * direction.at(1))
-    let straight-start = (
-      end.at(0) - straight-end * direction.at(0) / distance,
-      end.at(1) - straight-end * direction.at(1) / distance,
-    )
-    decorations.wave(line(start, straight-start), amplitude: .035, segments: segments, stroke: .9pt)
-    line(straight-start, end, ..arrow)
-  }
   // Grid-world panel (agent marker, $$ goal) with the policy output, chosen action and reward above it.
-  let state(x, idx, q, action, reward, symbol, mark-pos, wiggle-x, dollar-pos) = {
+  let state(x, idx, q, action, reward, symbol, mark-pos, greedy-x, dollar-pos) = {
     let (mid, top) = (x + panel-w / 2, y-box + panel-w)
     let panel = ((x, y-box), (x + panel-w, top))
     rect(..panel, stroke: none, fill: rgb("#cdd3da"), name: "panel")
@@ -42,10 +32,19 @@
 
     line("panel.north", (rel: (0, 1.6), to: "panel.north"), ..heavy, name: "policy")
     content((rel: (-.55, -.8), to: "policy.end"), $pi_(theta)(s_#idx)$, anchor: "east")
-    content((rel: (0, .2), to: "policy.end"), q, anchor: "south")
-
-    wave-arrow((mid + wiggle-x, top + 2.2), (mid, top + 3.3))
-    content((rel: (0, 1.8), to: "policy.end"), action, anchor: "south")
+    content((rel: (0, .2), to: "policy.end"), q, anchor: "south", name: "scores")
+    content((rel: (0, 1.8), to: "policy.end"), action, anchor: "south", name: "action")
+    // squiggle from the greedy score up to the chosen action, straightening into the arrowhead
+    decorations.wave(
+      line(
+        (rel: (0, .08), to: ((mid + greedy-x, 0), "|-", "scores.north")),
+        (rel: (0, -.08), to: "action.south"),
+      ),
+      amplitude: .035,
+      segments: 8,
+      stop: 85%,
+      ..arrow,
+    )
     line(
       (rel: (0, 2.2), to: "policy.end"),
       (rel: (0, 3.1), to: "policy.end"),
@@ -57,20 +56,20 @@
   }
 
   // Policy scores with the greedy choice in bold, then marker and $$ positions in the panel
-  for (idx, (q, action, reward, symbol, mark-pos, wiggle-x, dollar-pos)) in (
-    ($[0.12, bold(0.64), 0.07, 0.17]$, [up], 0, "↑", (0, 0), -.35, (1.18, 1.24)),
-    ($[0.03, 0.24, bold(0.47), 0.26]$, [right], 0, "→", (0, panel-w - marker-w), .35, (1.18, 1.24)),
+  for (idx, (q, action, reward, symbol, mark-pos, greedy-x, dollar-pos)) in (
+    ($[0.12, bold(0.64), 0.07, 0.17]$, [up], 0, "↑", (0, 0), -.6, (1.18, 1.24)),
+    ($[0.03, 0.24, bold(0.47), 0.26]$, [right], 0, "→", (0, panel-w - marker-w), .5, (1.18, 1.24)),
     (
       $[bold(0.82), 0.04, 0.08, 0.06]$,
       [pick up],
       2,
       "⋆",
       (panel-w - marker-w, panel-w - marker-w),
-      -.65,
+      -1.35,
       (panel-w - marker-w / 2, panel-w - marker-w / 2),
     ),
   ).enumerate() {
-    state(idx * state-gap, idx, q, action, reward, symbol, mark-pos, wiggle-x, dollar-pos)
+    state(idx * state-gap, idx, q, action, reward, symbol, mark-pos, greedy-x, dollar-pos)
   }
 
   for (idx, symbol) in ("↑", "→").enumerate() {

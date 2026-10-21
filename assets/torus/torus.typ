@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 #import draw: content, line, scale, set-style, set-transform
 
 #set page(width: auto, height: auto, margin: 4pt, fill: none)
@@ -64,13 +64,13 @@
   }
 
   // upper z-axis on top (its lower half is drawn earlier, behind the torus), then axis tips.
-  for (start, end, name, label, anchor) in (
-    ((0, 0, 0), (0, 0, 10), "z", $z$, "south"),
-    ((outer-rim, 0, 0), (axis-len, 0, 0), "x", $x$, "west"),
-    ((0, -outer-rim, 0), (0, -axis-len, 0), "y", $y$, "north-east"),
+  for (start, end, name, label, anchor, pad) in (
+    ((0, 0, 0), (0, 0, 10), "z", $z$, "south", 2pt),
+    ((outer-rim, 0, 0), (axis-len, 0, 0), "x", $x$, "west", 2pt),
+    ((0, -outer-rim, 0), (0, -axis-len, 0), "y", $y$, "north-east", 6pt),
   ) {
     line(start, end, stroke: ax-stroke, mark: arrow, name: name)
-    content(name + ".end", label, anchor: anchor, padding: 2pt)
+    content(name + ".end", label, anchor: anchor, padding: pad)
   }
 
   // R (blue): origin to tube center at far open slice.

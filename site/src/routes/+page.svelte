@@ -1,13 +1,14 @@
 <script lang="ts">
   import { goto, snapshot } from '$app/navigation'
-  import { DiagramCard, diagrams, tags } from '#lib'
+  import { DiagramCard, diagrams, source_langs, tags } from '#lib'
   import { gallery_batch_size, gallery_count_for } from '#lib/gallery.js'
   import { filters } from '#lib/state.svelte.js'
+  import index_page_png from '#assets/index-page-2026-07-26.png'
   import { homepage, repository } from '#package.json'
   import { tick } from 'svelte'
   import { Icon, Masonry, MultiSelect } from 'svelte-widgets'
   import { highlight_matches } from 'svelte-widgets/attachments'
-  import { GitHub, LaTeX, License, Typst } from 'svelte-widgets/icons'
+  import { GitHub, License } from 'svelte-widgets/icons'
 
   const meta_description = `${diagrams.length} Diagrams on Physics, Chemistry, Computer Science, and Machine Learning`
 
@@ -133,7 +134,7 @@
   <meta name="description" content={meta_description} />
   <meta property="og:title" content="Scientific Diagrams" />
   <meta property="og:description" content={meta_description} />
-  <meta property="og:image" content="{homepage}/index-page-2026-07-26.png" />
+  <meta property="og:image" content="{homepage}{index_page_png}" />
   <meta property="og:image:alt" content="Scientific Diagrams index page" />
   <meta property="og:url" content={homepage} />
   <meta name="twitter:card" content="summary_large_image" />
@@ -155,19 +156,11 @@
       {tag}
     </button>{/each},<br />
   <button onclick={clear_filters}>{diagrams.length} total</button>,
-  <button onclick={() => filter_by_tag(`cetz`)}>
-    {diagrams.filter((diagram) => diagram.source_types.includes(`typ`)).length}
-  </button>
-  made with
-  <a href="https://cetz-package.github.io/docs/">
-    <Icon icon={Typst} />CeTZ
-  </a>
-  and
-  <button onclick={() => filter_by_tag(`tikz`)}>
-    {diagrams.filter((diagram) => diagram.source_types.includes(`tex`)).length}
-  </button>
-  made with
-  <a href="https://tikz.dev"><Icon icon={LaTeX} />TikZ</a>.
+  {#each Object.values(source_langs) as { name, tag, icon, href }, idx (tag)}
+    {idx > 0 ? ` and ` : ``}<button onclick={() => filter_by_tag(tag)}>
+      {diagrams.filter((diagram) => diagram.tags.includes(tag)).length}
+    </button>
+    made with <a {href}><Icon {icon} />{name}</a>{/each}.
 </p>
 <p>
   <a href="{repository}/blob/main/license"><Icon icon={License} /> MIT licensed</a>

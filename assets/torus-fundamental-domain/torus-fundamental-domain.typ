@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.5.2": canvas, draw
-#import draw: arc, content, line, rect
+#import "@preview/cetz:0.5.3": canvas, draw
+#import draw: arc, circle, content, line, rect
 
 #set page(width: auto, height: auto, margin: 1pt, fill: none)
 #set text(size: 12pt)
@@ -8,44 +8,51 @@
 // Edge colors darkened from Typst red/green so the thin arcs stay visible against the gray fills.
 #let (b-edge, c-edge) = (rgb("#c0281e"), rgb("#1a7f26"))
 
-// TODO this figure needs revisiting to get the gray-shaded areas right without overlaying opaque fills once CetZ implements path clipping
-// https://github.com/cetz-package/cetz/discussions/813#discussioncomment-12218646
 #canvas({
   draw.set-style(stroke: (thickness: 0.4pt))
   draw.set-viewport((0, 0), (20, 20), bounds: (12, 12))
 
-  // Light gray vertical strip
-  rect((-0.5, 0), (0.5, ymax), fill: rgb(128, 128, 128).lighten(80%), stroke: none)
-  // Unit semicircle split into B and B'; filled first, then restroked over the C wedges
-  let semicircle(..style) = arc(
+  let unit-arc(..style) = arc(
     (0, 0),
     radius: 1,
     start: 0deg,
     stop: 180deg,
-    stroke: (paint: b-edge),
-    name: "B-arc",
     anchor: "origin",
     ..style,
   )
-  semicircle(fill: gray.transparentize(30%))
+  // F_0: strip |Re τ| <= 1/2 outside the unit circle
+  draw.clip(
+    circle((0, 0), radius: 1),
+    rect((-0.5, 0), (0.5, ymax), fill: rgb(128, 128, 128).lighten(80%), stroke: none),
+    mode: "outside",
+  )
+  // F'_0 = S(F_0): upper unit half-disk outside the circles |τ ± 1| = 1
+  draw.clip(
+    {
+      circle((-1, 0), radius: 1)
+      circle((1, 0), radius: 1)
+    },
+    unit-arc(mode: "CLOSE", fill: gray.lighten(30%), stroke: none),
+    mode: "outside",
+  )
+
+  unit-arc(stroke: b-edge, name: "B-arc")
+  // C and C' lie on the circles |τ ± 1| = 1, both ending at the origin
   for (start, name, arc-anchor, label-anchor, label-pos, label) in (
-    (0deg, "C-arc", "start", "north-east", "C-arc.20%", $C$),
-    (90deg, "C-prime-arc", "arc-end", "north-west", "C-prime-arc.25%", $C'$),
+    (0deg, "C-arc", "start", "north-east", "C-arc.45%", $C$),
+    (90deg, "C-prime-arc", "end", "north-west", "C-prime-arc.55%", $C'$),
   ) {
     arc(
       (0, 0),
       radius: 1,
       start: start,
       stop: start + 90deg,
-      mode: "PIE",
-      stroke: (paint: c-edge),
-      fill: rgb("#cdd3da"),
+      stroke: c-edge,
       name: name,
       anchor: arc-anchor,
     )
     content(label-pos, label, fill: green, anchor: label-anchor, padding: 2pt)
   }
-  semicircle()
 
   let arrow-style = (mark: (end: "stealth", fill: black, scale: 0.2), stroke: (thickness: 0.4pt))
   line((-1, 0), (1, 0), ..arrow-style)

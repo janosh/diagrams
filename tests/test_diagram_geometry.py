@@ -286,17 +286,52 @@ def svg_size(root: ET.Element) -> list[float]:
 
 
 def svg_path_points(path: ET.Element) -> list[tuple[float, float]]:
-    """Decode endpoints of CeTZ's relative moves, lines and cubic Bezier segments."""
+    """Decode endpoints of CeTZ's moves, lines and cubic Bezier segments."""
     number_pattern = r"[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?"
-    x_coord, y_coord = map(float, re.findall(number_pattern, path.attrib["transform"]))
-    points = []
-    for command, values in re.findall(r"([mlc])([^mlc]*)", path.attrib["d"]):
+    origin_x, origin_y = map(
+        float, re.findall(number_pattern, path.attrib["transform"])
+    )
+    x_coord, y_coord = origin_x, origin_y
+    points: list[tuple[float, float]] = []
+    # A segment right after an absolute move starts at that move, which CeTZ >= 0.5.3
+    # no longer repeats as a zero relative move.
+    unrecorded_start = False
+    subpath_start = (x_coord, y_coord)
+    commands = r"([MmlcZz])([^MmlcZz]*)"
+    for command, values in re.findall(commands, path.attrib["d"]):
         coords = list(map(float, re.findall(number_pattern, values)))
-        assert len(coords) == {"m": 2, "l": 2, "c": 6}[command]
+        assert len(coords) == {"M": 2, "m": 2, "l": 2, "c": 6, "Z": 0, "z": 0}[command]
+        if command in "Zz":  # closing returns the pen to where the subpath began
+            x_coord, y_coord = subpath_start
+            continue
+        if command == "M":
+            x_coord, y_coord = origin_x + coords[0], origin_y + coords[1]
+            subpath_start = (x_coord, y_coord)
+            unrecorded_start = True
+            continue
+        if unrecorded_start and command != "m":
+            points.append((x_coord, y_coord))
+        unrecorded_start = False
         x_coord += coords[-2]
         y_coord += coords[-1]
+        if command == "m":
+            subpath_start = (x_coord, y_coord)
         points.append((x_coord, y_coord))
     return points
+
+
+@pytest.mark.parametrize(
+    ("d_attr", "expected"),
+    [
+        ("M 0 0l 1 0l 0 1", [(1, 2), (2, 2), (2, 3)]),
+        ("M 0 0m 1 1l 1 0l 0 1Z m 1 0l 1 0", [(2, 3), (3, 3), (3, 4), (3, 3), (4, 3)]),
+        ("M 2 0c 0 1 1 1 1 0", [(3, 2), (4, 2)]),
+    ],
+)
+def test_svg_path_points(d_attr: str, expected: list[tuple[float, float]]) -> None:
+    """Decode absolute moves, relative moves after closed subpaths and Bezier ends."""
+    path = ET.Element("path", transform="translate(1 2)", d=d_attr)
+    assert svg_path_points(path) == expected
 
 
 def test_spherical_coordinates_guides_share_origin() -> None:

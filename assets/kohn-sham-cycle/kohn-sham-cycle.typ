@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 #import draw: content, line, on-layer, rect
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
@@ -84,20 +84,15 @@
     padding: (3pt, 2pt),
   )
 
-  // No feedback loop
+  // No feedback loop: its corners follow the boxes' vertical centers at x = 3.6.
   line(
-    "criterion",
-    (3.6, -5),
-    (3.6, 2),
-    "potential",
+    "criterion.east",
+    ((3.6, 0), "|-", "criterion"),
+    ((3.6, 0), "|-", "potential"),
+    "potential.east",
     ..arrow-style,
     name: "converged-no",
   )
-  content(
-    "converged-no.13%",
-    [No],
-    frame: none,
-    anchor: "north-east",
-    padding: (-1pt, 2pt),
-  )
+  // beside the loop's vertical return line, just above the convergence box's corner
+  content(("converged-no.pt-1", 12%, "converged-no.pt-2"), [No], anchor: "west", padding: 3pt)
 })

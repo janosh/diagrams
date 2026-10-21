@@ -1,5 +1,5 @@
 #import "@preview/cetz-plot:0.1.4": plot
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 #let label-size = 12pt
 #let paragraph-size = 14pt
 #let heading-size = 16pt

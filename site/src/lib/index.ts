@@ -1,14 +1,29 @@
 import { building } from '$app/env'
 import type { Picture } from '@sveltejs/enhanced-img'
+import { LaTeX, Typst } from 'svelte-widgets/icons'
 
-export { default as CodeBlock } from './CodeBlock.svelte'
 export { default as DiagramCard } from './DiagramCard.svelte'
 export { default as Tags } from './Tags.svelte'
+
+// Source languages, Typst first: the source viewer prefers it when a diagram has both.
+// `lang` labels the source tabs; `name`, `tag` and `href` the drawing package, whose tag
+// every diagram written in that language gets.
+export const source_langs = {
+  typ: {
+    lang: `Typst`,
+    name: `CeTZ`,
+    tag: `cetz`,
+    icon: Typst,
+    href: `https://cetz-package.github.io/docs/`,
+  },
+  tex: { lang: `TikZ`, name: `TikZ`, tag: `tikz`, icon: LaTeX, href: `https://tikz.dev` },
+} as const
+export type SourceExt = keyof typeof source_langs
 
 export type Diagram = {
   slug: string
   downloads: string[]
-  source_types: (`tex` | `typ`)[]
+  source_types: SourceExt[]
   image: string
   thumbnail: Picture
 } & YamlMetadata
@@ -59,14 +74,13 @@ export const diagrams: Diagram[] = Object.entries(yaml_data)
     const slug = path.split(`/`)[2] ?? ``
     const figure_basename = `../assets/${slug}/${slug}`
 
-    // Prefer Typst in the source viewer when both languages are available.
-    const source_types = ([`typ`, `tex`] as const).filter((ext) =>
+    const source_types = (Object.keys(source_langs) as SourceExt[]).filter((ext) =>
       asset_paths.has(`${figure_basename}.${ext}`),
     )
     const tags = [
       ...new Set([
         ...(metadata.tags ?? []),
-        ...source_types.map((ext) => (ext === `typ` ? `cetz` : `tikz`)),
+        ...source_types.map((ext) => source_langs[ext].tag),
       ]),
     ]
 

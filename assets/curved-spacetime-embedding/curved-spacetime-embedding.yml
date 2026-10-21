@@ -1,0 +1,14 @@
+title: Curved Spacetime Embedding
+tags:
+  - physics
+  - general relativity
+  - Schwarzschild metric
+  - black hole
+  - gravitational lensing
+description: Flamm's paraboloid $z(r) = 2 \sqrt{r_s (r - r_s)}$ embeds the equatorial plane of the Schwarzschild geometry in flat 3D space, so radial distances along the funnel are the true proper distances, which stretch as the throat at the Schwarzschild radius $r_s$ is approached. A planet follows a stable circular orbit at $r = 3.3\,r_s$, outside the innermost stable circular orbit at $3 r_s$, while a light ray with periapsis $2.1\,r_s$, computed from the null geodesic equation $u'' + u = \tfrac{3}{2} r_s u^2$ with $u = 1/r$, is bent around the mass.
+references:
+  - flamm_1916:
+      title: Beiträge zur Einsteinschen Gravitationstheorie
+      authors: Ludwig Flamm
+      year: 1916
+      publisher: Physikalische Zeitschrift

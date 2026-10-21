@@ -18,7 +18,7 @@ def test_required_check_gate(result: str) -> None:
     assert gate["if"] == "always()"
     assert gate["needs"] == "checks"
     command = gate["steps"][0]["run"].replace("${{ needs.checks.result }}", result)
-    completed = subprocess.run(["bash", "-c", command], check=False)
+    completed = subprocess.run(["bash", "-c", command])
     assert (completed.returncode == 0) == (result == "success")
 
 

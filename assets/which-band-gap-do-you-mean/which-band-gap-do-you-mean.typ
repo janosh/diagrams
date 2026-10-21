@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 #import draw: circle, content, line, rect, translate
 
 // Fixed nuclei, zero temperature; insulating systems with well-defined charge gaps.

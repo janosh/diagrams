@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 #import draw: arc, circle, content, line
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
@@ -26,7 +26,7 @@
   circle((4, 1.5), radius: (0.5, 1.5), name: "rim")
 
   line((0.5, -0.5), (3.5, -0.5), ..arrow-style, name: "tau-arrow")
-  content("tau-arrow", $tau$, anchor: "north")
+  content("tau-arrow", $tau$, anchor: "north", padding: 4pt)
 
   // Conformal map to the plane
   line((rel: (0.5, 0), to: "rim.east"), (rel: (1, 0)), stroke: 1pt, ..arrow-style)
@@ -35,7 +35,8 @@
   circle((rel: (3, 0)), radius: 0.05, fill: black, name: "center-dot")
   for (idx, radius) in ((1, 0.8), (2, 1.8)) {
     circle("center-dot", radius: radius, stroke: (dash: "dashed"), name: "tau-circle")
-    content("tau-circle.-15%", $tau_#idx$, anchor: "south-west")
+    // just outside each circle, off its dashes
+    content((name: "tau-circle", anchor: 45deg), $tau_#idx$, anchor: "south-west", padding: 1pt)
   }
 
   arc(

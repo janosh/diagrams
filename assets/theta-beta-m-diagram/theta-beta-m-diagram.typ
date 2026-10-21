@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2"
+#import "@preview/cetz:0.5.3"
 #import cetz.draw: content, line, set-style
 #import "@preview/epsilon:0.1.0": secant
 #import "@preview/lilaq:0.4.0" as lq

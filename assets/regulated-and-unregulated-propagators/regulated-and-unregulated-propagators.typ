@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 #import draw: circle, content, line, mark, translate
 #let label-size = 12pt
 #let paragraph-size = 14pt
@@ -172,8 +172,8 @@
 // === 3  Insert the changing cutoff ===
 #let figure-2 = [
 
-  // Regulator insertion: a circled cross on an opaque gray disc.
-  #let cross(pos, label, offset) = {
+  // Regulator insertion: a circled cross on an opaque gray disc, labeled on its outer `side`.
+  #let cross(pos, label, side) = {
     content(
       pos,
       text(size: 16pt)[$times.o$],
@@ -181,8 +181,10 @@
       fill: rgb("#cdd3da"),
       frame: "circle",
       padding: -2.5pt,
+      name: "cross",
     )
-    content((rel: offset, to: pos), $#label$)
+    let opposite = if side == "north" { "south" } else { "north" }
+    content("cross." + side, $#label$, anchor: opposite, padding: 3pt)
   }
 
   #let radius = 1.25
@@ -233,8 +235,8 @@
   }
 
   // Off-diagram Gamma^(3) label tied to the vertex it names by a hairline.
-  #let gamma-callout(pos, label, target) = {
-    content(at(pos), label, name: "callout")
+  #let gamma-callout(pos, label, target, ..style) = {
+    content(pos, label, ..style, name: "callout")
     line("callout", target, stroke: leader)
   }
 
@@ -245,46 +247,47 @@
       circle((0, 0), radius: radius, stroke: 1pt, name: "loop")
       barbed-momenta(((6, 0.0625), (1, 0.1875), (2, 0.3125), (3, 0.4375), (4, 0.625), (5, 0.875)))
 
-      cross(at((0, radius)), $partial_k R_(k,i j) (p_1,p_2)$, (0, 0.5))
+      cross(at((0, radius)), $partial_k R_(k,i j) (p_1,p_2)$, "north")
       vertex(on-loop(135deg), $G_(k,j k)(p_2,p_3)$, (-1.2, 0.3))
       vertex(on-loop(45deg), $G_(k,n i)(p_6,p_1)$, (1.2, 0.3))
       vertex(at((0, -radius)), $G_(k,l m) (p_4,p_5)$, (0, -.8))
 
       side-legs()
       external-momenta(1.4, 2.3)
-      gamma-callout((-2, -1.5), $Gamma_(k,a k l)^((3))(q_1,p_3,-p_4)$, "vertex-left-external")
-      gamma-callout((2.3, -1.5), $Gamma_(k,b m n)^((3))(-q_2,p_5,-p_6)$, "vertex-right-external")
-    }),
-    canvas(length: 1.02cm, {
-      circle((0, 0), radius: radius, stroke: 1pt, name: "loop")
-      barbed-momenta(((6, 0.125), (3, 0.375), (4, 0.5625), (1, 0.6875), (2, 0.8125), (5, 0.9375)))
-
-      cross(at((0, -radius)), $partial_k R_(k,i j)(p_1,p_2)$, (0, -0.5))
-      vertex(on-loop(-45deg), $G_(k,j m)(p_2,p_5)$, (1.2, -0.3))
-      vertex(on-loop(225deg), $G_(k,l i)(p_4,p_1)$, (-1.2, -0.3))
-      vertex(at((0, radius)), $G_(k,n k)(p_6,p_3)$, (0, 0.5))
-
-      side-legs()
-      external-momenta(1.6, 2.4)
-      // pushed further out than in the first diagram to clear the propagator labels
+      gamma-callout(at((-2, -1.5)), $Gamma_(k,a k l)^((3))(q_1,p_3,-p_4)$, "vertex-left-external")
       gamma-callout(
-        (-2.4, 1.1),
-        $Gamma_(k,a k l)^((3))(q_1,p_3,-p_4)$,
-        "vertex-left-external",
-      )
-      gamma-callout(
-        (2.5, 1.1),
+        at((2.3, -1.5)),
         $Gamma_(k,b m n)^((3))(-q_2,p_5,-p_6)$,
         "vertex-right-external",
       )
     }),
     canvas(length: 1.02cm, {
       circle((0, 0), radius: radius, stroke: 1pt, name: "loop")
+      barbed-momenta(((6, 0.125), (3, 0.375), (4, 0.5625), (1, 0.6875), (2, 0.8125), (5, 0.9375)))
+
+      cross(at((0, -radius)), $partial_k R_(k,i j)(p_1,p_2)$, "south")
+      vertex(on-loop(-45deg), $G_(k,j m)(p_2,p_5)$, (1.2, -0.3))
+      vertex(on-loop(225deg), $G_(k,l i)(p_4,p_1)$, (-1.2, -0.3))
+      vertex(at((0, radius)), $G_(k,n k)(p_6,p_3)$, (0, 0.5), name: "top-label")
+
+      side-legs()
+      external-momenta(1.6, 2.4)
+      // flank the top propagator label so neither callout reaches the loop
+      for (side, anchor, label) in (
+        ("west", "east", $Gamma_(k,a k l)^((3))(q_1,p_3,-p_4)$),
+        ("east", "west", $Gamma_(k,b m n)^((3))(-q_2,p_5,-p_6)$),
+      ) {
+        let target = "vertex-" + if side == "west" { "left" } else { "right" } + "-external"
+        gamma-callout("top-label." + side, label, target, anchor: anchor, padding: 0.3)
+      }
+    }),
+    canvas(length: 1.02cm, {
+      circle((0, 0), radius: radius, stroke: 1pt, name: "loop")
       barbed-momenta(((1, 0.125), (2, 0.375), (3, 0.625), (4, 0.875)))
 
-      cross(at((0, radius)), $partial_k R_(k,i j)(p_1,p_2)$, (0, 0.4))
-      vertex(at((-radius, 0)), $G_(k,j k)(p_2,p_3)$, (-1.2, 0))
-      vertex(at((radius, 0)), $G_(k,l i)(p_4,p_1)$, (1.2, 0))
+      cross(at((0, radius)), $partial_k R_(k,i j)(p_1,p_2)$, "north")
+      vertex(at((-radius, 0)), $G_(k,j k)(p_2,p_3)$, (-0.2, 0), anchor: "east")
+      vertex(at((radius, 0)), $G_(k,l i)(p_4,p_1)$, (0.2, 0), anchor: "west")
 
       line(at((-2.2 * radius, -radius)), at((2.2 * radius, -radius)), stroke: 1pt)
       circle(at((0, -radius)), radius: med-rad, fill: hatched, stroke: 0.5pt)

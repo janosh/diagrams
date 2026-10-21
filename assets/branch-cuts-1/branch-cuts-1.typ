@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, decorations, draw
+#import "@preview/cetz:0.5.3": canvas, decorations, draw
 #import draw: content, line
 
 #set page(width: auto, height: auto, margin: 5pt, fill: none)
@@ -16,8 +16,8 @@
     fill: blue,
     scale: 0.75,
   ))
-  content((rel: (0, 0.3), to: "x-axis.start"), $-sqrt(arrow(p)^2)$)
-  content((rel: (0, 0.3), to: "x-axis.end"), $sqrt(arrow(p)^2)$)
+  content("x-axis.start", $-sqrt(arrow(p)^2)$, anchor: "south", padding: 6pt)
+  content("x-axis.end", $sqrt(arrow(p)^2)$, anchor: "south", padding: 6pt)
 
   // Branch cuts out to ±∞. Zigzag drops arrow tips, but the marks still shorten its paths.
   let zigzag-style = (stroke: blue.darken(20%), amplitude: 0.2, segment-length: 0.3)

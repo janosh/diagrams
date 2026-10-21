@@ -3,12 +3,13 @@
   import { page } from '$app/state'
   import { diagrams } from '#lib'
   import { cancel_search_write, filters, write_filter_url } from '#lib/state.svelte.js'
+  import favicon from '#assets/favicon.svg'
   import { repository } from '#package.json'
   import { untrack, type Snippet } from 'svelte'
   import { CommandMenu, Footer, GitHubCorner, Icon, ThemeToggle } from 'svelte-widgets'
   import { FileCertificate, Quote } from 'svelte-widgets/icons'
-  // oxlint-disable-next-line import/no-unassigned-import -- KaTeX styles for description math
-  import 'katex/dist/katex.min.css'
+  // oxlint-disable-next-line import/no-unassigned-import -- Temml styles for description math
+  import 'temml/dist/Temml-Local.css'
   // oxlint-disable-next-line import/no-unassigned-import -- global app styles
   import '../app.css'
 
@@ -34,6 +35,10 @@
     action: () => goto(filters.url_for(slug)),
   }))
 </script>
+
+<svelte:head>
+  <link rel="icon" href={favicon} />
+</svelte:head>
 
 <CommandMenu {actions} placeholder="Go to..." />
 

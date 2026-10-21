@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, decorations, draw
+#import "@preview/cetz:0.5.3": canvas, decorations, draw
 #import draw: circle, content, line, mark
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
@@ -32,7 +32,7 @@
   let mark-style = (length: .15, stroke: .7pt, angle: 60deg, scale: .7, fill: black)
   for (sign, label-style) in (
     (1, (anchor: "south-east", padding: (0, 0, 5pt))),
-    (-1, (anchor: "north", padding: (2pt, 0, 0))),
+    (-1, (anchor: "north", padding: (5pt, 0, 0))),
   ) {
     let mark-pos = (0, sign * (rad - 0.05))
     mark(symbol: "stealth", mark-pos, (rel: (sign * 0.1, 0)), ..mark-style)

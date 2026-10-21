@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 #import draw: bezier, circle, content, line
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
@@ -17,7 +17,8 @@
   )
   for (name, (pos, label)) in vertices {
     circle(pos, radius: node-radius, fill: rgb("#cdd3da"), stroke: 1pt, name: name)
-    content(name, label)
+    // fixed-height box: centering by ink bounds would push accented, subscripted labels low
+    content(name, box(height: 0.7em, align(horizon, label)))
   }
 
   // labeled arrow with text above and below its midpoint

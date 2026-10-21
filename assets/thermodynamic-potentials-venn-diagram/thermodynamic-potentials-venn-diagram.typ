@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.5.2": canvas, draw
-#import draw: arc-through, circle, content, merge-path, rect, rotate, scale, scope
+#import "@preview/cetz:0.5.3": canvas, draw
+#import draw: boolean, circle, content, rect, scale
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 #set text(size: 12pt)
@@ -8,61 +8,41 @@
   // Scale up the diagram
   scale(4)
 
-  let mechanical-center = (-0.65, 0.375)
-  let thermal-center = (0.65, 0.375)
-  let chemical-center = (0, -0.75)
-
-  let ab-outer = (0, 1.135)
-  let ab-inner = (0, -0.385)
-  let ac-outer = (-0.983, -0.568)
-  let ac-inner = (0.334, 0.193)
-  let bc-inner = (-0.334, 0.193)
-
-  // Single-term regions: mechanical (a), thermal (b), chemical (c), then their overlaps
+  // Unit circles for the mechanical (a), thermal (b) and chemical (c) work terms
+  let centers = (a: (-0.65, 0.375), b: (0.65, 0.375), c: (0, -0.75))
+  let disc(term) = circle(centers.at(term), radius: 1)
+  let lens(first, second) = boolean(disc(first), disc(second), op: "intersection")
   let fills = (a: blue, b: red, c: green, ab: purple, bc: yellow, ac: teal)
 
   rect((-1.95, 1.95), (1.95, -1.95))
 
-  for (region, angle) in (("ab", 0deg), ("ac", 120deg), ("bc", 240deg)) {
-    scope({
-      rotate(angle)
-      merge-path(
-        {
-          arc-through(bc-inner, (rel: (-1, 0), to: thermal-center), ab-outer)
-          arc-through((), (rel: (+1, 0), to: mechanical-center), ac-inner)
-          arc-through((), (rel: (0, +1), to: chemical-center), bc-inner)
-        },
-        fill: fills.at(region).transparentize(40%),
-        stroke: none,
-        close: true,
-      )
-    })
+  // Exact Venn regions: each set alone, each pairwise overlap minus the third set,
+  // then the triple overlap.
+  for (region, others) in (("a", ("b", "c")), ("b", ("a", "c")), ("c", ("a", "b"))) {
+    boolean(
+      disc(region),
+      others.map(disc).join(),
+      fill: fills.at(region).transparentize(40%),
+      stroke: none,
+    )
   }
-
-  merge-path(
-    {
-      arc-through(ab-inner, (rel: (0.866, -0.5), to: mechanical-center), ac-inner)
-      arc-through((), (rel: (0, 1), to: chemical-center), bc-inner)
-      arc-through((), (rel: (-0.866, -0.5), to: thermal-center), ab-inner)
-    },
+  for (region, third) in (("ab", "c"), ("bc", "a"), ("ac", "b")) {
+    let (first, second) = region.clusters()
+    boolean(
+      lens(first, second),
+      disc(third),
+      fill: fills.at(region).transparentize(40%),
+      stroke: none,
+    )
+  }
+  boolean(
+    lens("a", "b"),
+    disc("c"),
+    op: "intersection",
     fill: gray.transparentize(70%),
-    close: true,
+    stroke: none,
   )
-
-  for (region, angle) in (("a", 0deg), ("c", 120deg), ("b", 240deg)) {
-    scope({
-      rotate(angle)
-      merge-path(
-        {
-          arc-through(ab-outer, (rel: (-1, 0), to: mechanical-center), ac-outer)
-          arc-through((), (rel: (-0.5, 0.866), to: chemical-center), bc-inner)
-          arc-through((), (rel: (-1, 0), to: thermal-center), ab-outer)
-        },
-        fill: fills.at(region).transparentize(40%),
-        close: true,
-      )
-    })
-  }
+  for term in centers.keys() { disc(term) }
 
   for (pos, body) in (
     ((-0.992, 0.573), [#text(size: 16pt)[Mechanical]\ $F_[mu] = -P V$]),

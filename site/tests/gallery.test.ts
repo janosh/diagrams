@@ -1,6 +1,6 @@
 import { render } from 'svelte/server'
 import { execFileSync } from 'node:child_process'
-import { readFileSync } from 'node:fs'
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { expect, it, onTestFinished, vi } from 'vitest'
 import { goto } from '$app/navigation'
@@ -286,9 +286,17 @@ it.each([
   const plugin = config.plugins.find((candidate) => `transform` in candidate)
   if (!plugin || !(`transform` in plugin) || typeof plugin.transform !== `function`)
     throw new Error(`Missing YAML transform`)
+  // a bare PNG signature + IHDR header with known dimensions stands in for the artwork
+  const dir = mkdtempSync(`${tmpdir()}/yaml-`)
+  onTestFinished(() => rmSync(dir, { recursive: true }))
+  const header = Buffer.from(`89504e470d0a1a0a0000000d49484452`, `hex`)
+  const size = Buffer.alloc(8)
+  size.writeUInt32BE(321, 0)
+  size.writeUInt32BE(123, 4)
+  writeFileSync(`${dir}/example.png`, Buffer.concat([header, size]))
   const result = await plugin.transform(
     JSON.stringify({ title: `Example`, description }),
-    `${import.meta.dirname}/../../assets/complex-sign-function/complex-sign-function.yml`,
+    `${dir}/example.yml`,
   )
   if (!result) throw new Error(`Expected YAML module`)
   const { default: data } = await import(
@@ -297,8 +305,8 @@ it.each([
   expect(data).toEqual({
     title: `Example`,
     description: expected,
-    image_width: 4333,
-    image_height: 3402,
+    image_width: 321,
+    image_height: 123,
   })
 })
 

@@ -1,0 +1,22 @@
+title: Eightfold Way Baryon Octet
+tags:
+  - physics
+  - particle physics
+  - group theory
+  - SU(3)
+  - symmetries
+  - quarks
+description: Weight diagram of the spin-$\frac{1}{2}$ baryon octet, an 8-dimensional irreducible representation of approximate SU(3) flavor symmetry in Gell-Mann's Eightfold Way, plotted in isospin $I_3$ and hypercharge $Y$ with $Y$ scaled by $\sqrt{3}/2$ so the hexagon is regular. The $\Sigma^0$ and $\Lambda$ share the central weight with the same quark content $uds$ but differ in isospin ($I = 1$ vs. $0$), and the dashed lines connect states of equal charge $Q = I_3 + Y/2$ (Gell-Mann-Nishijima formula).
+references:
+  - gell-mann_1961:
+      title: "The Eightfold Way: A Theory of Strong Interaction Symmetry"
+      authors: Murray Gell-Mann
+      year: 1961
+      publisher: Caltech Synchrotron Laboratory Report CTSL-20
+      doi: 10.2172/4008239
+  - neeman_1961:
+      title: Derivation of strong interactions from a gauge invariance
+      authors: Yuval Ne'eman
+      year: 1961
+      publisher: Nuclear Physics
+      doi: 10.1016/0029-5582(61)90134-1

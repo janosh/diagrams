@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 #import draw: bezier, circle, content, line, rect, translate
 
 // Ground-state, nonrelativistic Coulomb DFT, atomic units, integer KS occupations.

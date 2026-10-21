@@ -6,18 +6,18 @@ import subprocess
 import sys
 from pathlib import Path
 
+import convert_assets
 import pytest
 import render_tikz
 import yaml
 from convert_assets import finalize_assets
 from update_readme_table import (
+    ROOT,
     collect_diagrams,
     generate_table,
     source_counts,
     table_cell,
 )
-
-ROOT = os.path.dirname(os.path.dirname(__file__))
 
 
 @pytest.mark.parametrize("ci", ["false", "true"])
@@ -35,18 +35,8 @@ def test_failed_compilation_preserves_outputs(
     source = tmp_path / f"diagram{extension}"
     source.write_text("invalid source")
     (tmp_path / compiler).symlink_to("/usr/bin/false")
-    outputs = [
-        tmp_path / f"diagram{suffix}"
-        for suffix in (
-            ".pdf",
-            ".svg",
-            ".avif",
-            ".png",
-            "-dark.avif",
-            ".aux",
-            ".log",
-        )
-    ]
+    suffixes = (".pdf", ".svg", ".avif", ".png", "-dark.avif", ".aux", ".log")
+    outputs = [tmp_path / f"diagram{suffix}" for suffix in suffixes]
     for output in outputs:
         output.write_bytes(b"previous output")
     result = subprocess.run(
@@ -54,7 +44,6 @@ def test_failed_compilation_preserves_outputs(
         env={**os.environ, "PATH": str(tmp_path), "CI": ci},
         capture_output=True,
         text=True,
-        check=False,
     )
     assert result.returncode != 0
     assert compiler in result.stderr
@@ -69,16 +58,27 @@ def read_rgba(image_path: str) -> bytes:
     return subprocess.check_output(["magick", image_path, "-depth", "8", "rgba:-"])
 
 
+def write_diagram(
+    root: Path, name: str, extensions: tuple[str, ...], **fields: object
+) -> Path:
+    """Create a diagram folder with empty sources and valid metadata under root."""
+    asset_dir = root / "assets" / name
+    asset_dir.mkdir(parents=True)
+    for extension in extensions:
+        (asset_dir / f"{name}{extension}").touch()
+    metadata = {"title": name, "description": "A diagram.", "tags": ["test"]}
+    (asset_dir / f"{name}.yml").write_text(yaml.safe_dump(metadata | fields))
+    return asset_dir
+
+
 def test_successful_tex_cleanup(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """Convert successful TeX output and remove only that diagram's auxiliary files."""
     source = tmp_path / "diagram.tex"
     source.touch()
-    auxiliary = [
-        tmp_path / f"diagram{suffix}"
-        for suffix in (".aux", ".log", ".fls", ".fdb_latexmk")
-    ]
+    suffixes = (".aux", ".log", ".fls", ".fdb_latexmk")
+    auxiliary = [tmp_path / f"diagram{suffix}" for suffix in suffixes]
     for output in auxiliary:
         output.touch()
     other_log = tmp_path / "other.log"
@@ -99,6 +99,7 @@ def test_finalize_assets(
 ) -> None:
     """Keep the PNG master, preserve AVIF resolution/alpha, and recolor eligible previews."""
     base_path = f"{tmp_path}/diagram"
+    png_path = f"{base_path}.png"
     metadata = f"{metadata_flag}: true" if metadata_flag else "title: Test"
     (tmp_path / "diagram.yml").write_text(metadata)
     colors = [(0, 0, 0, 255), (255, 255, 255, 255), (0, 0, 0, 128), (137, 21, 83, 0)]
@@ -106,36 +107,15 @@ def test_finalize_assets(
     original = bytes(channel for color in colors for channel in color)
     with pytest.raises(FileNotFoundError, match="diagram.png"):
         finalize_assets(base_path)
-    subprocess.run(
-        [
-            "magick",
-            "-size",
-            "260x1",
-            "-depth",
-            "8",
-            "rgba:-",
-            "-units",
-            "PixelsPerInch",
-            "-density",
-            "400",
-            f"{base_path}.png",
-        ],
-        input=original,
-        check=True,
-    )
-    png_size = os.path.getsize(f"{base_path}.png")
-    metadata_command = [
-        "magick",
-        "identify",
-        "-format",
-        "%x %y %[gamma]",
-        f"{base_path}.png",
-    ]
+    png_args = "-size 260x1 -depth 8 rgba:- -units PixelsPerInch -density 400".split()
+    subprocess.run(["magick", *png_args, png_path], input=original, check=True)
+    png_size = os.path.getsize(png_path)
+    metadata_command = ["magick", "identify", "-format", "%x %y %[gamma]", png_path]
     png_metadata = subprocess.check_output(metadata_command)
     finalize_assets(base_path)
-    assert os.path.getsize(f"{base_path}.png") <= png_size
+    assert os.path.getsize(png_path) <= png_size
     assert subprocess.check_output(metadata_command) == png_metadata
-    assert read_rgba(f"{base_path}.png") == original
+    assert read_rgba(png_path) == original
     assert not os.path.isfile(f"{base_path}-hd.png")
     dark_path = f"{base_path}-dark.avif"
     assert os.path.isfile(dark_path) is not bool(metadata_flag)
@@ -163,12 +143,10 @@ def test_finalize_assets(
         finalize_assets(base_path)
 
 
-@pytest.mark.parametrize("n_diagrams", [1, 2, 3])
-def test_readme_preview_files_exist(n_diagrams: int) -> None:
-    """Keep every generated README theme source backed by an actual preview file."""
+def test_repository_readme() -> None:
+    """Back every README theme source by a preview file and keep counts in sync."""
     diagrams = collect_diagrams()
     table = generate_table(diagrams)
-    assert table
     assert all(diagram.provenance_links.count("](<") <= 2 for diagram in diagrams)
     assert "high-entropy-alloy-dark.avif" not in table
     sierpinski = next(item for item in diagrams if item.name == "sierpinski-triangle")
@@ -177,10 +155,12 @@ def test_readme_preview_files_exist(n_diagrams: int) -> None:
     assert title.index("sierpinski-triangle.typ") < title.index("reference-icon")
     for icon in ("reference", "creator", "source"):
         assert os.path.isfile(f"{ROOT}/assets/icons/{icon}.svg")
-    rows = generate_table(diagrams[:n_diagrams]).splitlines()
-    assert all(row.startswith("| ") and row.endswith(" |") for row in rows)
-    assert len(rows) == 2 + 2 * ((n_diagrams + 1) // 2)
-    assert all(row.endswith("| &nbsp; |") for row in rows[-2:]) == bool(n_diagrams % 2)
+    for n_diagrams in (1, 2, 3):
+        rows = generate_table(diagrams[:n_diagrams]).splitlines()
+        assert all(row.startswith("| ") and row.endswith(" |") for row in rows)
+        assert len(rows) == 2 + 2 * ((n_diagrams + 1) // 2)
+        is_odd = bool(n_diagrams % 2)
+        assert all(row.endswith("| &nbsp; |") for row in rows[-2:]) == is_odd
     visible = {diagram.name for diagram in diagrams}
     assert {
         "materials-informatics",
@@ -192,6 +172,14 @@ def test_readme_preview_files_exist(n_diagrams: int) -> None:
         "physics-mindmap",
     } <= visible
     assert "iron-lattice-ferrox-logo" not in visible
+    with open(f"{ROOT}/readme.md") as file:
+        readme = file.read()
+    assert f"\n  {len(diagrams)} Scientific Diagrams\n" in readme
+    for lang, count in source_counts(diagrams).items():
+        assert (
+            f"[![{count} with {lang}](https://img.shields.io/badge/{count}%20with-{lang}"
+            in readme
+        )
 
 
 @pytest.mark.parametrize("preserve_colors", [False, True])
@@ -204,10 +192,7 @@ def test_readme_theme_sources(
 ) -> None:
     """Limit provenance to two prioritized links and select the correct theme artwork."""
     monkeypatch.setattr("update_readme_table.ROOT", str(tmp_path))
-    asset_dir = tmp_path / "assets" / "diagram"
-    asset_dir.mkdir(parents=True)
-    (asset_dir / "diagram.typ").touch()
-    metadata = {
+    metadata: dict[str, object] = {
         "title": 'A "quoted" title',
         "description": "An [internal link](../another-diagram).",
         "preserve_colors": preserve_colors,
@@ -229,7 +214,7 @@ def test_readme_theme_sources(
                 }
             ],
         )
-    (asset_dir / "diagram.yml").write_text(yaml.safe_dump(metadata))
+    asset_dir = write_diagram(tmp_path, "diagram", (".typ",), **metadata)
     (diagram,) = collect_diagrams()
     suffixes = (".avif",) if preserve_colors else (".avif", "-dark.avif")
     for suffix in suffixes:
@@ -272,17 +257,9 @@ def test_sources_render_shaded_backgrounds(
 ) -> None:
     """Render transparent pages with opaque gray masks, panels, and nested legends."""
     output_path = f"{tmp_path}/{slug}.png"
+    source = f"{ROOT}/assets/{slug}/{slug}.typ"
     subprocess.run(
-        [
-            "typst",
-            "compile",
-            "--root",
-            ROOT,
-            f"{ROOT}/assets/{slug}/{slug}.typ",
-            output_path,
-            "--ppi",
-            "72",
-        ],
+        ["typst", "compile", "--root", ROOT, source, output_path, "--ppi", "72"],
         check=True,
     )
     opaque = subprocess.check_output(
@@ -310,28 +287,34 @@ def test_source_counts_skip_hidden_diagrams(
 ) -> None:
     """Count per-language badges from the same visible diagrams as the README heading."""
     monkeypatch.setattr("update_readme_table.ROOT", str(tmp_path))
-    for name, extensions, hide in (
-        ("shown", (".typ", ".tex"), False),
-        ("tex-only", (".tex",), False),
-        ("hidden", (".typ", ".tex"), True),
-    ):
-        asset_dir = tmp_path / "assets" / name
-        asset_dir.mkdir(parents=True)
-        for extension in extensions:
-            (asset_dir / f"{name}{extension}").touch()
-        metadata = {"title": name, "description": "A diagram.", "hide": hide}
-        (asset_dir / f"{name}.yml").write_text(yaml.safe_dump(metadata))
+    write_diagram(tmp_path, "shown", (".typ", ".tex"))
+    write_diagram(tmp_path, "tex-only", (".tex",))
+    write_diagram(tmp_path, "hidden", (".typ", ".tex"), hide=True)
     assert source_counts(collect_diagrams()) == {"Typst": 1, "LaTeX": 2}
 
 
-def test_readme_counts_match_visible_diagrams() -> None:
-    """Keep the committed README heading and badges in sync with the visible diagrams."""
-    diagrams = collect_diagrams()
-    with open(f"{ROOT}/readme.md") as file:
-        readme = file.read()
-    assert f"\n  {len(diagrams)} Scientific Diagrams\n" in readme
-    for lang, count in source_counts(diagrams).items():
-        assert (
-            f"[![{count} with {lang}](https://img.shields.io/badge/{count}%20with-{lang}"
-            in readme
-        )
+@pytest.mark.parametrize(
+    ("size", "svgo_size", "kept"),
+    [(500_000, None, True), (500_001, None, False), (900_000, 400_000, True)],
+)
+def test_compress_svg(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    size: int,
+    svgo_size: int | None,
+    kept: bool,  # noqa: FBT001
+) -> None:
+    """Drop SVGs over 500 kB, measured after svgo when it is installed."""
+    svg_path = tmp_path / "diagram.svg"
+    svg_path.write_bytes(b"0" * size)
+    has_svgo = svgo_size is not None
+    monkeypatch.setattr(
+        convert_assets.shutil, "which", lambda _: "svgo" if has_svgo else None
+    )
+    monkeypatch.setattr(
+        convert_assets.subprocess,
+        "run",
+        lambda cmd, **_: svg_path.write_bytes(b"0" * (svgo_size or 0)),
+    )
+    convert_assets.compress_svg(str(svg_path))
+    assert svg_path.is_file() == kept

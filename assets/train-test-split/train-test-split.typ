@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 #import draw: circle, content, line, rect
 
 #set page(width: auto, height: auto, margin: 5pt, fill: none)
@@ -152,7 +152,7 @@
   let step-text(pos, body) = content(pos, text(size: 16pt, body))
   let step-arrow(start, end, label, label-offset) = {
     line(start, end, ..arrow-style)
-    step-text(((start.at(0) + end.at(0)) / 2, (start.at(1) + end.at(1)) / 2 + label-offset), label)
+    step-text((rel: (0, label-offset), to: (start, 50%, end)), label)
   }
 
   step-arrow(

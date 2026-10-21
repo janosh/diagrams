@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 #import draw: circle, content, line
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
@@ -35,9 +35,8 @@
     )
   }
 
-  // sample-time tick labels
-  for (idx, label) in ((1, $1 \/ f_s$), (2, $2 \/ f_s$), (3, $3 \/ f_s$)) {
-    content((idx * sample-period * scale-x, -.25), label, anchor: "north")
+  // sample-time tick labels on a shared baseline
+  for (idx, label) in ((1, $1 \/ f_s$), (2, $2 \/ f_s$), (3, $3 \/ f_s$), (4, $dots$)) {
+    content((idx * sample-period * scale-x, -.55), label, anchor: "base")
   }
-  content((4 * sample-period * scale-x, -.35), $dots$, anchor: "north")
 })

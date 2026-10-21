@@ -6,7 +6,7 @@ from datetime import date
 from difflib import SequenceMatcher
 from glob import glob
 from itertools import combinations
-from typing import Final
+from typing import Any, Final
 
 import yaml
 
@@ -23,9 +23,20 @@ EXPANSIONS: Final[dict[str, str]] = {
     "trafos": "transforms",
 }
 
+# Greek letters α-ω and their capitals to Latin names, e.g. θ -> theta. The last word of
+# the Unicode name handles multi-word names like "FINAL SIGMA" (ς) -> "sigma".
+GREEK_TO_LATIN: Final[dict[int, str]] = str.maketrans(
+    {
+        char: name
+        for code in range(0x03B1, 0x03CA)
+        for latin in [unicodedata.name(chr(code)).split()[-1].lower()]
+        for char, name in ((chr(code), latin), (chr(code).upper(), latin.title()))
+    }
+)
 
-def load_yaml(yaml_file: str) -> dict[str, object]:
-    """Parse a YAML file into a dict, annotating any error with the file path."""
+
+def load_yaml(yaml_file: str) -> dict[str, Any]:
+    """Parse and validate a metadata YAML file, annotating any error with its path."""
     try:
         with open(yaml_file) as file:
             data = yaml.safe_load(file)
@@ -62,84 +73,60 @@ def validate_metadata(data: dict[str, object]) -> None:
     if missing := {"title", "description", "tags"} - data.keys():
         raise ValueError(f"Missing metadata fields: {sorted(missing)}")
     for key, value in data.items():
-        if key in strings:
-            if not is_text(value):
-                raise ValueError(f"{key}: expected a nonempty string, got {value!r}")
+        if key in strings and not is_text(value):
+            raise ValueError(f"{key}: expected a nonempty string, got {value!r}")
         elif key in string_lists:
-            if not isinstance(value, list) or not value or not all(map(is_text, value)):
+            if not (isinstance(value, list) and value and all(map(is_text, value))):
                 raise ValueError(
                     f"{key}: expected a nonempty list of nonempty strings, got {value!r}"
                 )
             if len(value) != len(set(value)):
                 raise ValueError(f"{key}: duplicate entries in {value!r}")
-        elif key in flags:
-            if type(value) is not bool:
-                raise ValueError(f"{key}: expected a boolean, got {value!r}")
-        elif key == "date":
-            # Month precision is meaningful; do not invent a day in stored metadata.
-            if type(value) is date:
-                continue
-            if not isinstance(value, str) or not re.fullmatch(
-                r"\d{4}-\d{2}(?:-\d{2})?", value
+        elif key in flags and type(value) is not bool:
+            raise ValueError(f"{key}: expected a boolean, got {value!r}")
+        # Month precision is meaningful; do not invent a day in stored metadata.
+        elif key == "date" and type(value) is not date:
+            if not (
+                isinstance(value, str)
+                and re.fullmatch(r"\d{4}-\d{2}(?:-\d{2})?", value)
             ):
                 raise ValueError(f"date: expected YYYY-MM or YYYY-MM-DD, got {value!r}")
             try:
-                date.fromisoformat(value + "-01" if len(value) == 7 else value)
+                date.fromisoformat(value if len(value) == 10 else f"{value}-01")
             except ValueError as exc:
                 raise ValueError(f"date: invalid calendar date {value!r}") from exc
-        elif key == "references":
-            if (
-                not isinstance(value, list)
-                or not value
-                or any(
-                    not isinstance(entry, dict)
-                    or not entry
-                    or any(
-                        not is_text(ref_id)
-                        or not isinstance(reference, dict)
-                        or not reference
-                        for ref_id, reference in entry.items()
-                    )
-                    for entry in value
+        elif key == "references" and not (
+            isinstance(value, list)
+            and value
+            and all(
+                isinstance(entry, dict)
+                and entry
+                and all(
+                    is_text(ref_id) and isinstance(reference, dict) and reference
+                    for ref_id, reference in entry.items()
                 )
-            ):
-                raise ValueError(
-                    f"references: expected a list of named reference mappings, got {value!r}"
-                )
-        elif key == "attribution":
-            if (
-                not isinstance(value, dict)
-                or not value
-                or not all(is_text(item) for pair in value.items() for item in pair)
-            ):
-                raise ValueError(
-                    f"attribution: expected a nonempty mapping of strings, got {value!r}"
-                )
+                for entry in value
+            )
+        ):
+            raise ValueError(
+                f"references: expected a list of named reference mappings, got {value!r}"
+            )
+        elif key == "attribution" and not (
+            isinstance(value, dict)
+            and value
+            and all(is_text(item) for pair in value.items() for item in pair)
+        ):
+            raise ValueError(
+                f"attribution: expected a nonempty mapping of strings, got {value!r}"
+            )
 
 
 def expand_folder_name(name: str) -> set[str]:
     """Generate all possible expansions of a folder name."""
     result = {name}
     for abbrev, expansion in EXPANSIONS.items():
-        for current in result.copy():
-            if abbrev in current:
-                result.add(current.replace(abbrev, expansion))
+        result |= {current.replace(abbrev, expansion) for current in result}
     return result
-
-
-def _greek_to_latin() -> dict[int, str]:
-    """Map Greek letters (lower + upper) to Latin names, e.g. θ -> theta."""
-    mapping: dict[int, str] = {}
-    for code in range(0x03B1, 0x03CA):  # Greek lowercase letters α-ω
-        char = chr(code)
-        # last word handles multi-word names like "FINAL SIGMA" (ς) -> "sigma"
-        latin = unicodedata.name(char).split()[-1].lower()
-        mapping[code] = latin
-        mapping[ord(char.upper())] = latin.title()
-    return mapping
-
-
-GREEK_TO_LATIN: Final[dict[int, str]] = _greek_to_latin()
 
 
 def to_param_case(text: str) -> str:
@@ -150,52 +137,35 @@ def to_param_case(text: str) -> str:
     return re.sub(r"-{2,}", "-", text).strip("-")
 
 
-def find_similar_tags(
-    tags: list[str], threshold: float = 0.85
-) -> list[tuple[str, str, float]]:
-    """Find pairs of tags that are very similar to each other."""
-    pairs = [
-        (tag1, tag2, ratio)
-        for tag1, tag2 in combinations(tags, 2)
-        if (ratio := SequenceMatcher(None, tag1, tag2).ratio()) >= threshold
-    ]
-    return sorted(pairs, key=lambda pair: pair[2], reverse=True)
-
-
 def report_similar_tags(yaml_files: list[str]) -> None:
     """Find minor variations of tags and suggest renaming them for cross-file consistency."""
-    tag_counts: Counter[str] = Counter()
-
     print("\nAnalyzing tags across YAML files...")
     print(f"Found {len(yaml_files)} YAML files")
+    tag_counts = Counter(tag for path in yaml_files for tag in load_yaml(path)["tags"])
 
-    for yaml_file in yaml_files:
-        tags = load_yaml(yaml_file).get("tags")
-        if isinstance(tags, list):
-            tag_counts.update(tags)
-
-    # Print tag statistics
-    n_tags_to_print = 20
-    print(f"\nTop {n_tags_to_print} tags by usage:")
+    print("\nTop 20 tags by usage:")
     print("-" * 40)
-    for tag, count in sorted(tag_counts.items(), key=lambda x: (-x[1], x[0]))[
-        :n_tags_to_print
-    ]:
+    for tag, count in sorted(tag_counts.items(), key=lambda x: (-x[1], x[0]))[:20]:
         print(f"{tag:25} {count:5d}")
 
-    # Find similar tags
-    all_tags = list(tag_counts)
-    similar_tags = find_similar_tags(all_tags)
-
-    if similar_tags:
-        print("\nPotentially similar tags:")
-        print("-" * 40)
-        for tag1, tag2, similarity in similar_tags:
-            print(
-                f"{tag1:25} {tag_counts[tag1]:<3d} ↔ "
-                f"{tag2:25} {tag_counts[tag2]:<3d} "
-                f"({similarity:.3f})"
-            )
+    similar_tags = sorted(
+        (
+            (tag1, tag2, ratio)
+            for tag1, tag2 in combinations(tag_counts, 2)
+            if (ratio := SequenceMatcher(None, tag1, tag2).ratio()) >= 0.85
+        ),
+        key=lambda pair: pair[2],
+        reverse=True,
+    )
+    if not similar_tags:
+        return
+    print("\nPotentially similar tags:")
+    print("-" * 40)
+    for tag1, tag2, similarity in similar_tags:
+        print(
+            f"{tag1:25} {tag_counts[tag1]:<3d} ↔ "
+            f"{tag2:25} {tag_counts[tag2]:<3d} ({similarity:.3f})"
+        )
 
 
 def check_yaml_files(yaml_files: list[str]) -> int:
@@ -203,10 +173,8 @@ def check_yaml_files(yaml_files: list[str]) -> int:
     errors = 0
     for yaml_file in yaml_files:
         try:
-            data = load_yaml(yaml_file)
+            title = load_yaml(yaml_file)["title"]
             file_name = os.path.splitext(os.path.basename(yaml_file))[0]
-            title = data["title"]
-            assert isinstance(title, str)  # Established by validate_metadata.
             if file_name not in IGNORE_SET and not (
                 expand_folder_name(file_name) & expand_folder_name(to_param_case(title))
             ):

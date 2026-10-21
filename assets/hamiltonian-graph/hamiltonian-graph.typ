@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 #import draw: bezier, circle, content, line
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
@@ -32,9 +32,5 @@
   // curved black edge TGC → GCG (bend below); bezier doesn't clip at node
   // borders like line does, so start/end on the rim toward the control point
   let ctrl = (2 * spacing, -1.8)
-  let rim((cx, cy), (tx, ty)) = {
-    let len = calc.norm(tx - cx, ty - cy)
-    (cx + (tx - cx) / len * radius, cy + (ty - cy) / len * radius)
-  }
-  bezier(rim((spacing, 0), ctrl), rim((4 * spacing, 0), ctrl), ctrl, ..arr(black))
+  bezier(("TGC", radius, ctrl), ("GCG", radius, ctrl), ctrl, ..arr(black))
 })

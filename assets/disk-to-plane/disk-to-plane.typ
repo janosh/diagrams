@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 #import draw: arc, circle, content, line, rect
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
@@ -17,6 +17,8 @@
   end: (25%, 75%).map(pos => (
     pos: pos,
     symbol: "barbed",
+    // paths run from -i to i, the marks from w_4 = i down to w_2 = -i
+    reverse: true,
     fill: paint,
     scale: 0.7,
     shorten-to: none,

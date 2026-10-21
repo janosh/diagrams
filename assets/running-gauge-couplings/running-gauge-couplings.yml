@@ -1,0 +1,22 @@
+title: Running Gauge Couplings
+tags:
+  - physics
+  - quantum field theory
+  - renormalization group
+  - standard model
+  - grand unification
+  - asymptotic freedom
+description: One-loop running of the inverse Standard Model gauge couplings $\alpha_i^{-1}(\mu) = \alpha_i^{-1}(M_Z) - \frac{b_i}{2\pi} \ln(\mu / M_Z)$ with $b_i = (41/10, -19/6, -7)$ for $U(1)_Y$ (in GUT normalization), $SU(2)_L$ and $SU(3)_c$, starting from $\alpha_i^{-1}(M_Z) \approx (59.0, 29.6, 8.5)$. The non-abelian couplings have $b_i < 0$, so their inverses grow with energy (asymptotic freedom), while the hypercharge coupling grows stronger. The three lines nearly meet between $10^{13}$ and $10^{17}$ GeV but miss a common point (shaded), the classic hint that grand unification needs new physics such as supersymmetry.
+references:
+  - pdg_2024:
+      title: Review of Particle Physics
+      authors: S. Navas et al. (Particle Data Group)
+      year: 2024
+      publisher: Physical Review D
+      doi: 10.1103/PhysRevD.110.030001
+  - langacker_1981:
+      title: Grand unified theories and proton decay
+      authors: Paul Langacker
+      year: 1981
+      publisher: Physics Reports
+      doi: 10.1016/0370-1573(81)90059-4

@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, decorations, draw
+#import "@preview/cetz:0.5.3": canvas, decorations, draw
 #import draw: circle, content, line
 
 #set page(width: auto, height: auto, margin: 4pt, fill: none)
@@ -21,7 +21,8 @@
 
   for (dx, below-label) in x-anchor.zip(tick-labels) {
     circle((ox + dx, oy), radius: 0.1, fill: black)
-    content((ox + dx, oy - 0.22), below-label, anchor: "north")
+    // Shared baseline so -infty, 0, 1, infty line up despite different glyph heights
+    content((ox + dx, oy - 0.5), below-label, anchor: "base")
   }
   for (dx, label) in x-anchor.slice(1).zip(above-labels) {
     content((ox + dx, oy + 12.0 * pt-cm), label, anchor: "south")

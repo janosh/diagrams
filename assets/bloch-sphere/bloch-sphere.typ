@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": angle, canvas, draw
+#import "@preview/cetz:0.5.3": angle, canvas, draw
 #import draw: circle, content, line
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
@@ -22,13 +22,14 @@
 
   // Dashed projection onto the equatorial plane
   line((0, 0), phi-point, vec-a, style: "dashed")
-  for (end, label, anchor) in (
-    (x1-end, $x_1$, "north"),
-    ((1.15 * rad, 0), $x_2$, "west"),
-    ((0, 1.15 * rad), $x_3$, "south"),
+  // x_1 hangs below its arrow tip: anchors align ink bounds, so pad off the arrowhead
+  for (end, label, anchor, pad) in (
+    (x1-end, $x_1$, "north", 3pt),
+    ((1.15 * rad, 0), $x_2$, "west", 0pt),
+    ((0, 1.15 * rad), $x_3$, "south", 0pt),
   ) {
     line((0, 0), end, mark: (end: "stealth", fill: black))
-    content(end, label, anchor: anchor)
+    content(end, label, anchor: anchor, padding: pad)
   }
 
   // Angles

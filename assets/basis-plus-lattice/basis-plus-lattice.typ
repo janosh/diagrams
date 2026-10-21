@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 #import draw: circle, content, rect
 
 // Flat discs with a darker rim: a lit-sphere highlight would invert into a dark pit under the

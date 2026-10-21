@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 #let label-size = 12pt
 #let paragraph-size = 14pt
 #let heading-size = 16pt
@@ -71,8 +71,12 @@
         )
       }
     } else if kind == "torus" {
-      draw.circle((0, 0), radius: (2, 1.3), fill: rgb("#bfd0de"), stroke: blue + 1pt)
-      draw.circle((0, .1), radius: (.85, .4), fill: rgb("#cdd3da"), stroke: blue + 1pt)
+      draw.boolean(
+        draw.circle((0, 0), radius: (2, 1.3)),
+        draw.circle((0, .1), radius: (.85, .4)),
+        fill: rgb("#bfd0de"),
+        stroke: blue + 1pt,
+      )
       draw.arc(
         (0, -.1),
         radius: (.9, .6),
@@ -83,11 +87,12 @@
       )
     } else {
       // Teal outlines are worldsheet boundaries.
-      draw.circle((0, 0), radius: radius, fill: rgb("#bfd5cc"), stroke: teal + 2pt)
+      let style = (fill: rgb("#bfd5cc"), stroke: teal + 2pt)
       if kind == "disk" {
+        draw.circle((0, 0), radius: radius, ..style)
         draw.content((0, 0), [one boundary])
       } else {
-        draw.circle((0, 0), radius: .8, fill: rgb("#cdd3da"), stroke: teal + 2pt)
+        draw.boolean(draw.circle((0, 0), radius: radius), draw.circle((0, 0), radius: .8), ..style)
       }
     }
     let (genus, boundaries) = (sphere: (0, 0), torus: (1, 0), disk: (0, 1), annulus: (0, 2)).at(

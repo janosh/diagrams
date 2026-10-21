@@ -1,5 +1,6 @@
 <script lang="ts">
   import { page } from '$app/state'
+  import favicon from '#assets/favicon.svg'
   import { name, repository } from '#package.json'
 
   let online = $state(true)
@@ -28,7 +29,7 @@
 
   <p>
     Back to <a href=".">
-      <img src="favicon.svg" alt={name} height="30" />
+      <img src={favicon} alt={name} height="30" />
       landing page
     </a>
   </p>

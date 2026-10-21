@@ -771,35 +771,18 @@ for (const slug of [`xc-functional`, `regulated-and-unregulated-propagators`]) {
         )
       }
     }
-    const header = page.locator(`header`).filter({ has: page.locator(`aside`) })
-    const filename = header.locator(`h3`)
-    await filename.scrollIntoViewIfNeeded()
-    const title_bounds = await filename.boundingBox()
+    const caption = page.locator(`figure.code-block-file figcaption`)
+    await caption.locator(`.title`).scrollIntoViewIfNeeded()
     const code_bounds = await code.boundingBox()
-    const toolbar_bounds = await header.locator(`aside`).boundingBox()
-    if (!title_bounds || !code_bounds || !toolbar_bounds)
-      throw new Error(`Missing source header or code bounds on ${slug}`)
-    // The badge straddles the background; controls occupy their own row above code.
-    const backdrop_top = await header.evaluate((element) => {
-      const block = element.parentElement
-      if (!block) throw new Error(`Missing code block`)
-      const first_row = Number(getComputedStyle(block).gridTemplateRows.split(`px`)[0])
-      return block.getBoundingClientRect().top + first_row
-    })
-    expect(backdrop_top).toBeCloseTo(title_bounds.y + title_bounds.height / 2, 0)
-    expect(toolbar_bounds.y).toBeGreaterThanOrEqual(title_bounds.y + title_bounds.height)
-    expect(toolbar_bounds.y + toolbar_bounds.height).toBeLessThanOrEqual(code_bounds.y)
-    expect(
-      code_bounds.x + code_bounds.width - toolbar_bounds.x - toolbar_bounds.width,
-    ).toBeCloseTo(16, 0)
+    if (!code_bounds) throw new Error(`Missing code bounds on ${slug}`)
+    // Title and controls stay on screen above the code without overlapping, even wrapped.
     const control_bounds = []
-    for (const control of await header.locator(`h3, aside a, aside button`).all()) {
+    for (const control of await caption.locator(`.title, .actions > *`).all()) {
       const bounds = await control.boundingBox()
       if (!bounds) throw new Error(`Missing source control bounds on ${slug}`)
       expect(bounds.x).toBeGreaterThanOrEqual(0)
       expect(bounds.x + bounds.width).toBeLessThanOrEqual(320)
       expect(bounds.y + bounds.height).toBeLessThanOrEqual(code_bounds.y)
-      // Every pair must be separated on at least one axis, including wrapped titles.
       for (const other of control_bounds) {
         expect(
           bounds.x >= other.x + other.width ||
@@ -810,7 +793,7 @@ for (const slug of [`xc-functional`, `regulated-and-unregulated-propagators`]) {
       }
       control_bounds.push(bounds)
     }
-    await header.locator(`aside button`).focus()
+    await page.getByRole(`button`, { name: `Copy code` }).focus()
     await page.keyboard.press(`Tab`)
     await expect(code).toBeFocused()
     await page.keyboard.press(`ArrowRight`, { delay: 100 })

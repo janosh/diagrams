@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 #import draw: circle, content, line, mark
 
 // Diagonal hatching marking a vertex as dressed rather than bare.
@@ -54,7 +54,7 @@
   vertex("loop.south", $G_(k,l i)(p_4,p_1)$, (0, -0.5))
 
   line((-2.5 * radius, 0), "loop.west", stroke: 1pt, name: "external")
-  content((rel: (-0.6 * radius, -0.3), to: "external"), $phi_a$)
+  content((rel: (-0.6 * radius, 0), to: "external"), $phi_a$, anchor: "north", padding: 7pt)
   line(
     (-2.3 * radius, 0.15),
     (-1.5 * radius, 0.15),
@@ -62,7 +62,7 @@
     stroke: 0.75pt,
     name: "q-arrow",
   )
-  content((rel: (0, 0.3), to: "q-arrow.mid"), $q$)
+  content("q-arrow.mid", $q$, anchor: "south", padding: 5pt)
 
   content(
     (-2.2 * radius, 1.2 * radius),

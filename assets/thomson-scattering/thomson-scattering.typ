@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 
 #set page(width: auto, height: auto, margin: 12pt, fill: none)
 #set text(font: "New Computer Modern", size: 12pt, fill: rgb("243247"))

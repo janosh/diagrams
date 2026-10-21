@@ -9,16 +9,19 @@ import pytest
 import yaml
 from check_yaml_files import check_yaml_files, load_yaml
 
+REQUIRED: dict[str, object] = {
+    "title": "Example",
+    "description": "A diagram.",
+    "tags": ["physics"],
+}
+
 
 @pytest.mark.parametrize(
     "metadata_date", [None, date(2024, 2, 29), "2024-02-29", "2020-03"]
 )
 def test_valid_metadata(metadata_date: date | str | None, tmp_path: Path) -> None:
     """Accept optional provenance, explicit flags, and both supported date precisions."""
-    data = {
-        "title": "Example",
-        "description": "A diagram.",
-        "tags": ["physics"],
+    data = REQUIRED | {
         "hide": False,
         "preserve_colors": True,
         "authors": ["Example Author"],
@@ -73,16 +76,7 @@ def test_invalid_metadata(
 ) -> None:
     """Reject malformed fields without rewriting YAML or bypassing title exceptions."""
     source = tmp_path / "qm-cost-vs-acc.yml"
-    source.write_text(
-        yaml.safe_dump(
-            {
-                "title": "Example",
-                "description": "A diagram.",
-                "tags": ["physics"],
-                field: value,
-            }
-        )
-    )
+    source.write_text(yaml.safe_dump(REQUIRED | {field: value}))
     original = source.read_bytes()
     assert check_yaml_files([str(source)]) == 1
     output = capsys.readouterr().out

@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 #import draw: circle, content, line, rect
 
 // Bloch/Wannier conventions: orthonormal Bloch states on a finite periodic mesh.

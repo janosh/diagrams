@@ -1,0 +1,16 @@
+title: Particle vs String Interactions
+tags:
+  - physics
+  - quantum field theory
+  - string theory
+  - Feynman diagrams
+  - worldsheet
+description: >-
+  In quantum field theory, particles interact at points: at a cubic vertex one worldline splits into two at a sharp, singular spacetime point, the source of ultraviolet divergences in loop diagrams. In string theory, the same process is a closed string splitting into two, sweeping out a smooth "pair of pants" worldsheet (loops show the string at successive times, pinching into a figure-eight as it splits) with no distinguished interaction point, since observers in different Lorentz frames disagree on where the split happens. The interaction is encoded in the [worldsheet topology](../string-worldsheet-topologies), with each splitting weighted by the string coupling $g_s$.
+references:
+  - polchinski_string_1998:
+      title: "String Theory, Vol. 1: An Introduction to the Bosonic String"
+      authors: Joseph Polchinski
+      year: 1998
+      publisher: Cambridge University Press
+      doi: 10.1017/CBO9780511816079

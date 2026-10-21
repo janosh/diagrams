@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 #import draw: circle, content, line
 #set page(width: 500pt, height: auto, margin: (x: 20pt, y: 8pt), fill: none)
 #set text(font: "Avenir Next", size: 12pt)

@@ -1,0 +1,8 @@
+title: Chaotic Double Pendulum
+tags:
+  - physics
+  - classical mechanics
+  - chaos theory
+  - nonlinear dynamics
+  - numerical simulation
+description: Two double pendulums (equal masses and rod lengths, released from rest at $\theta_1 = 165^\circ$, $\theta_2 = 150^\circ$) whose upper angles differ by only $\Delta\theta_1 = 10^{-3}$ rad. The exact Lagrangian equations of motion are integrated with fourth-order Runge-Kutta ($\Delta t = 0.01\sqrt{l/g}$, relative energy drift below $10^{-6}$) directly in Typst. The traces of the lower bobs, fading in with time, coincide at first, then separate exponentially fast and end in completely different configurations, the hallmark of deterministic chaos and a positive Lyapunov exponent.

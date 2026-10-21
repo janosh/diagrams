@@ -1,5 +1,5 @@
 // Spherical differential volume by Juan Falgueras-Cano, 2026-10-04.
-#import "@preview/cetz:0.5.2": canvas, draw
+#import "@preview/cetz:0.5.3": canvas, draw
 #import draw: (
   arc, circle, content, floating, get-ctx, hide, line, merge-path, on-xy, on-xz, rect, rotate,
   scope,
@@ -100,7 +100,7 @@
     // Draw -z before phi so it cannot cover the angle arc.
     line((0, 0), (0, 0, -1.1 * sphere_radius), stroke: hidden_guide)
     edge((1.2, 90deg, 0deg), (1.2, 90deg, phi_min), stroke: angle_stroke)
-    content(spherical(1, 90deg, phi_min / 2), text(red)[$phi$], anchor: "north", padding: 0)
+    content(spherical(1, 90deg, phi_min / 2), text(red)[$phi$], anchor: "north", padding: .2)
     for (direction, label) in (((1, 0, 0), $x$), ((0, 1, 0), $y$), ((0, 0, 1), $z$)) {
       if direction != (0, 0, 1) {
         line((0, 0), direction.map(value => -1.1 * sphere_radius * value), stroke: hidden_guide)

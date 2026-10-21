@@ -97,7 +97,7 @@ jobs:
           # increase max-redirects needed for some journal links
           # ${...} becomes $%7B...%7D once lychee percent-encodes the extracted URL
           # dft.uci.edu intermittently serves an expired TLS certificate to CI runners
-          args: --accept 100..=103,200..=299,403,429,500,503 --max-redirects 10 --timeout 30 --exclude-all-private --exclude '\$(\{.*\}|%7B.*%7D)' --exclude 'chemicalaid\.com' --exclude 'janosh\.github\.io/diagrams' --exclude 'diagrams\.janosh\.dev' --exclude 'arxiv\.org' --exclude 'sciencedirect\.com' --exclude 'rolandwanner\.com' --exclude 'tikz\.dev' --exclude 'dft\.uci\.edu' -- ./**/*.{typ,tex,md,svelte,ts,yml}
+          args: --accept 100..=103,200..=299,403,429,500,503 --max-redirects 10 --timeout 30 --exclude-all-private --exclude '\$(\{.*\}|%7B.*%7D)' --exclude 'chemicalaid\.com' --exclude 'janosh\.github\.io/diagrams' --exclude 'diagrams\.janosh\.dev' --exclude 'arxiv\.org' --exclude 'sciencedirect\.com' --exclude 'rolandwanner\.com' --exclude 'tikz\.(dev|net)' --exclude 'dft\.uci\.edu' --exclude 'informatik\.uni-hamburg\.de' -- ./**/*.{typ,tex,md,svelte,ts,yml}
 
   build:
     runs-on: ubuntu-latest

@@ -9,7 +9,7 @@ from html import escape
 from itertools import zip_longest
 from urllib.parse import quote, urlsplit
 
-import yaml
+from check_yaml_files import load_yaml
 
 ROOT = os.path.dirname(os.path.dirname(__file__))
 
@@ -28,51 +28,33 @@ class DiagramInfo:
     name: str
     title: str
     source_exts: tuple[str, ...]
-    preserve_colors: bool = False
-    provenance_links: str = ""
-
-
-def get_diagram_sources(ext: str) -> list[str]:
-    """Return source files named after their parent diagram folder."""
-    sources: list[str] = []
-    for src_path in glob(f"{ROOT}/assets/**/*{ext}"):
-        dir_name = os.path.dirname(src_path)
-        diagram_name = os.path.basename(dir_name)
-        if diagram_name.startswith("_"):
-            continue
-        expected_path = f"{dir_name}/{diagram_name}{ext}"
-        if src_path != expected_path:
-            raise ValueError(f"Expected {expected_path}, found {src_path}")
-        sources.append(src_path)
-    return sources
+    preserve_colors: bool
+    provenance_links: str
 
 
 def collect_diagrams() -> list[DiagramInfo]:
     """Collect visible diagram metadata with matching source files."""
-    for src_path in get_diagram_sources(".tex") + get_diagram_sources(".typ"):
-        dir_name = os.path.dirname(src_path)
-        yaml_path = f"{dir_name}/{os.path.basename(dir_name)}.yml"
-        if not os.path.isfile(yaml_path):
-            raise FileNotFoundError(f"Missing {yaml_path} for {src_path}")
+    for ext in LANGUAGES:
+        for src_path in glob(f"{ROOT}/assets/**/*{ext}"):
+            dir_name = os.path.dirname(src_path)
+            name = os.path.basename(dir_name)
+            if name.startswith("_"):
+                continue
+            base_path = f"{dir_name}/{name}"
+            if src_path != f"{base_path}{ext}":
+                raise ValueError(f"Expected {base_path}{ext}, found {src_path}")
+            if not os.path.isfile(f"{base_path}.yml"):
+                raise FileNotFoundError(f"Missing {base_path}.yml for {src_path}")
 
     diagrams: list[DiagramInfo] = []
-    for yaml_path in sorted(glob(f"{ROOT}/assets/**/*.yml")):
+    for yaml_path in glob(f"{ROOT}/assets/**/*.yml"):
         dir_name = os.path.dirname(yaml_path)
         name = os.path.basename(dir_name)
-
-        with open(yaml_path) as file:
-            metadata = yaml.safe_load(file) or {}
-
-        if metadata.get("hide"):
-            continue
-
-        if "title" not in metadata:
-            raise ValueError(f"Missing 'title' in {yaml_path}")
-
+        metadata = load_yaml(yaml_path)
         source_exts = tuple(
             ext for ext in LANGUAGES if os.path.isfile(f"{dir_name}/{name}{ext}")
         )
-        if source_exts:
+        if source_exts and not metadata.get("hide"):
             diagrams.append(
                 DiagramInfo(
                     name=name,
@@ -82,18 +64,7 @@ def collect_diagrams() -> list[DiagramInfo]:
                     provenance_links=get_provenance_links(metadata),
                 )
             )
-
     return sorted(diagrams, key=lambda diagram: diagram.name)
-
-
-def get_code_links(diagram: DiagramInfo) -> str:
-    """Generate markdown links to source files as language logo icons."""
-    name = diagram.name
-    return "".join(
-        f"&nbsp;[![{LANGUAGES[ext]}][{LANGUAGES[ext].lower()}-logo]]"
-        f"(assets/{name}/{name}{ext})"
-        for ext in diagram.source_exts
-    )
 
 
 def get_provenance_links(metadata: dict) -> str:
@@ -167,27 +138,27 @@ def table_cell(diagram: DiagramInfo | None) -> tuple[str, str]:
             f'<picture><source media="(prefers-color-scheme: dark)" '
             f'srcset="{base_path}-dark.avif">{image}</picture>'
         )
+    code_links = "".join(
+        f"&nbsp;[![{LANGUAGES[ext]}][{LANGUAGES[ext].lower()}-logo]]({base_path}{ext})"
+        for ext in diagram.source_exts
+    )
     return (
         f"[{title}]({SITE_URL}/{name}) "
-        f"<sub>{get_code_links(diagram)}{diagram.provenance_links}</sub>",
+        f"<sub>{code_links}{diagram.provenance_links}</sub>",
         image,
     )
 
 
 def generate_table(diagrams: list[DiagramInfo]) -> str:
     """Generate a two-column markdown table from diagram info."""
-    table = f"| {'&emsp;' * 22} | {'&emsp;' * 22} |\n| :---: | :---: |\n"
-
-    for left_diagram, right_diagram in zip_longest(diagrams[::2], diagrams[1::2]):
-        left_title_link, left_image_link = table_cell(left_diagram)
-        right_title_link, right_image_link = table_cell(right_diagram)
-
-        table += (
-            f"| {left_title_link} | {right_title_link} |\n"
-            f"| {left_image_link} | {right_image_link} |\n"
-        )
-
-    return table
+    rows = [f"| {'&emsp;' * 22} | {'&emsp;' * 22} |", "| :---: | :---: |"]
+    for pair in zip_longest(diagrams[::2], diagrams[1::2]):
+        (left_title, left_image), (right_title, right_image) = map(table_cell, pair)
+        rows += [
+            f"| {left_title} | {right_title} |",
+            f"| {left_image} | {right_image} |",
+        ]
+    return "\n".join(rows) + "\n"
 
 
 def source_counts(diagrams: list[DiagramInfo]) -> dict[str, int]:
