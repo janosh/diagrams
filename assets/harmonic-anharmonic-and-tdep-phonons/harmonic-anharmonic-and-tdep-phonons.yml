@@ -1,0 +1,44 @@
+title: Harmonic, Anharmonic and TDEP Phonons
+tags:
+  - physics
+  - solid state physics
+  - phonons
+  - lattice dynamics
+  - anharmonicity
+  - molecular dynamics
+  - thermal conductivity
+description: |
+  Four ways to model lattice vibrations, compared column by column. The first three Taylor-expand the potential energy in atomic displacements $u$ about the static $T = 0$ K lattice, each adding one term: harmonic second-order force constants $\Phi_{ij}$ give independent normal modes with temperature-independent frequencies and infinite lifetimes, a delta-function line shape. Adding the cubic term $\Phi_{ijk}$ lets a phonon decay into two (the bubble self-energy), which broadens the line to a width $2\Gamma = 1/\tau$, softens the frequency and yields a finite lattice thermal conductivity, but the cubic potential alone is unbounded. The quartic term $\Phi_{ijkl}$ adds the loop self-energy, of the same order in $\langle u^2 \rangle$ as the bubble, which shifts the frequency with temperature, plus four-phonon scattering.
+
+  The [temperature-dependent effective potential (TDEP)](https://doi.org/10.21105/joss.06150) method instead runs molecular dynamics at temperature $T$ and least-squares fits effective force constants $\Phi^\text{eff}(T)$ to the sampled forces. The best-fit parabola folds all anharmonic orders, at the amplitudes actually reached at that temperature, into renormalized frequencies, and can stabilize phases that are dynamically unstable in the harmonic approximation; effective third- and fourth-order constants fit to the same data give lifetimes. The potentials use a 1D toy on-site potential whose TDEP fit is computed from Boltzmann-sampled snapshots; the line shapes are schematic.
+references:
+  - maradudin_fein_1962:
+      title: Scattering of neutrons by an anharmonic crystal
+      authors: A. A. Maradudin, A. E. Fein
+      year: 1962
+      doi: 10.1103/PhysRev.128.2589
+  - hellman_2011:
+      title: Lattice dynamics of anharmonic solids from first principles
+      authors: O. Hellman, I. A. Abrikosov, S. I. Simak
+      year: 2011
+      doi: 10.1103/PhysRevB.84.180301
+  - hellman_2013:
+      title: Temperature dependent effective potential method for accurate free energy calculations of solids
+      authors: O. Hellman, P. Steneteg, I. A. Abrikosov, S. I. Simak
+      year: 2013
+      doi: 10.1103/PhysRevB.87.104111
+  - togo_2015:
+      title: Distributions of phonon lifetimes in Brillouin zones
+      authors: A. Togo, L. Chaput, I. Tanaka
+      year: 2015
+      doi: 10.1103/PhysRevB.91.094306
+  - feng_ruan_2016:
+      title: Quantum mechanical prediction of four-phonon scattering rates and reduced thermal conductivity of solids
+      authors: T. Feng, X. Ruan
+      year: 2016
+      doi: 10.1103/PhysRevB.93.045202
+  - knoop_2024:
+      title: "TDEP: Temperature Dependent Effective Potentials"
+      authors: F. Knoop et al.
+      year: 2024
+      doi: 10.21105/joss.06150

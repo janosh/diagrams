@@ -31,6 +31,7 @@
     HomeOutline,
     Overleaf,
   } from 'svelte-widgets/icons'
+  import { strip_html } from 'svelte-widgets/utils'
   import { sync_url_params } from 'svelte-widgets/url-params'
 
   let { data } = $props()
@@ -56,7 +57,7 @@
   // production serves downloads from GitHub so we don't re-upload assets with every build
   let asset_path = $derived(`assets/${slug}/${slug}`)
   let base_uri = $derived(`${repository}/raw/refs/heads/main/${asset_path}`)
-  let plain_description = $derived(description?.replaceAll(/<[^>]*>/g, ``))
+  let plain_description = $derived(description && strip_html(description))
 
   // prev/next walks the active home-page filter; fall back to all diagrams when the current
   // one isn't in the filtered set (direct navigation, or the filter excludes it)

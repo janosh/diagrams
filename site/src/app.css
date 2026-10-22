@@ -1,18 +1,6 @@
-/* Typst/LaTeX syntax colors follow the site theme, including overrides of the OS theme. */
-@import '@wooorm/starry-night/style/core';
+/* Typst/LaTeX syntax colors follow the site theme, including overrides of the OS theme */
+@import 'svelte-widgets/highlight/theme.css';
 :root {
-  --color-prettylights-syntax-comment: light-dark(#59636e, #9198a1);
-  --color-prettylights-syntax-constant: light-dark(#0550ae, #79c0ff);
-  --color-prettylights-syntax-entity: light-dark(#6639ba, #d2a8ff);
-  --color-prettylights-syntax-invalid-illegal-bg: light-dark(#82071e, #8e1519);
-  --color-prettylights-syntax-invalid-illegal-text: light-dark(#f6f8fa, #f0f6fc);
-  --color-prettylights-syntax-keyword: light-dark(#cf222e, #ff7b72);
-  --color-prettylights-syntax-markup-heading: light-dark(#0550ae, #1f6feb);
-  --color-prettylights-syntax-string: light-dark(#0a3069, #a5d6ff);
-  --color-prettylights-syntax-variable: light-dark(#953800, #ffa657);
-  --color-prettylights-syntax-markup-bold: light-dark(#1f2328, #f0f6fc);
-  --color-prettylights-syntax-markup-italic: light-dark(#1f2328, #f0f6fc);
-  --color-prettylights-syntax-storage-modifier-import: light-dark(#1f2328, #f0f6fc);
   /* Light theme colors */
   --light-bg: #f8f9fa;
   --light-text: #212529;

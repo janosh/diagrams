@@ -17,20 +17,6 @@
       src="https://plausible.io/js/script.file-downloads.js"
     ></script>
 
-    <!-- Theme switching script (prevent flash before Svelte hydrates) -->
-    <script>
-      const media_query = globalThis.matchMedia('(prefers-color-scheme: dark)')
-      const saved = localStorage.theme
-      const theme =
-        saved === 'light' || saved === 'dark'
-          ? saved
-          : media_query.matches
-            ? 'dark'
-            : 'light'
-      document.documentElement.style.colorScheme = theme
-      document.documentElement.dataset.theme = theme
-    </script>
-
     %sveltekit.head%
   </head>
 

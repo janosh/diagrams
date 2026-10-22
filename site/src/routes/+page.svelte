@@ -7,7 +7,7 @@
   import { homepage, repository } from '#package.json'
   import { tick } from 'svelte'
   import { Icon, Masonry, MultiSelect } from 'svelte-widgets'
-  import { highlight_matches } from 'svelte-widgets/attachments'
+  import { highlight_matches, in_view } from 'svelte-widgets/attachments'
   import { GitHub, License } from 'svelte-widgets/icons'
 
   const meta_description = `${diagrams.length} Diagrams on Physics, Chemistry, Computer Science, and Machine Learning`
@@ -59,19 +59,11 @@
     return () => observer.disconnect()
   })
 
-  const observe_gallery_end = (element: HTMLElement) => {
-    if (restoring) return
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          visible_count = gallery_count_for(visible_count + 1, filters.filtered.length)
-        }
-      },
-      { rootMargin: `800px` },
-    )
-    observer.observe(element)
-    return () => observer.disconnect()
-  }
+  // the sentinel is re-keyed per count, so each one grows the gallery once
+  const grow_gallery = in_view(
+    () => (visible_count = gallery_count_for(visible_count + 1, filters.filtered.length)),
+    { once: true, root_margin: `800px` },
+  )
 
   async function handle_keydown(event: KeyboardEvent) {
     cancel_restoration()
@@ -269,7 +261,11 @@
   </Masonry>
   {#if visible_count < filters.filtered.length}
     {#key visible_count}
-      <div style="height: 1px" aria-hidden="true" {@attach observe_gallery_end}></div>
+      <div
+        style="height: 1px"
+        aria-hidden="true"
+        {@attach restoring ? undefined : grow_gallery}
+      ></div>
     {/key}
   {/if}
 </div>

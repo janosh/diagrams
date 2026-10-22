@@ -2,6 +2,7 @@ import { goto } from '$app/navigation'
 import { resolve } from '$app/paths'
 import { type Diagram, sorted_diagrams, tags as available_tags } from '#lib'
 import type { QueryParams, UrlParamEntry } from 'svelte-widgets/url-params'
+import { strip_html } from 'svelte-widgets/utils'
 import {
   sync_url_params,
   url_with_params,
@@ -16,7 +17,7 @@ const search_haystack = (file: Diagram): string =>
     file.slug,
     file.creator ?? ``,
     ...file.tags,
-    (file.description ?? ``).replaceAll(/<[^>]*>/g, ` `),
+    strip_html(file.description ?? ``),
   ]
     .join(` `)
     .normalize(`NFKC`)

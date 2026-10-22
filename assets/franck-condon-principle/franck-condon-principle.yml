@@ -1,0 +1,33 @@
+title: Franck-Condon Principle
+tags:
+  - physics
+  - chemistry
+  - quantum mechanics
+  - spectroscopy
+  - molecular physics
+  - Morse potential
+description: |
+  Potential energy curves of a diatomic molecule in its ground and first excited electronic states, drawn as [Morse potentials](https://doi.org/10.1103/PhysRev.34.57) $V(R) = D\,(1 - e^{-a(R - R_e)})^2$ with exact vibrational levels $E_v = D\,[1 - (1 - (v + \tfrac{1}{2})/\lambda)^2]$ that crowd together toward the dissociation limit. Each shaded curve is the vibrational probability density $|\psi_v(R)|^2$ resting on its level, and dashed lines mark the rotational sublevels $E_v + B J(J+1)$, enlarged in the inset for $v'' = 2$.
+
+  Electrons move much faster than nuclei, so an electronic transition happens at fixed internuclear distance $R$: absorption and emission are vertical arrows. Their intensities follow the Franck-Condon factors $|\langle v' | v'' \rangle|^2$, the squared overlaps of the two vibrational wavefunctions. Because the excited state has a longer, softer bond, absorption from $v'' = 0$ lands most likely in $v' = 1$ and emission from $v' = 0$ in $v'' = 1$; both arrows end on the level with the largest overlap computed from the plotted wavefunctions. Emission thus has lower energy than absorption (the Stokes shift), and the spread of Franck-Condon factors produces the vibrational progressions seen in molecular spectra.
+references:
+  - franck_1926:
+      title: Elementary processes of photochemical reactions
+      authors: J. Franck, E. G. Dymond
+      year: 1926
+      doi: 10.1039/TF9262100536
+  - condon_1926:
+      title: A theory of intensity distribution in band systems
+      authors: Edward U. Condon
+      year: 1926
+      doi: 10.1103/PhysRev.28.1182
+  - condon_1928:
+      title: Nuclear motions associated with electron transitions in diatomic molecules
+      authors: Edward U. Condon
+      year: 1928
+      doi: 10.1103/PhysRev.32.858
+  - morse_1929:
+      title: "Diatomic molecules according to the wave mechanics. II. Vibrational levels"
+      authors: Philip M. Morse
+      year: 1929
+      doi: 10.1103/PhysRev.34.57
