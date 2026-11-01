@@ -127,5 +127,6 @@
   let cx = (lo.at(0) + hi.at(0)) / 2
   let title = text(12pt, align(center)[rotational levels of $v'' = 2$ \ $E = E_v + B J(J + 1)$])
   content((cx, hi.at(1) + 0.14), title, anchor: "south")
-  content((cx, lo.at(1) - 0.21), text(12pt, fill: orange)[shaded: $|psi_v (R)|^2$], anchor: "north")
+  let shaded-key = text(12pt, fill: muted)[shaded: vibrational probability density $|psi_v (R)|^2$]
+  content((hi.at(0), lo.at(1) - 0.21), shaded-key, anchor: "north-east")
 })

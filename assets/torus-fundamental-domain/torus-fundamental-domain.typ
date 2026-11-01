@@ -82,5 +82,15 @@
   }
 
   content("y-axis.80%", $F_0$, anchor: "west", padding: (0, 0, 0, 2pt))
+
+  // Axis names and a key to the regions and edge identifications
+  content((1, 0), $"Re" tau$, anchor: "west", padding: 2pt)
+  content("y-axis.end", $"Im" tau$, anchor: "south", padding: 2pt)
+  content((0, -0.56), anchor: "north", align(left)[
+    $F_0$: fundamental domain \
+    $F'_0 = S(F_0)$ \
+    #text(fill: blue)[$A$], #text(fill: blue)[$A'$] glued by $T: tau |-> tau + 1$ \
+    #text(fill: b-edge)[$B$], #text(fill: b-edge)[$B'$] glued by $S: tau |-> -1 \/ tau$
+  ])
   content((rel: (-0.2, -0.2), to: "B-arc.50%"), $F'_0$)
 })

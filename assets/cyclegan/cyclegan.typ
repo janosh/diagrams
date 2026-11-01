@@ -79,4 +79,10 @@
     stroke: dashed,
     mark: (start: "stealth", end: "stealth", fill: black, scale: .7),
   )
+  content(
+    (rel: (2.8, -1.45), to: "a-real"),
+    [cycle-consistency loss: reconstruction $arrow(a)_"rec" approx arrow(a)_"real"$],
+    anchor: "north",
+  )
+  content((2.6, 2.65), align(right)[switch: real \ or fake $arrow(b)$], anchor: "east")
 })

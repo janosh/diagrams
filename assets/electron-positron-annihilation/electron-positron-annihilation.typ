@@ -49,21 +49,31 @@
   // radiated gluon
   decorations.coil(
     line(g-vtx, g-end),
-    amplitude: .34,
-    segments: 7,
-    factor: 160%,
+    amplitude: .3,
+    segments: 4,
+    factor: 130%,
     stroke: gluon + weight,
   )
 
   for pos in (a, b, g-vtx) { vertex(pos) }
 
-  // particle labels
-  content((rel: (-0.05, 0.38), to: e-minus), text(fill: lepton, $e^-$), anchor: "south")
-  content((rel: (-0.05, -0.38), to: e-plus), text(fill: lepton, $e^+$), anchor: "north")
+  // particle labels: name in words, then symbol
+  let named(color, name, symbol) = text(fill: color)[#text(size: 18pt, name) #symbol]
+  content((rel: (-0.05, 0.38), to: e-minus), named(lepton)[electron][$e^-$], anchor: "south")
+  content((rel: (-0.05, -0.38), to: e-plus), named(lepton)[positron][$e^+$], anchor: "north")
   content((0, 0.42), text(fill: photon, $gamma^*$), anchor: "south")
-  content((rel: (0.1, 0.38), to: q-end), text(fill: quark, $q$), anchor: "south")
-  content((rel: (0.1, -0.38), to: qbar-end), text(fill: quark, $overline(q)$), anchor: "north")
-  content((rel: (0.3, 0), to: g-end), text(fill: gluon, $g$), anchor: "west")
+  content(
+    (0, -0.45),
+    text(fill: photon, size: 18pt, align(center)[virtual \ photon]),
+    anchor: "north",
+  )
+  content((rel: (0.1, 0.38), to: q-end), named(quark)[quark][$q$], anchor: "south")
+  content(
+    (rel: (0.1, -0.38), to: qbar-end),
+    named(quark)[antiquark][$overline(q)$],
+    anchor: "north",
+  )
+  content((rel: (0.3, 0), to: g-end), named(gluon)[gluon][$g$], anchor: "west")
 
   // time arrow
   let y-time = -3.55
@@ -73,5 +83,5 @@
     stroke: ink + 1.6pt,
     mark: (end: "stealth", fill: ink, scale: 0.9),
   )
-  content((1.6, y-time), text(size: 18pt, fill: ink, $t$), anchor: "west")
+  content((1.6, y-time), text(size: 18pt, fill: ink)[time $t$], anchor: "west")
 })

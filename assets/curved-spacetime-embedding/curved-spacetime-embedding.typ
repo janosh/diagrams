@@ -196,5 +196,9 @@
 
   // embedding height below the funnel
   let bottom = project(surf(r-max, -90deg / 1rad)).at(1)
-  content((0, bottom - 0.45), $z(r) = 2 sqrt(r_s (r - r_s))$, anchor: "north")
+  content((0, bottom - 0.45), anchor: "north", align(center)[
+    $z(r) = 2 sqrt(r_s (r - r_s))$ \
+    $r_s$: Schwarzschild radius \
+    #text(fill: ray-color)[light ray] · #text(fill: ring-color)[planet orbit]
+  ])
 })

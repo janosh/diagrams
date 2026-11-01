@@ -51,6 +51,13 @@
   ) {
     matrix(pos, size, label, top-color, left-color)
   }
+  // matrix names: inputs to the left of their row bars, A and Y above their column bars
+  for (label, name) in (("Q", [queries]), ("K", [keys]), ("V", [values])) {
+    content((rel: (-0.3, 0), to: label + ".west"), name, anchor: "east")
+  }
+  for (label, name) in (("A", [attention \ weights]), ("Y", [output])) {
+    content((rel: (0, 0.25), to: label + ".north"), align(center, name), anchor: "south")
+  }
 
   operation((spacing + 0.4, 0), $dot.op^top$, "att")
   operation((2 * spacing + 0.6, 0), [softmax], "softmax")

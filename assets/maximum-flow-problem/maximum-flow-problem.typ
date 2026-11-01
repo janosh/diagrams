@@ -20,6 +20,9 @@
     )
     content(name, raw(name))
   }
+  content("s.south", [source], anchor: "north", padding: 3pt)
+  content("t.south", [sink], anchor: "north", padding: 3pt)
+  content((1.2, 1.75), align(right)[edge label:\ #raw("flow/capacity")], anchor: "east")
 
   for (from, to, label, color) in (
     ("s", "2", "10/10", pure-blue),

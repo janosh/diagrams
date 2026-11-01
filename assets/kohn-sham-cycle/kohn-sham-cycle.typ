@@ -5,15 +5,8 @@
 #set text(size: 12pt)
 
 #canvas({
-  rect((-4, -6), (4, 3.25), stroke: (dash: "dashed"), name: "enclosure", radius: 5pt)
-  on-layer(1, content(
-    "enclosure.north",
-    text(weight: "bold", size: 16pt)[Kohn-Sham method],
-    frame: "rect",
-    stroke: .5pt,
-    fill: rgb("#cdd3da"),
-    padding: 3pt,
-  ))
+  // top edge of the dashed enclosure; its bottom follows the last box (drawn below)
+  let enclosure-top = (0, 3.25)
 
   let box-style = (
     frame: "rect",
@@ -27,7 +20,7 @@
 
   // Initial density box
   content(
-    (rel: (0, 1.25), to: "enclosure.north"),
+    (rel: (0, 1.25), to: enclosure-top),
     [Supply initial density guess\ $rho_"init" (arrow(r))$ to Kohn-Sham equations],
     ..box-style,
     fill: rgb("#c6aa0c").lighten(60%),
@@ -37,18 +30,70 @@
     radius: 1em,
   )
 
-  // Each box hangs below its predecessor and receives an arrow from it.
+  // Each box hangs below its predecessor and receives an arrow from it. A plain-language
+  // name sits above each equation.
+  let named(title, body) = align(center)[#title\ #body]
   let parent = "initial"
   for (name, offset, body) in (
-    ("potential", -2, $v_s (arrow(r))=v_H (arrow(r)) + v_"xc" (arrow(r)) + v_"ext" (arrow(r))$),
-    ("hamiltonian", -1.25, $hat(H)_"KS"=-frac(planck^2, 2m)arrow(nabla)^2 + v_s (arrow(r))$),
-    ("schrodinger-eq", -1.25, $hat(H)_"KS" phi_i (arrow(r))= E_i phi_i (arrow(r))$),
-    ("density", -1.25, $rho (arrow(r))=sum_(i=1)^n f_i |phi_i (arrow(r))|^2$),
-    ("criterion", -1.25, [Convergence criterion satisfied?]),
+    (
+      "potential",
+      -1.6,
+      named(
+        [effective potential: Hartree\ + exchange-correlation + external],
+        $v_s (arrow(r))=v_H (arrow(r)) + v_"xc" (arrow(r)) + v_"ext" (arrow(r))$,
+      ),
+    ),
+    (
+      "hamiltonian",
+      -0.6,
+      named(
+        [Kohn-Sham Hamiltonian],
+        $hat(H)_"KS"=-frac(planck^2, 2m)arrow(nabla)^2 + v_s (arrow(r))$,
+      ),
+    ),
+    (
+      "schrodinger-eq",
+      -0.6,
+      named(
+        [solve for orbitals $phi_i$ and energies $E_i$],
+        $hat(H)_"KS" phi_i (arrow(r))= E_i phi_i (arrow(r))$,
+      ),
+    ),
+    (
+      "density",
+      -0.6,
+      named(
+        [new density from occupations $f_i$],
+        $rho (arrow(r))=sum_(i=1)^n f_i |phi_i (arrow(r))|^2$,
+      ),
+    ),
+    ("criterion", -0.6, [Convergence criterion satisfied?]),
   ) {
-    content((rel: (0, offset), to: parent + ".south"), body, ..box-style, name: name)
+    content(
+      (rel: (0, offset), to: parent + ".south"),
+      body,
+      ..box-style,
+      anchor: "north",
+      name: name,
+    )
     parent = name
   }
+
+  rect(
+    (-4.4, enclosure-top.at(1)),
+    ((4.4, 0), "|-", (rel: (0, -0.45), to: "criterion.south")),
+    stroke: (dash: "dashed"),
+    name: "enclosure",
+    radius: 5pt,
+  )
+  on-layer(1, content(
+    "enclosure.north",
+    text(weight: "bold", size: 16pt)[Kohn-Sham method],
+    frame: "rect",
+    stroke: .5pt,
+    fill: rgb("#cdd3da"),
+    padding: 3pt,
+  ))
 
   // Final energy box
   content(

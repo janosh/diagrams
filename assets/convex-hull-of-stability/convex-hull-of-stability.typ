@@ -140,6 +140,10 @@
   content((rel: (-0.5, 0), to: "y-axis-left.mid"), rotate(
     -90deg,
     reflow: true,
-  )[$Delta E_f$ (energy/atom)])
-  content((rel: (0, -0.5), to: "x-axis.mid"), $x "in" A_(1-x)X_x$)
+  )[formation energy $Delta E_f$ (energy/atom)])
+  content((rel: (0, -0.5), to: "x-axis.mid"), [composition $x$ in $A_(1-x)X_x$])
+  content(
+    (rel: (0, -1.1), to: "x-axis.mid"),
+    [$Delta E_d$: decomposition energy, #h(0.4em) $μ_A$: chemical potential of A],
+  )
 })

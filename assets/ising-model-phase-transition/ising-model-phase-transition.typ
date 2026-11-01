@@ -87,7 +87,9 @@
 
   // lattice snapshots linked to their temperatures on the curve
   let centers = (snap-size / 2, px(t-c), width - snap-size / 2)
-  for (snap, cx) in snapshots.zip(centers) {
+  let captions = ([ordered\ ferromagnet], [critical\ point], [disordered\ paramagnet])
+  for ((snap, cx), caption) in snapshots.zip(centers).zip(captions) {
+    content((cx, snap-y + snap-size + 0.15), align(center, caption), anchor: "south")
     let marker = (px(snap.T), py(onsager(snap.T)))
     line(marker, (cx, snap-y), stroke: (paint: rgb("#7a8591"), thickness: 1pt, dash: "dashed"))
     content((cx, snap-y), lattice-image(snap.spins, snap-size * 1cm), anchor: "south")
@@ -110,6 +112,12 @@
     line((0, py(m)), (0.15, py(m)), stroke: axis-stroke)
     content((-0.15, py(m)), str(m), anchor: "east")
   }
-  content((width / 2, -0.85), $k_B T slash J$, anchor: "north")
-  content((-0.6, height / 2), $m$, anchor: "east")
+  content((width / 2, -0.85), [temperature $k_B T slash J$], anchor: "north")
+  content((-0.6, height / 2), angle: 90deg, [magnetization $m$], anchor: "south")
+
+  // spin color legend below the temperature axis
+  for (x, col, label) in ((1.6, spin-up, [spin up]), (4.6, spin-down, [spin down])) {
+    rect((x, -2.05), (x + 0.35, -1.7), fill: col, stroke: 1pt + black)
+    content((x + 0.5, -1.875), label, anchor: "west")
+  }
 })

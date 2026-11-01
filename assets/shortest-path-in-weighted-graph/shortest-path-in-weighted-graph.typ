@@ -29,6 +29,9 @@
     )
     content(name, $upright(#name)$)
   }
+  content((rel: (-.4, 0), to: "s"), [source], anchor: "east")
+  content((rel: (.4, 0), to: "t"), [target], anchor: "west")
+  content((3, -2.55), text(fill: path-red)[a minimum-cost path (total weight 8)], anchor: "north")
 
   let arrow(color) = (mark: (end: "stealth", fill: color, scale: .55), stroke: color + .75pt)
   // red edges form the minimum-cost path s → c → f → e → t (total weight 8)

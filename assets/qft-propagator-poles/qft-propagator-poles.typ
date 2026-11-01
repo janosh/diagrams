@@ -13,6 +13,9 @@
   decorations.zigzag(line((cut-x, 0), (xrange, 0)), ..zigzag-style, name: "x-axis-right")
   content((rel: (-0.3, 0.3), to: "x-axis-right.end"), $"Re"(p_0)$)
   decorations.zigzag(line((cut-x, -q0), (xrange, -q0)), ..zigzag-style)
+  for y-pos in (0, -q0) {
+    content((xrange, y-pos), [branch cut], anchor: "north-west", padding: (left: 6pt, top: 4pt))
+  }
 
   line(
     (0, -yrange - 1),
@@ -31,6 +34,7 @@
     circle((0, n), radius: 0.04, fill: black, name: "matsubara")
     content("matsubara", $i omega_#n$, anchor: "west", padding: 0.2)
   }
+  content((-0.2, -2.5), align(right)[Matsubara\ frequencies], anchor: "east")
   circle((0, 0), radius: 0.03, fill: black)
   content((0.2, 0.1), $0$)
 
@@ -41,6 +45,7 @@
       content((x-pos, y-pos), $alpha_#subscript^#superscript$, anchor: "south", padding: 0.1)
     }
   }
+  content((cut-x + 3.3, 1), [propagator poles], anchor: "west")
 
   // Region labels
   for (y-pos, label) in ((1.5, [(I)]), (-q0 / 2, [(II)]), (-q0 - 1.5, [(III)])) {

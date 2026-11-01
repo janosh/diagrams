@@ -41,19 +41,34 @@
       fill: rgb("#cdd3da"),
       frame: "circle",
       padding: -2.5pt,
+      name: "regulator",
+    )
+    content(
+      "regulator",
+      [regulator],
+      anchor: if regulator-top { "north" } else { "south" },
+      padding: 9pt,
     )
     // Mass labels clear the loop, and the regulator disc on the side where it sits.
     let gap(regulated) = if regulated { 12pt } else { 7pt }
-    content("loop.north", $m_1^2, gamma_1^2$, anchor: "south", padding: (
+    content("loop.north", [mass $m_1^2$, width $gamma_1^2$], anchor: "south", padding: (
       bottom: gap(regulator-top),
     ))
-    content("loop.50%", $m_2^2, gamma_2^2$, anchor: "north", padding: (top: gap(not regulator-top)))
+    content("loop.50%", [mass $m_2^2$, width $gamma_2^2$], anchor: "north", padding: (
+      top: gap(not regulator-top),
+    ))
 
     // External legs with coupling vertices and incoming/outgoing momentum arrows.
     for side in (-1, 1) {
       let vertex = (side * radius, 0)
       circle(vertex, radius: 2pt, fill: black)
-      content((rel: (side * 0.2, -0.2), to: vertex), $g$)
+      // name the coupling only on the outer vertices, clear of the plus sign between diagrams
+      let outer = if regulator-top { side > 0 } else { side < 0 }
+      content(
+        (rel: (side * 0.1, -0.1), to: vertex),
+        if outer [coupling $g$] else [$g$],
+        anchor: if side < 0 { "north-east" } else { "north-west" },
+      )
       line(vertex, (side * 2 * radius, 0), stroke: 1pt, name: "leg")
       line((rel: (-0.55, 0.15), to: "leg.mid"), (rel: (0.55, 0.15), to: "leg.mid"), ..arrow-style)
       content((rel: (0, 0.3), to: "leg.mid"), text(fill: dark-blue)[$q_0$], anchor: "south")

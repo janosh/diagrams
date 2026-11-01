@@ -94,7 +94,7 @@
 #let fm(x) = 2 * calc.sin(66 * calc.pi * x - 8 * calc.cos(5.5 * calc.pi * x))
 
 #let modulation-figure(name, title, func, color, y-max) = canvas(length: 1.05cm, {
-  signal-row("msg", 4.6, $x(t)$, message, black, (-2.4, 2.4))
+  signal-row("msg", 4.6, [message signal $x(t)$], message, black, (-2.4, 2.4))
   signal-row("carrier", 2.05, [carrier wave], carrier, blue, (-2.4, 2.4))
   signal-row(name, -.6, title, func, color, (-y-max, y-max))
 })
@@ -104,12 +104,12 @@ Transmit the same message by changing one property of a fast carrier. Read each 
 #card-grid(
   (
     [AM: change the envelope],
-    modulation-figure("am", [AM wave], am, red, 9.5),
+    modulation-figure("am", [AM wave (amplitude modulation)], am, red, 9.5),
     [The carrier’s amplitude follows the message; its rapid oscillation rate stays fixed. The envelope is easiest to see in the peaks.],
   ),
   (
     [FM: change the spacing],
-    modulation-figure("fm", [FM wave], fm, green.darken(15%), 2.4),
+    modulation-figure("fm", [FM wave (frequency modulation)], fm, green.darken(15%), 2.4),
     [The instantaneous frequency follows the message; the amplitude stays fixed. Closely spaced peaks mean a higher frequency.],
   ),
 )

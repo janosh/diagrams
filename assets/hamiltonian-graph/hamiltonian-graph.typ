@@ -33,4 +33,13 @@
   // borders like line does, so start/end on the rim toward the control point
   let ctrl = (2 * spacing, -1.8)
   bezier(("TGC", radius, ctrl), ("GCG", radius, ctrl), ctrl, ..arr(black))
+
+  // legend below the curved edge
+  for (legend-y, color, label) in (
+    (-1.5, rgb(255, 0, 0), [Hamiltonian cycle: visits every 3-mer exactly once]),
+    (-2.1, black, [overlap edge: last 2 letters of one 3-mer = first 2 of the next]),
+  ) {
+    line((-.4, legend-y), (.4, legend-y), ..arr(color))
+    content((.6, legend-y), label, anchor: "west")
+  }
 })

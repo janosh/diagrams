@@ -59,10 +59,18 @@
 
 // === 1  Common nonlinearities ===
 #let nonlinearities = canvas(length: 1.21cm, {
-  draw.set-style(legend: (fill: rgb("#cdd3da")), axes: (x: (mark: axis-mark), y: y-axis-style))
+  draw.set-style(
+    legend: (fill: rgb("#cdd3da")),
+    axes: (
+      x: (mark: axis-mark, label: (anchor: "south-east", offset: -0.2)),
+      y: y-axis-style,
+    ),
+  )
   let gelu(x) = 0.5 * x * (1 + calc.tanh(calc.sqrt(2 / calc.pi) * (x + 0.044715 * calc.pow(x, 3))))
   plot.plot(
     size: (8, 5),
+    x-label: [input $x$],
+    y-label: [output $y$],
     y-tick-step: 1,
     x-tick-step: 2,
     legend: "inner-north-west",
@@ -113,6 +121,7 @@
         x => x,
       )
       plot.annotate(draw.content((0, 0), $0$, anchor: "south-east", padding: 0.04))
+      plot.annotate(draw.content((1.05, 1.3), text(fill: blue)[tangent $y = x$], anchor: "west"))
     },
   )
 })

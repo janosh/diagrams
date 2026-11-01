@@ -19,6 +19,7 @@
   )
   line((re-range - tip, 0), (re-range, 0), mark: arrow-style, name: "x-axis")
   content("x-axis.end", $"Re"(omega)$, anchor: "north-east", padding: (top: 5pt))
+  content((-re-range, 0), [branch cut], anchor: "south-west", padding: (bottom: 6pt))
 
   line((0, -im-range + 1), (0, im-range - 1), mark: arrow-style, name: "y-axis")
   content("y-axis.end", $"Im"(omega)$, anchor: "north-west", padding: (left: 5pt))

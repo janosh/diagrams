@@ -134,12 +134,24 @@
     fill: ink,
     scale: 0.8,
   ))
-  content((xr + 0.05 * radius, y-dim), anchor: "west", text(20pt, fill: ink)[$lambda$])
+  content((xr + 0.05 * radius, y-dim), anchor: "west", text(
+    17pt,
+    fill: ink,
+  )[moiré period #text(20pt)[$lambda$]])
 
   // legend: single column right of the circle, level with its lower edge
-  for (k, (name, col)) in (("C", ink), ("B", col-b), ("N", col-n)).enumerate() {
-    let p = (radius * 1.02, -radius * (0.62 + 0.17 * k))
-    circle(p, radius: 0.045 * radius, fill: col, stroke: none)
+  let glow-fill = gradient.radial(
+    (col-glow.transparentize(25%), 0%),
+    (col-glow.transparentize(100%), 100%),
+  )
+  for (k, (name, col)) in (
+    ([AA stacking], glow-fill),
+    ([C (graphene)], ink),
+    ([B (hBN)], col-b),
+    ([N (hBN)], col-n),
+  ).enumerate() {
+    let p = (radius * 1.02, -radius * (0.45 + 0.17 * k))
+    circle(p, radius: (if k == 0 { 0.07 } else { 0.045 }) * radius, fill: col, stroke: none)
     content((p.at(0) + 0.075 * radius, p.at(1)), anchor: "west", text(17pt, fill: ink, name))
   }
 })

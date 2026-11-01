@@ -28,4 +28,7 @@
     name: "right-zigzag",
   )
   content((rel: (-0.2, 0.3), to: "right-zigzag.end"), $"Re"(p_0)$)
+  for x in (-xr / 2 - 1.5, xr / 2 + 1.25) {
+    content((x, -0.3), text(fill: blue.darken(20%))[branch cut], anchor: "north")
+  }
 })

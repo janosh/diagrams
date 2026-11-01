@@ -110,18 +110,21 @@
   fill: color,
   stroke: none,
 )
-// Zigzag with 5 full oscillations between straight end points.
+// Zigzag between on-axis end points, about one tooth per 6pt of length (at least 5) so short
+// springs don't bunch into a scribble.
 #let spring(start, end, color: blue, amplitude: 2.4, thickness: 1.3pt) = {
   let (delta_x, delta_y) = (end.at(0) - start.at(0), end.at(1) - start.at(1))
   let distance = calc.sqrt(delta_x * delta_x + delta_y * delta_y)
   assert(distance > 0)
-  let points = range(13).map(sample_idx => {
-    let wave = if sample_idx in (0, 12) { 0 } else if calc.odd(sample_idx) { amplitude } else {
+  let teeth = calc.max(5, 2 * int(calc.round(distance / 12)) - 1)
+  let steps = teeth + 1
+  let points = range(steps + 1).map(sample_idx => {
+    let wave = if sample_idx in (0, steps) { 0 } else if calc.odd(sample_idx) { amplitude } else {
       -amplitude
     }
     (
-      start.at(0) + delta_x * sample_idx / 12 - delta_y * wave / distance,
-      start.at(1) + delta_y * sample_idx / 12 + delta_x * wave / distance,
+      start.at(0) + delta_x * sample_idx / steps - delta_y * wave / distance,
+      start.at(1) + delta_y * sample_idx / steps + delta_x * wave / distance,
     )
   })
   line(..points, stroke: thickness + color)

@@ -13,9 +13,9 @@
   set-style(line: (mark: (scale: .5)))
 
   line((0, 0), (0, p), mark: (end: "stealth", fill: black), name: "y-axis")
-  content((rel: (0.2, 0), to: "y-axis.end"), $p$)
+  content((rel: (0.1, 0), to: "y-axis.end"), [pressure $p$], anchor: "west")
   line((0, 0), (V, 0), mark: (end: "stealth", fill: black), name: "x-axis")
-  content((rel: (0.2, 0), to: "x-axis.end"), $V$)
+  content((rel: (0.1, 0), to: "x-axis.end"), [volume $V$], anchor: "west")
 
   let (p-min, p-max) = (0.2 * p, 0.9 * p)
   let (V-min, V-max) = (0.2 * V, 0.9 * V)
@@ -53,31 +53,36 @@
     mark: (end: "stealth", fill: black, scale: .5),
     stroke: (paint: rgb("#00008b"), thickness: 1.5pt),
   )
-  // adiabat labels sit just below the midpoint of their two end states
-  let adiabat-label(from, to) = content(
+  // adiabat labels sit just below the midpoint of their two end states, which leaves them
+  // just above each sagging curve, with the process named on top
+  let adiabat-label(from, to, name) = content(
     (rel: (0, -0.35), to: (from, 50%, to)),
-    text(fill: blue.darken(25%), $Delta Q = 0$),
+    text(fill: blue.darken(25%), align(center)[#name\ $Delta Q = 0$]),
     anchor: "south",
     padding: (bottom: 5pt),
   )
 
   // 1 -> 2 adiabatic expansion
   bezier("a", "b", (rel: (-5, 1), to: "b"), ..path-style)
-  adiabat-label("a", "b")
+  adiabat-label("a", "b", [adiabatic expansion])
 
   // 2 -> 3 isochoric heat rejection
   line("b", "c", ..path-style, name: "path-bc")
   content(
     (rel: (0.1, 0), to: "path-bc"),
-    text(fill: blue.darken(5%), $arrow.double.r Q_"out"$),
+    text(fill: blue.darken(5%))[heat out\ $arrow.double.r Q_"out"$],
     anchor: "west",
   )
 
   // 3 -> 4 adiabatic compression
   bezier("c", "d", (rel: (2.4, -1.3), to: "d"), ..path-style)
-  adiabat-label("c", "d")
+  adiabat-label("c", "d", [adiabatic compression])
 
   // 4 -> 1 isochoric heat addition
   line("d", "a", ..path-style, name: "path-da")
-  content((rel: (-0.1, 0), to: "path-da"), text(fill: red)[$Q_"in" arrow.double.r$], anchor: "east")
+  content(
+    (rel: (-0.1, 0), to: "path-da"),
+    align(right, text(fill: red)[heat in\ $Q_"in" arrow.double.r$]),
+    anchor: "east",
+  )
 })

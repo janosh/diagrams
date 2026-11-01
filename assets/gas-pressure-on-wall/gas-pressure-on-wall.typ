@@ -17,11 +17,12 @@
   let wall-width = 0.5
   draw.line((-0.1, 0), (6.2, 0), ..arrow-style, name: "x-axis")
   draw.line((0, -0.7), (0, 4), ..arrow-style, name: "y-axis")
-  content((rel: (-0.2, 0.3), to: "x-axis.end"), $x$)
-  content((rel: (0.5, 0), to: "y-axis.end"), $U(x)$)
+  content("x-axis.end", [distance $x$], anchor: "west", padding: (left: 4pt))
+  content((rel: (0.15, 0), to: "y-axis.end"), [wall potential $U(x)$], anchor: "west")
 
   // Draw the wall above the potential curves.
   on-layer(1, draw.rect((0, 0), (wall-width, 3.6), fill: hatched, stroke: 0.75pt))
+  content((wall-width + 0.15, 3.45), [wall], anchor: "west")
 
   let dx = (6 - wall-width) / 100
   for (A, B, alpha, color, label, label-dy) in (

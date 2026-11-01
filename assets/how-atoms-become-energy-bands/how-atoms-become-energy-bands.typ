@@ -94,7 +94,7 @@
   )
   label(638, 164, 320, [Each line is one allowed wave pattern.], color: blue)
   arrow(58, 380, 58, 278, color: muted)
-  symbol(58, 264, $E$, size: 21pt, color: muted)
+  symbol(66, 264, [energy $E$], size: 18pt, color: muted)
   for (center_x, atom_count, heading) in (
     (142, 1, [1 atom]),
     (366, 2, [2 atoms]),
@@ -173,11 +173,18 @@
     symbol(plot_left + plot_width * fraction, tick_y, tick, size: 21pt)
   }
   symbol(plot_left - 28, energy_y(0), $epsilon_0$, size: 21pt, color: muted)
-  symbol(plot_left - 32, plot_top - 9, $E$, size: 18pt)
-  symbol(plot_right + 36, tick_y, $k$, size: 18pt)
+  content((plot_left, -(plot_top - 18)), text(size: 18pt)[energy $E$], anchor: "south")
+  content((plot_right + 28, -tick_y), text(size: 18pt)[wavevector $k$], anchor: "west")
   centered_label(111, 576, 362, [$E(k) = epsilon_0 - 2t cos(k a)$], size: 22pt, color: blue)
   arrow(plot_right + 23, plot_bottom - 2, plot_right + 23, plot_top + 3, color: teal, both: true)
-  label(plot_right + 43, plot_top + 65, 95, [$W = 4t$], size: 21pt, color: teal)
+  label(
+    plot_right + 43,
+    plot_top + 55,
+    105,
+    [#text(18pt)[bandwidth]\ $W = 4t$],
+    size: 21pt,
+    color: teal,
+  )
   label(
     plot_left + 13,
     footnote_top,
@@ -240,6 +247,7 @@
   rect((495, -gap_bottom), (full_x1, -gap_bottom - 15), fill: blue.lighten(30%), stroke: none)
   rect((495, -gap_top + 15), (full_x1, -gap_top), fill: blue.lighten(87%), stroke: none)
   arrow(full_x1 + 16, gap_bottom - 3, full_x1 + 16, gap_top + 3, color: purple, both: true)
+  symbol((495 + full_x1) / 2, (gap_top + gap_bottom) / 2, [band gap], size: 18pt, color: purple)
   label(
     full_x1 + 38,
     923,

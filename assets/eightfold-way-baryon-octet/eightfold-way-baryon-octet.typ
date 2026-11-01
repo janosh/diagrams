@@ -49,6 +49,11 @@
   content(pos(1.62, 0), $I_3$, anchor: "south-east", padding: (bottom: 0.06))
   line(pos(0, -1.45), pos(0, 1.72), ..axis-style)
   content(pos(0, 1.72), $Y$, anchor: "north-west", padding: (left: 0.08))
+  // name both weight axes in words beside their symbols
+  content(pos(1.5, 0), text(size: 17pt)[isospin projection], anchor: "north-west", padding: (
+    top: 0.06,
+  ))
+  content(pos(0, 1.72), text(size: 17pt)[hypercharge], anchor: "east", padding: (right: 0.08))
 
   // hexagon through the six outer weights
   let corners = ((0.5, 1), (1, 0), (0.5, -1), (-0.5, -1), (-1, 0), (-0.5, 1)).map(((i, y)) => pos(

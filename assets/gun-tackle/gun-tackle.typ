@@ -91,17 +91,22 @@
     // every force arrow is captioned with its magnitude just to its right
     let mark = (end: (symbol: ">", length: 0.12cm, width: 0.15cm))
     for (coord, angle, label, offset) in (
-      ((rel: (if separated { 1.5 } else { 0 }, 0.4), to: "pulley1.north"), 90deg, [150N], 0.7),
-      ((rel: (0, -0.4), to: "pulley2.south"), -90deg, [100N], 0.7),
+      (
+        (rel: (if separated { 1.5 } else { 0 }, 0.4), to: "pulley1.north"),
+        90deg,
+        [150N mount],
+        0.25,
+      ),
+      ((rel: (0, -0.4), to: "pulley2.south"), -90deg, [100N load], 0.25),
       (
         (rel: (if separated { -1.54 } else { 1.54 }, -2.7), to: "pulley1"),
         if separated { -102deg } else { -78deg },
-        [50N],
-        0.65,
+        [50N pull],
+        0.2,
       ),
     ) {
       line(coord, (rel: (angle, 0.8)), stroke: 4pt, mark: mark, name: "force")
-      content((rel: (offset, 0), to: "force"))[#label]
+      content((rel: (offset, 0), to: "force"), anchor: "west")[#label]
     }
   })
 })
@@ -109,5 +114,8 @@
 #grid(
   columns: 2,
   column-gutter: 2cm,
+  row-gutter: 3mm,
+  align: center,
   tackle(), tackle(separated: true),
+  [assembled], [pulleys separated],
 )

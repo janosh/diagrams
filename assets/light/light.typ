@@ -12,9 +12,18 @@
   line((0, -2, 0), (0, 2.5, 0), ..arrow-style, name: "b-axis")
   line((-0.5, 0, 0), (8.5, 0, 0), ..arrow-style, name: "v-axis")
   line((0, 0, -1.5), (0, 0, 2), ..arrow-style, name: "e-axis")
-  content((rel: (0, 0, 0.3), to: "e-axis.end"), [$arrow(E)$])
-  content((rel: (0, 0.5, 0), to: "b-axis.end"), [$arrow(B)$])
-  content((rel: (0.2, 0, 0), to: "v-axis.end"), [$arrow(v)$])
+  // label colors match the E (blue) and B (red) waves
+  content((rel: (0, 0, 0.3), to: "e-axis.end"), text(fill: rgb(
+    0,
+    0,
+    200,
+  ))[electric field $arrow(E)$])
+  content((rel: (0, 0.5, 0), to: "b-axis.end"), text(fill: rgb(
+    200,
+    0,
+    0,
+  ))[magnetic field $arrow(B)$])
+  content((rel: (0.2, 0, 0), to: "v-axis.end"), [propagation $arrow(v)$], anchor: "west")
 
   grid(
     (0, -2),

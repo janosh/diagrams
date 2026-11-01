@@ -14,7 +14,7 @@
   for (x, name, label, style) in (
     (2.6, "tau2-arc", $tau_2$, (stroke: (dash: "dashed"))),
     (1.4, "tau1-arc", $tau_1$, (stroke: (dash: "dashed"))),
-    (-0.4, "sigma-arc", $sigma$, arrow-style),
+    (-0.4, "sigma-arc", [space $sigma$], arrow-style),
   ) {
     arc((x, 0), start: -90deg, stop: -270deg, radius: (0.5, 1.5), ..style, name: name)
     content(name + ".mid", label, anchor: "east", padding: 2pt)
@@ -26,14 +26,23 @@
   circle((4, 1.5), radius: (0.5, 1.5), name: "rim")
 
   line((0.5, -0.5), (3.5, -0.5), ..arrow-style, name: "tau-arrow")
-  content("tau-arrow", $tau$, anchor: "north", padding: 4pt)
+  content("tau-arrow", [time $tau$], anchor: "north", padding: 4pt)
 
   // Conformal map to the plane
-  line((rel: (0.5, 0), to: "rim.east"), (rel: (1, 0)), stroke: 1pt, ..arrow-style)
+  line(
+    (rel: (0.4, 0), to: "rim.east"),
+    (rel: (1.6, 0)),
+    stroke: 1pt,
+    ..arrow-style,
+    name: "map-arrow",
+  )
 
   // Plane: constant-time slices become concentric circles around the origin
   circle((rel: (3, 0)), radius: 0.05, fill: black, name: "center-dot")
-  for (idx, radius) in ((1, 0.8), (2, 1.8)) {
+  content("map-arrow", $z = e^(tau - i sigma)$, anchor: "south", padding: 4pt)
+  // the infinite past maps to the origin
+  content("center-dot", $tau -> -oo$, anchor: "north", padding: 4pt)
+  for (idx, radius) in ((1, 1.1), (2, 1.8)) {
     circle("center-dot", radius: radius, stroke: (dash: "dashed"), name: "tau-circle")
     // just outside each circle, off its dashes
     content((name: "tau-circle", anchor: 45deg), $tau_#idx$, anchor: "south-west", padding: 1pt)
@@ -48,5 +57,5 @@
     ..arrow-style,
     name: "sigma-arrow",
   )
-  content("sigma-arrow.mid", $sigma$, anchor: "north-east", padding: 1pt)
+  content("sigma-arrow.mid", [space $sigma$], anchor: "north-east", padding: 1pt)
 })

@@ -296,6 +296,16 @@
   let legend-plots = (
     lq.plot((), (), color: black, mark: none, label: "weak solution"),
     lq.plot((), (), color: black, stroke: (dash: "dashed"), mark: none, label: "strong solution"),
+    lq.plot(
+      (),
+      (),
+      color: black,
+      stroke: (dash: "dash-dotted"),
+      mark: none,
+      label: [sonic downstream flow $hat(M) = 1$],
+    ),
+    lq.plot((), (), stroke: none, mark: none, label: [curve labels: upstream Mach number $M$]),
+    lq.plot((), (), stroke: none, mark: none, label: [curve tips: maximum deflection]),
   )
 
   let plots = (
@@ -319,7 +329,8 @@
     ylim: (0, 90),
     xaxis: axis,
     yaxis: axis,
-    legend: (fill: rgb("#cdd3da")),
+    // the five-row legend sits in the empty region right of the curves, above the inset
+    legend: (fill: rgb("#cdd3da"), position: right + horizon, dy: 21%),
     title: text(size: 16pt)[Diatomic gas ($f = dof$, $kappa = KAPPA$)],
     xlabel: [deflection angle $theta$ [°]],
     ylabel: [shock angle $beta$ [°]],

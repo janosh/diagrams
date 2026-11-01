@@ -96,4 +96,12 @@
   ) {
     content((center-x, -1.5), text(weight: "bold", size: 1.5em, label))
   }
+  // what each panel's markings mean
+  for (center-x, note) in (
+    (fcnn-x, [fully connected]),
+    (mask-x, [black cell = 0:\ connection cut]),
+    (made-x, [masked autoencoder for\ distribution estimation;\ unit numbers = degrees $m(k)$]),
+  ) {
+    content((center-x, -2.05), align(center, note), anchor: "north")
+  }
 })

@@ -61,27 +61,27 @@
     x-min: 0,
     x-max: 600,
     y-min: -25,
-    y-max: 30,
+    y-max: 46,
     x-label: none,
     y-label: [kJ/mol],
     axis-style: "left",
     x-tick-step: 100,
     y-tick-step: 10,
-    legend-style: (orientation: ltr, fill: rgb("#cdd3da"), padding: .15, item: (spacing: .15)),
+    legend-style: (orientation: ttb, fill: rgb("#cdd3da"), padding: .15, item: (spacing: .15)),
     legend: "inner-north-east",
     {
       // Delta H = +20 kJ/mol and Delta S = +50 J/(mol K) = 0.05 kJ/(mol K)
       for (func, stroke, label) in (
-        (x => 20, rgb("#c2570a") + 1.4pt, $Delta H$),
-        (x => -x * .05, blue + 1.4pt, $-T Delta S$),
-        (x => 20 - x * .05, rgb("#008580") + 2pt, $Delta G$),
+        (x => 20, rgb("#c2570a") + 1.4pt, [enthalpy $Delta H$]),
+        (x => -x * .05, blue + 1.4pt, [entropy term $-T Delta S$]),
+        (x => 20 - x * .05, rgb("#008580") + 2pt, [Gibbs energy $Delta G$]),
         (x => 0, (paint: gray, dash: "dashed"), none),
       ) {
         plot.add(style: (stroke: stroke), domain: (0, 600), func, label: label)
       }
     },
   )
-  draw.content((4.5, -.8), [$T$ (K)])
+  draw.content((4.5, -.8), [temperature $T$ (K)])
 })
 
 // === 2  Direction is not speed ===
@@ -98,7 +98,7 @@
   draw.content((4.8, -1.35), [products], anchor: "south")
   draw.content((2.3, 2.35), [activation barrier], anchor: "south")
   draw.content(((axis-x + axis-end) / 2, axis-y - .5), [reaction coordinate])
-  draw.content((axis-x - .4, 2), [$G$])
+  draw.content((axis-x - .4, .6), angle: 90deg, [Gibbs energy $G$])
 })
 
 At fixed temperature and pressure, enthalpy and entropy compete to determine the thermodynamic direction of change. Temperature sets the weight of the entropy contribution.

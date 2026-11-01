@@ -13,9 +13,9 @@
 #let opposite = (north: "south", south: "north", east: "west", west: "east")
 
 // Regulator insertion: a circled cross on an opaque gray disc, labeled on its given side.
+#let regulator-disc = (stroke: none, fill: rgb("#cdd3da"), frame: "circle", padding: -2.5pt)
 #let cross(pos, side) = {
-  let disc = (stroke: none, fill: rgb("#cdd3da"), frame: "circle", padding: -2.5pt)
-  content(pos, text(size: 16pt)[$times.o$], ..disc, name: "x")
+  content(pos, text(size: 16pt)[$times.o$], ..regulator-disc, name: "x")
   content("x." + side, $partial_k R_k$, anchor: opposite.at(side), padding: 4pt)
 }
 
@@ -42,4 +42,11 @@
   line((rel: (-ext-len, 0), to: "tadpole.south"), (rel: (2 * ext-len, 0)))
   cross("tadpole.north", "south")
   vertex("tadpole.south", $Gamma_k^4$, "east")
+
+  // Legend naming the diagram elements
+  let legend-y = -2
+  circle((0.5, legend-y), radius: 0.2, fill: hatched)
+  content((0.85, legend-y), [dressed vertex $Gamma_k^n$], anchor: "west")
+  content((5.2, legend-y), text(size: 16pt)[$times.o$], ..regulator-disc)
+  content((5.55, legend-y), [regulator insertion $partial_k R_k$], anchor: "west")
 })

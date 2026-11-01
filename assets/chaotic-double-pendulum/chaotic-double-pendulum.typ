@@ -109,7 +109,14 @@
   let start = bob-a.first()
   circle(start, radius: 0.06, fill: ink, stroke: none)
   content((rel: (-0.08, 0), to: start), anchor: "east", text(14pt, fill: ink)[$t = 0$])
-  content((-2, 2), anchor: "north-west", text(14pt, fill: ink)[$Delta theta_1 = 10^(-3) "rad"$])
+  content((-2, 2), anchor: "north-west", text(14pt, fill: ink)[
+    $Delta theta_1 = 10^(-3) "rad"$ \
+    initial angle offset
+  ])
+  content((-2, -2.6), anchor: "south-west", text(14pt, fill: ink)[
+    lower-bob paths \
+    (faded = earlier)
+  ])
 
   // Pendulums at the final time
   let draw-pendulum(run, col) = {

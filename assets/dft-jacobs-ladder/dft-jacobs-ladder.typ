@@ -11,18 +11,35 @@
   let circle-r = 0.8 // Radius of symbol circles
   let rung-stroke = rgb("888") + 0.4pt
 
-  for (idx, (color, label, symbol)) in (
-    (rgb("b4a7d6"), [0: *Hartree World*], none),
-    (rgb("a4c2f4"), [1: *Local Density Approx. (LDA)*\ VWN, PW92], $rho(bold(r))$),
-    (rgb("f9cb9c"), [2: *Generalized Gradient Approx. (GGA)*\ PBE, BLYP], $nabla rho(bold(r))$),
+  // Each rung: fill, name and example functionals, ingredient symbol, ingredient name
+  for (idx, (color, label, symbol, ingredient)) in (
+    (rgb("b4a7d6"), [0: *Hartree World*], none, none),
+    (rgb("a4c2f4"), [1: *Local Density Approx. (LDA)*\ VWN, PW92], $rho(bold(r))$, [density]),
+    (
+      rgb("f9cb9c"),
+      [2: *Generalized Gradient Approx. (GGA)*\ PBE, BLYP],
+      $nabla rho(bold(r))$,
+      [\+ density gradient],
+    ),
     (
       rgb("ffe599"),
       [3: *Meta-GGA*\ (r/r$""^2$)SCAN],
       [$\ nabla^(2) rho(bold(r))$ \ $tau(bold(r))$],
+      [\+ Laplacian, kinetic energy density],
     ),
-    (rgb("b6d7a8"), [4: *Occupied Hybrid Methods* \ B3LYP, CAM-B3LYP, M06-2X], ${phi_i^"occ"}$),
-    (rgb("ea9999"), [5: *Virtual Double-Hybrids* \ B2PLYP], ${phi_i^"virt"}$),
-    (rgb("ffb7c5"), [*Chemical accuracy*], none),
+    (
+      rgb("b6d7a8"),
+      [4: *Occupied Hybrid Methods* \ B3LYP, CAM-B3LYP, M06-2X],
+      ${phi_i^"occ"}$,
+      [\+ occupied orbitals],
+    ),
+    (
+      rgb("ea9999"),
+      [5: *Virtual Double-Hybrids* \ B2PLYP],
+      ${phi_i^"virt"}$,
+      [\+ virtual orbitals],
+    ),
+    (rgb("ffb7c5"), [*Chemical accuracy*], none, none),
   ).enumerate() {
     let y = idx * rung-sep
     rect((-width / 2, y), (width / 2, y + height), fill: color, stroke: rung-stroke, name: "rung")
@@ -32,6 +49,10 @@
     if symbol != none {
       circle(symbol-center, radius: circle-r, fill: color, stroke: rung-stroke)
       content(symbol-center, align(center, symbol))
+    }
+    if ingredient != none {
+      // Name the new ingredient right-aligned on the label's second line
+      content((rel: (-0.3, -0.33), to: "rung.east"), emph(ingredient), anchor: "east")
     }
   }
 

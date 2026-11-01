@@ -34,8 +34,8 @@
     }
     previous = point
   }
-  content((width / 2, -15), $theta_1: 0 arrow.r 2pi$)
-  content((-12, 62), rotate(-90deg, reflow: true)[$theta_2: 0 arrow.r 2pi$])
+  content((width / 2, -15), [angle $theta_1: 0 arrow.r 2pi$])
+  content((-12, 62), rotate(-90deg, reflow: true)[angle $theta_2: 0 arrow.r 2pi$])
 })
 #panel[
   #text(size: 16pt, weight: "bold")[1  One oscillator: volume, contour, shell]
@@ -68,6 +68,8 @@
     [
       $H(q,p) = p^2/(2m) + k q^2/2$
       #v(6pt)
+      position $q$, momentum $p$
+      #v(6pt)
       $q_(max)=sqrt(2E/k), quad p_(max)=sqrt(2 m E)$
       #v(6pt)
       Interior: $H < E$\ Blue contour: $H=E$\ Green shell: $E < H < E+Delta E$
@@ -81,12 +83,17 @@
   columns: (1fr, 1fr),
   gutter: 12pt,
   ..(
-    ([2  Rational: closed orbit], 2, 1, [$omega_2 \/ omega_1=2$ · Opposite edges identified.]),
+    (
+      [2  Rational: closed orbit],
+      2,
+      1,
+      [frequency ratio $omega_2 \/ omega_1=2$\ Opposite edges identified.],
+    ),
     (
       [3  Irrational: dense orbit],
       calc.sqrt(2),
       24,
-      [$omega_2 \/ omega_1=sqrt(2)$ · Finite segment shown.],
+      [frequency ratio $omega_2 \/ omega_1=sqrt(2)$\ Finite segment shown.],
     ),
   ).map(((title, ratio, turns, caption)) => panel[
     #text(size: 16pt, weight: "bold", title)

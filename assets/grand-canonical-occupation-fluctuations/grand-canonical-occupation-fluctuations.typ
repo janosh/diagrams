@@ -9,7 +9,7 @@
 #canvas({
   let axis-mark = (end: "stealth", fill: black)
   draw.set-style(axes: (
-    x: (mark: axis-mark, label: (anchor: "north", offset: 0.1)),
+    x: (mark: axis-mark, label: (anchor: "north-east", offset: 0.75)),
     y: (mark: axis-mark, label: (anchor: "north-west", offset: -0.2)),
   ))
 
@@ -20,7 +20,7 @@
     x-max: 4.2,
     y-min: 0,
     y-max: y-max,
-    x-label: $T$,
+    x-label: [temperature $T$],
     y-label: y-label,
     x-tick-step: 1,
     y-tick-step: y-tick-step,
@@ -34,7 +34,16 @@
   )
 
   // Bose: ⟨n⟩(1 + ⟨n⟩) = 1 / (4 sinh²(β/2)), Fermi: ⟨n⟩(1 - ⟨n⟩) = 1 / (4 cosh²(β/2)).
-  fluctuation-plot(beta => 1 / calc.pow(2 * calc.sinh(beta / 2), 2), $Delta n_k^+$, 5)
+  fluctuation-plot(
+    beta => 1 / calc.pow(2 * calc.sinh(beta / 2), 2),
+    [boson occupation variance $Delta n_k^+$],
+    5,
+  )
   draw.translate((size.at(0) + 2.5, 0))
-  fluctuation-plot(beta => 1 / (2 + 2 * calc.cosh(beta)), $Delta n_k^-$, 0.05, y-max: 0.28)
+  fluctuation-plot(
+    beta => 1 / (2 + 2 * calc.cosh(beta)),
+    [fermion occupation variance $Delta n_k^-$],
+    0.05,
+    y-max: 0.28,
+  )
 })

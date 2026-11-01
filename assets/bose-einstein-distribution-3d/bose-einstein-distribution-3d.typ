@@ -118,4 +118,16 @@
   ) {
     content(pos, text(size: axis-label-font-size, label), anchor: anchor)
   }
+  content(
+    (x-max + 2.6, y-max, (z-min + z-max) / 2 + 0.3),
+    text(size: tick-font-size)[Bose-Einstein \ distribution],
+    anchor: "south-west",
+  )
+  // The poles sit on the imaginary axis at the bosonic Matsubara frequencies.
+  content(
+    (0, 0, z-max),
+    text(size: tick-font-size, align(
+      center,
+    )[poles at Matsubara \ frequencies $p_0 = 2 pi i thin n thin T$]),
+  )
 })

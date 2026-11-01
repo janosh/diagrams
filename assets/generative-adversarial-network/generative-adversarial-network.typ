@@ -29,7 +29,13 @@
 
   annotated-arrow((-3.2, y-fake), "zin", "zin-line", $p_z (arrow(z))$, caption: [latent noise])
   annotated-arrow("zin", "fake", "fake-line", $G(arrow(z))$, caption: [generator])
-  annotated-arrow((rel: (-5, 0), to: "real"), "real", "real-line", $p_"data" (arrow(x))$)
+  annotated-arrow(
+    (rel: (-5, 0), to: "real"),
+    "real",
+    "real-line",
+    $p_"data" (arrow(x))$,
+    caption: [real data],
+  )
 
   // fake and real samples feed into a switch (orange) that picks D's input
   for (idx, y) in ((1, y-fake), (2, y-real)) {

@@ -7,6 +7,7 @@
 #let curves = (
   (
     label: $z T$,
+    name: [figure of merit],
     color: rgb("#0B5FA5"),
     points: (
       (1.174e18, 0.2317),
@@ -48,6 +49,7 @@
   ),
   (
     label: $sigma$,
+    name: [electrical conductivity],
     color: rgb("#B04E09"),
     points: (
       (1.176e18, 0.005689),
@@ -83,6 +85,7 @@
   ),
   (
     label: $kappa$,
+    name: [thermal conductivity],
     color: rgb("#286744"),
     points: (
       (1.175e18, 0.08187),
@@ -120,6 +123,7 @@
   ),
   (
     label: $S$,
+    name: [Seebeck coefficient],
     color: rgb("#A81E7A"),
     points: (
       (1.65e18, 1),
@@ -151,6 +155,7 @@
   ),
   (
     label: $S^2 sigma$,
+    name: [power factor],
     color: rgb("#7A3E9D"),
     points: (
       (1.159e18, 0.04006),
@@ -232,6 +237,12 @@
   dense.push(points.last())
   dense
 }
+// zT is drawn bold and the power factor dashed; legend swatches reuse the same strokes.
+#let curve-stroke(idx, curve) = (
+  paint: curve.color,
+  thickness: if idx == 0 { 2.3pt } else { 1.3pt },
+  dash: if curve.label == $S^2 sigma$ { "dashed" } else { "solid" },
+)
 // zT keeps its actual values; every transport curve is scaled to its own maximum.
 #let plot_points = (
   curves
@@ -264,11 +275,7 @@
     legend: none,
     {
       for (idx, curve) in curves.enumerate() {
-        let thickness = if idx == 0 { 2.3pt } else { 1.3pt }
-        let dash = if curve.label == $S^2 sigma$ { "dashed" } else { "solid" }
-        plot.add(plot_points.at(idx), style: (
-          stroke: (paint: curve.color, thickness: thickness, dash: dash),
-        ))
+        plot.add(plot_points.at(idx), style: (stroke: curve-stroke(idx, curve)))
       }
       plot.add-anchor("peak", zt_peak)
     },
@@ -280,13 +287,25 @@
     [sampled peak: #calc.round(zt_peak.at(1), digits: 3)],
     anchor: "south",
   )
-  draw.content((rel: (0, -.4), to: "plot.south"), [$n$ ($"cm"^(-3)$)], anchor: "north")
+  draw.content(
+    (rel: (0, -.4), to: "plot.south"),
+    [carrier concentration $n$ ($"cm"^(-3)$)],
+    anchor: "north",
+  )
+  draw.content(
+    (rel: (-1.3, 0), to: "plot.west"),
+    [$z T$ or normalized value $f(n) \/ (max f)$],
+    angle: 90deg,
+  )
 }))
 #v(10pt)
-#align(center)[#for (idx, curve) in curves.enumerate() [#text(
-    fill: curve.color,
-  )[― #curve.label #if idx == 0 [(actual)]] #h(7pt)]]
+#align(center)[#for (idx, curve) in curves.enumerate() [#box[#box(
+      baseline: -0.3em,
+      line(length: 1.4em, stroke: curve-stroke(idx, curve)),
+    ) #text(
+      fill: curve.color,
+    )[#curve.name #curve.label #if idx == 0 [(actual)]]] #h(7pt)]]
 #v(6pt)
 #align(center, text(size: 14pt)[Transport curves scaled individually: $f(n) \/ (max f)$.])
 #v(8pt)
-#align(center)[$z T = S^2 sigma T / kappa$]
+#align(center)[$z T = S^2 sigma T / kappa$, with absolute temperature $T$]

@@ -74,4 +74,16 @@
   }
   vertex(on-loop(bubble, 180deg))
   regulator(on-loop(bubble, 0deg))
+
+  // name each diagram and decode the symbols
+  let caption-y = -radius - 0.75
+  content((hub.at(0), caption-y), anchor: "north", align(
+    center,
+  )[self-energy loop\ two 3-graviton vertices])
+  content((bubble.at(0), caption-y), anchor: "north", align(center)[tadpole\ one 4-graviton vertex])
+  let key-y = caption-y - 1.65
+  regulator((-radius - leg, key-y))
+  content((-radius - leg + 0.35, key-y), anchor: "west")[
+    regulator insertion #h(1.5em) wavy line: graviton propagator #h(1.5em) $p$: loop momentum
+  ]
 })

@@ -22,22 +22,22 @@
     }
   }
   for (height, label, fill) in (
-    (top, $h_2$, rgb("#b9c7d9")),
-    (mid, $h_1$, rgb("#b9c7d9")),
-    (bottom, $x$, rgb("#c6d8d2")),
+    (top, [hidden \ $h_2$], rgb("#b9c7d9")),
+    (mid, [hidden \ $h_1$], rgb("#b9c7d9")),
+    (bottom, [visible \ $x$], rgb("#c6d8d2")),
   ) {
-    content((-44, height), label)
+    content((-56, height), align(center, label))
     for idx in range(3) {
       circle((idx * gap, height), radius: radius, fill: fill, stroke: rgb("#19324f") + 0.9pt)
     }
   }
   for (height, title, body) in (
-    (-35, [Undirected top pair], [RBM prior: $p(h_1,h_2)$]),
+    (-35, [Undirected top pair], [Restricted Boltzmann machine (RBM) prior: $p(h_1,h_2)$]),
     (-155, [Downward generation], [Conditional model: $p(x | h_1)$]),
   ) {
     content(
       (205, height),
-      block(width: 225pt)[#text(size: 16pt, weight: "bold", title) #v(6pt) #body],
+      block(width: 215pt)[#text(size: 16pt, weight: "bold", title) #v(6pt) #body],
       anchor: "west",
       padding: 0pt,
     )

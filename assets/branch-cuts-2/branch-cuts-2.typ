@@ -20,6 +20,8 @@
       let points = range(101).map(idx => (1 + idx * 0.08, sign * cut(1 + idx * 0.08)))
       line(..points, stroke: color + 2pt)
     }
+    let anchor = if sign > 0 { "south" } else { "north" }
+    content((6.5, sign * 2.6), text(fill: color.darken(20%))[branch cuts], anchor: anchor)
   }
 
   // Dashed arrows start on the outer curves and approach the real axis.
@@ -33,6 +35,6 @@
       mark: (end: "stealth", fill: black, scale: 0.8),
       name: "k-arrow",
     )
-    content((rel: (sign * 0.15, 0), to: "k-arrow.80%"), $k arrow.r 0$, anchor: anchor)
+    content((rel: (sign * 0.15, 0), to: "k-arrow.80%"), [cutoff $k arrow.r 0$], anchor: anchor)
   }
 })

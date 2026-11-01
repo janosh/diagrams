@@ -11,7 +11,7 @@
   for (center-y, height, label, name) in (
     (1.32, .56, [forget gate], "fg"),
     (.76, .56, [input gate], "ig"),
-    (0, 1.0, [new fts.], "ft"),
+    (0, 1.0, align(center, par(leading: 0.3em)[new\ features]), "ft"),
     (-.76, .56, [output gate], "og"),
   ) {
     rect((-1.1, center-y - height / 2), (1.1, center-y + height / 2), stroke: 1pt, name: name)
@@ -20,7 +20,9 @@
 
   // === inputs fanning into all four gates ===
   content((-2.4, 1.0), $arrow(x)_t$, name: "x")
+  content((-2.75, 1.0), [input], anchor: "east")
   content((-2.5, -.24), $arrow(y)_(t - 1)$, name: "y")
+  content((-2.95, -.24), [previous output], anchor: "east")
   for (src, dy) in (("x", .21), ("y", -.21)) {
     line(src, (rel: (0, dy), to: "ft.west"), ..arr)
     for tgt in ("fg", "ig", "og") {
@@ -41,8 +43,10 @@
   rect((5.38, -.24), (6.34, .24), stroke: 1pt, name: "th")
   content("th", $tanh$)
   content((8.95, 0), $arrow(y)_t$, name: "y1")
+  content((8.6, .3), [output], anchor: "south-west")
   rect((rel: (-.75, 1.36), to: "t3"), (rel: (1.5, 1.5)), stroke: 1.4pt, name: "M")
   content("M", $M$)
+  content((rel: (-.15, 0), to: "M.west"), [memory cell], anchor: "east")
 
   for (from, to) in (
     ("ft", "t1"),
@@ -55,7 +59,7 @@
   ) {
     line(from, to, ..arr)
   }
-  content((rel: (-.29, .8), to: "t3"), $arrow(c)_(t - 1)$, anchor: "east")
+  content((rel: (-.29, .8), to: "t3"), [cell state $arrow(c)_(t - 1)$], anchor: "east")
 
   // input gate bends up into the first product
   bezier("ig.east", (rel: (-.21, .21), to: "t1"), (2.3, .76), ..arr)

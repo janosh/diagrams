@@ -13,13 +13,13 @@
     amplitude: .1,
     segments: 16,
     close: true,
-    mark: (end: "stealth"),
     ..arrow-style,
   )
 
   // Vertex on the left of the loop, regulator insertion on the right
   circle((-rad, 0), radius: 0.075, fill: black, name: "dot")
   content((rad, 0), $times.o$, fill: rgb("#cdd3da"), frame: "circle", stroke: none, padding: -1.7pt)
+  content((rad + 0.2, 0), align(left)[regulator \ insertion], anchor: "west")
 
   line((rel: (-1, 0), to: "dot"), "dot", name: "input", ..arrow-style)
   content("input.start", $ partial_t (partial V) / (partial chi) = $, anchor: "east", padding: (

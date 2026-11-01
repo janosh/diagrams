@@ -134,6 +134,11 @@
     "mean",
   )
   node-box((rel: (0, -1.4), to: "mean"), [prediction], "pred")
+  content(
+    ("tree3.east", "|-", "pred"),
+    text(fill: red-fill.darken(15%))[red: decision path of one input],
+    anchor: "east",
+  )
 
   line("training", "bagging", ..edge-style)
   for tree in ("tree1", "tree2", "tree3") {

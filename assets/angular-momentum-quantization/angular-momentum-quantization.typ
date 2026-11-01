@@ -4,8 +4,9 @@
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 #set text(size: 12pt)
 
-#let green-color = rgb("#40a040")
-#let blue-color = rgb("#1a1aff")
+// L and its fixed magnitude in blue, the quantized z-components m ħ in purple
+#let (ink, l-color, m-color, nucleus-color) = ("#19304E", "#2864BB", "#7750A3", "#5A6A80").map(rgb)
+#set text(fill: ink)
 
 #canvas({
   let zmax = 2.5
@@ -22,12 +23,12 @@
     ((0, 0), (zmax, 0), $L_y$, (anchor: "south", padding: (bottom: 3pt))),
     (
       (0, 0),
-      (-0.62 * zmax, -0.55 * zmax),
+      (-0.75 * zmax, -0.35 * zmax),
       $L_x$,
-      (anchor: "south", padding: (bottom: 6pt, left: -9pt)),
+      (anchor: "north-east", padding: (top: 2pt)),
     ),
   ) {
-    line(start, end, stroke: black + 1pt, mark: (end: "stealth", fill: black))
+    line(start, end, stroke: ink + 1pt, mark: (end: "stealth", fill: ink))
     content(end, label, ..label-args)
   }
 
@@ -35,26 +36,33 @@
   circle(
     (0, level-spacing),
     radius: (radial-component(1), 0.55 * level-spacing),
-    stroke: (dash: "dashed", paint: blue-color, thickness: 0.6pt),
+    stroke: (dash: "dashed", paint: m-color, thickness: 0.8pt),
   )
 
-  on-layer(1, content(
-    (0, 0),
-    text(baseline: -0.2pt)[$+$],
+  // Positively charged nucleus at the origin, around which the electron's L is drawn
+  let nucleus(pos) = content(
+    pos,
+    text(fill: white, baseline: -0.2pt)[$+$],
     frame: "circle",
-    fill: rgb("#ff0000"),
+    fill: nucleus-color,
     stroke: none,
-  ))
+  )
+  on-layer(1, nucleus((0, 0)))
 
   for magnetic-number in range(-angular-number, angular-number + 1) {
     let tip = (radial-component(magnetic-number), magnetic-number * level-spacing)
-    line((0, tip.at(1)), tip, stroke: blue-color + 0.6pt)
-    content((0, tip.at(1)), $#magnetic-number thin ħ$, anchor: "east", padding: (right: 6pt))
+    line((0, tip.at(1)), tip, stroke: m-color + 0.8pt)
+    content(
+      (0, tip.at(1)),
+      text(fill: m-color)[$#magnetic-number thin ħ$],
+      anchor: "east",
+      padding: (right: 9pt),
+    )
     line(
       (0, 0),
       tip,
-      mark: (end: "stealth", fill: green-color, scale: 0.8),
-      stroke: green-color + 1.1pt,
+      mark: (end: "stealth", fill: l-color, scale: 0.8),
+      stroke: l-color + 1.3pt,
     )
   }
 
@@ -64,13 +72,31 @@
     start: 90deg,
     stop: -90deg,
     radius: angular-radius,
-    stroke: green-color + .8pt,
+    stroke: l-color + .8pt,
     anchor: "origin",
   )
 
   content(
-    (0.95 * angular-radius, 1.45 * level-spacing),
-    text(fill: green-color, weight: "bold", size: 19pt)[L],
-    anchor: "west",
+    (1.05 * angular-radius, 0.75 * level-spacing),
+    text(fill: l-color)[
+      #text(weight: "bold", size: 19pt)[L] angular momentum \
+      $|bold(L)| = sqrt(l(l+1)) thin ħ$ \
+      $= sqrt(6) thin ħ$ for $l = 2$
+    ],
+    anchor: "south-west",
   )
+  content(
+    (-radial-component(1), level-spacing),
+    text(fill: m-color)[cone of $bold(L)$ \ with $m = 1$],
+    anchor: "east",
+    padding: (right: 4pt),
+  )
+  content(
+    (-0.15, angular-number * level-spacing + 0.45),
+    text(fill: m-color)[quantized $L_z = m thin ħ$],
+    anchor: "south-east",
+  )
+  let legend-y = -2.7 * level-spacing - 0.55
+  nucleus((-1.6, legend-y))
+  content((-1.6, legend-y), [nucleus (positive charge)], anchor: "west", padding: (left: 0.3))
 })

@@ -28,8 +28,13 @@
       name: "times" + row.id,
     )
   }
+  // column names above the first row
+  for (x, label) in ((0, [inputs]), (2, [attention \ function]), (4, [attention \ weight])) {
+    content((x, rows.at(0).y + 0.55), align(center, label), anchor: "south", padding: 0pt)
+  }
   content((8, rows.at(1).y), $Sigma$, stroke: .7pt, padding: 4pt, name: "sum")
   content((rel: (1, 0), to: "sum"), $arrow(e)'_j$, name: "output", padding: 2pt)
+  content((rel: (0.1, -0.45), to: "output"), align(center)[updated \ embedding], anchor: "north")
 
   // every token takes the same route: input, attention score, weight, product, sum
   for row in ("1", "j", "n") {
@@ -53,6 +58,8 @@
       stroke: .7pt,
       padding: (3pt, 4pt),
       fill: rgb("#cdd3da"),
+      name: "fpsi-box" + row.id,
     )
   }
+  content((rel: (0, -0.15), to: "fpsi-boxn.south"), align(center)[value function], anchor: "north")
 })

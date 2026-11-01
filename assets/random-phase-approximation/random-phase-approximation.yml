@@ -1,0 +1,29 @@
+title: Random Phase Approximation
+tags:
+  - physics
+  - solid state physics
+  - many-body physics
+  - Feynman diagrams
+  - electronic structure
+  - dielectric screening
+  - plasmons
+description: |
+  The random phase approximation (RPA) in six panels. (1) The name: a density fluctuation $\rho_\mathbf{q} = \sum_j e^{-i\mathbf{q}\cdot\mathbf{r}_j}$ couples to products $\rho_{\mathbf{q}-\mathbf{q}'}\rho_{\mathbf{q}'}$. For $\mathbf{q}' = \mathbf{q}$ the phases of all $N$ electrons agree and add to $N$; for $\mathbf{q}' \neq \mathbf{q}$ they are effectively random and their sum is a random walk of length $\sim\sqrt{N}$, drawn here from 22 pseudo-random phases. Dropping those terms leaves each Fourier component responding only to the total potential at the same $\mathbf{q}$, the time-dependent Hartree approximation. (2) The independent-particle (Lindhard) response $\chi_0$ is one electron-hole bubble: an electron is lifted from inside the Fermi sea to an empty state $\mathbf{k}+\mathbf{q}$, and only pairs across $E_F$ contribute.
+
+  (3) Summing all chains of bubbles connected by bare Coulomb lines gives the geometric series $W = v + v\chi_0 v + \ldots = v/(1 - v\chi_0) = \epsilon^{-1} v$ with the RPA dielectric function $\epsilon = 1 - v\chi_0$; exchange and ladder diagrams between bubbles (vertex corrections) are left out. Three consequences: (4) static screening, whose long-wavelength limit $\epsilon \approx 1 + k_\text{TF}^2/q^2$ turns $e^2/r$ into the Thomas-Fermi form $e^2 e^{-k_\text{TF} r}/r$; (5) plasmons at the zeros of $\epsilon(\mathbf{q}, \omega)$, drawn with the long-wavelength dispersion $\omega^2 = \omega_p^2 + \tfrac{3}{5} v_F^2 q^2$ for $r_s = 4$ until it enters the electron-hole continuum and is Landau damped; and (6) the RPA correlation energy, a sum of closed rings of bubbles integrated over imaginary frequencies, used for total energies through the adiabatic-connection fluctuation-dissipation theorem.
+references:
+  - bohm_pines_1953:
+      title: "A collective description of electron interactions: III. Coulomb interactions in a degenerate electron gas"
+      authors: D. Bohm, D. Pines
+      year: 1953
+      doi: 10.1103/PhysRev.92.609
+  - gell-mann_brueckner_1957:
+      title: Correlation energy of an electron gas at high density
+      authors: M. Gell-Mann, K. A. Brueckner
+      year: 1957
+      doi: 10.1103/PhysRev.106.364
+  - ren_2012:
+      title: Random-phase approximation and its applications in computational chemistry and materials science
+      authors: X. Ren, P. Rinke, C. Joas, M. Scheffler
+      year: 2012
+      doi: 10.1007/s10853-012-6570-4

@@ -88,4 +88,14 @@
   // the marked feedback place returns the output event to the input
   bent-line("t6.right", "p60.right", mark: (end: ">"), bend: 0.2)
   bent-line("p60.left", "t0.left", mark: (end: ">"), bend: 0.18)
+
+  // Key to the Petri net symbols
+  cetz.draw.content(
+    (10, -5.3),
+    anchor: "north",
+    text(size: 15pt, align(center)[
+      bars: transitions (events) #h(1.5em) circles: places with holding times $τ$, $ρ$ #h(1.5em) dot: token \
+      $frak(I)$ / $frak(O)$: input / output transitions (of the net and of stages 1, 2)
+    ]),
+  )
 })

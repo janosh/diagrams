@@ -33,4 +33,5 @@
     }
   }
   content((crystal-x + 1.5, -1))[Crystal Structure]
+  content((crystal-x + 1.5, -1.55), text(size: 12pt)[(square: unit cell)])
 })

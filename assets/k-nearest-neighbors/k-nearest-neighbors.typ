@@ -28,8 +28,8 @@
   let axis-length = 6
 
   for (end, name, label, rel, anchor) in (
-    ((axis-length, 0), "x-axis", [$x$ axis], (-0.1, 0.2), "south-east"),
-    ((0, axis-length), "y-axis", [$y$ axis], (0.2, -0.1), "north-west"),
+    ((axis-length, 0), "x-axis", [feature $x_1$], (-0.1, 0.2), "south-east"),
+    ((0, axis-length), "y-axis", [feature $x_2$], (0.2, -0.1), "north-west"),
   ) {
     line((0, 0), end, ..arrow-style, name: name)
     content((rel: rel, to: name + ".end"), label, anchor: anchor)
@@ -59,6 +59,13 @@
     circle("new-example.center", radius: radius, stroke: (dash: "dashed"), name: name)
     content((rel: (0, -0.3), to: name + ".south"), $k = #neighbors$, anchor: "north")
   }
+
+  // majority vote of each neighborhood, below the x axis
+  content((axis-length / 2, -0.3), anchor: "north", align(center)[
+    majority vote:\
+    $k = 3$ → #text(fill: ink-b)[Class B] (2 vs 1)\
+    $k = 7$ → #text(fill: ink-a)[Class A] (4 vs 3)
+  ])
 
   content((rel: (-.6, 4.8), to: "x-axis.end"), text(fill: ink-a)[Class A], name: "class-a-label")
   content((rel: (0, -.5), to: "class-a-label"), text(fill: ink-b)[Class B])

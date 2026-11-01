@@ -32,6 +32,9 @@
     content((-1.25, (y + ctrl-y) / 2 + .12), weight, anchor: "south")
   }
   content((rel: (0, .53), to: "xn"), $dots.v$)
+  content("x0.west", [bias], anchor: "east", padding: 4pt)
+  content("x2.west", [inputs], anchor: "east", padding: 4pt)
+  content((-1.25, 2.05), [weights], anchor: "south")
   line(
     (rel: (0, -.43), to: "perceptron"),
     (rel: (0, .43), to: "perceptron"),
@@ -39,11 +42,12 @@
   )
   line("perceptron.east", (rel: (3.5, 0), to: "perceptron.east"), ..arrow, name: "perceptron-out")
   content(
-    (rel: (0, .42), to: "perceptron-out.mid"),
+    (rel: (0, .66), to: "perceptron-out.mid"),
     $sigma(w_0 + sum_(i=1)^n w_i x_i)$,
     fill: rgb("#cdd3da"),
     padding: 1pt,
   )
+  content((rel: (0, 1.4), to: "perceptron-out.mid"), [$sigma$: activation function])
 
   // Fully connected network with 3 inputs, 5 hidden units and 2 outputs
   let inputs = (("i1", (6, .75), $I_1$), ("i2", (6, 0), $I_2$), ("i3", (6, -.75), $I_3$))

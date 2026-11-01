@@ -17,18 +17,23 @@
   let (width, height) = (8, 5)
 
   for (start, end, fill, label) in (
-    ((0, 0), (mid-x, likelihood-h * height), orange, $p(E|H)$),
+    ((0, 0), (mid-x, likelihood-h * height), orange, align(center)[likelihood \ $p(E|H)$]),
     ((0, likelihood-h * height), (mid-x, height), rgb("#008080"), $p(not E|H)$),
     ((mid-x, 0), (prior-end, likelihood-not-h * height), rgb("#1E2F4F"), $p(E|not H)$),
     ((mid-x, likelihood-not-h * height), (prior-end, height), rgb("#404040"), $p(not E|not H)$),
-    ((right-x, 0), (width, posterior * height), rgb("#363399"), $p(H|E)$),
+    (
+      (right-x, 0),
+      (width, posterior * height),
+      rgb("#363399"),
+      align(center)[posterior \ $p(H|E)$],
+    ),
     ((right-x, posterior * height), (width, height), rgb("#171717"), $p(not H|E)$),
   ) {
     rect(start, end, fill: fill, stroke: white, name: "cell")
     content("cell", text(fill: if fill == orange { black } else { white }, label))
   }
 
-  for (start, end, label) in ((0, mid-x, $p(H)$), (mid-x, prior-end, $p(not H)$)) {
+  for (start, end, label) in ((0, mid-x, [prior $p(H)$]), (mid-x, prior-end, $p(not H)$)) {
     content(
       ((start + end) / 2, height),
       text(fill: black, math.overbrace(box(width: (end - start) * 1cm), label)),

@@ -125,6 +125,7 @@
   caption(layers.at(1).center_x, [Trained model])
 
   content((property_x, 0), text(size: 42pt)[$hat(alpha)_"iso"$])
+  content((property_x, -1.5), align(center)[isotropic\ polarizability])
   caption(property_x, [Predicted property])
 
   for (from, to) in ((3.5, matrix_left - 0.5), (matrix_right + 0.6, 13.1), (20, property_x - 1.5)) {

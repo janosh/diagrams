@@ -72,6 +72,16 @@
     state(idx * state-gap, idx, q, action, reward, symbol, mark-pos, greedy-x, dollar-pos)
   }
 
+  // Row names left of the first column
+  for (y, label) in (
+    (2.95, [reward $r_t$]),
+    (1.35, [action $a_t$]),
+    (-.2, [action scores]),
+    (y-box + panel-w / 2, [state $s_t$]),
+  ) {
+    content((-1.9, y), label, anchor: "east")
+  }
+
   for (idx, symbol) in ("↑", "→").enumerate() {
     let (x, next-x) = (idx * state-gap, (idx + 1) * state-gap)
     bezier((x + 1.35, 1.10), west-rim(next-x), (x + 3.65, 1.10), (x + 3.55, -3.0), ..heavy)

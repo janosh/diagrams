@@ -98,13 +98,13 @@
 // === 1  Convex: above a tangent ===
 #let figure-0 = comparison-plot(1, "inner-north-west", (
   (blue, (0.01, 2.7), 100, $x ln(x)$, x => x * calc.ln(x)),
-  (tangent-color, (0, 2.7), 50, $x-1$, x => x - 1),
+  (tangent-color, (0, 2.7), 50, [$x-1$ (tangent)], x => x - 1),
 ))
 
 // === 2  Concave: below a tangent ===
 #let figure-1 = comparison-plot(0.2, "inner-north-east", x-min: 0, x-max: 1, (
   (blue, (0.01, 1), 100, $-x ln(x)$, x => -x * calc.ln(x)),
-  (tangent-color, (0, 1), 50, $1-x$, x => 1 - x),
+  (tangent-color, (0, 1), 50, [$1-x$ (tangent)], x => 1 - x),
 ))
 
 // === 3  Concave: above a chord ===
@@ -130,11 +130,17 @@
         x => calc.ln(x - 10) - 2,
       )
       // Chord extended past the two points where it meets the curve
+      let chord(x) = 0.2 + (3 - 0.2) * (x - 8) / (120 - 8)
       plot.add(
         style: (stroke: (paint: chord-color, thickness: 1.5pt, dash: "dashed")),
         domain: (8, 120),
-        x => 0.2 + (3 - 0.2) * (x - 8) / (120 - 8),
+        chord,
       )
+      plot.annotate(draw.content(
+        (66, chord(66) - 0.25),
+        text(fill: chord-color)[chord],
+        anchor: "north",
+      ))
     },
   )
 })
@@ -150,8 +156,13 @@
   draw.line((x-mean, 0), (x-mean, mean-f), stroke: (dash: "dashed", paint: gray))
   draw.circle((x-mean, curve(x-mean)), radius: 0.07, fill: blue, name: "f-of-mean")
   draw.circle((x-mean, mean-f), radius: 0.07, fill: chord-color, name: "mean-of-f")
-  draw.content((x-mean, -0.25), $macron(x)$, anchor: "north")
-  draw.content("f-of-mean", $f(macron(x))$, anchor: "north-west", padding: 4pt)
+  draw.content((x-mean, -0.25), [average $macron(x)$], anchor: "north")
+  draw.content(
+    "f-of-mean",
+    [$f$ of average \ $f(macron(x))$],
+    anchor: "north-west",
+    padding: (left: 7pt, top: 3pt),
+  )
   draw.content("mean-of-f", [average of $f$], anchor: "south-east", padding: 4pt)
 })
 

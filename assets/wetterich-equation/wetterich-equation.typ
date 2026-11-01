@@ -44,6 +44,7 @@
     name: "regulator",
   )
   content((rel: (-0.25, 0), to: "regulator"), $partial_k R_(k,i j)(p_1,p_2)$, anchor: "east")
+  content((rel: (-0.25, -0.55), to: "regulator"), [regulator insertion], anchor: "north-east")
 
   circle((radius, 0), radius: 0.175 * radius, fill: hatched, name: "vertex", stroke: 0.5pt)
   content(
@@ -51,4 +52,5 @@
     $[Gamma_k^((2)) + R_k]_(j i)^(-1)(p_2,p_1)$,
     anchor: "west",
   )
+  content((rel: (0.25, -0.75), to: "vertex"), [full regularized propagator], anchor: "north-west")
 })

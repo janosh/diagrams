@@ -74,4 +74,12 @@
   ) {
     line("node-" + parent, "node-" + child, stroke: (paint: rgb("#808080"), thickness: 0.6pt))
   }
+
+  content("node-a.north", [root], anchor: "south", padding: 3pt)
+  content((-3, -3.15), [nested balls in data space], anchor: "north")
+  content(
+    (3.5 + 0.5 * 1.2, -3.15),
+    [ball tree (each node is a ball; leaves have no children)],
+    anchor: "north",
+  )
 })

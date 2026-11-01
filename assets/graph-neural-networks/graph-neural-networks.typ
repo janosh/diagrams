@@ -76,7 +76,7 @@
     content((3.6, 0), $h′_v$, frame: "circle", padding: 7pt, fill: rgb("#fbe4d4"), stroke: none)
     let (arrow-label, note, note-x) = (
       aggregate: ([aggregate + update], [sum or mean ignores neighbor ordering], -.4),
-      message: ([message + update], $m_(u v)=M(h_u,h_v,e_(u v))$, -.4),
+      message: ([message + update], [message $m_(u v)=M(h_u,h_v,e_(u v))$], -.4),
       attention: ([weighted sum], [thicker arrow = larger learned weight], -.8),
     ).at(mode)
     content((2.2, .65), arrow-label)

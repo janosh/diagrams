@@ -18,7 +18,10 @@
     scale: .5,
     anchor: "center",
   ))
-  content((rel: (0.08, 0.08), to: vec-a), $arrow(a)$, anchor: "south-west")
+  // labeled outside the sphere: near the tip the x_3 axis and the outline leave no room
+  let label-at = (0.8 * rad, 0.95 * rad)
+  line(vec-a, label-at, stroke: luma(100) + 0.5pt)
+  content(label-at, [Bloch vector $arrow(a)$], anchor: "south-west", padding: 2pt)
 
   // Dashed projection onto the equatorial plane
   line((0, 0), phi-point, vec-a, style: "dashed")
@@ -42,4 +45,5 @@
   // Sphere
   circle((0, 0), radius: rad)
   circle((0, 0), radius: (rad, rad / 3), stroke: (dash: "dashed"), fill: gray.transparentize(70%))
+  content((0, -rad - 0.15), [$theta$: polar angle, $phi$: azimuthal angle], anchor: "north")
 })

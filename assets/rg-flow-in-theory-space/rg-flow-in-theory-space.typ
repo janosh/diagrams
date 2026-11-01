@@ -47,7 +47,17 @@
     )
   }
 
+  content(
+    scaled((0.78, 0.7)),
+    text(fill: dark-blue)[microscopic actions at UV cutoffs $Lambda_i$],
+    anchor: "south",
+  )
+
   let dark-red = rgb("8B0000")
   circle(qea, radius: 0.1, fill: dark-red, stroke: none)
-  content((rel: (0, -0.2), to: qea), text(fill: dark-red)[$Gamma_(k=0) = Gamma$], anchor: "north")
+  content(
+    (rel: (0.15, -0.2), to: qea),
+    text(fill: dark-red, align(center)[$Gamma_(k=0) = Gamma$ \ effective action]),
+    anchor: "north",
+  )
 })

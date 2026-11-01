@@ -5,7 +5,7 @@ tags:
   - angular momentum
   - spin
 description: |
-  Visualization of the [quantization of orbital angular momentum](https://openstax.org/books/university-physics-volume-3/pages/8-2-orbital-magnetic-dipole-moment-of-the-electron) $\mathbf{L}$ for $l = 2$. The magnitude $|\mathbf{L}| = \sqrt{l(l+1)}\,\hbar = \sqrt{6}\,\hbar$ (green semicircle) is fixed, while the z-component $L_z$ takes only the discrete values $m\hbar$ with $m = -l, \dots, l$. Each green arrow is an allowed orientation; since $L_z$ never reaches $|\mathbf{L}|$, the vector can never point exactly along the z-axis. The dashed ellipse shows the cone of orientations sharing $m = 1$, as $L_x$ and $L_y$ remain undetermined.
+  Visualization of the [quantization of orbital angular momentum](https://openstax.org/books/university-physics-volume-3/pages/8-2-orbital-magnetic-dipole-moment-of-the-electron) $\mathbf{L}$ for $l = 2$. The magnitude $|\mathbf{L}| = \sqrt{l(l+1)}\,\hbar = \sqrt{6}\,\hbar$ (blue semicircle) is fixed, while the z-component $L_z$ takes only the discrete values $m\hbar$ with $m = -l, \dots, l$ (purple levels). Each blue arrow, drawn from the nucleus at the origin, is an allowed orientation; since $L_z$ never reaches $|\mathbf{L}|$, the vector can never point exactly along the z-axis. The dashed ellipse shows the cone of orientations sharing $m = 1$, as $L_x$ and $L_y$ remain undetermined.
 creator: Izaak Neutelings
 date: 2020-03
 creator_url: http://hyperphysics.phy-astr.gsu.edu/hbase/quantum/qangm.html

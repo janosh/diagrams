@@ -81,4 +81,6 @@
       stroke: red-dash,
     )
   }
+  // name the red tour above the dip between AT and TG
+  content((unit / 2, 2 * unit + tour-r + .4), text(fill: pure-red)[Eulerian cycle])
 })

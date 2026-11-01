@@ -51,6 +51,13 @@
   content("y-axis.mid", [Polarization], angle: 90deg, anchor: "south", padding: 4pt)
   content("x-axis.mid", [Ti Displacement], anchor: "north", padding: (10pt, 0, 0))
 
+  // Atom key in the empty top-left corner of the polarization plot (radius matches the scaled cells)
+  for (idx, (fill, name)) in ((rgb("#00ffff"), [Ba]), (luma(130), [Ti]), (red, [O])).enumerate() {
+    let pos = (x0 + 0.6 + idx * 1.1, y0 + plot-height - 0.35)
+    sphere(pos, radius: 0.2 * 0.64, fill: fill)
+    content((rel: (0.2, 0), to: pos), name, anchor: "west")
+  }
+
   let atom = sphere.with(radius: 0.20)
   // BaTiO3 perovskite cell around the origin: Ba on the corners, O on the face centers, Ti
   // displaced by ti_y.

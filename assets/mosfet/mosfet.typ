@@ -5,12 +5,12 @@
 #set text(size: 12pt)
 
 #canvas({
-  // Board/substrate width, dielectric x-span and the substrate surface height
+  // Substrate width, dielectric x-span and the substrate surface height
   let (width, start-x, end-x, start-y) = (11, 3.8, 7.2, 2)
 
-  // Circuit board (base)
+  // Body contact (base)
   rect((0, 0), (width, -0.25), fill: rgb("#008080"), name: "board")
-  content("board.south", [circuit board], anchor: "north", padding: (top: 3pt))
+  content("board.south", [body (substrate) contact], anchor: "north", padding: (top: 3pt))
 
   // Dielectric layer with brick pattern (5 rows of 0.4 x 0.2 bricks, odd rows offset by half a brick)
   let (brick-width, brick-height) = (0.4, 0.2)
@@ -35,7 +35,10 @@
 
   // P-type semiconductor substrate
   rect((0, 0), (width, start-y), fill: rgb("#ffa500").lighten(50%), name: "substrate")
-  content("substrate", align(center)[$p$-type\ semiconductor])
+  content((width / 2, 0.6), align(center)[$p$-type\ semiconductor])
+  // Inversion layer induced under the dielectric when the gate voltage exceeds threshold
+  // spans the gap between the source well (x 1 to 4) and the drain well (x 7 to 10)
+  rect((4, start-y - 0.14), (7, start-y), fill: rgb("#90ee90"), stroke: (dash: "dashed"))
 
   // n-type wells, each topped by its metal contact
   for (well-x, inset, name) in ((1, 0.25, "source"), (7, 1, "drain")) {
@@ -58,6 +61,18 @@
   rect((start-x + 0.2, start-y + 1), (rel: (3, 0.5)), fill: rgb("#c8c8e1"), name: "gate-metal")
   content("gate-metal", [gate])
 
+  content(
+    (width / 2, start-y - 0.14),
+    text(size: 10pt)[$n$ inversion channel],
+    anchor: "north",
+    padding: (top: 2pt),
+  )
+
   // Title
-  content("gate-metal.north", [$n$-type channel], anchor: "south", padding: (bottom: 2mm))
+  content(
+    "gate-metal.north",
+    [gate voltage $V_G > V_"th"$ induces the channel],
+    anchor: "south",
+    padding: (bottom: 2mm),
+  )
 })

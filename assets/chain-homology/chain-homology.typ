@@ -52,4 +52,10 @@
     )
     content(name, boundary-labels.at(span), anchor: "north", padding: 0.1)
   }
+
+  content((x, -1.5), anchor: "north", align(center)[
+    $C_r$: $r$-chains, #h(0.5em) $Z_r = ker partial_r$: $r$-cycles \
+    $B_r = im partial_(r+1)$: $r$-boundaries, #h(0.5em) $partial_r$: boundary map \
+    homology group $H_r = Z_r \/ B_r$
+  ])
 })

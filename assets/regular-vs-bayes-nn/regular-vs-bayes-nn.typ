@@ -43,7 +43,11 @@
   }
 
   // 2-4-1 network; decorate-ih/decorate-ho draw the per-edge annotation (weight or distribution)
-  let draw-network(x0, decorate-ih, decorate-ho) = {
+  let draw-network(x0, title, decorate-ih, decorate-ho) = {
+    content((x0 + layer-gap, 4 * node-gap + 0.9), title, anchor: "south")
+    for (idx, layer) in ("input", "hidden", "output").enumerate() {
+      content((x0 + idx * layer-gap, node-gap - 0.65), layer, anchor: "north")
+    }
     let inputs = range(2).map(idx => (x0, (idx + 1) * node-gap + 1))
     let hidden = range(4).map(idx => (x0 + layer-gap, (idx + 1) * node-gap))
     let output = (x0 + 2 * layer-gap, 2.5 * node-gap)
@@ -70,11 +74,13 @@
 
   draw-network(
     0,
+    [*regular NN*: one value per weight],
     (pos, in-idx, hid-idx) => weight-label(pos, 0.35 * in-idx - hid-idx * 0.15),
     (pos, idx) => weight-label(pos, 0.35 * idx - 0.15),
   )
   draw-network(
     3 * layer-gap,
+    [*Bayesian NN*: distribution per weight],
     (pos, in-idx, hid-idx) => gaussian(pos, in-idx - hid-idx),
     (pos, idx) => gaussian(pos, idx - 1),
   )

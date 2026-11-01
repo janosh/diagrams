@@ -49,6 +49,16 @@
   for (n, label) in ((1, [−13.6 eV]), (2, [−3.4]), (3, [−1.5]), (calc.inf, [0])) {
     content((x-right + 0.15, y-of(n)), label, anchor: "west")
   }
+  content(
+    (x-right + 0.15, y-of(calc.inf) + 0.55),
+    text(size: 18pt)[energy $E_n$],
+    anchor: "south-west",
+  )
+  content(
+    ((x-left + x-right) / 2, y-of(calc.inf) + 0.2),
+    text(size: 18pt)[ionization limit],
+    anchor: "south",
+  )
 
   // Lyman series: n >= 2 -> 1 (ultraviolet)
   let lyman-x(idx) = 1.75 + 0.48 * idx
@@ -56,7 +66,7 @@
     arrow(lyman-x(idx), n, 1, lyman-color)
   }
   content((lyman-x(2), -0.2), text(fill: lyman-color, weight: "bold")[Lyman], anchor: "north")
-  content((lyman-x(2), -1.05), text(fill: lyman-color, size: 18pt)[UV], anchor: "north")
+  content((lyman-x(2), -1.05), text(fill: lyman-color, size: 18pt)[ultraviolet], anchor: "north")
 
   // Balmer series: n >= 3 -> 2 (visible)
   for (n, _, color, x) in balmer {
@@ -80,6 +90,7 @@
   for (lam, label) in ((410, [410]), (486, [486]), (656, [656 nm])) {
     content((x-of-lam(lam), s-bottom - 0.15), text(size: 18pt, label), anchor: "north")
   }
+  content((7.95, (s-bottom + s-top) / 2), align(center, text(size: 18pt)[emission\ spectrum]))
   content((9.5, 6.3), text(weight: "bold", fill: rainbow)[Balmer], anchor: "south")
   content((9.5, 6.25), text(size: 18pt)[visible], anchor: "north")
 
@@ -95,7 +106,7 @@
   )
   content(
     (paschen-x(1), y-of(3) - 0.95),
-    text(fill: paschen-color, size: 18pt)[IR],
+    text(fill: paschen-color, size: 18pt)[infrared],
     anchor: "north",
   )
 })

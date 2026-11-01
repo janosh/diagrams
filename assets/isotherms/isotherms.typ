@@ -17,14 +17,14 @@
 #canvas({
   let axis-mark = (end: "stealth", fill: black)
   draw.set-style(axes: (
-    x: (mark: axis-mark, label: (anchor: "south-east", offset: -0.25)),
+    x: (mark: axis-mark, label: (anchor: "north-east", offset: 0.6)),
     y: (mark: axis-mark, label: (anchor: "north-west", offset: -0.2)),
   ))
 
   plot.plot(
     size: (8, 7),
-    x-label: [$v$ (m³/mol)],
-    y-label: [$p$ (Pa)],
+    x-label: [molar volume $v$ (m³/mol)],
+    y-label: [pressure $p$ (Pa)],
     x-tick-step: 1,
     y-tick-step: 1000,
     axis-style: "left",
@@ -32,9 +32,9 @@
     // Compact legend with a thin border.
     legend-style: (fill: rgb("#cdd3da"), item: (spacing: 0.15), padding: 0.15, stroke: 0.5pt),
     for (pressure, color, label) in (
-      (p0, "#0B5FA5", $p_0 = R T \/ v$),
-      (p1, "#C2570A", $p_1 = p_0 + B_1 \/ v^2$),
-      (p2, "#12793F", $p_2 = p_1 + B_2 \/ v^3$),
+      (p0, "#0B5FA5", [ideal gas $p_0 = R T \/ v$]),
+      (p1, "#C2570A", [1st virial correction $p_1 = p_0 + B_1 \/ v^2$]),
+      (p2, "#12793F", [2nd virial correction $p_2 = p_1 + B_2 \/ v^3$]),
     ) {
       plot.add(
         style: (stroke: rgb(color) + 1.5pt),

@@ -17,8 +17,8 @@
   // axes (axis lines = middle)
   line((0, -1.1 * scale-y), (0, 1.5 * scale-y), ..arrow, name: "y-axis")
   line((0, 0), ((duration + 1) * scale-x, 0), ..arrow, name: "x-axis")
-  content("y-axis.end", $x(t)$, anchor: "north-west", padding: (left: 4pt))
-  content("x-axis.end", $t$, anchor: "south-east", padding: (bottom: 4pt))
+  content("y-axis.end", [signal $x(t)$], anchor: "north-west", padding: (left: 4pt))
+  content("x-axis.end", [time $t$], anchor: "north-east", padding: (top: 4pt))
 
   // continuous signal
   line(..range(301).map(idx => pt(idx * duration / 300)), stroke: 1.1pt)
@@ -35,8 +35,17 @@
     )
   }
 
+  // label the lowest sample
+  let lowest = pt(7 * sample-period)
+  content(
+    (rel: (0, -.2), to: lowest),
+    text(fill: red.darken(25%))[samples $x(n \/ f_s)$],
+    anchor: "north",
+  )
+
   // sample-time tick labels on a shared baseline
   for (idx, label) in ((1, $1 \/ f_s$), (2, $2 \/ f_s$), (3, $3 \/ f_s$), (4, $dots$)) {
     content((idx * sample-period * scale-x, -.55), label, anchor: "base")
   }
+  content((2.5 * sample-period * scale-x, -1.0), [$f_s$: sampling frequency], anchor: "north")
 })

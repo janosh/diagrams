@@ -297,17 +297,17 @@ Build a complicated density by composing invertible transformations of a simple 
   (
     [2  A coupling layer is reversible],
     coupling-layer,
-    [Leave one block unchanged; use it to condition an invertible map of the other block. The conditioner itself does not need to be invertible.],
+    [Leave one block unchanged; feed it through the conditioner $m$ to parametrize an invertible map $arrow(g)$ of the other block. The conditioner itself does not need to be invertible.],
   ),
   (
     [3  Affine coupling],
     affine-coupling,
-    [Keep $x_A=z_A$ and transform $x_B=z_B dot exp(s(z_A))+t(z_A)$. Scale and shift depend only on the unchanged block; alternate which block is transformed.],
+    [Keep $x_A=z_A$ and transform $x_B=z_B dot exp(s(z_A))+t(z_A)$. Scale $s$ and shift $t$ depend only on the unchanged block; alternate which block is transformed.],
   ),
   (
     [4  Autoregressive conditioning],
     autoregressive,
-    [For a masked autoregressive flow, coordinate $i$ is conditioned on all earlier data coordinates. A masked network evaluates density in parallel; generation follows the ordering sequentially.],
+    [For a masked autoregressive flow, coordinate $i$ is shifted by $mu_i$ and scaled by $e^(-s_i)$, both conditioned on all earlier data coordinates. A masked network evaluates density in parallel; generation follows the ordering sequentially.],
   ),
 )
 #v(12pt)

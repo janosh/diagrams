@@ -50,3 +50,6 @@
 })
 #v(12pt)
 *Optimal:* $(x,y)=(2,0), quad z^*=6$
+#v(2pt)
+$U$ = upper bound from the linear-programming (LP) relaxation\
+$L$ = best integer objective found so far (the incumbent)

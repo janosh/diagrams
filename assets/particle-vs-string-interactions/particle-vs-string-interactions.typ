@@ -103,6 +103,7 @@
   for c in (top, bot) { circle(c, radius: (rx1, ry1), stroke: edge) } // we look into the openings
 
   content((-.35, spread + .45), [strings], anchor: "west")
+  content((len * .32, y-at(outer-bot, len * .45) - .2), [worldsheet], anchor: "north")
 
   // ---------- particles: cubic vertex, aligned with the string's split ----------
   let y0 = 2 * spread + ry1 + .85 // vertical position of the particle panel
@@ -115,6 +116,8 @@
   line((-.3, y0), v, stroke: ink + 1.6pt)
   for dy in (spread, -spread) { line(v, (len + .1, y0 + dy), stroke: ink + 1.6pt) }
   circle(v, radius: .08, fill: ink, stroke: none)
+  content((len * .4, y0), [worldline], anchor: "north", padding: (top: 6pt))
+  content(v, [vertex], anchor: "south-east", padding: 6pt)
 
   content((-.35, y0 + spread + .05), [particles], anchor: "west")
 })

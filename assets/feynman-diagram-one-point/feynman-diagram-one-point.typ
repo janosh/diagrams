@@ -14,7 +14,7 @@
 // Dressed vertices use hatching; `offset` positions the label relative to the vertex.
 #let vertex(pos, label, offset) = {
   circle(pos, radius: 0.15 * radius, fill: hatched, stroke: 0.5pt)
-  content((rel: offset, to: pos), label)
+  content((rel: offset, to: pos), align(center, label))
 }
 
 #canvas({
@@ -49,12 +49,16 @@
     padding: -2.7pt,
     name: "regulator",
   )
-  content((rel: (0.3, 0), to: "loop.east"), $partial_t R_(k,i j)(p_1,p_2)$, anchor: "west")
-  vertex("loop.north", $G_(k,j k)(p_2,p_3)$, (0, 0.5))
-  vertex("loop.south", $G_(k,l i)(p_4,p_1)$, (0, -0.5))
+  content(
+    (rel: (0.3, 0), to: "loop.east"),
+    [regulator insertion \ $partial_t R_(k,i j)(p_1,p_2)$],
+    anchor: "west",
+  )
+  vertex("loop.north", [propagator \ $G_(k,j k)(p_2,p_3)$], (0, 0.75))
+  vertex("loop.south", [$G_(k,l i)(p_4,p_1)$ \ propagator], (0, -0.75))
 
   line((-2.5 * radius, 0), "loop.west", stroke: 1pt, name: "external")
-  content((rel: (-0.6 * radius, 0), to: "external"), $phi_a$, anchor: "north", padding: 7pt)
+  content((rel: (-0.6 * radius, 0), to: "external"), [field $phi_a$], anchor: "north", padding: 7pt)
   line(
     (-2.3 * radius, 0.15),
     (-1.5 * radius, 0.15),
@@ -65,8 +69,8 @@
   content("q-arrow.mid", $q$, anchor: "south", padding: 5pt)
 
   content(
-    (-2.2 * radius, 1.2 * radius),
-    $Gamma_(k,a k l)^((3))(q,p_3,-p_4)$,
+    (-2.5 * radius, 1.2 * radius),
+    align(center)[three-point vertex \ $Gamma_(k,a k l)^((3))(q,p_3,-p_4)$],
     name: "gamma-label",
   )
   // Gray hairline tying the off-diagram label to the external vertex.

@@ -64,7 +64,7 @@
   content((x0 + w / 2, y0 + h / 2), text(size: 14pt, fill: white)[heat sink])
 }
 
-#let pillar-block(x0, y0, label) = {
+#let pillar-block(x0, y0, label, carriers) = {
   let (w, h) = (pillar-w, pillar-h)
   rect((x0, y0), (x0 + w, y0 + h), fill: pillar-grad, stroke: none)
   line(
@@ -81,6 +81,7 @@
     thickness: 0.7pt,
   ))
   content("badge", text(size: 16pt, fill: white.transparentize(25%))[#label])
+  content((x0 + w / 2, y0 + h * 0.43), text(size: 14pt, fill: white)[#carriers])
 }
 
 // The internal field points from the positively (+) to the negatively (−) charged end of a leg.
@@ -102,10 +103,11 @@
   let right-field-x = right-sink-x + 0.35 - 0.25
 
   // Electrons (N) and holes (P) both diffuse to the cold end, so the two fields point oppositely.
-  for (sink-x, label, sign, fill, field-x, field-ys, label-side, charge-offsets) in (
+  for (sink-x, label, carriers, sign, fill, field-x, field-ys, label-side, charge-offsets) in (
     (
       left-sink-x,
       [N],
+      [electrons],
       [−],
       rgb("#11b7ef"),
       left-field-x,
@@ -116,6 +118,7 @@
     (
       right-sink-x,
       [P],
+      [holes],
       [+],
       rgb("#ffa300"),
       right-field-x,
@@ -125,7 +128,7 @@
     ),
   ) {
     sink-block(sink-x, sink-y)
-    pillar-block(sink-x + 0.35, pillar-y, label)
+    pillar-block(sink-x + 0.35, pillar-y, label, carriers)
     field-arrow(field-x, ..field-ys, label-side)
     for (dx-offset, dy-offset) in charge-offsets {
       charge-marker(sink-x + dx-offset, sink-y + dy-offset, sign, fill)
@@ -141,7 +144,7 @@
   on-layer(20, {
     draw-prism(bar-x, bar-y, 9.95, 0.9, 0.66, rgb("#ef1313"), rgb("#de1313"), rgb("#ff2222"))
     content((bar-x + 5.05, bar-y + 1.16), text(size: 15pt, fill: white)[heat source])
-    content((bar-x + 4.68, bar-y + 0.4), text(size: 20pt, fill: white)[$J arrow.r$])
+    content((bar-x + 4.68, bar-y + 0.4), text(size: 20pt, fill: white)[current $J arrow.r$])
   })
 
   // Bottom wire closing the electric circuit through a central load resistor.
@@ -168,4 +171,5 @@
     amplitude: 0.12,
     segment-length: 0.2,
   )
+  content(((zig-left-x + zig-right-x) / 2, wire-y - 0.25), [load], anchor: "north")
 })

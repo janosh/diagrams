@@ -31,12 +31,14 @@
   tri((0, 0), labels: ($h_"La"$, $h_"O"$, $h_"Cu"$))
   line((-4.5, 0), (-3.7, 0), mark: (end: "stealth", fill: black, size: 0.2), name: "input")
   content((rel: (-0.3, 0), to: "input.start"), [La#sub[2]CuO#sub[4]], anchor: "east")
+  content((-1.5, -1.6), [element embeddings $h$], anchor: "north")
 
   line((2, -1.95), (2, 2.75), stroke: 1.8pt + black)
 
   let (rt, tp1) = ((7, 0.75), (13, -1.25)) // right-t and t+1 La positions
   tri(rt, labels: ($h_"La"^t$, $h_"O"^t$, $h_"Cu"^t$))
   tri(tp1, labels: ($h_"La"^(t+1)$, none, none))
+  content((rel: (0.4, -0.5), to: tp1), [updated embedding], anchor: "north-west")
 
   // Braces over the La-Cu and La-O edges that each message is computed from.
   for (start, end) in (((-2.65, 1.15), (-0.15, 0.35)), ((-0.15, -0.35), (-2.65, -1.15))) {
@@ -51,8 +53,8 @@
 
   // Message nodes: (y offset from rt, color, label, attention-label, sign for curve direction)
   let msg-nodes = (
-    (1.5, rgb("#c00"), [$g(h_"La"^t || h_"Cu"^t)$], $alpha_"LaCu"$, 1),
-    (-1.45, rgb("#282"), [$g(h_"La"^t || h_"O"^t)$], $alpha_"LaO"$, -1),
+    (1.5, rgb("#c00"), [message $g(h_"La"^t || h_"Cu"^t)$], [attention $alpha_"LaCu"$], 1),
+    (-1.45, rgb("#282"), [message $g(h_"La"^t || h_"O"^t)$], [attention $alpha_"LaO"$], -1),
   )
   circle((rel: (2, 0), to: rt), radius: small-r, fill: yellow, stroke: 2pt + black, name: "alpha")
 
@@ -69,7 +71,7 @@
       (rel: (-0.6, sign * 0.9), to: "alpha"),
       stroke: dashed,
     )
-    content((rel: (1.5, sign * 0.1), to: "g"), attn, anchor: "west")
+    content((rel: (1.5, sign * 0.25), to: "g"), attn, anchor: "west")
   }
 
   // Plus and final arrow

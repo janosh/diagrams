@@ -62,4 +62,10 @@
   for (name, angle) in (("d1", 180deg), ("d2", 90deg), ("d3", 90deg), ("d5", 0deg), ("d6", 0deg)) {
     self-loop(name, angle)
   }
+
+  content(
+    (1.5 * dx, -dy - radius - 0.3),
+    anchor: "north",
+    [nodes $d_i$: web documents #h(1.5em) arrows: hyperlinks (loops: self-links)],
+  )
 })

@@ -33,5 +33,22 @@
   line(corner, (rel: (0, ratio), to: corner), ..spacing-arrow, name: "y-spacing")
   content("y-spacing.mid", $2pi \/ L_y$, anchor: "west", padding: 0.2)
 
-  content((130deg, 2.4), text(blue.darken(10%))[$N(k)$])
+  let disk-ink = blue.darken(10%)
+  content((130deg, 2.4), text(disk-ink)[$N(k)$])
+
+  // radius of the disk
+  let radius-end = (225deg, 2 / 3 * y-range)
+  line((0, 0), radius-end, stroke: disk-ink + 1pt, mark: (
+    end: "stealth",
+    fill: disk-ink,
+    scale: .6,
+  ))
+  content((225deg, 1), text(disk-ink)[$k$], anchor: "south-east", padding: 0.05)
+
+  // legend below the grid
+  let legend-x = -x-range
+  circle((legend-x, -3.2), radius: 2pt, fill: black)
+  content((legend-x + 0.25, -3.2), [allowed wave vector $bold(k)$], anchor: "west")
+  circle((legend-x, -3.7), radius: 0.12, stroke: blue, fill: blue.lighten(80%))
+  content((legend-x + 0.25, -3.7), [$N(k)$: number of states with $|bold(k)| < k$], anchor: "west")
 })

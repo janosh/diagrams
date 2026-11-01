@@ -1,0 +1,35 @@
+title: GW Approximation
+tags:
+  - physics
+  - solid state physics
+  - many-body physics
+  - Feynman diagrams
+  - electronic structure
+  - quasiparticles
+  - band structure
+  - density functional theory
+description: |
+  The GW approximation for quasiparticle energies in five panels. (1) Hedin's equations link the Green's function $G$, polarizability $P$, screened interaction $W$, self-energy $\Sigma$ and vertex $\Gamma$ in a closed pentagon. GW sets $\Gamma = \delta$, which short-circuits the vertex and leaves the loop $G \to P = -iGG \to W = v + vPW \to \Sigma = iGW \to G$ through Dyson's equation. With $P = \chi_0$, $W$ is exactly the RPA screened interaction (see the Random Phase Approximation diagram). (2) The self-energy is an electron line with a screened interaction attached at both ends. Expanding $W$ splits it into bare exchange $\Sigma_x$ (Hartree-Fock) and correlation $\Sigma_c = iG(W - v)$ from bubble chains, which makes $\Sigma$ non-local, energy dependent and complex.
+
+  (3) The spectral function $A(\mathbf{k}, \omega) = |\text{Im}\, G|/\pi$ replaces the sharp mean-field level with a shifted quasiparticle peak of weight $Z = (1 - \partial\, \text{Re}\, \Sigma/\partial\omega)^{-1}$ and width $1/\tau$, plus a plasmon satellite near $E^\text{QP} - \omega_p$ (schematic Lorentzian and Gaussian). (4) The quasiparticle equation $E^\text{QP} = \epsilon^\text{KS} + \langle \Sigma(E^\text{QP}) - v_\text{xc} \rangle$ is solved where $\omega - \epsilon^\text{KS}$ meets the self-energy curve (a quadratic model); linearizing at $\epsilon^\text{KS}$ gives the usual $\epsilon^\text{KS} + Z \langle \Sigma(\epsilon^\text{KS}) - v_\text{xc} \rangle$. (5) For silicon, GW opens the indirect gap from 0.52 eV (LDA) to 1.29 eV, compared with 1.17 eV measured ([Hybertsen and Louie 1986](https://doi.org/10.1103/PhysRevB.34.5390)).
+references:
+  - hedin_1965:
+      title: New method for calculating the one-particle Green's function with application to the electron-gas problem
+      authors: L. Hedin
+      year: 1965
+      doi: 10.1103/PhysRev.139.A796
+  - hybertsen_louie_1986:
+      title: "Electron correlation in semiconductors and insulators: Band gaps and quasiparticle energies"
+      authors: M. S. Hybertsen, S. G. Louie
+      year: 1986
+      doi: 10.1103/PhysRevB.34.5390
+  - aryasetiawan_gunnarsson_1998:
+      title: The GW method
+      authors: F. Aryasetiawan, O. Gunnarsson
+      year: 1998
+      doi: 10.1088/0034-4885/61/3/002
+  - golze_2019:
+      title: "The GW compendium: A practical guide to theoretical photoemission spectroscopy"
+      authors: D. Golze, M. Dvorak, P. Rinke
+      year: 2019
+      doi: 10.3389/fchem.2019.00377

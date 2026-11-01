@@ -57,4 +57,11 @@
     ((0, 1.4), text(size: 14pt)[(Gibbs-Duhem)]),
   ) { content(pos, body) }
   circle((0, 0), radius: 1.75, fill: rgb(70%, 70%, 90%, 20%), stroke: black)
+
+  // Key naming the potentials and the [mu] subscript
+  content((0, -2.02), anchor: "north", text(size: 12pt, align(center)[
+    $U$: internal energy #h(1em) $H$: enthalpy #h(1em) $F$: Helmholtz free energy #h(1em) $G$: Gibbs free energy \
+    subscript $[mu]$: Legendre transform from particle number $N$ to chemical potential $mu$ \
+    $T$: temperature #h(1em) $S$: entropy #h(1em) $P$: pressure #h(1em) $V$: volume
+  ]))
 })

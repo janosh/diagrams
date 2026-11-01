@@ -165,8 +165,17 @@
     stroke: angular-color + 1.5pt,
     mark: (end: "stealth"),
   )
-  draw.content((radius + .15, -.15), text(fill: radial-color)[radial: uphill], anchor: "north-west")
-  draw.content((1.2, 2.3), text(fill: angular-color)[angular: along the valley])
+  draw.content(
+    (radius + .15, -.15),
+    text(fill: radial-color)[radial: uphill \ massive Higgs mode],
+    anchor: "north-west",
+  )
+  draw.content(
+    (1.2, 2.15),
+    text(fill: angular-color)[angular: along the valley \ massless Goldstone mode],
+    anchor: "south",
+  )
+  draw.content((0, -.15), [$phi = 0$: unstable peak], anchor: "north")
   draw.content((0, -radius - .35), [$V=0$ on the ring])
 })
 
@@ -176,7 +185,7 @@ A symmetric energy landscape can have an entire family of equally good minima. C
   (
     [1  A ring of minima],
     figure-0,
-    [The peak at zero field is unstable; all points around the valley have the same potential energy. The selected red point breaks the rotational symmetry of this picture.],
+    [The blue peak at zero field is unstable; all points around the valley have the same potential energy. The selected red point breaks the rotational symmetry of this picture.],
   ),
   (
     [2  Radial and angular directions],

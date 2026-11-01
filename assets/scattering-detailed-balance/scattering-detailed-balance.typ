@@ -10,11 +10,12 @@
   content((0, 0), text(size: 24pt)[=])
 
   // The process p, k -> p', k' (left) balances its reverse p', k' -> p, k (right).
-  for (x, in-labels, out-labels) in (
-    (-3, ($p$, $k$), ($p'$, $k'$)),
-    (3, ($p'$, $k'$), ($p$, $k$)),
+  for (x, in-labels, out-labels, caption) in (
+    (-3, ($p$, $k$), ($p'$, $k'$), [forward process]),
+    (3, ($p'$, $k'$), ($p$, $k$), [reverse process]),
   ) {
     circle((x, 0), radius: 0.3, fill: gray.lighten(50%), stroke: gray, name: "vertex")
+    content((x, -1.5), caption, anchor: "north")
     // Arrowheads sit at each line's start: on the vertex for incoming legs, at the far end
     // for outgoing ones.
     for (dy, in-label, out-label) in (1, -1).zip(in-labels, out-labels) {

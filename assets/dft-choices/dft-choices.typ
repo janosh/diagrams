@@ -52,16 +52,24 @@
 
   // Each comment sits at a fixed offset from the term it annotates.
   for (offset, body, target) in (
-    ((1.7, 3), [non-rel. Schrödinger equation\ or relativistic Dirac equation], "kinetic"),
-    ((-2, -3), [pseudopotential\ (ultrasoft/PAW/norm-conserving)\ or all-electron], "ext"),
+    (
+      (1.7, 3.3),
+      [kinetic energy:\ non-rel. Schrödinger equation\ or relativistic Dirac equation],
+      "kinetic",
+    ),
+    (
+      (-2.35, -3.3),
+      [external potential:\ pseudopotential\ (ultrasoft/PAW/norm-conserving)\ or all-electron],
+      "ext",
+    ),
     (
       (1.37, -3),
       [Hartree potential\ from solving Poisson eq.\ or integrating charge density],
       "hartree",
     ),
-    ((-1.34, 3), [LDA or GGA\ or hybrids], "xc"),
-    ((2, 3), [physical orbitals or not\ mesh density and basis set], "phi1"),
-    ((0, -3), [view EVs as mere Lagrange\ multipliers or band structure approx], "energy"),
+    ((-1.34, 3.3), [exchange-correlation:\ LDA or GGA\ or hybrids], "xc"),
+    ((2, 3.3), [Kohn-Sham orbitals:\ physical or not,\ mesh density and basis set], "phi1"),
+    ((0, -3), [view eigenvalues as mere Lagrange\ multipliers or band structure approx], "energy"),
   ) {
     content((rel: offset, to: target), align(center, body), name: target + "-comment")
     line(target + "-comment", target, ..arrow-style)

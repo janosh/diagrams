@@ -86,6 +86,20 @@
 
   let dimension = (stroke: muted + 0.8pt, mark: (start: "|", end: "|", scale: 0.8))
   let dimension-y = -radius - 0.45
+  // Name the backbone where the near-side first strand dips towards the bottom edge.
+  let backbone-x = 1.3
+  let (backbone-y, _) = backbone(backbone-x, 0)
+  line(
+    (backbone-x, backbone-y - 0.12),
+    (backbone-x, dimension-y),
+    stroke: gray + 0.6pt,
+    name: "tick",
+  )
+  content(
+    (rel: (0, -0.05), to: "tick.end"),
+    text(fill: muted)[sugar-phosphate backbone],
+    anchor: "north",
+  )
   line((pitch, dimension-y), (2 * pitch, dimension-y), ..dimension, name: "turn")
   let turn-label = [one turn: #pitch nm, #calc.round(pitch / rise) base pairs]
   content((rel: (0, -0.12), to: "turn.mid"), turn-label, anchor: "north")

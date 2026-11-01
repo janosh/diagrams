@@ -1,5 +1,5 @@
 #import "@preview/cetz:0.5.3": canvas, draw
-#import draw: circle, line, rect, rotate
+#import draw: circle, content, group, line, rect, rotate
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
@@ -38,6 +38,57 @@
     circle((offset, 0), radius: marker-size, fill: colors.red)
     circle((0, offset), radius: marker-size, fill: colors.red)
   }
+  // Legend naming the site types, the asymmetric unit and the mirror lines
+  let legend-x = size + 1.2
+  let legend-row(idx, swatch, label) = {
+    let y = size - 0.6 - idx * 1.1
+    group(swatch((legend-x, y)))
+    content((legend-x + 0.8, y), text(size: 12pt, label), anchor: "west")
+  }
+  legend-row(0, pos => square(pos, colors.yellow), [4 sites on the diagonal mirrors])
+  legend-row(
+    1,
+    pos => circle(pos, radius: marker-size, fill: colors.red),
+    [4 sites on the axial mirrors],
+  )
+  legend-row(
+    2,
+    pos => group({
+      rotate(45deg, origin: pos)
+      square(pos, colors.teal)
+    }),
+    [8 sites in the general position],
+  )
+  legend-row(
+    3,
+    ((x, y)) => line(
+      (x - 0.35, y + 0.3),
+      (x + 0.35, y + 0.3),
+      (x + 0.35, y - 0.4),
+      fill: colors.teal,
+      close: true,
+      stroke: none,
+    ),
+    [asymmetric unit],
+  )
+  for (row, color, name, mirror) in (
+    (4, colors.red, [red], [an axial]),
+    (5, colors.yellow, [yellow], [a diagonal]),
+  ) {
+    legend-row(
+      row,
+      ((x, y)) => rect((x - 0.35, y - 0.15), (x + 0.35, y + 0.15), fill: color, stroke: none),
+      [
+        site symmetry: #name sites lie on #mirror mirror
+      ],
+    )
+  }
+  legend-row(
+    6,
+    ((x, y)) => line((x - 0.4, y), (x + 0.4, y), stroke: (dash: "dashed")),
+    [mirror lines],
+  )
+
   // 8 sites in the general position
   rotate(45deg)
   for idx in range(8) {

@@ -37,9 +37,10 @@
   // Transformation arrow and label
   line((arrow-sep, 0), (arrow-sep + 1.5, 0), ..arrow-style, name: "transform-arrow")
   content("transform-arrow.mid", $z &= S(w)\ &= (w + i) / (i w + 1)$, anchor: "south", padding: 4pt)
+  content("transform-arrow.mid", align(center)[Cayley \ transform], anchor: "north", padding: 4pt)
 
   circle((0, 0), radius: radius, stroke: 0.8pt, fill: region-fill)
-  content((-0.4, 0.5), $DD^2$)
+  content((-0.75, 0.75), [unit disk $DD^2$], anchor: "south-east")
 
   // Boundary semicircles from w_4 = i down to w_2 = -i through w_3 = -1 (blue) and w_1 = 1 (red)
   for (pos, start, paint, thickness) in (
@@ -77,7 +78,7 @@
     fill: region-fill,
     name: "plane",
   )
-  content("plane.north-west", $HH$, anchor: "north-west", padding: 4pt)
+  content("plane.north-west", [upper \ half-plane $HH$], anchor: "north-west", padding: 4pt)
 
   // Leader lines connect w_0 and z_2 to their offset labels
   for (name, pos, offset, label, anchor) in (

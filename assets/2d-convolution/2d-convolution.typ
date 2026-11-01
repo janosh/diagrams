@@ -46,7 +46,7 @@
     "I",
     highlighted: true,
   )
-  content((input-origin.at(0) + 7 / 2, matrix-label-y), $bold(I)$)
+  content((input-origin.at(0) + 7 / 2, matrix-label-y), [input image $bold(I)$])
   content((rel: (1, 0), to: "I-3-6"), text(size: 18pt)[$*$])
 
   let kernel-origin = (input-origin.at(0) + 7 + matrix-sep, input-origin.at(1) - 2)
@@ -57,7 +57,7 @@
     fill: rgb("#9ae7e1"),
     stroke: none,
   ))
-  content((kernel-origin.at(0) + 3 / 2, matrix-label-y), $bold(K)$)
+  content((kernel-origin.at(0) + 3 / 2, matrix-label-y), [kernel (filter) $bold(K)$])
   content((rel: (1, 0), to: "K-1-2"), text(size: 18pt)[$=$])
 
   let result-origin = (kernel-origin.at(0) + 3 + matrix-sep, input-origin.at(1) - 1)
@@ -72,7 +72,7 @@
     fill: rgb(200, 200, 255),
     stroke: none,
   ))
-  content((result-origin.at(0) + 5 / 2, matrix-label-y), $bold(I * K)$)
+  content((result-origin.at(0) + 5 / 2, matrix-label-y), [feature map $bold(I * K)$])
 
   // dashed guides tie the input patch to the kernel, then the kernel to the cell it produces
   for (paint, ends) in (

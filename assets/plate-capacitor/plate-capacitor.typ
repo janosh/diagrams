@@ -94,4 +94,11 @@
       dipole((x * width - 0.3, y - 0.12), (x * width + 0.3, y + 0.12), stroke: 0.5pt)
     }
   }
+
+  // Key naming the charges and the field
+  content((width / 2, -0.2 * height), anchor: "north", align(left)[
+    $plus.minus Q_"C"$: free charge on the plates\
+    $minus.plus Q_"surf"$: bound charge on the dielectric\
+    #text(fill: e-color)[$arrow(E)$]: electric field aligning the dipoles
+  ])
 })

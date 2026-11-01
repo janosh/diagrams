@@ -77,7 +77,12 @@
   let v-end = v-max * 1deg
   let (rx, ry) = (major-r * calc.cos(v-end), major-r * calc.sin(v-end))
   line((0, 0, 0), (rx, ry, 0), stroke: blue + rad-stroke, name: "R")
-  content("R.mid", text(fill: blue)[$R$], anchor: "south", padding: 2pt)
+  content(
+    ("R.start", 64%, "R.end"),
+    text(fill: blue)[major radius $R$],
+    anchor: "north",
+    padding: 4pt,
+  )
 
   // r (red): minor radius pointing diagonally upward.
   let stretch = 1 + minor-r * 0.5 / major-r
@@ -87,5 +92,5 @@
     stroke: minor-red + rad-stroke,
     name: "r",
   )
-  content("r.mid", text(fill: minor-red)[$r$], anchor: "south-east", padding: 2pt)
+  content("r.end", text(fill: minor-red)[minor radius $r$], anchor: "west", padding: (left: 26pt))
 })

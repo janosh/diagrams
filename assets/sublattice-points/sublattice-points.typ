@@ -1,5 +1,5 @@
 #import "@preview/cetz:0.5.3": canvas, draw
-#import draw: circle, line, on-layer
+#import draw: circle, content, line, on-layer
 
 #set page(width: auto, height: auto, margin: 8pt, fill: none)
 
@@ -40,4 +40,27 @@
     line("2,1", "2,5")
     line("0,4", "2,5")
   })
+
+  // Name the sublattice basis vectors beside their arrows
+  let label-size = 9pt
+  let b1-angle = calc.atan(0.5)
+  content(
+    (2 * spacing - 0.26 * calc.sin(b1-angle), spacing + 0.26 * calc.cos(b1-angle)),
+    angle: b1-angle,
+    text(size: label-size)[$bold(b)_1 = (2, 1)$],
+  )
+  content(
+    (-0.45, 4 * spacing),
+    angle: 90deg,
+    text(size: label-size)[$bold(b)_2 = (0, 4)$],
+  )
+  content(
+    (4 * spacing, -0.6),
+    anchor: "north",
+    text(size: label-size, align(center)[
+      arrows: sublattice basis vectors $bold(b)_1, bold(b)_2$ (units of lattice constant) \
+      parallelogram: fundamental domain holding 8 lattice points \
+      same color: same coset (related by a sublattice translation)
+    ]),
+  )
 })

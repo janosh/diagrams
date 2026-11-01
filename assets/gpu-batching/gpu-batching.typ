@@ -215,8 +215,9 @@
       )
       for step in range(window) {
         line((step-center(step), axis-y - 0.05), (step-center(step), axis-y + 0.05), stroke: 0.8pt)
-        content((step-center(step), axis-y - 0.12), [t=#(step + 1)], anchor: "north")
+        content((step-center(step), axis-y - 0.12), [#(step + 1)], anchor: "north")
       }
+      content((x0 + window * cell + 0.4, axis-y - 0.12), [step $t$], anchor: "north-west")
     }
 
     // each panel's dead space on the right carries its own verdict

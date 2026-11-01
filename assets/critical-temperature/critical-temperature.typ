@@ -23,12 +23,18 @@
   plot.plot(
     size: (10, 8),
     x-label: $T$,
+    // curves have different meanings; the legend names each one
+    y-label: none,
     x-min: 0,
     x-max: 1.1,
     y-min: 0,
     y-max: 2.8,
     axis-style: "left",
     x-tick-step: 0.2,
+    // The critical temperature sits at T = 1.
+    x-format: tick => if calc.abs(tick - tc) < 1e-9 { $T_c$ } else {
+      $#calc.round(tick, digits: 2)$
+    },
     y-tick-step: 0.5,
     legend: "inner-north-east",
     // Compact legend with a thin border.
@@ -36,7 +42,7 @@
     for (color, samples, domain, fn, label) in (
       ("#0B5FA5", 100, (0.01, 1), diverging-factor, $sqrt(3)(T_c \/ T - 1)^(1 \/ 2)$),
       ("#C2570A", 50, (0, 1.1), growing-factor, $sqrt(3)(T \/ T_c)^(3 \/ 2)$),
-      ("#12793F", 125, (0.01, 1), order-parameter, $m_(c)(T)$),
+      ("#12793F", 125, (0.01, 1), order-parameter, [order parameter $m_(c)(T)$]),
     ) {
       plot.add(
         fn,

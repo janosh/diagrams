@@ -59,6 +59,18 @@
     circle((px(x), py(y)), radius: 0.09, fill: black, stroke: none)
   }
 
+  // near-miss label above the shaded ellipse
+  content(((x0 + x1) / 2 - 0.4, y1 + 0.6), [near unification], anchor: "south")
+
+  // gauge group legend in the empty lower-right corner
+  for (i, name) in ([hypercharge $U(1)_Y$], [weak $S U(2)_L$], [strong $S U(3)_c$]).enumerate() {
+    content(
+      (width - 0.15, 0.15 + (2 - i) * 0.62),
+      text(fill: colors.at(i))[$alpha_#(i + 1)$: #name],
+      anchor: "south-east",
+    )
+  }
+
   // line labels
   for (i, label-x, anchor) in ((0, 6, "north-east"), (1, 6, "south"), (2, 5.5, "south-east")) {
     content(
@@ -79,6 +91,6 @@
     line((0, py(y)), (0.15, py(y)), stroke: axis-stroke)
     content((-0.12, py(y)), str(y), anchor: "east")
   }
-  content((width / 2, -0.85), [$mu$ (GeV)], anchor: "north")
-  content((-1.0, height / 2), $alpha^(-1)$, anchor: "south", angle: 90deg)
+  content((width / 2, -0.85), [energy scale $mu$ (GeV)], anchor: "north")
+  content((-1.0, height / 2), [inverse coupling $alpha^(-1)$], anchor: "south", angle: 90deg)
 })

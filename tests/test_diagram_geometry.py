@@ -57,32 +57,6 @@ def test_standalone_artwork_has_compact_margins(
     assert all(0 <= margin <= max_margin for margin in margins), (slug, margins)
 
 
-def test_atomistic_flowchart_has_visible_forward_arrows(tmp_path: Path) -> None:
-    """Keep enough space between boxes for all six forward arrow shafts."""
-    output_path = tmp_path / "atomistic.svg"
-    subprocess.run(
-        [
-            "typst",
-            "compile",
-            "--root",
-            ROOT,
-            f"{ROOT}/assets/atomistic-simulation-methods/atomistic-simulation-methods.typ",
-            str(output_path),
-        ],
-        check=True,
-    )
-    shafts = [
-        node.get("d", "")
-        for node in ET.parse(output_path).iter("{http://www.w3.org/2000/svg}path")
-        if node.get("stroke") == "#6b7685" and "Z" not in node.get("d", "")
-    ]
-    assert len(shafts) == 6
-    for shaft in shafts:
-        displacement = re.search(r"h (-?[\d.]+)$", shaft)
-        # A shaft must run rightward and exceed the roughly 6pt arrowhead length.
-        assert displacement and float(displacement[1]) > 6, shaft
-
-
 def test_train_test_split_preserves_rows_and_table_bounds(tmp_path: Path) -> None:
     """Split seven schematic rows into 4/3 with correct highlights and table bounds."""
     output_path = tmp_path / "train-test-split.svg"
@@ -136,7 +110,6 @@ def test_train_test_split_preserves_rows_and_table_bounds(tmp_path: Path) -> Non
     "slug",
     [
         "amplitude-vs-frequency-modulation",
-        "atomistic-simulation-methods",
         "autoencoder-architectures",
         "complex-sign-function",
         "convexity-and-jensens-inequality",
@@ -158,7 +131,6 @@ def test_train_test_split_preserves_rows_and_table_bounds(tmp_path: Path) -> Non
 def test_compound_layout_follows_artwork_aspect_ratios(slug: str) -> None:
     """Fill each card's width and balance neighboring drawings without height caps."""
     stacked = slug in {
-        "atomistic-simulation-methods",
         "gpu-batching",
         "regulated-and-unregulated-propagators",
     }
@@ -722,49 +694,28 @@ def test_wannier_center_matches_drawn_density_and_balance(
 
 
 @pytest.mark.parametrize("caller_font_size", [8, 20])
-@pytest.mark.parametrize(
-    "slug", ["atomistic-simulation-methods", "change-of-variables"]
-)
 def test_compound_typography_uses_consistent_readable_sizes(
-    caller_font_size: int, slug: str
+    caller_font_size: int,
 ) -> None:
-    """Keep labels, headings, captions, and takeaways independent of caller text size."""
-    if slug == "change-of-variables":
-        imports = "card"
-        panels = """
-#card([Panel heading], [Coordinate formula], box(width: 200pt, height: 80pt)[Diagram label], [Jacobian factors], [Measure formula], [Panel caption])
-"""
-        expected = {
-            "Panel heading": 21,
-            "Coordinate formula": 18,
-            "Diagram label": 14,
-            "Jacobian factors": 18,
-            "Measure formula": 24,
-            "Panel caption": 17,
-        }
-    else:
-        imports = "card, takeaway"
-        panels = """
-#card([Panel heading], box(width: 200pt, height: 80pt)[Diagram label], [Panel caption])
-#takeaway[Takeaway paragraph]
-"""
-        expected = {
-            "Panel heading": 16,
-            "Diagram label": 12,
-            "Panel caption": 14,
-            "Takeaway paragraph": 14,
-        }
+    """Keep labels, headings and captions independent of caller text size."""
     source = f"""
-#import "/assets/{slug}/{slug}.typ": {imports}
+#import "/assets/change-of-variables/change-of-variables.typ": card
 #set page(width: 300pt, height: auto, margin: 0pt)
 #set text(size: {caller_font_size}pt)
 #show text: item => context [#metadata((item.text, text.size / 1pt)) <typography>#item]
-{panels}
+#card([Panel heading], [Coordinate formula], box(width: 200pt, height: 80pt)[Diagram label], [Jacobian factors], [Measure formula], [Panel caption])
 """
     sizes = dict(
         evaluate_typst("query(<typography>).map(item => item.value)", source=source)
     )
-    assert sizes == expected
+    assert sizes == {
+        "Panel heading": 21,
+        "Coordinate formula": 18,
+        "Diagram label": 14,
+        "Jacobian factors": 18,
+        "Measure formula": 24,
+        "Panel caption": 17,
+    }
 
 
 def test_sabatier_binding_regimes(tmp_path: Path) -> None:
@@ -1020,7 +971,6 @@ def test_materials_molecule_and_descriptor_are_consistent() -> None:
     "slug,redundant_title",
     [
         ("amplitude-vs-frequency-modulation", "Amplitude vs Frequency Modulation"),
-        ("atomistic-simulation-methods", "Atomistic Simulation Methods"),
         ("autoencoder-architectures", "Autoencoder Architectures"),
         ("branch-and-bound", "Branch and bound"),
         ("complex-sign-function", "Complex Sign Function"),

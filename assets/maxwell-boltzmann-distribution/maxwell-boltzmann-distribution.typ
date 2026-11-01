@@ -17,8 +17,8 @@
 #canvas({
   plot.plot(
     size: (10, 6),
-    x-label: [$v$ (m/s)],
-    y-label: [$P(v)$ ($10^(-4)$ s/m)],
+    x-label: [speed $v$ (m/s)],
+    y-label: [probability density $P(v)$ ($10^(-4)$ s/m)],
     y-max: 0.7e-3,
     x-tick-step: 2000,
     y-tick-step: 2e-4,
@@ -34,7 +34,7 @@
         domain: (0, 8000),
         samples: 150,
         speed => maxwell-boltzmann(speed, temp),
-        label: str(temp) + " K",
+        label: [$T =$ #temp K],
       )
     },
   )
